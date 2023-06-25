@@ -5,6 +5,7 @@ from path_dict import PathDict
 from pathlib import Path
 from lingotojson import *
 import pygame as pg
+import menuclass
 
 colors = settings["global"]["colors"]  # NOQA
 
@@ -35,6 +36,8 @@ rope = dc
 
 grid = dc
 
+
+
 for key, value in colors.items():
     exec(f"{key} = pg.Color({value})")
 
@@ -64,7 +67,8 @@ renderedimage = pg.transform.scale(tooltiles, [
             (tooltiles.get_width() / graphics["tilesize"][0]) * image1size,
             (tooltiles.get_height() / graphics["tilesize"][1]) * image1size])
 
-
+idk = pg.Surface([image1size, image1size])
+images = [idk, idk, idk]
 
 def quadsize(quad):
     mostleft = bignum
@@ -228,6 +232,13 @@ class Renderer:
         self.geo_render_area(area, layer)
 
     def geo_render_area(self, area, layer):
+        images[0] = renderedimage.convert_alpha(idk)
+        images[1] = renderedimage.convert_alpha(idk)
+        images[2] = renderedimage.convert_alpha(idk)
+
+        images[0].fill(black, special_flags=pg.BLEND_RGBA_MULT)
+        images[1].fill(green, special_flags=pg.BLEND_RGBA_MULT)
+        images[2].fill(red, special_flags=pg.BLEND_RGBA_MULT)    
         for xp, x in enumerate(area):
             for yp, y in enumerate(x):
                 if y:
@@ -251,6 +262,7 @@ class Renderer:
 
     def render_geo_pixel(self, xp, yp, layer):
         self.lastlayer = layer
+
         def incorner(x, y):
             try:
                 return self.data["GE"][x][y][i][1]
@@ -267,9 +279,10 @@ class Renderer:
         for i in range(2, -1, -1):
             if not self.geolayers[i]:
                 continue
-            renderedimage.set_alpha(settings["global"]["secondarylayeralpha"])
-            if i == layer:
-                renderedimage.set_alpha(settings["global"]["primarylayeralpha"])
+            convrender = images[i]
+            convrender.set_alpha(90)
+            #if i == layer:
+            #    renderedimage.set_alpha(settings["global"]["primarylayeralpha"])
             self.data["GE"][xp][yp][i][1] = list(set(self.data["GE"][xp][yp][i][1]))
             cell = self.data["GE"][xp][yp][i][0]
             over: list = self.data["GE"][xp][yp][i][1]
@@ -278,7 +291,18 @@ class Renderer:
                 cell = self.data["GE"][xp][yp][i][0]
             curtool = [graphics["shows"][str(cell)][0] * image1size,
                        graphics["shows"][str(cell)][1] * image1size]
-            pixel.blit(renderedimage, [0, 0], [curtool, cellsize2])
+            lcol = blue
+            if i == 0:
+                lcol = black
+            if i == 1:
+                lcol = green
+            if i == 2:
+                lcol = red
+            #print(lcol)
+            #print(i)
+            #convrender.fill(lcol, special_flags=pg.BLEND_RGBA_MULT)
+            pixel.blit(convrender, [0, 0], [curtool, cellsize2])
+
             if 4 in over and self.data["GE"][xp][yp][i][0] != 7:
                 self.data["GE"][xp][yp][i][1].remove(4)
             if 11 in over and over.index(11) != 0:
@@ -353,7 +377,10 @@ class Renderer:
                         else:  # if no breaks
                             if tilecounter == 7 and foundwire and foundair and pos != -1:  # if we found the right one
                                 curtool = [pos[0] * image1size, pos[1] * image1size]
-                pixel.blit(renderedimage, [0, 0], [curtool, cellsize2])
+                s = renderedimage
+                if adds in [1, 2]:
+                    s = convrender
+                pixel.blit(s, [0, 0], [curtool, cellsize2])
         return pixel
 
     def findprop(self, name, cat=None):
