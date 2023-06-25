@@ -157,19 +157,21 @@ class Renderer:
         self.tiles_render_area(area, layer)
 
     def tiles_render_area(self, area, layer):
+
         for xp, x in enumerate(area):
             for yp, y in enumerate(x):
                 if y:
                     continue
                 self.surf_tiles.fill(pg.Color(0, 0, 0, 0), [xp * image1size, yp * image1size, image1size, image1size])
-        for xp, x in enumerate(area):
-            for yp, y in enumerate(x):
-                if y:
-                    continue
-                self.render_tile_pixel(xp, yp, layer)
+        for i in range(2, -1, -1):
+            for xp, x in enumerate(area):
+                for yp, y in enumerate(x):
+                    if y:
+                        continue
+                    self.render_tile_pixel(xp, yp, i, layer)
 
-    def render_tile_pixel(self, xp, yp, layer):
-        self.lastlayer = layer
+    def render_tile_pixel(self, xp, yp, layer, selectedLayer):
+        self.lastlayer = selectedLayer
         images = {}
         tiledata = self.data["TE"]["tlMatrix"]
 
@@ -221,6 +223,8 @@ class Renderer:
             #        #if it["cols"][0][xpos * it["size"][1] + ypos] == -1:
             #        self.surf_tiles.fill(dc, [(cposx + xpos) * image1size, (cposy + ypos) * image1size, image1size, image1size])
             # self.surf_tiles.fill(dc, siz)
+            if(layer != selectedLayer):
+                it["image"].set_alpha(150)
             self.surf_tiles.blit(it["image"], [cposx, cposy])
         elif datcell == "tileBody":
             pass

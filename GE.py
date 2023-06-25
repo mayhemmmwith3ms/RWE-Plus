@@ -122,7 +122,7 @@ class GE(MenuWithField):
                 self.labels[0].set_text(
                     f"Tile: {tilename} {self.data['GE'][int(posoffset.x)][int(posoffset.y)][self.layer]}")
 
-            bp = self.getmouse
+            bp = pg.mouse.get_pressed(3)
 
             if self.fillshape == "brush":
                 pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize, 5)

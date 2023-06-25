@@ -104,8 +104,7 @@ class TE(MenuWithField):
                     if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
                         self.labels[0].set_text(
                             "Tile: " + str(self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]))
-
-                bord = self.size // image1size + 1
+                bord = 1#self.size // image1size + 1
                 if self.cols and self.tool == 0:
                     pg.draw.rect(self.surface, canplace, [[cposx - bord, cposy - bord],
                                                           [self.tileimage["image"].get_width() + bord * 2,
@@ -119,6 +118,7 @@ class TE(MenuWithField):
                                                              [self.tileimage["image"].get_width() + bord * 2,
                                                               self.tileimage["image"].get_height() + bord * 2]], bord)
                 if self.tool == 0:
+                    self.tileimage["image"].set_colorkey([255, 255, 255])
                     self.surface.blit(self.tileimage["image"], [cposx, cposy])
                     self.printcols(cposxo, cposyo, self.tileimage)
             bp = self.getmouse
@@ -449,7 +449,7 @@ class TE(MenuWithField):
                 self.tileimage2 = i.copy()
                 if self.tileimage2["tp"] != "pattern" and render:
                     self.tileimage2["image"] = i["image"].copy()
-                    self.tileimage2["image"].set_alpha(100)
+                    self.tileimage2["image"].set_alpha(255)
                     self.tileimage = self.tileimage2.copy()
 
                     self.tileimage["image"] = pg.transform.scale(self.tileimage2["image"],
@@ -508,22 +508,22 @@ class TE(MenuWithField):
                 py = (y + y2 + self.yoffset) * self.size + self.field.rect.y + sft
             match csp:
                 case 1:
-                    pg.draw.rect(self.surface, color, [px, py, self.size, self.size], shift)
+                    pg.draw.rect(self.surface, color, [px, py, self.size, self.size], sft)
                 case 0:
-                    pg.draw.circle(self.surface, color, [px + self.size / 2, py + self.size / 2], self.size / 2, shift)
+                    pg.draw.circle(self.surface, color, [px + self.size / 2, py + self.size / 2], self.size / 2, sft)
                 case 2:
                     pg.draw.polygon(self.surface, color,
-                                    [[px, py], [px, py + self.size], [px + self.size, py + self.size]], shift)
+                                    [[px, py], [px, py + self.size], [px + self.size, py + self.size]], sft)
                 case 3:
                     pg.draw.polygon(self.surface, color,
                                     [[px, py + self.size], [px + self.size, py + self.size], [px + self.size, py]],
-                                    shift)
+                                    sft)
                 case 4:
                     pg.draw.polygon(self.surface, color,
-                                    [[px, py], [px, py + self.size], [px + self.size, py]], shift)
+                                    [[px, py], [px, py + self.size], [px + self.size, py]], sft)
                 case 5:
                     pg.draw.polygon(self.surface, color,
-                                    [[px, py], [px + self.size, py + self.size], [px + self.size, py]], shift)
+                                    [[px, py], [px + self.size, py + self.size], [px + self.size, py]], sft)
 
         w, h = tile["size"]
         sp = tile["cols"][0]
@@ -543,7 +543,7 @@ class TE(MenuWithField):
         for x2 in range(w):
             for y2 in range(h):
                 csp = sp[x2 * h + y2]
-                printtile(0, layer1)
+                printtile(1, layer1)
                 if sp2 != 0:
                     try:
                         csp = sp2[x2 * h + y2]
