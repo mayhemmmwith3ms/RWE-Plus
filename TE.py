@@ -54,6 +54,9 @@ class TE(MenuWithField):
 
         self.lastfg = False
 
+        renderer.commsgeocolors = False
+        renderer.geo_full_render(renderer.lastlayer)
+
         super().__init__(surface, "TE", renderer, False)
         self.catlist = [[]]
         for category in self.items.keys():

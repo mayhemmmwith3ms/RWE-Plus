@@ -14,6 +14,9 @@ class CE(MenuWithField):
         self.drawcameras = True
         self.camoffset = pg.Vector2(0, 0)
         self.pressed = [False] * 4
+        
+        renderer.commsgeocolors = False
+        renderer.geo_full_render(renderer.lastlayer)
 
         self.rfa()
         self.blit()

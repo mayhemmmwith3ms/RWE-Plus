@@ -36,8 +36,6 @@ rope = dc
 
 grid = dc
 
-
-
 for key, value in colors.items():
     exec(f"{key} = pg.Color({value})")
 
@@ -127,6 +125,7 @@ class Renderer:
         self.lastlayer = 0
         self.offset = pg.Vector2(0, 0)
         self.size = image1size
+        self.commsgeocolors = False
 
         if render:
             size = [len(data["GE"]) * image1size, len(data["GE"][0]) * image1size]
@@ -232,7 +231,7 @@ class Renderer:
 
     def geo_full_render(self, layer):
         self.surf_geo.fill(color2)
-        area = [[False for _ in range(self.levelheight)] for _ in range(self.levelwidth)]
+        area = [[False for _ in range(self.levelheight)] for _ in range(self.levelwidth)]     
         self.geo_render_area(area, layer)
 
     def geo_render_area(self, area, layer):
@@ -283,10 +282,17 @@ class Renderer:
         for i in range(2, -1, -1):
             if not self.geolayers[i]:
                 continue
-            convrender = images[i]
-            convrender.set_alpha(90)
-            #if i == layer:
-            #    renderedimage.set_alpha(settings["global"]["primarylayeralpha"])
+            
+            imageIndex = i
+            if not self.commsgeocolors:
+                imageIndex = 0
+
+            convrender = images[imageIndex]
+            convrender.set_alpha(settings["global"]["secondarylayeralpha"])
+
+            if i == layer and not self.commsgeocolors:
+                convrender.set_alpha(settings["global"]["primarylayeralpha"])
+
             self.data["GE"][xp][yp][i][1] = list(set(self.data["GE"][xp][yp][i][1]))
             cell = self.data["GE"][xp][yp][i][0]
             over: list = self.data["GE"][xp][yp][i][1]
@@ -295,16 +301,7 @@ class Renderer:
                 cell = self.data["GE"][xp][yp][i][0]
             curtool = [graphics["shows"][str(cell)][0] * image1size,
                        graphics["shows"][str(cell)][1] * image1size]
-            lcol = blue
-            if i == 0:
-                lcol = black
-            if i == 1:
-                lcol = green
-            if i == 2:
-                lcol = red
-            #print(lcol)
-            #print(i)
-            #convrender.fill(lcol, special_flags=pg.BLEND_RGBA_MULT)
+
             pixel.blit(convrender, [0, 0], [curtool, cellsize2])
 
             if 4 in over and self.data["GE"][xp][yp][i][0] != 7:

@@ -3,6 +3,10 @@ from menuclass import *
 
 class EE(MenuWithField):
     def __init__(self, surface: pg.surface.Surface, renderer):
+
+        renderer.commsgeocolors = False
+        renderer.geo_full_render(renderer.lastlayer)
+
         super().__init__(surface, "EE", renderer)
         self.layer = 1 - self.data["WL"]["waterInFront"]
         self.wateroffset = 0

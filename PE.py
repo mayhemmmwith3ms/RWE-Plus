@@ -66,6 +66,9 @@ class PE(MenuWithField):
         self.renderprop = True
         self.modpress = False
 
+        renderer.commsgeocolors = False
+        renderer.geo_full_render(renderer.lastlayer)
+
         super().__init__(surface, "PE", renderer)
         self.drawprops = True
         cat = list(self.props.keys())[self.currentcategory]

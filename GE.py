@@ -2,7 +2,7 @@ from menuclass import *
 
 
 class GE(MenuWithField):
-    def __init__(self, surface: pg.surface.Surface, renderer):
+    def __init__(self, surface: pg.surface.Surface, renderer: render.Renderer):
         self.state = 0
         self.mx = 0
 
@@ -24,6 +24,9 @@ class GE(MenuWithField):
         self.fillshape = "pencil"  # pencil, brush, fill
         self.fillshape2 = "rect"  # rect, rect-hollow, circle, circle-hollow, line
         self.brushsize = 1
+
+        renderer.commsgeocolors = True
+        renderer.geo_full_render(renderer.lastlayer)
 
         super().__init__(surface, "GE", renderer)
         self.emptyarea()

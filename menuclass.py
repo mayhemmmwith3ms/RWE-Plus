@@ -665,7 +665,8 @@ class MenuWithField(Menu):
     def swichlayers(self):
         self.layer = (self.layer + 1) % 3
         self.mpos = 1
-        self.renderer.render_all(self.layer)
+        if not self.renderer.commsgeocolors:
+            self.renderer.render_all(self.layer)
         self.rfa()
 
     def swichlayers_back(self):
