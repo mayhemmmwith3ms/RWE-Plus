@@ -159,13 +159,54 @@ class TE(MenuWithField):
                 self.emptyarea()
             elif bp[2] == 1 and not self.mousp2 and (self.mousp and self.mousp1):
                 self.rectdata[1] = posoffset - self.rectdata[0]
-                rect = self.vec2rect(self.rectdata[2], pos2)
+
+                righthalf = mpos[0] > self.rectdata[2].x + 10
+                upperhalf = mpos[1] > self.rectdata[2].y + 10
+                
+                tl = [0, 0]
+                br = [0, 0]
+
+                if not righthalf:
+                    tl[0] = pos2.x
+                    br[0] = self.rectdata[2].x + self.size
+                else:
+                    tl[0] = self.rectdata[2].x
+                    br[0] = pos2.x + self.size
+
+                if upperhalf:
+                    tl[1] = pos2.y + self.size
+                    br[1] = self.rectdata[2].y
+                else:
+                    tl[1] = self.rectdata[2].y + self.size
+                    br[1] = pos2.y
+
+                rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
                 tx = f"{int(rect.w / self.size)}, {int(rect.h / self.size)}"
                 widgets.fastmts(self.surface, tx, *mpos, white)
-                pg.draw.rect(self.surface, select, rect, 5)
+                pg.draw.rect(self.surface, select, rect, 1)
             elif bp[2] == 0 and not self.mousp2 and (self.mousp and self.mousp1):
                 # self.rectdata = [self.rectdata[0], posoffset]
-                rect = self.vec2rect(self.rectdata[0], posoffset)
+                righthalf = mpos[0] > self.rectdata[2].x + 10
+                upperhalf = mpos[1] > self.rectdata[2].y + 10
+                
+                tl = [0, 0]
+                br = [0, 0]
+
+                if not righthalf:
+                    tl[0] = posoffset.x
+                    br[0] = self.rectdata[0].x + 1
+                else:
+                    tl[0] = self.rectdata[0].x
+                    br[0] = posoffset.x + 1
+
+                if upperhalf:
+                    tl[1] = posoffset.y + 1
+                    br[1] = self.rectdata[0].y
+                else:
+                    tl[1] = self.rectdata[0].y + 1
+                    br[1] = posoffset.y
+
+                rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
                 if self.tileimage["tp"] != "pattern" and self.tool != 2:
                     for x in range(int(rect.w)):
                         for y in range(int(rect.h)):

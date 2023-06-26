@@ -187,23 +187,33 @@ class GE(MenuWithField):
                 self.emptyarea()
             elif bp[2] == 1 and not self.mousp2 and (self.mousp and self.mousp1):
                 self.rectdata[1] = posoffset - self.rectdata[0]
-                
-                rectoffset = [10, 10]
+
                 righthalf = mpos.x > self.rectdata[2].x + 10
                 upperhalf = mpos.y > self.rectdata[2].y + 10
+                
+                tl = [0, 0]
+                br = [0, 0]
 
-                if righthalf: 
-                    rectoffset[0] = -10
+                if not righthalf:
+                    tl[0] = pos2.x
+                    br[0] = self.rectdata[2].x + self.size
+                else:
+                    tl[0] = self.rectdata[2].x
+                    br[0] = pos2.x + self.size
+
                 if upperhalf:
-                    rectoffset[1] = -10
+                    tl[1] = pos2.y + self.size
+                    br[1] = self.rectdata[2].y
+                else:
+                    tl[1] = self.rectdata[2].y + self.size
+                    br[1] = pos2.y
 
-                print()
-                rect = self.vec2rect(self.rectdata[2] + rectoffset + [10, 10], pos2 - rectoffset + [10, 10])
+                rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
 
                 tx = f"{abs(int(rect.w / self.size))}, {abs(int(rect.h / self.size))}"
                 widgets.fastmts(self.surface, tx, *mpos, white)
                 if self.fillshape2 in ["rect", "rect-hollow"] or self.selectedtool in ["CP", "CT", "SL"]:
-                    pg.draw.rect(self.surface, select, rect, 5)
+                    pg.draw.rect(self.surface, select, rect, 1)
                 elif self.fillshape2 in ["circle", "circle-hollow"]:
                     pg.draw.ellipse(self.surface, select, rect, 5)
                 elif self.fillshape2 == "line":
@@ -228,7 +238,27 @@ class GE(MenuWithField):
                 elif self.fillshape2 == "line":
                     self.linepoints(self.rectdata[0], posoffset)
                 elif self.fillshape2 in ["rect", "rect-hollow"]:
-                    rect = self.vec2rect(self.rectdata[0], posoffset)
+                    righthalf = mpos.x > self.rectdata[2].x + 10
+                    upperhalf = mpos.y > self.rectdata[2].y + 10
+                    
+                    tl = [0, 0]
+                    br = [0, 0]
+
+                    if not righthalf:
+                        tl[0] = posoffset.x
+                        br[0] = self.rectdata[0].x + 1
+                    else:
+                        tl[0] = self.rectdata[0].x
+                        br[0] = posoffset.x + 1
+
+                    if upperhalf:
+                        tl[1] = posoffset.y + 1
+                        br[1] = self.rectdata[0].y
+                    else:
+                        tl[1] = self.rectdata[0].y + 1
+                        br[1] = posoffset.y
+
+                    rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
                     for x in range(int(rect.w)):
                         for y in range(int(rect.h)):
                             vec = pg.Vector2(x, y)
