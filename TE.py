@@ -103,7 +103,7 @@ class TE(MenuWithField):
                     self.cols = self.test_cols(cposxo, cposyo)
                     self.mpos = posoffset
                     self.lastfg = fg
-                    self.labels[1].set_text(f"X: {posoffset.x}, Y: {posoffset.y}, Z: {self.layer + 1}")
+                    self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)}, Work Layer: {self.layer + 1}")
                     if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
                         self.labels[0].set_text(
                             "Tile: " + str(self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]))
@@ -485,7 +485,7 @@ class TE(MenuWithField):
                 if xpos >= self.levelwidth or ypos >= self.levelheight or xpos < 0 or ypos < 0:
                     continue
                 if csp != -1:
-                    if self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]["tp"] != "default":
+                    if self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]["tp"] not in ["default", "material"]:
                         return False
                     if self.data["GE"][xpos][ypos][self.layer][0] != csp and not force_geo:
                         return False
@@ -493,7 +493,7 @@ class TE(MenuWithField):
                     if self.layer + 1 <= 2:
                         csp2 = sp2[x2 * h + y2]
                         if csp2 != -1:
-                            if self.data["TE"]["tlMatrix"][xpos][ypos][self.layer + 1]["tp"] != "default":
+                            if self.data["TE"]["tlMatrix"][xpos][ypos][self.layer + 1]["tp"] not in ["default", "material"]:
                                 return False
                             if self.data["GE"][xpos][ypos][self.layer + 1][0] != csp2 and not force_geo:
                                 return False

@@ -1,6 +1,6 @@
 {
 	"global": {
-		"color": "#828282",
+		"color": "#888888",
 		"color2": "#606060",
 		"width": 1280,
 		"height": 720,
@@ -14,8 +14,8 @@
 		"doublerect": true,
 		"doublerectoffsetx": -5,
 		"doublerectoffsety": 0,
-		"primarylayeralpha": 255,
-		"secondarylayeralpha": 90,
+		"primarylayeralpha": 200,
+		"secondarylayeralpha": 50,
 		"snap_error": 50,
 		"colors": {
 			"cursor": [255, 0, 0],
@@ -228,7 +228,13 @@
 			"6": "Platform",
 			"7": "Shortcut entrance",
 			"9": "Glass"
-		}
+		},
+		"cursorWorkLayerNum": true,
+		"layerColors": [
+			[0, 0, 0],
+			[0, 255, 0],
+			[255, 0, 0]
+		]
 	}, 
 	"TE":
 	{

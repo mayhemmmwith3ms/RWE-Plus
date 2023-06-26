@@ -180,7 +180,7 @@
 
 		"K_q+": "-changematshow",
 
-		"K_x": "-togglesnap",
+		"K_m": "-togglesnap",
 		"K_w": "-browse_prev",
 		"K_a": "-cat_prev_propupdate",
 		"K_s": "-browse_next",
@@ -191,10 +191,10 @@
 		"K_s+": "-rotate180",
 		"K_d+": "-rotate90",
 
-		"K_u": "stretch_topleft",
-		"K_i": "stretch_topright",
-		"K_o": "stretch_bottomright",
-		"K_p": "stretch_bottomleft",
+		"K_u+": "stretch_topleft",
+		"K_i+": "stretch_topright",
+		"K_o+": "stretch_bottomright",
+		"K_p+": "stretch_bottomleft",
 
 		"K_y": "-stretchy_up",
 		"K_g": "-stretchx_down",

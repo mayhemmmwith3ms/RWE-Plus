@@ -649,13 +649,13 @@ class MenuWithField(Menu):
             widgets.fastmts(self.surface,
                             f"Effect({self.draweffects}): {self.data['FE']['effects'][self.draweffects - 1]['nm']}",
                             *self.field.rect.midleft, white)
-        mpos = pg.mouse.get_pos()
-        if self.drawgrid and self.field.rect.collidepoint(mpos):
-            pos2 = self.pos2
-            pg.draw.line(self.surface, cursor2, [self.field.rect.left, pos2[1]],
-                         [self.field.rect.right, pos2[1]])
-            pg.draw.line(self.surface, cursor2, [pos2[0], self.field.rect.top],
-                         [pos2[0], self.field.rect.bottom])
+        #mpos = pg.mouse.get_pos()
+        #if self.drawgrid and self.field.rect.collidepoint(mpos):
+            #pos2 = self.pos2
+            #pg.draw.line(self.surface, cursor2, [self.field.rect.left, pos2[1]],
+                         #[self.field.rect.right, pos2[1]])
+            #pg.draw.line(self.surface, cursor2, [pos2[0], self.field.rect.top],
+                         #[pos2[0], self.field.rect.bottom])
 
         super().blit()
 
@@ -891,10 +891,22 @@ class MenuWithField(Menu):
 
     def rendergrid(self):
         w, h = self.f.get_size()
+        gridsurf = pg.Surface([w, h]).convert_alpha(self.f)
+        gridsurf.fill([0, 0, 0, 0])
+        col = [255, 255, 255]
+        col2 = [180, 180, 180]
         for x in range(0, w, image1size):
-            pg.draw.line(self.f, grid, [x, 0], [x, h])
+            if x % 40 == 0:
+                pg.draw.line(gridsurf, col, [x, 0], [x, h])
+            else:
+                pg.draw.line(gridsurf, col2, [x, 0], [x, h])
         for y in range(0, h, image1size):
-            pg.draw.line(self.f, grid, [0, y], [w, y])
+            if y % 40 == 0:
+                pg.draw.line(gridsurf, col, [0, y], [w, y])
+            else:
+                pg.draw.line(gridsurf, col2, [0, y], [w, y])
+        gridsurf.set_alpha(30)
+        self.f.blit(gridsurf, [0, 0])
 
     def findprop(self, name, cat=None):
         if cat is not None:

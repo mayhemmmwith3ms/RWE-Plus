@@ -29,6 +29,7 @@ class GE(MenuWithField):
         renderer.geo_full_render(renderer.lastlayer)
 
         super().__init__(surface, "GE", renderer)
+        self.drawgrid = True
         self.emptyarea()
         self.air()
         self.rs()
@@ -112,7 +113,7 @@ class GE(MenuWithField):
             toolsized = pg.transform.scale(self.toolrender,
                                            pg.Vector2(self.toolrender.get_size()) / image1size * self.size).convert_alpha(self.surface)
             toolsized.fill(red, special_flags=pg.BLEND_RGBA_MULT)
-            self.labels[1].set_text(f"X: {posoffset.x}, Y: {posoffset.y}, Z: {self.layer + 1}")
+            self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)}, Work Layer: {self.layer + 1}")
             #print(self.placetile)
             if self.selectedtool in self.settings["codes"].keys():
                 if type(self.placetile) == int:
@@ -186,8 +187,19 @@ class GE(MenuWithField):
                 self.emptyarea()
             elif bp[2] == 1 and not self.mousp2 and (self.mousp and self.mousp1):
                 self.rectdata[1] = posoffset - self.rectdata[0]
-                # print(self.rectdata[2], pos2 - self.rectdata[2])
-                rect = self.vec2rect(self.rectdata[2], pos2)
+                
+                rectoffset = [10, 10]
+                righthalf = mpos.x > self.rectdata[2].x + 10
+                upperhalf = mpos.y > self.rectdata[2].y + 10
+
+                if righthalf: 
+                    rectoffset[0] = -10
+                if upperhalf:
+                    rectoffset[1] = -10
+
+                print()
+                rect = self.vec2rect(self.rectdata[2] + rectoffset + [10, 10], pos2 - rectoffset + [10, 10])
+
                 tx = f"{abs(int(rect.w / self.size))}, {abs(int(rect.h / self.size))}"
                 widgets.fastmts(self.surface, tx, *mpos, white)
                 if self.fillshape2 in ["rect", "rect-hollow"] or self.selectedtool in ["CP", "CT", "SL"]:

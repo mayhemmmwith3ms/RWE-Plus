@@ -190,7 +190,10 @@ class Renderer:
                 try:
                     ms = graphics["matsize"]
                     rect = pg.Rect(ms[0] + posx, ms[0] + posy, ms[1], ms[1])
-                    pg.draw.rect(self.surf_tiles, graphics["matposes"][datdata], rect)
+                    col = [graphics["matposes"][datdata][0], graphics["matposes"][datdata][1], graphics["matposes"][datdata][2], 255]
+                    if(layer != selectedLayer):
+                        col[3] = 100
+                    pg.draw.rect(self.surf_tiles, col, rect)
                 except ValueError:
                     self.surf_tiles.blit(notfound, [posx, posy])
 
@@ -239,9 +242,10 @@ class Renderer:
         images[1] = renderedimage.convert_alpha(idk)
         images[2] = renderedimage.convert_alpha(idk)
 
-        images[0].fill(black, special_flags=pg.BLEND_RGBA_MULT)
-        images[1].fill(green, special_flags=pg.BLEND_RGBA_MULT)
-        images[2].fill(red, special_flags=pg.BLEND_RGBA_MULT)    
+        images[0].fill(settings["GE"]["layerColors"][0], special_flags=pg.BLEND_MULT)
+        images[1].fill(settings["GE"]["layerColors"][1], special_flags=pg.BLEND_MULT)
+        images[2].fill(settings["GE"]["layerColors"][2], special_flags=pg.BLEND_MULT)
+
         for xp, x in enumerate(area):
             for yp, y in enumerate(x):
                 if y:
@@ -278,8 +282,17 @@ class Renderer:
                 return 0
         cellsize2 = [image1size, image1size]
         pixel = pg.Surface(cellsize2)
-        pixel.fill(color2)
-        for i in range(2, -1, -1):
+        pixel.fill(color)
+
+        stackables = pg.Surface(cellsize2)
+        stackables.set_colorkey([0, 0, 0, 0])
+        #stackables.fill([0, 0, 0, 0])
+        
+        geoRange = range(2, -1, -1)
+        if self.commsgeocolors:
+            geoRange = range(0, 3, 1)
+        
+        for i in geoRange:
             if not self.geolayers[i]:
                 continue
             
@@ -292,17 +305,21 @@ class Renderer:
 
             if i == layer and not self.commsgeocolors:
                 convrender.set_alpha(settings["global"]["primarylayeralpha"])
+            if i == 0 and self.commsgeocolors:
+                convrender.set_alpha(255)
 
             self.data["GE"][xp][yp][i][1] = list(set(self.data["GE"][xp][yp][i][1]))
             cell = self.data["GE"][xp][yp][i][0]
+
             over: list = self.data["GE"][xp][yp][i][1]
             if cell == 7 and 4 not in over:
                 self.data["GE"][xp][yp][i][0] = 0
                 cell = self.data["GE"][xp][yp][i][0]
             curtool = [graphics["shows"][str(cell)][0] * image1size,
                        graphics["shows"][str(cell)][1] * image1size]
-
-            pixel.blit(convrender, [0, 0], [curtool, cellsize2])
+            
+            if(cell not in [0, 7]):
+                pixel.blit(convrender, [0, 0], [curtool, cellsize2])
 
             if 4 in over and self.data["GE"][xp][yp][i][0] != 7:
                 self.data["GE"][xp][yp][i][1].remove(4)
@@ -358,7 +375,7 @@ class Renderer:
                                 tilecounter += 1
                             if curtile in [0, 6] and tile in col4:  # if we found air in 4 places near
                                 foundair = True
-                                if 5 in incorner(xp - tile[0], yp - tile[1]):  # if opposite of air is wire
+                                if any(x in [5, 6, 7, 21, 19] for x in incorner(xp - tile[0], yp - tile[1])) :  # if opposite of air is wire
                                     foundwire = True
                                     match tile:
                                         case [0, 1]:  # N
@@ -371,17 +388,22 @@ class Renderer:
                                             pos = graphics["shortcutentrancetexture"]["W"]
                                 else:
                                     break
-                            if 5 in curhover and tile in col4:  # if wire in 4 places near
+                            if any(x in [5, 6, 7, 21, 19] for x in curhover) and tile in col4:  # if wire in 4 places near
                                 pathcount += 1
                                 if pathcount > 1:
                                     break
                         else:  # if no breaks
                             if tilecounter == 7 and foundwire and foundair and pos != -1:  # if we found the right one
                                 curtool = [pos[0] * image1size, pos[1] * image1size]
-                s = renderedimage
                 if adds in [1, 2]:
-                    s = convrender
-                pixel.blit(s, [0, 0], [curtool, cellsize2])
+                    pixel.blit(convrender, [0, 0], [curtool, cellsize2])
+                else:
+                    isuckatcoding = renderedimage.convert_alpha(stackables)
+                    if i != 0:
+                        isuckatcoding.fill(red, special_flags=pg.BLEND_MULT)
+                        
+                    stackables.blit(isuckatcoding, [0, 0], [curtool, cellsize2])
+        pixel.blit(stackables, [0, 0])
         return pixel
 
     def findprop(self, name, cat=None):
