@@ -87,6 +87,10 @@ class GE(MenuWithField):
         cellsize2 = [self.size, self.size]
         super().blit()
         mpos = pg.Vector2(pg.mouse.get_pos())
+
+        wltx = "Work Layer: " + str(self.layer + 1)
+        widgets.fastmts(self.surface, wltx, *(mpos + [10, -10]), white, 15)
+
         if self.selectedtool != self.lastselectedtool:
             self.lastselectedtool = self.selectedtool
             self.s0()
@@ -94,7 +98,9 @@ class GE(MenuWithField):
         if self.onfield:
             curtool = [graphics["tools"][self.selectedtool][0] * graphics["tilesize"][0],
                        graphics["tools"][self.selectedtool][1] * graphics["tilesize"][1]]
-            self.surface.blit(self.tools, mpos, [curtool, graphics["tilesize"]])
+            #nst = self.tools.convert_alpha(self.surface)
+            #nst.fill(red, special_flags=pg.BLEND_RGBA_MULT)
+            #self.surface.blit(nst, mpos, [curtool, graphics["tilesize"]])
 
             # cords = [math.floor(pg.mouse.get_pos()[0] / self.size) * self.size, math.floor(pg.mouse.get_pos()[1] / self.size) * self.size]
             # self.surface.blit(self.tools, pos, [curtool, graphics["tilesize"]])
@@ -104,14 +110,16 @@ class GE(MenuWithField):
             posoffset = self.posoffset
 
             toolsized = pg.transform.scale(self.toolrender,
-                                           pg.Vector2(self.toolrender.get_size()) / image1size * self.size)
-
+                                           pg.Vector2(self.toolrender.get_size()) / image1size * self.size).convert_alpha(self.surface)
+            toolsized.fill(red, special_flags=pg.BLEND_RGBA_MULT)
             self.labels[1].set_text(f"X: {posoffset.x}, Y: {posoffset.y}, Z: {self.layer + 1}")
+            #print(self.placetile)
             if self.selectedtool in self.settings["codes"].keys():
                 if type(self.placetile) == int:
                     if self.settings["codes"][self.selectedtool] == 1:
                         curtool = [graphics["tileplaceicon"][str(self.placetile + self.state)][0] * self.size,
                                    graphics["tileplaceicon"][str(self.placetile + self.state)][1] * self.size]
+                        #print(self.placetile + self.state)
                     else:
                         curtool = [graphics["tileplaceicon"][str(self.placetile - self.state)][0] * self.size,
                                    graphics["tileplaceicon"][str(self.placetile - self.state)][1] * self.size]
@@ -429,7 +437,7 @@ class GE(MenuWithField):
 
     def shortcutentrance(self):
         self.selectedtool = "SE"
-        self.placetile = 0.4
+        self.placetile = 7
         self.mx = 0
 
     def shortcut(self):
@@ -525,7 +533,7 @@ class GE(MenuWithField):
                     self.data["GE"][x][y][self.layer][0] = self.reverseslope(self.data["GE"][x][y][self.layer][0])
             elif self.placetile == 0.3:  # clear all
                 self.data["GE"][x][y] = [[0, []], [0, []], [0, []]]
-            elif self.placetile == 0.4:  # shortcut entrance
+            elif self.placetile == 7:  # shortcut entrance
                 self.data["GE"][x][y][self.layer][0] = 7
                 if 4 not in self.data["GE"][x][y][self.layer][1]:
                     self.data["GE"][x][y][self.layer][1].append(4)
@@ -539,6 +547,8 @@ class GE(MenuWithField):
                 if self.settings["codes"][self.selectedtool] == 0:
                     if (abs(int(self.placetile))) + self.state not in self.data["GE"][x][y][self.layer][1]:
                         self.data["GE"][x][y][self.layer][1].append((abs(int(self.placetile))) + self.state)
+                    else:
+                        self.data["GE"][x][y][self.layer][1].remove((abs(int(self.placetile))) + self.state)
             else:
                 self.data["GE"][x][y][self.layer][0] = self.placetile
         if render:
@@ -565,7 +575,7 @@ class GE(MenuWithField):
                     self.data["GE"][x][y][self.layer][0] = self.reverseslope(self.data["GE"][x][y][self.layer][0])
             elif self.placetile == 0.3:
                 self.data["GE"][x][y] = [[0, []], [0, []], [0, []]]
-            elif self.placetile == 0.4:
+            elif self.placetile == 7:
                 self.data["GE"][x][y][self.layer][0] = 7
                 if 4 not in self.data["GE"][x][y][self.layer][1]:
                     self.data["GE"][x][y][self.layer][1].append(4)
@@ -579,6 +589,8 @@ class GE(MenuWithField):
                 if self.settings["codes"][self.selectedtool] == 0:
                     if (abs(int(self.placetile))) + self.state not in self.data["GE"][x][y][self.layer][1]:
                         self.data["GE"][x][y][self.layer][1].append((abs(int(self.placetile))) + self.state)
+                    else:
+                        self.data["GE"][x][y][self.layer][1].remove((abs(int(self.placetile))) + self.state)
             else:
                 self.data["GE"][x][y][self.layer][0] = self.reverseslope(self.placetile)
         if render:
