@@ -131,6 +131,7 @@ class Renderer:
             size = [len(data["GE"]) * image1size, len(data["GE"][0]) * image1size]
             self.surf_geo = pg.Surface(size)
             self.geolayers = [True, True, True]
+            self.tilelayers = [True, True, True]
             self.surf_tiles = pg.Surface(size)
             self.surf_tiles = self.surf_tiles.convert_alpha()
             self.surf_props = pg.Surface(size)
@@ -143,6 +144,7 @@ class Renderer:
             size = [self.levelwidth * image1size, self.levelheight * image1size]
         self.surf_geo = pg.Surface(size)
         self.geolayers = [True, True, True]
+        self.tilelayers = [True, True, True]
         self.surf_tiles = pg.Surface(size)
         self.surf_tiles = self.surf_tiles.convert_alpha()
         self.surf_props = pg.Surface(size)
@@ -199,20 +201,16 @@ class Renderer:
 
         elif datcell == "tileHead":
             it = None
-            if datdata[1] in images.keys(): # if image stored in hash, returning it, else adding to hash
-                it = images[datdata[1]]
-            else:
-                for i in self.tiles.keys():
-                    for i2 in self.tiles[i]:
-                        if i2["name"] == datdata[1]:
-                            img = i2.copy()
-                            img["image"] = pg.transform.scale(img["image"], [img["image"].get_width() / 16 * image1size,
-                                                                             img["image"].get_height() / 16 * image1size])
-                            images[datdata[1]] = img
-                            it = img
-                            break
-                    if it is not None:
+            for i in self.tiles.keys():
+                for i2 in self.tiles[i]:
+                    if i2["name"] == name:
+                        img = i2.copy()
+                        img["image"] = pg.transform.scale(img["image"], [img["image"].get_width() / 16 * image1size,
+                                                                         img["image"].get_height() / 16 * image1size])
+                        it = img
                         break
+                if it is not None:
+                    break
             if it is None:
                 it = notfoundtile
             cposx = posx - int((it["size"][0] * .5) + .5) * image1size + image1size

@@ -37,9 +37,6 @@ class MN(MenuWithField):
     def LE(self):
         self.message = "LE"
 
-    def LS(self):
-        self.message = "LS"
-
     def FE(self):
         self.message = "FE"
 
@@ -48,9 +45,6 @@ class MN(MenuWithField):
 
     def LP(self):
         self.message = "LP"
-
-    def EE(self):
-        self.message = "EE"
 
     def PE(self):
         self.message = "PE"

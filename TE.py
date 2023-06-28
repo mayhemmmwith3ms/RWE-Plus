@@ -44,8 +44,9 @@ class TE(MenuWithField):
             self.items["special"][indx]["cat"] = [len(self.items), indx + 1]
         self.blocks = p["blocks"]
         self.buttonslist = []
-        self.currentcategory = 0
         self.toolindex = 0
+        self.brushmode = False
+        self.squarebrush = False
 
         self.tileimage = None
         self.tileimage2 = None
@@ -53,6 +54,7 @@ class TE(MenuWithField):
         self.cols = False
 
         self.lastfg = False
+        self.brushsize = 1
 
         renderer.commsgeocolors = False
         renderer.geo_full_render(renderer.lastlayer)
@@ -65,12 +67,18 @@ class TE(MenuWithField):
                 self.catlist.append([])
         self.drawtiles = True
         self.set("materials 0", "Standard")
-        self.currentcategory = len(self.items) - 1
+        self.currentcategory = len(self.items) - 2
         self.labels[2].set_text("Default material: " + self.data["TE"]["defaultMaterial"])
         self.rfa()
         self.rebuttons()
         self.blit()
         self.resize()
+
+    def brush(self):
+        self.brushmode = True
+
+    def pencil(self):
+        self.brushmode = False
 
     def GE(self):
         self.message = "GE"
@@ -563,6 +571,30 @@ class TE(MenuWithField):
             except:
                 pass
 
+    def togglebrush(self):
+        self.squarebrush = not self.squarebrush
+
+    def brushp(self):
+        self.brushsize += 1
+
+    def brushm(self):
+        self.brushsize = max(self.brushsize-1, 1)
+
+    def brushpaint(self, pos: pg.Vector2):
+        if self.squarebrush:
+            for xp in range(self.brushsize):
+                for yp in range(self.brushsize):
+                    vecx = int(pos.x) + xp
+                    vecy = int(pos.y) + yp
+                    self.place(vecx, vecy, True)
+        else:
+            for xp, xd in enumerate(self.data["GE"]):
+                for yp, yd in enumerate(xd):
+                    vec = pg.Vector2(xp, yp)
+                    dist = pos.distance_to(vec)
+                    if dist <= self.brushsize and self.area[xp][yp]:
+                        self.place(int(vec.x), int(vec.y), True)
+
     def cats(self):
         self.buttonslist = []
         if not self.matshow: # if cats not already used
@@ -847,7 +879,7 @@ class TE(MenuWithField):
 
 
 
-    def place(self, x, y):
+    def place(self, x, y, render=False):
         fg = self.findparampressed("force_geometry")
         w, h = self.tileimage["size"]
         px = x + int((w * .5) + .5) - 1 # center coordinates
@@ -859,6 +891,9 @@ class TE(MenuWithField):
             return
         if px > self.levelwidth or py > self.levelheight or px < 0 or py < 0:
             return
+        if render:
+            self.fieldadd.blit(self.tileimage["image"],
+                               [x * self.size, y * self.size])
         for x2 in range(w):
             for y2 in range(h):
                 csp = sp[x2 * h + y2]

@@ -31,8 +31,8 @@ Generated using hotkeys to md converter
 * **Down** - /down - Down
 * **L** - /-swichlayers - Switch layers on menu with fields
 * **ctrl + L** - /-swichlayers_back - Switch layers back
-* **ctrl + Space** - /-swichcameras - Toggles cameras
 * **F1** - /-togglelayervisible - Toggles geometry layer
+* **F2** - /-toggletileslayervisible - Toggles tile layer
 ### LD
 * **N** - new - New file
 * **ctrl + N** - new - New file
@@ -95,8 +95,8 @@ Generated using hotkeys to md converter
 * **ctrl + [1]** - -tool_rect_hollow - Changes RMB to hollow rectangle tool
 * **[2]** - -tool_fill - Changes LMB to fill
 * **[/]** - -tool_line - Changes RMB to line
-* **[\*]** - -tool_pencil - Changes LMB to pencil
-* **ctrl + [\*]** - -tool_brush - Changes LMB to brush
+* **[*]** - -tool_pencil - Changes LMB to pencil
+* **ctrl + [*]** - -tool_brush - Changes LMB to brush
 ### TE
 * **G** - force_geometry - Forces geometry to tile
 * **F** - force_place - Places tile without checking geometry
@@ -113,13 +113,21 @@ Generated using hotkeys to md converter
 * **Q** - -copytile - Copies tile in cursor
 * **ctrl + F** - -findtile - Opens find tile menu
 * **Left Shift** - movepreview - Preview of prop specs on black square
+* **=** - -brushp - Increase brush size
+* **-** - -brushm - decrease brush size
+* **[+]** - -brushp - Increase brush size
+* **[-]** - -brushm - decrease brush size
+* **B** - -brush - Enables Bruhs
+* **P** - -pencil - Enables pencil
+* **C** - -pencil - Enables pencil
+* **V** - -togglebrush - Toggles betwen pencil and brush
 ### CE
 * **D** - -addright - Rotates nearest edge of nearest camera clockwise
 * **Delete** - -deletecamera - Deletes the nearest placed camera
 * **N** - -addcamera - Adds camera at center of level
 * **E** - -pickupcamera - Pick up nearest camera
 * **P** - -placecamera - Place picked camera
-* **Space** - -placecamera - Place picked camera
+* **Space** - -togglemode - Toggles betwen Edit and Move modes
 * **ctrl + C** - -copycamera - Copy held camera
 * **ctrl + V** - -pastedata - Paste camera
 * **I** - -addup - Moves nearest edge of nearest camera out of original position
@@ -131,6 +139,10 @@ Generated using hotkeys to md converter
 * **A** - -addleft - Rotates nearest edge of nearest camera counter-clockwise
 * **R** - -camup - Moves selected camera up
 * **F** - -camdown - Moves selected camera down
+* **ctrl + E** - -edit - Enables edit mode
+* **C** - -edit - Enables edit mode
+* **V** - -move - Enables move mode
+* **M** - -move - Enables move mode
 ### PE
 * **ctrl + Q** - -changematshow - Shows list of categories
 * **X** - pauseropephysics - Pauses rope physics
