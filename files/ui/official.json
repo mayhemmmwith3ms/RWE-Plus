@@ -265,7 +265,8 @@
 			["LMB - Place tile\nRMB - Fill\nMMB - Move", [2, 2], [255, 255, 255], 25]
 		],
 		"itemsize": 2,
-		"menucolor": [120, 120, 120]
+		"menucolor": [120, 120, 120],
+		"officialMouseControlStyle": true
 	},
 
 	"LE":{
