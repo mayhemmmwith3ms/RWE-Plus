@@ -82,53 +82,65 @@ class TE(MenuWithField):
         for i, button in enumerate(self.buttonslist[:-1]):
             button.blit(sum(pg.display.get_window_size()) // 120)
         self.buttonslist[-1].blit(sum(pg.display.get_window_size()) // 100)
-        cir = [self.buttonslist[self.toolindex].rect.x + 3, self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
+        print(self.toolindex)
+        try:
+            cir = [self.buttonslist[self.toolindex].rect.x + 3, self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
+        except IndexError:
+            self.toolindex = 0
+            cir = [self.buttonslist[self.toolindex].rect.x + 3, self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
         pg.draw.circle(self.surface, cursor, cir, self.buttonslist[self.toolindex].rect.h / 2)
         super().blit()
         mpos = pg.mouse.get_pos()
+        bp = self.getmouse
         if self.onfield and self.tileimage is not None:
             # cords = [math.floor(pg.mouse.get_pos()[0] / self.size) * self.size, math.floor(pg.mouse.get_pos()[1] / self.size) * self.size]
             # self.surface.blit(self.tools, pos, [curtool, graphics["tilesize"]])
             pos2 = self.pos2
             posoffset = self.posoffset
             fg = self.findparampressed("force_geometry")
-            if self.tileimage["tp"] != "pattern":
-                cposx = int(pos2.x) - int((self.tileimage["size"][0] * .5) + .5) * self.size + self.size
-                cposy = int(pos2.y) - int((self.tileimage["size"][1] * .5) + .5) * self.size + self.size
-
-                cposxo = int(posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
-                cposyo = int(posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
-
-                if posoffset != self.mpos or self.lastfg != fg:
-                    self.cols = self.test_cols(cposxo, cposyo)
-                    self.mpos = posoffset
-                    self.lastfg = fg
-                    self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)}, Work Layer: {self.layer + 1}")
-                    if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
-                        self.labels[0].set_text(
-                            "Tile: " + str(self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]))
-                bord = 1#self.size // image1size + 1
-                if self.cols and self.tool == 0:
-                    pg.draw.rect(self.surface, canplace, [[cposx - bord, cposy - bord],
-                                                          [self.tileimage["image"].get_width() + bord * 2,
-                                                           self.tileimage["image"].get_height() + bord * 2]], bord)
-                elif self.tool == 2:
-                    pg.draw.rect(self.surface, blue, [[cposx - bord, cposy - bord],
-                                                             [self.tileimage["image"].get_width() + bord * 2,
-                                                              self.tileimage["image"].get_height() + bord * 2]], bord)
-                else:
-                    pg.draw.rect(self.surface, cannotplace, [[cposx - bord, cposy - bord],
-                                                             [self.tileimage["image"].get_width() + bord * 2,
-                                                              self.tileimage["image"].get_height() + bord * 2]], bord)
-                if self.tool == 0:
-                    self.tileimage["image"].set_colorkey([255, 255, 255])
-                    self.surface.blit(self.tileimage["image"], [cposx, cposy])
-                    self.printcols(cposxo, cposyo, self.tileimage)
-            bp = self.getmouse
 
             self.movemiddle(bp)
 
             if settings["TE"]["officialMouseControlStyle"]:
+                if self.tileimage["tp"] != "pattern":
+                    cposx = int(pos2.x) - int((self.tileimage["size"][0] * .5) + .5) * self.size + self.size
+                    cposy = int(pos2.y) - int((self.tileimage["size"][1] * .5) + .5) * self.size + self.size
+
+                    cposxo = int(posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
+                    cposyo = int(posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
+
+                    if posoffset != self.mpos or self.lastfg != fg:
+                        self.cols = self.test_cols(cposxo, cposyo)
+                        self.mpos = posoffset
+                        self.lastfg = fg
+                        self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)}, Work Layer: {self.layer + 1}")
+                        if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
+                            self.labels[0].set_text(
+                                "Tile: " + str(self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]))
+                    bord = (self.size // image1size + 1) // 2
+                    selectrect = [
+                        [cposx - bord, cposy - bord],
+                        [self.tileimage["image"].get_width() + bord * 2, self.tileimage["image"].get_height() + bord * 2]
+                        ]
+                    drawtilep = True
+                    if not (self.tool == 1 and (bp[0] or bp[2])):
+                        if self.cols and not bp[2] and self.tool == 0:
+                            pg.draw.rect(self.surface, canplace, selectrect, 1)
+                        elif self.tool == 1:
+                            pg.draw.rect(self.surface, purple, selectrect, 1)
+                        elif self.tool == 2:
+                            pg.draw.rect(self.surface, blue, selectrect, 1)
+                        else:
+                            pg.draw.rect(self.surface, cannotplace, selectrect, 1)
+
+                    if bp[2]:
+                        drawtilep = False
+
+                    if drawtilep:
+                        self.tileimage["image"].set_colorkey([255, 255, 255])
+                        self.surface.blit(self.tileimage["image"], [cposx, cposy])
+                        self.printcols(cposxo, cposyo, self.tileimage)
+                
                 def singlefirstframe(place):
                     if(place):
                         self.mousp = False
@@ -169,7 +181,7 @@ class TE(MenuWithField):
                     self.rectdata = [posoffset, pg.Vector2(0, 0), pos2]
                     self.emptyarea()
 
-                def rectheld():
+                def rectheld(place):
                     self.rectdata[1] = posoffset - self.rectdata[0]
 
                     righthalf = mpos[0] > self.rectdata[2].x + 10
@@ -191,11 +203,15 @@ class TE(MenuWithField):
                     else:
                         tl[1] = self.rectdata[2].y + self.size
                         br[1] = pos2.y
+                    
+                    rectColor = purple
+                    if not place:
+                        rectColor = select
 
                     rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
                     tx = f"{int(rect.w / self.size)}, {int(rect.h / self.size)}"
                     widgets.fastmts(self.surface, tx, *mpos, white)
-                    pg.draw.rect(self.surface, select, rect, 1)
+                    pg.draw.rect(self.surface, rectColor, rect, 1)
 
                 def rectlastframe(place):
                     righthalf = mpos[0] > self.rectdata[2].x + 10
@@ -315,17 +331,50 @@ class TE(MenuWithField):
                     if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
                         rectfirstframe(True)
                     elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
-                        rectheld()
+                        rectheld(True)
                     elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
                         rectlastframe(True)
 
                     if bp[2] == 1 and self.mousp2 and (self.mousp and self.mousp1):
                         rectfirstframe(False)
                     elif bp[2] == 1 and not self.mousp2 and (self.mousp and self.mousp1):
-                        rectheld()
+                        rectheld(False)
                     elif bp[2] == 0 and not self.mousp2 and (self.mousp and self.mousp1):
                         rectlastframe(False)
             else:
+                if self.tileimage["tp"] != "pattern":
+                    cposx = int(pos2.x) - int((self.tileimage["size"][0] * .5) + .5) * self.size + self.size
+                    cposy = int(pos2.y) - int((self.tileimage["size"][1] * .5) + .5) * self.size + self.size
+
+                    cposxo = int(posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
+                    cposyo = int(posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
+
+                    if posoffset != self.mpos or self.lastfg != fg:
+                        self.cols = self.test_cols(cposxo, cposyo)
+                        self.mpos = posoffset
+                        self.lastfg = fg
+                        self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)}, Work Layer: {self.layer + 1}")
+                        if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
+                            self.labels[0].set_text(
+                                "Tile: " + str(self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]))
+                    bord = 1#self.size // image1size + 1
+                    if self.cols and self.tool == 0:
+                        pg.draw.rect(self.surface, canplace, [[cposx - bord, cposy - bord],
+                                                            [self.tileimage["image"].get_width() + bord * 2,
+                                                            self.tileimage["image"].get_height() + bord * 2]], bord)
+                    elif self.tool == 2:
+                        pg.draw.rect(self.surface, blue, [[cposx - bord, cposy - bord],
+                                                                [self.tileimage["image"].get_width() + bord * 2,
+                                                                self.tileimage["image"].get_height() + bord * 2]], bord)
+                    else:
+                        pg.draw.rect(self.surface, cannotplace, [[cposx - bord, cposy - bord],
+                                                                [self.tileimage["image"].get_width() + bord * 2,
+                                                                self.tileimage["image"].get_height() + bord * 2]], bord)
+                    if self.tool == 0:
+                        self.tileimage["image"].set_colorkey([255, 255, 255])
+                        self.surface.blit(self.tileimage["image"], [cposx, cposy])
+                        self.printcols(cposxo, cposyo, self.tileimage)
+                
                 if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
                     self.mousp = False
                     self.emptyarea()
@@ -750,22 +799,22 @@ class TE(MenuWithField):
                 py = (y + y2 + self.yoffset) * self.size + self.field.rect.y + sft
             match csp:
                 case 1:
-                    pg.draw.rect(self.surface, color, [px, py, self.size, self.size], sft)
+                    pg.draw.rect(self.surface, color, [px, py, self.size + 1, self.size + 1], 1)
                 case 0:
-                    pg.draw.circle(self.surface, color, [px + self.size / 2, py + self.size / 2], self.size / 2, sft)
+                    pg.draw.circle(self.surface, color, [px + self.size / 2, py + self.size / 2], self.size / 2, 1)
                 case 2:
                     pg.draw.polygon(self.surface, color,
-                                    [[px, py], [px, py + self.size], [px + self.size, py + self.size]], sft)
+                                    [[px, py], [px, py + self.size], [px + self.size, py + self.size]], 1)
                 case 3:
                     pg.draw.polygon(self.surface, color,
                                     [[px, py + self.size], [px + self.size, py + self.size], [px + self.size, py]],
-                                    sft)
+                                    1)
                 case 4:
                     pg.draw.polygon(self.surface, color,
-                                    [[px, py], [px, py + self.size], [px + self.size, py]], sft)
+                                    [[px, py], [px, py + self.size], [px + self.size, py]], 1)
                 case 5:
                     pg.draw.polygon(self.surface, color,
-                                    [[px, py], [px + self.size, py + self.size], [px + self.size, py]], sft)
+                                    [[px, py], [px + self.size, py + self.size], [px + self.size, py]], 1)
 
         w, h = tile["size"]
         sp = tile["cols"][0]
@@ -785,13 +834,18 @@ class TE(MenuWithField):
         for x2 in range(w):
             for y2 in range(h):
                 csp = sp[x2 * h + y2]
-                printtile(1, layer1)
                 if sp2 != 0:
                     try:
                         csp = sp2[x2 * h + y2]
                     except IndexError:
                         csp = -1
                     printtile(shift, layer2)
+                    csp = sp[x2 * h + y2]
+                    printtile(shift * 2, layer1)
+                else:
+                    printtile(shift, layer1)
+
+
 
     def place(self, x, y):
         fg = self.findparampressed("force_geometry")
