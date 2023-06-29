@@ -794,7 +794,8 @@ class TE(MenuWithField):
         self.set(cat, text)
 
     def set(self, cat, name, render=True):
-        self.tool = 0
+        if not settings["TE"]["officialMouseControlStyle"]:
+            self.tool = 0
         for num, i in enumerate(self.items[cat]):
             if i["name"] == name:
                 self.toolindex = num

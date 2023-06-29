@@ -76,7 +76,9 @@ class LE(MenuWithField):
 
         self.field.field.blit(self.field3.field, fieldpos)
         if not pg.key.get_pressed()[pg.K_LSHIFT]:
+            self.field3.field.set_alpha(60)
             self.field.field.blit(self.field3.field, fieldpos2)
+            self.field3.field.set_alpha(150)
         self.field.blit(False)
         super().blit(False)
         mouspos = pg.mouse.get_pos()
@@ -170,7 +172,7 @@ class LE(MenuWithField):
         self.field3.field = pg.transform.scale(self.field2.field,
                                                [(self.levelwidth + self.ofsleft) * self.size,
                                                 (self.levelheight + self.ofstop) * self.size])
-        self.field3.field.set_alpha(100)
+        self.field3.field.set_alpha(150)
         self.field3.field.set_colorkey(white)
 
     def renderfield(self):
