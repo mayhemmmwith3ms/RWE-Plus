@@ -80,6 +80,8 @@ def keypress(window):
 
 
 def undohistory():
+    if not settings["global"]["enableundo"]:
+        return
     global undobuffer, redobuffer, file, surf
     if len(undobuffer) == 0:
         return
@@ -105,6 +107,8 @@ def undohistory():
 
 
 def redohistory():
+    if not settings["global"]["enableundo"]:
+        return
     global undobuffer, redobuffer, file, surf
     if len(redobuffer) == 0:
         return

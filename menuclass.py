@@ -720,10 +720,14 @@ class MenuWithField(Menu):
                 self.offset.y -= 1
 
     def detecthistory(self, path, savedata=True):
+        if not settings["global"]["enableundo"]:
+            return
         super().detecthistory(path, savedata)
         self.renderer.data = self.data
 
     def updatehistory(self, paths):
+        if not settings["global"]["enableundo"]:
+            return
         super().updatehistory(paths)
         self.renderer.data = self.data
 

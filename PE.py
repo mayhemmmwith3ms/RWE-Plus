@@ -400,7 +400,11 @@ class PE(MenuWithField):
                         near = pg.Vector2(toarr(nearp, "point"))
                         ofc = pg.Vector2(self.xoffset, self.yoffset)
                         pos2 = (near / spritesize + ofc) * self.size + self.field.rect.topleft
-                        pg.draw.line(self.surface, red, mpos, pos2, 10)
+                        if self.copymode:
+                            selectLineCol = blue
+                        if self.delmode:
+                            selectLineCol = red
+                        pg.draw.line(self.surface, selectLineCol, mpos, pos2, 1)
             self.movemiddle(bp)
         else:
             if not self.matshow:
