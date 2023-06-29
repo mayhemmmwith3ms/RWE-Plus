@@ -82,7 +82,7 @@ class Menu:
         self.message = "%"
 
     def recaption(self):
-        pg.display.set_caption(f"{self.data['path']} | RWE+: {self.menu} | v{tag} | {self.custom_info}")
+        pg.display.set_caption(f"{self.data['path']} | OGSCULEDITOR+: {self.menu} | v{tag} | {self.custom_info}")
 
     def savef(self, saveas=False):
         if self.data["path"] != "" and not saveas:
