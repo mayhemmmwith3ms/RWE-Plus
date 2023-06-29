@@ -78,7 +78,19 @@ class TE(MenuWithField):
         self.brushmode = True
 
     def pencil(self):
-        self.brushmode = False
+        self.squarebrush = not self.squarebrush
+
+    def togglebrush(self):
+        self.brushmode = not self.brushmode
+        self.squarebrush = True
+        self.tool = 0
+        self.brushsize = 3
+
+    def brushp(self):
+        self.brushsize += 1
+
+    def brushm(self):
+        self.brushsize = max(self.brushsize-1, 1)
 
     def GE(self):
         self.message = "GE"
@@ -90,7 +102,6 @@ class TE(MenuWithField):
         for i, button in enumerate(self.buttonslist[:-1]):
             button.blit(sum(pg.display.get_window_size()) // 120)
         self.buttonslist[-1].blit(sum(pg.display.get_window_size()) // 100)
-        print(self.toolindex)
         try:
             cir = [self.buttonslist[self.toolindex].rect.x + 3, self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
         except IndexError:
@@ -130,21 +141,30 @@ class TE(MenuWithField):
                         [cposx - bord, cposy - bord],
                         [self.tileimage["image"].get_width() + bord * 2, self.tileimage["image"].get_height() + bord * 2]
                         ]
-                    drawtilep = True
+                    drawTilePreview = True
                     if not (self.tool == 1 and (bp[0] or bp[2])):
                         if self.cols and not bp[2] and self.tool == 0:
-                            pg.draw.rect(self.surface, canplace, selectrect, 1)
+                            rectCol = canplace
                         elif self.tool == 1:
-                            pg.draw.rect(self.surface, purple, selectrect, 1)
+                            rectCol = purple
                         elif self.tool == 2:
-                            pg.draw.rect(self.surface, blue, selectrect, 1)
+                            rectCol = blue
                         else:
-                            pg.draw.rect(self.surface, cannotplace, selectrect, 1)
+                            rectCol = cannotplace
+
+                        if(self.brushmode):
+                            if self.squarebrush:
+                                rect = pg.Rect([pos2 - [(self.brushsize // 2) * self.size, (self.brushsize // 2) * self.size], [self.brushsize * self.size, self.brushsize * self.size]])
+                                pg.draw.rect(self.surface, rectCol, rect, 1)
+                            else:
+                               pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize, 1)
+                        else:
+                            pg.draw.rect(self.surface, rectCol, selectrect, 1)
 
                     if bp[2]:
-                        drawtilep = False
+                        drawTilePreview = False
 
-                    if drawtilep:
+                    if drawTilePreview:
                         self.tileimage["image"].set_colorkey([255, 255, 255])
                         self.surface.blit(self.tileimage["image"], [cposx, cposy])
                         self.printcols(cposxo, cposyo, self.tileimage)
@@ -159,14 +179,19 @@ class TE(MenuWithField):
                 def singleheld(place):
                     if place:
                         if self.tileimage["tp"] != "pattern" or self.tool == 0:
-                            if self.cols:
+                            if self.brushmode:
+                                self.brushpaint(pg.Vector2(cposxo, cposyo))
+                            elif self.cols:
                                 self.place(cposxo, cposyo)
                                 self.fieldadd.blit(self.tileimage["image"],
                                                 [cposxo * self.size, cposyo * self.size])
                     else:
                         if self.tileimage["tp"] != "pattern" or self.tool == 0:
-                            self.destroy(posoffset.x, posoffset.y)
-                            pg.draw.rect(self.fieldadd, red, [posoffset.x * self.size, posoffset.y * self.size, self.size, self.size])
+                            if self.brushmode:
+                                self.brushpaint(pg.Vector2(cposxo, cposyo), False)
+                            else:
+                                self.destroy(posoffset.x, posoffset.y)
+                                pg.draw.rect(self.fieldadd, red, [posoffset.x * self.size, posoffset.y * self.size, self.size, self.size])
 
                 def singlelastframe(place):
                         self.detecthistory(["TE", "tlMatrix"], not fg)
@@ -382,7 +407,12 @@ class TE(MenuWithField):
                         self.tileimage["image"].set_colorkey([255, 255, 255])
                         self.surface.blit(self.tileimage["image"], [cposx, cposy])
                         self.printcols(cposxo, cposyo, self.tileimage)
-                
+                if self.brushmode:
+                    if self.squarebrush:
+                        rect = pg.Rect([pos2, [self.brushsize * self.size, self.brushsize * self.size]])
+                        pg.draw.rect(self.surface, select, rect, 3)
+                    else:
+                        pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize, 5)
                 if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
                     self.mousp = False
                     self.emptyarea()
@@ -571,29 +601,28 @@ class TE(MenuWithField):
             except:
                 pass
 
-    def togglebrush(self):
-        self.squarebrush = not self.squarebrush
-
-    def brushp(self):
-        self.brushsize += 1
-
-    def brushm(self):
-        self.brushsize = max(self.brushsize-1, 1)
-
-    def brushpaint(self, pos: pg.Vector2):
+    def brushpaint(self, pos: pg.Vector2, place = True):
         if self.squarebrush:
             for xp in range(self.brushsize):
                 for yp in range(self.brushsize):
-                    vecx = int(pos.x) + xp
-                    vecy = int(pos.y) + yp
-                    self.place(vecx, vecy, True)
+                    vecx = int(pos.x) + xp - self.brushsize // 2
+                    vecy = int(pos.y) + yp - self.brushsize // 2
+                    if place:
+                        self.place(vecx, vecy, True)
+                    else:
+                        self.destroy(vecx, vecy)
+            if not place:
+                pg.draw.rect(self.fieldadd, red, [(int(pos.x) - self.brushsize // 2) * self.size, (int(pos.y) - self.brushsize // 2) * self.size, self.brushsize * self.size, self.brushsize * self.size])
         else:
             for xp, xd in enumerate(self.data["GE"]):
                 for yp, yd in enumerate(xd):
                     vec = pg.Vector2(xp, yp)
                     dist = pos.distance_to(vec)
                     if dist <= self.brushsize and self.area[xp][yp]:
-                        self.place(int(vec.x), int(vec.y), True)
+                        if place:
+                            self.place(int(vec.x), int(vec.y), True)
+                        else:
+                            self.destroy(int(vec.x), int(vec.y))
 
     def cats(self):
         self.buttonslist = []
@@ -940,6 +969,7 @@ class TE(MenuWithField):
 
     def changetools(self):
         self.tool = abs(1 - self.tool)
+        self.brushmode = False
 
     def findtile(self):
         nd = {}

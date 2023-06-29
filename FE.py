@@ -73,6 +73,8 @@ class FE(MenuWithField):
                                                               self.surface.get_height()-effect["preview"].get_height()])
                     else:
                         self.surface.blit(effect["preview"], i.rect.bottomright)
+        
+        feCursor = settings["global"]["colors"]["FECursor"]
 
         cir = [self.buttonslist[self.currentindex].rect.x + 3,
                self.buttonslist[self.currentindex].rect.y + self.buttonslist[self.currentindex].rect.h / 2]
@@ -91,12 +93,16 @@ class FE(MenuWithField):
         mpos = pg.Vector2(pg.mouse.get_pos())
         bp = self.getmouse
 
-        if self.onfield and len(self.data["FE"]["effects"]) > 0:
-            if not self.copymode:
-                pg.draw.circle(self.surface, cursor, mpos, self.brushsize * self.size, 4)
-
+        if self.onfield and len(self.data["FE"]["effects"]) > 0:         
             posoffset = self.posoffset
             pos2 = self.pos2
+
+            if not self.copymode:
+                if self.brushsize <= 1:
+                    maxstrrect = [[pos2.x, pos2.y], [self.size, self.size]]
+                    pg.draw.rect(self.surface, feCursor, maxstrrect, 1)
+                else:
+                    pg.draw.circle(self.surface, feCursor, mpos, self.brushsize * self.size - (self.size // 2), 1)
 
             if posoffset != self.mpos:
                 self.mpos = posoffset
