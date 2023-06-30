@@ -573,7 +573,10 @@ class TE(MenuWithField):
                         cat = list(self.items.keys())[self.currentcategory]
                         item = self.items[cat][index]
                         if item.get("preview"):
-                            self.surface.blit(item["preview"], button.rect.bottomright)
+                            previewPos = button.rect.bottomright
+                            if settings["global"]["previewleftside"]:
+                                previewPos = [button.rect.bottomleft[0] - item["preview"].get_width(), button.rect.bottomleft[1]]
+                            self.surface.blit(item["preview"], previewPos)
                         if item["tp"] == "pattern":
                             break
                         w, h = item["size"]
@@ -597,7 +600,7 @@ class TE(MenuWithField):
                 geodata.sort(key=lambda y: y[1])
                 sizey = geodata[-1][1] + 1
                 rect = pg.Rect([pos, pg.Vector2(sizex, sizey) * self.size])
-                pg.draw.rect(self.surface, select, rect, 5)
+                pg.draw.rect(self.surface, blue, rect, 1)
             except:
                 pass
 

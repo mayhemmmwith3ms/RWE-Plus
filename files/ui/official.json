@@ -20,6 +20,7 @@
 		"tiles_secondarylayeralpha": 100,
 		"snap_error": 50,
 		"enableundo": false,
+		"previewleftside": true,
 		"colors": {
 			"cursor": [255, 0, 0],
 			"cursor2": [50, 0, 255],
@@ -197,9 +198,9 @@
 			["RA", [0, 42, 4, 6], [100, 100, 100], "replacestate", "non", "Replace air(<[-replacestate]>).\nIf enabled, not replaces air blocks"],
 			["CT", [4, 42, 4, 6], [100, 100, 100], "s0", "cutlayer", "Cut layer(<[-cutlayer]>)", ["geometry.png", [3, 5]]],
 
-			["Pencil", [10, 0, 5, 6], [100, 100, 100], "tool_pencil", "non", "Change LMB to pencil(<[-tool_pencil]>)", ["fillmethods.png", [5, 0]]],
-			["Brush", [15, 0, 5, 6], [100, 100, 100], "tool_brush", "non", "Change LMB to brush(<[-tool_brush]>)", ["fillmethods.png", [6, 0]]],
-			["Fill", [20, 0, 5, 6], [100, 100, 100], "tool_fill", "non", "Change RMB to fill(<[-tool_fill]>)", ["fillmethods.png", [0, 0]]],
+			["Pencil", [0, 50, 5, 6], [100, 100, 100], "tool_pencil", "non", "Change LMB to pencil", ["fillmethods.png", [5, 0]]],
+			["Brush", [5, 50, 5, 6], [100, 100, 100], "tool_brush", "non", "Change LMB to brush", ["fillmethods.png", [6, 0]]],
+			["Fill", [10, 50, 5, 6], [100, 100, 100], "tool_fill", "non", "Change RMB to fill", ["fillmethods.png", [0, 0]]],
 
 			["Line", [0, 58, 5, 6], [100, 100, 100], "tool_line", "non", "Change RMB to line", ["fillmethods.png", [7, 0]]],
 			["Rect", [5, 58, 5, 6], [100, 100, 100], "tool_rect", "non", "Change RMB to rect", ["fillmethods.png", [1, 0]]],

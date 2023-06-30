@@ -304,7 +304,7 @@ class GE(MenuWithField):
                 pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
                 rect = pg.Rect([pos, pg.Vector2(len(geodata), len(geodata[0])) * self.size])
 
-                pg.draw.rect(self.surface, select, rect, 5)
+                pg.draw.rect(self.surface, blue, rect, 1)
             except:
                 pass
 

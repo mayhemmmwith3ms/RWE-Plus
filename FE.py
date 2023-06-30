@@ -62,17 +62,24 @@ class FE(MenuWithField):
             if i.onmouseover():
                 effect = self.geteffect(i.text)
                 if effect is not None and effect.get("preview"):
-                    self.surface.blit(effect["preview"], i.rect.bottomright)
+                    if settings["global"]["previewleftside"]:
+                        previewPos = [i.rect.bottomleft[0] - effect["preview"].get_width(), i.rect.bottomleft[1]]
+                    self.surface.blit(effect["preview"], previewPos)
         for i in self.buttonslist2:
             i.blit(ts)
             if i.onmouseover():
                 effect = self.geteffect(i.text)
                 if effect is not None and effect.get("preview"):
                     if effect["preview"].get_height() + i.rect.y > self.surface.get_height():
-                        self.surface.blit(effect["preview"], [i.rect.x + i.rect.w,
-                                                              self.surface.get_height()-effect["preview"].get_height()])
+                        previewPos = [i.rect.x + i.rect.w, self.surface.get_height()-effect["preview"].get_height()]
+                        if settings["global"]["previewleftside"]:
+                            previewPos = [i.rect.bottomleft[0] - effect["preview"].get_width(), self.surface.get_height()-effect["preview"].get_height()]
+                        self.surface.blit(effect["preview"], previewPos)
                     else:
-                        self.surface.blit(effect["preview"], i.rect.bottomright)
+                        previewPos = i.rect.bottomright
+                        if settings["global"]["previewleftside"]:
+                            previewPos = [i.rect.bottomleft[0] - effect["preview"].get_width(), i.rect.bottomleft[1]]
+                        self.surface.blit(effect["preview"], previewPos)
         
         feCursor = settings["global"]["colors"]["FECursor"]
 

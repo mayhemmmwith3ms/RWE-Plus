@@ -586,12 +586,12 @@ class MenuWithField(Menu):
     def drawborder(self):
         rect = [self.xoffset * self.size, self.yoffset * self.size, self.levelwidth * self.size,
                 self.levelheight * self.size]
-        pg.draw.rect(self.field.field, border, rect, 5)
+        pg.draw.rect(self.field.field, border, rect, 1)
         fig = [(self.btiles[0] + self.xoffset) * self.size, (self.btiles[1] + self.yoffset) * self.size,
                (self.levelwidth - self.btiles[2] - self.btiles[0]) * self.size,
                (self.levelheight - self.btiles[3] - self.btiles[1]) * self.size]
         rect = pg.rect.Rect(fig)
-        pg.draw.rect(self.field.field, bftiles, rect, 5)
+        pg.draw.rect(self.field.field, bftiles, rect, 1)
         self.field.blit()
 
     def drawmap(self):
