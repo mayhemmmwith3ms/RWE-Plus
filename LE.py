@@ -1,5 +1,4 @@
 from menuclass import *
-from tkinter.filedialog import asksaveasfilename
 
 
 class LE(MenuWithField):
@@ -10,13 +9,12 @@ class LE(MenuWithField):
         self.field2 = widgets.window(self.surface, self.settings["d1"])
         self.field3 = self.field2.copy()
 
-        self.ofstop = ofstop
-        self.ofsleft = ofsleft
-
-        sc = [(self.levelwidth + self.ofsleft) * image1size, (self.levelheight + self.ofstop) * image1size]
+        sc = [(self.levelwidth + ofsleft) * image1size, (self.levelheight + ofstop) * image1size]
         try:
             lev = os.path.splitext(self.data["path"])[0] + ".png"
-            self.field2.field = pg.transform.scale(loadimage(lev), sc)
+            #self.field2.field = pg.transform.scale(loadimage(lev), sc)
+            self.field2.field = pg.Surface(sc)
+            self.field2.field.blit(loadimage(lev), [0, 0])
         except FileNotFoundError:
             self.field2.field = pg.surface.Surface(sc)
             self.field2.field.fill(white)
@@ -70,7 +68,7 @@ class LE(MenuWithField):
         xos = self.xoffset * self.size
         yos = self.yoffset * self.size
 
-        fieldpos = [xos - (self.ofsleft * self.size), yos - (self.ofstop * self.size)]
+        fieldpos = [xos - (ofsleft * self.size), yos - (ofstop * self.size)]
         fieldpos2 = [fieldpos[0] + math.sin(math.radians(self.data[self.menu]["lightAngle"])) * self.data[self.menu]["flatness"] * (self.size),
                      fieldpos[1] - math.cos(math.radians(self.data[self.menu]["lightAngle"])) * self.data[self.menu]["flatness"] * (self.size)]
 
@@ -162,8 +160,8 @@ class LE(MenuWithField):
 
 
     def map_to_field(self, x, y):
-        return [x / ((self.levelwidth + self.ofsleft) * self.size) * self.field2.field.get_width(),
-                y / ((self.levelheight + self.ofstop) * self.size) * self.field2.field.get_height()]
+        return [x / ((self.levelwidth + ofsleft) * self.size) * self.field2.field.get_width(),
+                y / ((self.levelheight + ofstop) * self.size) * self.field2.field.get_height()]
 
     def rs(self):
         if not hasattr(self, "field2"):
@@ -267,10 +265,10 @@ class LE(MenuWithField):
         self.data[self.menu]["flatness"] = max(self.data[self.menu]["flatness"] - 1, 1)
 
     def lp(self):
-        self.data[self.menu]["lightAngle"] = min(self.data[self.menu]["lightAngle"] + 1, 180)
+        self.data[self.menu]["lightAngle"] = self.data[self.menu]["lightAngle"] + 1
 
     def lm(self):
-        self.data[self.menu]["lightAngle"] = max(self.data[self.menu]["lightAngle"] - 1, 90)
+        self.data[self.menu]["lightAngle"] = self.data[self.menu]["lightAngle"] - 1
 
     def lightmod(self):
         if self.mode:

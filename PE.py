@@ -521,6 +521,7 @@ class PE(MenuWithField):
         if self.matshow:
             self.currentcategory = (self.currentcategory + 1) % len(self.catlist)
             self.cats()
+            self.toolindex = self.toolindex if len(self.buttonslist) - 1 > self.toolindex else 0
         else:
             self.toolindex = 0
             self.currentcategory = (self.currentcategory + 1) % len(self.props)
@@ -533,6 +534,7 @@ class PE(MenuWithField):
             else:
                 self.currentcategory = self.currentcategory - 1
             self.cats()
+            self.toolindex = self.toolindex if len(self.buttonslist) - 1 > self.toolindex else 0
         else:
             self.toolindex = 0
             self.currentcategory -= 1

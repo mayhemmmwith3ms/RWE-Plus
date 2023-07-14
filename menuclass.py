@@ -877,6 +877,7 @@ class MenuWithField(Menu):
     def destroy(self, xp, yp):
         x = int(xp)
         y = int(yp)
+        self.area[x][y] = False
         def clearitem(mx, my, layer):
             val = self.data["TE"]["tlMatrix"][mx][my][layer]
             if val["data"] == 0:
@@ -895,9 +896,9 @@ class MenuWithField(Menu):
                 return
             backx = mx - int((itm["size"][0] * .5) + .5) + 1
             backy = my - int((itm["size"][1] * .5) + .5) + 1
-            if backx + itm["size"][0] > len(self.data["TE"]["tlMatrix"]) or backy + itm["size"][1] > len(
-                    self.data["TE"]["tlMatrix"][0]):
-                return
+            #if backx + itm["size"][0] > len(self.data["TE"]["tlMatrix"])-1 or backy + itm["size"][1] > len(
+            #        self.data["TE"]["tlMatrix"][0])-1:
+            #    return
             # startcell = self.data["TE"]["tlMatrix"][backx][backy][layer]
             sp = itm["cols"][0]
             sp2 = itm["cols"][1]
@@ -909,6 +910,8 @@ class MenuWithField(Menu):
                 for y2 in range(h):
                     posx = backx + x2
                     posy = backy + y2
+                    if posy >= self.levelheight or posx >= self.levelwidth:
+                        continue
                     csp = sp[x2 * h + y2]
                     self.area[posx][posy] = False
                     if csp != -1:
