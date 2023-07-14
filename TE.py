@@ -818,7 +818,8 @@ class TE(MenuWithField):
                 return
 
     def test_cols(self, x, y):
-        force_geo = self.findparampressed("force_geometry") or self.findparampressed("force_place")
+        force_place = self.findparampressed("force_place")
+        force_geo = self.findparampressed("force_geometry") or force_place
         w, h = self.tileimage["size"]
         sp = self.tileimage["cols"][0]
         sp2 = self.tileimage["cols"][1]
@@ -838,7 +839,7 @@ class TE(MenuWithField):
                 if xpos >= self.levelwidth or ypos >= self.levelheight or xpos < 0 or ypos < 0:
                     continue
                 if csp != -1:
-                    if self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]["tp"] not in ["default", "material"]:
+                    if self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]["tp"] not in ["default", "material"] and not (self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]["tp"] in ["default", "material", "tileBody"] and force_place):
                         return False
                     if self.data["GE"][xpos][ypos][self.layer][0] != csp and not force_geo:
                         return False
@@ -846,7 +847,7 @@ class TE(MenuWithField):
                     if self.layer + 1 <= 2:
                         csp2 = sp2[x2 * h + y2]
                         if csp2 != -1:
-                            if self.data["TE"]["tlMatrix"][xpos][ypos][self.layer + 1]["tp"] not in ["default", "material"]:
+                            if self.data["TE"]["tlMatrix"][xpos][ypos][self.layer + 1]["tp"] not in ["default", "material"] and not (self.data["TE"]["tlMatrix"][xpos][ypos][self.layer + 1]["tp"] in ["default", "material", "tileBody"] and force_place):
                                 return False
                             if self.data["GE"][xpos][ypos][self.layer + 1][0] != csp2 and not force_geo:
                                 return False

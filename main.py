@@ -3,6 +3,7 @@ import traceback
 import requests
 from menus import *
 from tkinter.messagebox import askyesnocancel, askyesno
+from tkinter.filedialog import askopenfilename, asksaveasfilename
 import argparse
 from path_dict import PathDict
 from lingotojson import *
@@ -76,7 +77,8 @@ def keypress(window):
             surf.savef()
             run = False
         case "open":
-            openlevel(surf.asksaveasfilename(defaultextension=[".txt", ".wep"]), window)
+            #openlevel(surf.asksaveasfilename(defaultextension=[".txt", ".wep"]), window)
+            askopenfilename(defaultextension=[".txt", ".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
 
 
 def undohistory():
@@ -301,7 +303,8 @@ def loadmenu():
             case "new":
                 launch(-1)
             case "open":
-                file = surf.asksaveasfilename(defaultextension=[".txt", ".wep"])
+                #file = surf.asksaveasfilename(defaultextension=[".txt", ".wep"])
+                file = askopenfilename(defaultextension=[".txt", ".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
                 if file is not None and os.path.exists(file):
                     launch(file)
                     surf = load(window, renderer)

@@ -372,8 +372,8 @@
 		],
 		"menucolor": [100, 0, 0],
 		"addspeed": 0.01,
-		"rotatespeed": 0.03
-
+		"rotatespeed": 0.03,
+		"unlockangles": false
 	},
 	"LP": {
 		"buttons": [

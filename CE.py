@@ -82,8 +82,12 @@ class CE(MenuWithField):
                     qlist = [rect.topleft, rect.topright, rect.bottomright, rect.bottomleft]
                     mouse = pg.Vector2(pg.mouse.get_pos()) - qlist[quadindx]
                     r, o = mouse.rotate(90).as_polar()
-                    self.data["CM"]["quads"][self.heldindex][quadindx] = \
-                        [o, round(min(r / 100 / self.size * image1size, 1), 4)]
+                    if settings["CE"]["unlockangles"]:
+                        self.data["CM"]["quads"][self.heldindex][quadindx] = \
+                            [o, round(r / 100 / self.size * image1size, 4)]
+                    else:
+                        self.data["CM"]["quads"][self.heldindex][quadindx] = \
+                            [o, round(min(r / 100 / self.size * image1size, 1), 4)]
 
             elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
                 self.setcursor()
@@ -203,7 +207,10 @@ class CE(MenuWithField):
         if not self.held:
             cam = self.closestcameraindex()
             quadindx = self.getquad(cam)
-            self.data["CM"]["quads"][cam][quadindx][1] = round(min(self.data["CM"]["quads"][cam][quadindx][1] + self.settings["addspeed"], 1), 4)
+            if settings["CE"]["unlockangles"]:
+                self.data["CM"]["quads"][cam][quadindx][1] = round(self.data["CM"]["quads"][cam][quadindx][1] + self.settings["addspeed"], 4)
+            else:
+                self.data["CM"]["quads"][cam][quadindx][1] = round(min(self.data["CM"]["quads"][cam][quadindx][1] + self.settings["addspeed"], 1), 4)
 
     def adddown(self):  # ddddddddddd
         if not self.held:

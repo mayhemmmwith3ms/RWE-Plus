@@ -3,6 +3,7 @@ import render
 import widgets
 import pyperclip
 from render import *
+from tkinter.filedialog import askopenfilename, asksaveasfilename
 
 inputfile = ''
 filepath = path2levels
@@ -90,7 +91,8 @@ class Menu:
             self.data["path"] = os.path.splitext(self.data["path"])[0] + ".wep"
             print(os.path.splitext(self.data["path"])[0] + ".wep")
         else:
-            savedest = self.asksaveasfilename()
+            #savedest = self.asksaveasfilename()
+            savedest = asksaveasfilename(defaultextension=".wep", initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
             if savedest != "" and savedest is not None:
                 open(savedest, "w").write(json.dumps(self.data))
                 self.data["level"] = os.path.basename(savedest)
@@ -327,7 +329,8 @@ class Menu:
         return inputfile.replace("\n", "")
 
     def savef_txt(self):
-        savedest = self.asksaveasfilename(defaultextension=[".txt"])
+        #savedest = self.asksaveasfilename(defaultextension=[".txt"])
+        savedest = asksaveasfilename(defaultextension=".wep", initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
         if savedest != "":
             turntolingo(self.data, open(savedest, "w"))
 
@@ -776,6 +779,7 @@ class MenuWithField(Menu):
         self.rfa()
 
     def rendercameras(self):
+        closest = 0
         if hasattr(self, "closestcameraindex"):
             closest = self.closestcameraindex()
         for indx, cam in enumerate(self.data["CM"]["cameras"]):
