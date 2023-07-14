@@ -168,8 +168,8 @@ class LE(MenuWithField):
             return
         self.field3 = self.field2.copy()
         self.field3.field = pg.transform.scale(self.field2.field,
-                                               [(self.levelwidth + self.ofsleft) * self.size,
-                                                (self.levelheight + self.ofstop) * self.size])
+                                               [(self.levelwidth + ofsleft) * self.size,
+                                                (self.levelheight + ofstop) * self.size])
         self.field3.field.set_alpha(150)
         self.field3.field.set_colorkey(white)
 
@@ -179,7 +179,7 @@ class LE(MenuWithField):
 
     def save(self):
         if self.data["path"] == "":
-            level = asksaveasfilename(defaultextension="wep")
+            level = asksaveasfilename(defaultextension=[".wep"])
             self.data["level"] = os.path.basename(level)
             self.data["path"] = level
             self.data["dir"] = os.path.abspath(level)

@@ -92,7 +92,7 @@ class Menu:
             print(os.path.splitext(self.data["path"])[0] + ".wep")
         else:
             #savedest = self.asksaveasfilename()
-            savedest = asksaveasfilename(defaultextension=".wep", initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
+            savedest = asksaveasfilename(defaultextension=[".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
             if savedest != "" and savedest is not None:
                 open(savedest, "w").write(json.dumps(self.data))
                 self.data["level"] = os.path.basename(savedest)
@@ -330,7 +330,7 @@ class Menu:
 
     def savef_txt(self):
         #savedest = self.asksaveasfilename(defaultextension=[".txt"])
-        savedest = asksaveasfilename(defaultextension=".wep", initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
+        savedest = asksaveasfilename(defaultextension=[".txt"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
         if savedest != "":
             turntolingo(self.data, open(savedest, "w"))
 
