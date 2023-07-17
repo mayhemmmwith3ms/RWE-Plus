@@ -78,7 +78,7 @@ def keypress(window):
             run = False
         case "open":
             #openlevel(surf.asksaveasfilename(defaultextension=[".txt", ".wep"]), window)
-            askopenfilename(defaultextension=[".txt", ".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
+            openlevel(askopenfilename(defaultextension=[".txt", ".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects"), window)
 
 
 def undohistory():
@@ -152,6 +152,9 @@ def asktoexit(file, file2):
 
 def launchload(level):
     global surf, fullscreen, undobuffer, redobuffer, file, file2, run
+    recent = open(path + "recent.txt", "w")
+    recent.write(str(level))
+    recent.close()
     if level == -1:
         file = turntoproject(open(path + "default.txt", "r").read())
         file["level"] = ""
@@ -322,6 +325,18 @@ def loadmenu():
             case "load":
                 renderer = Renderer({"path": ""}, None, None, None, False)
                 surf = load(window, renderer)
+            case "recent":
+                file = None
+
+                if(os.path.exists(path + "recent.txt")):
+                    file = open(path + "recent.txt").read()
+                    
+                if file is not None and os.path.exists(file):
+                    launch(file)
+                    surf = load(window, renderer)
+                else:
+                    print("Most recent file either does not exist or was moved/deleted. Open a level normally to create one.")
+
         surf.message = ""
         if not pg.key.get_pressed()[pg.K_LCTRL]:
             for i in surf.uc:

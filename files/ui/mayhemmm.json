@@ -1,0 +1,487 @@
+{
+	"global": {
+		"color": "#888888",
+		"color2": "#505050",
+		"width": 1280,
+		"height": 720,
+		"fullscreen": false,
+		"fontsize": 30,
+		"colormul": 10,
+		"size": 100,
+		"font": "defaultfont.ttf",
+		"titlefont": "Rodondo.otf",
+		"roundbuttons": 0,
+		"doublerect": true,
+		"doublerectoffsetx": -5,
+		"doublerectoffsety": 0,
+		"primarylayeralpha": 200,
+		"secondarylayeralpha": 50,
+		"tiles_primarylayeralpha": 255,
+		"tiles_secondarylayeralpha": 100,
+		"snap_error": 50,
+		"enableundo": false,
+		"previewleftside": true,
+		"colors": {
+			"cursor": [255, 0, 0],
+			"cursor2": [50, 0, 255],
+			"mirror": [100, 0, 0],
+			"bftiles": [255, 255, 255],
+			"border": [0, 0, 0],
+			"canplace": [0, 255, 0],
+			"cannotplace": [255, 0, 0],
+			"select": [255, 0, 0],
+			"FECursor": [255, 255, 255],
+			"layer1": [255, 0, 0],
+			"layer2": [0, 0, 255],
+
+			"mixcol_empty": [119, 7, 171, 200],
+			"mixcol_fill": [22, 166, 0, 200],
+
+			"camera_border": [50, 50, 50],
+			"camera_held": [255, 10, 5],
+			"camera_notheld": [50, 250, 40],
+
+			"slidebar": [150, 0, 0],
+			"rope": [255, 0, 0],
+
+			"grid": [160, 0, 0],
+
+			"tooltip": [255, 255, 255],
+			"buttontext": [0, 0, 0],
+			"buttontextlight": [255, 255, 255]
+		}
+	},
+	"LD":
+	{
+		"buttons": 
+		[
+			["Open", [0, 0, 50, 25], [100, 100, 100], "open", "non", "Open project(<[open]>)"],
+			["Open Recent", [0, 25, 50, 25], [100, 100, 100], "recent", "non", "Open the most recently opened level"],
+			["New", [0, 50, 50, 50], [100, 100, 100], "new", "non", "New project(<[new]>)"],
+			["Report", [50, 50, 50, 50], [70, 70, 70], "report", "non", "Report a bug"],
+			["Github", [50, 0, 50, 50], [70, 70, 70], "github", "non", "Go to RWE+ github"]
+		],
+		"labels": [
+		]
+	},
+	"TT": {
+		"buttons": 
+		[
+			["Next", [90, 0, 10, 7], [100, 100, 100], "next", "non", ""],
+			["Previous", [0, 0, 10, 7], [100, 100, 100], "prev", "non", ""],
+
+			["Wall", [0, 20, 7, 5], [100, 100, 100], "WL", "non", "", ["geometry.png", [1, 0]]],
+			["Air", [0, 25, 7, 5], [100, 100, 100], "AR", "non", "", ["geometry.png", [2, 0]]],
+			["Slope", [0, 30, 7, 5], [100, 100, 100], "SL", "non", "", ["geometry.png", [3, 0]]],
+			["Skip", [90, 7, 10, 7], [100, 100, 100], "skip", "non", ""],
+			[">", [27, 20, 5, 4], [100, 100, 100], "rt", "non", "Next category(<[-rt]>)", ["arrows.png", [0, 0]]],
+			["<", [0, 20, 5, 4], [100, 100, 100], "lt", "non", "Previous category(<[-lt]>)", ["arrows.png", [3, 0]]],
+			["...", [32, 20, 5, 4], [100, 100, 100], "findtile", "non", "browse(<[-findtile]>)"]
+			
+		],
+		"labels":[
+			["text", [11, 0], [0, 0, 0], 30],
+			["Selected tool: None", [10, 95], [0, 0, 0], 30]
+
+		],
+		"textlines": [
+			"?Welcome to RWE+ Tutorial! Today we are going to teach you the basics of using it\nThis tutorial is made to teach people how to navigate with RWE+\nand not on how to make levels with it\nPress next button to go to the next step",
+            "The field below is your level preview which you can see\nTry to move your preview",
+            "Good job around here, now try to scale preview as you want",
+            "@Great! rw levels more than just a single panel out of cubes\nyou can cycle through its 'layers'\nYou know what i'm talking about, try it!",
+
+            "?Now we're on a different level layer. Where is our next guide: Placing\nClick next for next step",
+            "You have a button here, this button changes your current tool, what you're using\nClick it",
+            "Try to place some 'Walls' somewhere",
+            "Nice, but it might be too boring to put blocks that way.\nTry to use a 'Fill' to fill any zone you want",
+            "Placing blocks is cool, but what if you make a mistake?\nThere's an 'Air' tool to remove walls and other blocks",
+            "?Great, but sometimes you want to smooth some very sharp edges of blocks,\nso there's a 'Slope's to help you out\nClick next to continue",
+            "Place some slopes",
+            "@Alright! You have learned all the basics to build a level in geometry editor.\nNormal Geometry Editor is a little bit more complex than this\nbut you will get hang of it.\nNow let's go to another layer and continue the tutorial",
+
+            "?This part of the guide teaches you how to use selectors",
+            "Selector is just a big array of items sorted by categories\nTry to select something",
+            "Now try to cycle through its categories",
+            "@Nice, but it's slow to scroll through each category when you can just\nopen the category you want\nso for that there's a quick go to category\nPress the category button to open it",
+            "Here are your categories, which you can select. Try it",
+            "@That is easy to use, but what if you need to search\nthe exact item you want and you forgot in which category it is?\nFor that you can use 'Browse' button, press it!",
+            "?Any other help you can find in hotkeys menu or with tips in the main menu",
+            "?That's all the basics, what you need to know about RWE+",
+            "?Good luck at making your own levels with it\nClick next to close tutorial"
+		],
+		"findmenu_text": "type what you want",
+		"catpos": [5, 20, 22, 4],
+		"itempos": [5, 24, 22, 2],
+		"d1":
+		{
+			"rect": [25, 20, 65, 70],
+			"color": [90, 90, 90],
+			"border": [150, 150, 150]
+		}
+	},
+	"MN":
+	{
+		"buttons":
+		[
+			["Geometry", [2, 94, 10, 5], [90, 90, 90], "GE", "non", "Geometry Editor(<[/GE]>)"],
+			["Tiles", [13, 94, 5, 5], [90, 90, 90], "TE", "non", "Tile Editor(<[/TE]>)"],
+			["Props", [19, 94, 6, 5], [90, 90, 90], "PE", "non", "Prop Editor(<[/PE]>)"],
+			["Effects", [26, 94, 7, 5], [90, 90, 90], "FE", "non", "Effect Editor(<[/FE]>)"],
+
+			["Properties", [85, 15, 14, 5], [90, 90, 90], "LP", "non", "Level Properties(<[/LP]>)"],
+			["Cameras", [85, 20, 14, 5], [90, 90, 90], "CE", "non", "Camera Editor(<[/CE]>)"],
+			["Light Editor", [85, 25, 14, 5], [90, 90, 90], "LE", "non", "Light Editor(<[/LE]>)"],
+			["Hotkeys", [48, 2, 8, 5], [90, 90, 90], "HK", "non", "Hotkeys(<[/HK]>)"],
+
+			["Report", [65, 2, 8, 5], [190, 38, 38], "report", "non", "Report a bug"],
+			["Github", [57, 2, 8, 5], [90, 90, 90], "github", "non", "Go to RWE+ github"],
+
+			["Layer", [85, 48, 14, 6], [90, 90, 90], "swichlayers", "non", "Change layer"],
+			["Toggle tiles", [85, 54, 14, 6], [90, 90, 90], "tiles", "non", "Toggle tiles layer"],
+			["Next tip", [85, 60, 14, 6], [90, 90, 90], "nexttip", "non", "Just next tip)"],
+
+			
+			["Render", [80, 80, 19, 19], [90, 90, 90], "render", "non", "Render project using Drizzle(<[render]>)"],
+			["Save", [24, 2, 6, 5], [90, 90, 90], "save", "non", "Save as .wep project(<[save]>)"],
+			["Save As...", [13, 2, 10, 5], [90, 90, 90], "saveas", "non", "Save as .wep project"],
+			["Save as txt", [2, 2, 10, 5], [90, 90, 90], "saveastxt", "non", "Save as official level editor file"],
+			["Quit", [89, 2, 10, 5], [90, 90, 90], "quit", "non", "Close RWE+(<[quit]>)"],
+
+			["?", [2, 7, 2, 2], [90, 90, 90], "watch_keys", "non", "Hotkeys"]
+		],
+		"labels":[
+			["", [2, 77], [0, 0, 0], 30],
+			["Tip:", [2, 73], [255, 255, 255], 30],
+			["RWE+", [33, 2], [0, 0, 0], 70],
+			["MMB - Move", [2, 9], [255, 255, 255], 25]
+
+		],
+		"d1":
+		{
+			"rect": [2, 9, 75, 61],
+			"color": [90, 90, 90],
+			"border": [150, 150, 150]
+		}
+	}, 
+	"GE":
+	{
+		"buttons":[
+			["?", [93, 0, 2, 2], [90, 90, 90], "watch_keys", "non", "Hotkeys"],
+
+			["WL", [0, 0, 4, 6], [32, 153, 28], "s0", "walls", "Walls(<[-walls]>)", ["geometry.png", [1, 0]]],
+			["AR", [4, 0, 4, 6], [32, 153, 28], "s0", "air", "Air(<[-air]>)", ["geometry.png", [2, 0]]],
+			["FL", [8, 0, 4, 6], [32, 153, 28], "s0", "floor", "Floor(<[-floor]>)", ["geometry.png", [0, 1]]],
+			["SL", [12, 0, 4, 6], [32, 153, 28], "s0", "slope", "Slope(<[-slope]>)\nUse <[-rotate]> to rotate them", ["geometry.png", [3, 0]]],
+			["GL", [0, 6, 4, 6], [32, 153, 28], "s0", "glass", "Glass(<[-glass]>)", ["geometry.png", [3, 2]]],
+
+			["RK", [4, 6, 4, 6], [56, 173, 52], "s0", "rock", "Rock(<[-rock]>)", ["geometry.png", [2, 1]]],
+			["SP", [8, 6, 4, 6], [56, 173, 52], "s0", "spear", "Spear(<[-spear]>)", ["geometry.png", [3, 1]]],
+			["CR", [12, 6, 4, 6], [56, 173, 52], "s0", "crack", "Crack(<[-crack]>)", ["geometry.png", [0, 2]]],
+			["BM", [0, 12, 4, 6], [56, 173, 52], "s0", "beam", "Beam(<[-beam]>)\nUse <[-rotate]> to rotate them", ["geometry.png", [2, 2]]],
+			["W", [4, 12, 4, 6], [56, 173, 52], "s0", "waterfall", "Waterfall(<[-waterfall]>)\nCan be placed only on layer 1", ["geometry.png", [2, 4]]],
+			["WG", [8, 12, 4, 6], [56, 173, 52], "s0", "wormgrass", "WormGrass(<[-wormgrass]>)", ["geometry.png", [3, 4]]],
+			["WMH", [12, 12, 4, 6], [56, 173, 52], "s0", "whack_a_mole_hole", "whack_a_mole_hole(<[-whack_a_mole_hole]>)", ["geometry.png", [1, 5]]],
+			["FC", [0, 18, 4, 6], [56, 173, 52], "s0", "flychains", "Fly Chains(<[-flychains]>)", ["geometry.png", [0, 4]]],
+			["HV", [4, 18, 4, 6], [56, 173, 52], "s0", "flyhive", "Fly Hive(<[-flyhive]>)", ["geometry.png", [1, 4]]],
+
+			["SC", [8, 18, 4, 6], [70, 70, 200], "s0", "shortcut", "Shortcut(<[-shortcut]>)", ["geometry.png", [1, 3]]],
+			["SE", [12, 18, 4, 6], [70, 70, 200], "s0", "shortcutentrance", "Shortcut Entrance(<[-shortcutentrance]>)", ["geometry.png", [0, 3]]],
+			["D", [0, 24, 4, 6], [50, 50, 180], "s0", "dragonden", "Dragon Den(<[-dragonden]>)", ["geometry.png", [2, 3]]],
+			["E", [4, 24, 4, 6], [50, 50, 180], "s0", "entrance", "Entrance(<[-entrance]>)", ["geometry.png", [3, 3]]],
+			["SH", [8, 24, 4, 6], [70, 70, 200], "s0", "scavengerhole", "Scavenger Hole(<[-scavengerhole]>)", ["geometry.png", [0, 5]]],
+			["GWD", [12, 24, 4, 6], [70, 70, 200], "s0", "garbagewormden", "Garbage Worm Den(<[-garbagewormden]>)", ["geometry.png", [2, 5]]],
+
+			["CA", [0, 30, 4, 6], [100, 20, 20], "s0", "clearall", "Clear all(<[-clearall]>)", ["geometry.png", [0, 6]]],
+			["CB", [4, 30, 4, 6], [186, 32, 52], "s0", "clearblock", "Upper clear(<[-clearblock]>).\nClears only top layers, like beams and paths"],
+			["CL", [8, 30, 4, 6], [186, 32, 52], "s0", "clearlayer", "Layer clear(<[-clearlayer]>)"],
+
+			["MR", [12, 30, 4, 6], [120, 120, 120], "s0", "mirror", "Mirror(<[-mirror]>).\nUse <[-mup]>, <[-mleft]>,\n<[-mdown]>, <[-mright]> to move and rotate it.", ["geometry.png", [1, 6]]],
+			["IN", [0, 36, 4, 6], [120, 120, 120], "s0", "inverse", "Inverse(<[-inverse]>)", ["geometry.png", [0, 0]]],
+			["MV", [4, 36, 4, 6], [100, 100, 100], "s0", "move", "Move(<[-move]>)", ["geometry.png", [1, 1]]],
+			["CP", [8, 36, 4, 6], [100, 100, 100], "s0", "copylayer", "Copy layer(<[-copylayer]>).\nCopies current layer zone into clipboard", ["geometry.png", [1, 2]]],
+			["PS", [12, 36, 4, 6], [100, 100, 100], "s0", "pastegeo", "Paste geometry(<[-pastegeo]>).\nPastes zone from clipboard", ["geometry.png", [3, 6]]],
+			["RA", [0, 42, 4, 6], [100, 100, 100], "replacestate", "non", "Replace air(<[-replacestate]>).\nIf enabled, not replaces air blocks"],
+			["CT", [4, 42, 4, 6], [100, 100, 100], "s0", "cutlayer", "Cut layer(<[-cutlayer]>)", ["geometry.png", [3, 5]]],
+
+			["Pencil", [0, 50, 5, 6], [100, 100, 100], "tool_pencil", "non", "Change LMB to pencil", ["fillmethods.png", [5, 0]]],
+			["Brush", [5, 50, 5, 6], [100, 100, 100], "tool_brush", "non", "Change LMB to brush", ["fillmethods.png", [6, 0]]],
+			["Fill", [10, 50, 5, 6], [100, 100, 100], "tool_fill", "non", "Change LMB to fill", ["fillmethods.png", [0, 0]]],
+
+			["Line", [0, 58, 5, 6], [100, 100, 100], "tool_line", "non", "Change RMB to line", ["fillmethods.png", [7, 0]]],
+			["Rect", [5, 58, 5, 6], [100, 100, 100], "tool_rect", "non", "Change RMB to rect", ["fillmethods.png", [1, 0]]],
+			["Rect-\nhollow", [10, 58, 5, 6], [100, 100, 100], "tool_rect_hollow", "non", "Change RMB to hollow rect", ["fillmethods.png", [2, 0]]],
+			["Circle", [5, 64, 5, 6], [100, 100, 100], "tool_circle", "non", "Change RMB to circle", ["fillmethods.png", [3, 0]]],
+			["Circle-\nhollow", [10, 64, 5, 6], [100, 100, 100], "tool_circle_hollow", "non", "Change RMB to hollow circle", ["fillmethods.png", [4, 0]]],
+			["TE", [95, 0, 5, 6], [100, 100, 100], "TE", "non", "Go to tile editor(<[/TE]>)"]
+		],
+		"d1":
+		{
+			"rect": [18, 2, 80, 96],
+			"color": [90, 90, 90],
+			"border": [150, 150, 150]
+		}, 
+		"labels":[
+			["Tile: ", [0, 79], [255, 255, 255], 30],
+			["X: 0, Y: 0", [0, 97], [255, 255, 255], 25],
+			["Replace air: ", [0, 94], [255, 255, 255], 25],
+			["LMB - Place\nRMB - Fill\nMMB - Move", [18, 2], [255, 255, 255], 25]
+		],
+		"names": {
+			"0": "Air",
+			"1": "Solid",
+			"2": "Slope NE",
+			"3": "Slope NW",
+			"4": "Slope SE",
+			"5": "Slope SW",
+			"6": "Platform",
+			"7": "Shortcut entrance",
+			"9": "Glass"
+		},
+		"cursorWorkLayerNum": true,
+		"layerColors": [
+			[0, 0, 0],
+			[0, 255, 0],
+			[255, 0, 0]
+		]
+	}, 
+	"TE":
+	{
+		"category_count": 30,
+		"LEtiles": true,
+		"buttons": [
+			[">", [92, 2, 4, 4], [100, 100, 100], "rt", "non", "Next category(<[-rt]>)", ["arrows.png", [0, 0]]],
+			["Set as default", [77, 2, 15, 4], [100, 100, 100], "sad", "non", "Set material as default(<[-sad]>)"],
+			["<", [73, 2, 4, 4], [100, 100, 100], "lt", "non", "Previous category(<[-lt]>)", ["arrows.png", [3, 0]]],
+			["CT", [96, 2, 4, 4], [100, 100, 100], "cleartool", "non", "Clear tool(<[-cleartool]>)"],
+			["TS", [96, 6, 4, 4], [100, 100, 100], "changetools", "non", "ToolSwap(<[-changetools]>)"],
+			["CT", [96, 10, 4, 4], [100, 100, 100], "copytool", "non", "Copy tool(<[-copytool]>)", ["geometry.png", [1, 2]]],
+			["PS", [96, 14, 4, 4], [100, 100, 100], "pastedata", "non", "Paste(<[-pastedata]>)", ["geometry.png", [3, 6]]],
+			["?", [98, 0, 2, 2], [90, 90, 90], "watch_keys", "non", "Hotkeys"],
+			["...", [96, 18, 4, 4], [100, 100, 100], "findtile", "non", "Browse(<[-findtile]>)"],
+			["Pencil", [96, 23, 4, 4], [100, 100, 100], "pencil", "non", "Turn LMB to pencil(<[-pencil]>)", ["fillmethods.png", [5, 0]]],
+			["Brush", [96, 27, 4, 4], [100, 100, 100], "brush", "non", "Turn LMB to brush(<[-brush]>)", ["fillmethods.png", [6, 0]]],
+			["Mode", [96, 31, 4, 4], [100, 100, 100], "togglebrush", "non", "Changes between square and circle brush(<[-togglebrush]>)", ["fillmethods.png", [3, 0]]],
+			["GE", [0, 0, 5, 6], [100, 100, 100], "GE", "non", "Go to geometry editor"]
+			
+		],
+		"catpos": [73, 6, 23, 4],
+		"itempos": [73, 10, 23, 2],
+		"d1":{
+			"rect": [2, 2, 70, 96],
+			"color": [90, 90, 90],
+			"border": [150, 150, 150]
+		},
+		"labels": [
+			["Tile: ", [2, 90], [255, 255, 255], 25],
+			["X: 0, Y: 0", [2, 93], [255, 255, 255], 25],
+			["Default material: ", [2, 87], [255, 255, 255], 25],
+			["LMB - Place tile\nRMB - Fill\nMMB - Move", [2, 20], [255, 255, 255], 25]
+		],
+		"itemsize": 2,
+		"menucolor": [120, 120, 120],
+		"officialMouseControlStyle": true
+	},
+
+	"LE":{
+		"buttons": [
+			["^", [1, 2, 5, 6], [100, 100, 100], "changeup", "non", "Previous image(<[-changeup]>)", ["arrows.png", [1, 0]]],
+			["v", [1, 8, 5, 6], [100, 100, 100], "changedown", "non", "Next image(<[-changedown]>)", ["arrows.png", [2, 0]]],
+			["L/D", [1, 14, 5, 6], [100, 100, 100], "inverse", "non", "Dark/Light swich(<[-inverse]>)"],
+			["D", [1, 20, 5, 6], [30, 30, 30], "darkmod", "non", "Dark mode(<[-darkmod]>)"],
+			["L", [1, 26, 5, 6], [230, 230, 230], "lightmod", "non", "Light mode(<[-lightmod]>)"],
+			["S", [1, 32, 5, 6], [100, 100, 100], "save", "non", "Save as image(<[-save]>)"],
+			["?", [98, 0, 2, 2], [90, 90, 90], "watch_keys", "non", "Hotkeys", ["editors.png", [6, 1]]]
+
+		],
+		"labels": [
+			["Image: ", [0, 93], [255, 255, 255], 25],
+			["X: 0, Y: 0", [0, 97], [255, 255, 255], 25],
+			["LMB - Paint\nMMB - Move", [6, 2], [255, 255, 255], 25]
+		],
+		"d1":{
+			"rect": [6, 2, 92, 96],
+			"color": [90, 90, 90],
+			"border": [150, 150, 150]
+		}
+	},
+	"FE":{
+		"buttons": [
+			["v", [92, 2, 4, 4], [100, 100, 100], "scrl_down_new", "non", "Next effect(<[-scrl_down]>)", ["arrows.png", [2, 0]]],
+			["^", [88, 2, 4, 4], [100, 100, 100], "scrl_up_new", "non", "Previous effect(<[-scrl_up]>)", ["arrows.png", [1, 0]]],
+			[">", [84, 2, 4, 4], [100, 100, 100], "nextcat", "non", "Next category(<[-nextcat]>)", ["arrows.png", [0, 0]]],
+			["Add", [78, 2, 6, 4], [100, 100, 100], "innewtab", "addordeleteselectedeffect", "Add effect to project(<[-innewtab]>)", ["icons.png", [3, 0]]],
+			["<", [74, 2, 4, 4], [100, 100, 100], "prevcat", "non", "Previous category(<[-prevcat]>)", ["arrows.png", [3, 0]]],
+
+
+			["v", [92, 60, 4, 4], [100, 100, 100], "scrl_down_menu", "non", "Next effect(<[-scrl_down]>)", ["arrows.png", [2, 0]]],
+			["Delete", [78, 60, 14, 4], [100, 100, 100], "notinnewtab", "addordeleteselectedeffect", "Delete effect from project(<[-notinnewtab]>)", ["icons.png", [0, 0]]],
+			["Duplicate", [74, 56, 22, 4], [100, 100, 100], "notinnewtab", "duplicate", "Duplicate selected effect(<[-duplicate]>)"],
+			["^", [74, 60, 4, 4], [100, 100, 100], "scrl_up_menu", "non", "Previous effect(<[-scrl_up]>)", ["arrows.png", [1, 0]]],
+
+
+			["^", [2, 65, 4, 6], [100, 100, 100], "prevparam", "non", "Previous parameter(<[-prevparam]>)", ["arrows.png", [1, 0]]],
+			["0", [2, 71, 4, 6], [100, 100, 100], "non", "non", "Current parameter"],
+			["v", [2, 77, 4, 6], [100, 100, 100], "nextparam", "non", "Next parameter(<[-nextparam]>)", ["arrows.png", [2, 0]]],
+			["CT", [2, 83, 4, 6], [100, 100, 100], "copytool", "non", "Copy effect zone(<[-copytool]>)", ["geometry.png", [1, 2]]],
+			["PS", [2, 89, 4, 6], [100, 100, 100], "pastedata", "non", "Paste(<[-pastedata]>)", ["geometry.png", [3, 6]]],
+			["?", [98, 0, 2, 2], [90, 90, 90], "watch_keys", "non", "Hotkeys", ["editors.png", [6, 1]]],
+			["...", [96, 2, 4, 4], [100, 100, 100], "findeffect", "non", "Browse(<[-findeffect]>)"]
+		],
+
+		"catpos": [74, 6, 22, 4],
+		"itempos": [74, 10, 22, 2],
+
+		"itempos2": [74, 64, 22, 2],
+
+		"currentparamindex": 9,
+
+		"paramspos": [7, 68],
+		"seedchange_size": [10, 10],
+
+		"additionspace": 5,
+
+		"d1":{
+			"rect": [2, 2, 70, 62],
+			"color": [90, 90, 90],
+			"border": [150, 150, 150]
+		},
+		"labels": [
+			["%1s: %10s", [7, 64], [255, 255, 255], 25],
+			["Selected effect: ", [0, 97], [255, 255, 255], 25],
+			["LMB - Paint\nRMB - Erase\nMMB - Move", [2, 2], [255, 255, 255], 25]
+		],
+		"menucolor": [120, 120, 120]
+	},
+	"CE":{
+		"buttons": [
+			["New", [2, 2, 4, 4], [100, 100, 100], "addcamera", "non", "Add new camera to level(<[-addcamera]>)", ["icons.png", [3, 0]]],
+			["Delete", [2, 6, 4, 4], [100, 100, 100], "deletecamera", "non", "Delete camera from level(<[-deletecamera]>)", ["icons.png", [0, 0]]],
+			["Copy", [2, 10, 4, 4], [100, 100, 100], "copycamera", "non", "Copy held camera(<[-copycamera]>)", ["geometry.png", [1, 2]]],
+			["Paste", [2, 14, 4, 4], [100, 100, 100], "pastedata", "non", "Paste camera(<[-pastedata]>)", ["geometry.png", [3, 6]]],
+			["Edit", [2, 19, 4, 4], [100, 100, 100], "edit", "non", "Enable edit mode(<[-edit]>)"],
+			["Move", [2, 23, 4, 4], [100, 100, 100], "move", "non", "Enable move mode(<[-move]>)"],
+			["Mode", [2, 23, 4, 4], [100, 100, 100], "togglemode", "non", "toggle between move and edit modes(<[-togglemode]>)"],
+			["^", [2, 27, 4, 4], [100, 100, 100], "camup", "non", "Moves selected camera up(<[-camup]>)", ["arrows.png", [1, 0]]],
+			["V", [2, 31, 4, 4], [100, 100, 100], "camdown", "non", "Moves selected camera down(<[-camdown]>)", ["arrows.png", [2, 0]]],
+			["?", [98, 0, 2, 2], [90, 90, 90], "watch_keys", "non", "Hotkeys", ["editors.png", [6, 1]]]
+			
+		],
+		"d1":{
+			"rect": [6, 2, 92, 96],
+			"color": [90, 90, 90],
+			"border": [150, 150, 150]
+		},
+		"labels": [
+			["Total cameras: %2d", [0, 97], [255, 255, 255], 25],
+			["LMB - Select camera/Edit\nMMB - Move", [6, 80], [255, 255, 255], 25]
+		],
+		"menucolor": [100, 0, 0],
+		"addspeed": 0.01,
+		"rotatespeed": 0.03,
+		"unlockangles": true
+	},
+	"LP": {
+		"buttons": [
+			["Water", [1, 2, 7, 5], [100, 100, 100], "water", "non", "Allows to control water(<[-water]>)"],
+			["Layer", [1, 7, 7, 5], [100, 100, 100], "waterlayer", "non", "Changes water rendering layer"],
+			["Remove", [1, 12, 7, 5], [100, 100, 100], "nowater", "non", "Removes water from level(<[-nowater]>)"],
+
+			["Sizing", [1, 20, 7, 5], [100, 100, 100], "sizing", "non", "Allows to change size of level with mouse(<[-sizing]>)"],
+			["C", [8, 20, 3, 5], [100, 100, 100], "cutmanually", "non", "Set level size with numbers"],
+			["B", [11, 20, 3, 5], [100, 100, 100], "btilesmanually", "non", "Set border size with numbers"],
+
+			["Border", [1, 28, 7, 5], [100, 100, 100], "changeborder", "non", "Change border settings(<[-changeborder]>)"],
+			["Sunlight", [1, 33, 7, 5], [100, 100, 100], "changelight", "non", "Toggle Sunlight light(<[-changelight]>)"],
+			["?", [98, 0, 2, 2], [90, 90, 90], "watch_keys", "non", "Hotkeys", ["editors.png", [6, 1]]]
+			
+		],
+		"labels": [
+			["Solid Border: %5s, Sunlight: %5s", [0, 96], [255, 255, 255], 25],
+			["Sizing, Buffer tiles: %5s, level size: %5s", [0, 92], [255, 255, 255], 25],
+			["Water level: %3d, In front: %5s", [0, 88], [255, 255, 255], 25],
+			["LMB - Resize/water layer\nMMB - Move", [15, 70], [170, 170, 170], 25]
+		],
+
+		"d1":{
+			"rect": [15, 2, 83, 96],
+			"color": [90, 90, 90],
+			"border": [150, 150, 150]
+		},
+
+		"sliders": [
+			["Tile seed", [0, 50], 13, [0, 400, 1], ["EX2", "tileSeed"]]
+		]
+
+	},
+	"PE":{
+		"category_count": 30,
+		"buttons": [
+			["v", [92, 2, 4, 4], [100, 100, 100], "browse_next", "non", "Next prop(s)", ["arrows.png", [2, 0]]],
+			["^", [88, 2, 4, 4], [100, 100, 100], "browse_prev", "non", "Previous prop(w)", ["arrows.png", [1, 0]]],
+			[">", [84, 2, 4, 4], [100, 100, 100], "cat_next", "non", "Next category(d)", ["arrows.png", [0, 0]]],
+			["Add", [78, 2, 6, 4], [100, 100, 100], "non", "non", "Add effect to project(space)", ["icons.png", [3, 0]]],
+			["<", [74, 2, 4, 4], [100, 100, 100], "cat_prev", "non", "Previous category(a)", ["arrows.png", [3, 0]]],
+
+			["Settings", [74, 64, 22, 4], [100, 100, 100], "non", "non", "Prop settings"],
+			["Snap to grid", [80, 93, 20, 7], [100, 100, 100], "togglesnap", "non", "change snapping"],
+			["?", [98, 0, 2, 2], [90, 90, 90], "watch_keys", "non", "Hotkeys", ["editors.png", [6, 1]]],
+			["...", [96, 2, 4, 4], [100, 100, 100], "findpropmenu", "non", "Browse(<[-findpropmenu]>)"]
+			
+		],
+
+		"catpos": [74, 6, 22, 4],
+		"itempos": [74, 10, 22, 2],
+
+		"settingspos": [74, 68, 22, 2],
+		"settingscolor": [90, 90, 90],
+
+		"hide": [5],
+
+		"paramspos": [72, 68],
+		"seedchange_size": [10, 10],
+
+		"d1":{
+			"rect": [2, 2, 70, 62],
+			"color": [90, 90, 90],
+			"border": [150, 150, 150]
+		},
+		"labels": [
+			["Notes:\n", [2, 64], [255, 255, 255], 25],
+			["Warning: ", [0, 94], [255, 50, 50], 25],
+			["Prop settings: ", [0, 97], [255, 255, 255], 25],
+			["LMB - Place Prop\nRMB - Depth+, <[cursor_propdepth_inverse]>+RMB - Depth-\nMMB - Move\n<[propvariation_change]>+LMB - Variation-, <[propvariation_change]>+RMB - Variation+", [2, 2], [255, 255, 255], 25]
+		],
+		"menucolor": [120, 120, 120],
+
+		"elements_as_tiles_count": 20,
+		"elements_as_tiles_color": [110, 110, 110],
+
+		"rotate_speed": 0.1,
+		"rotate_speedup": 1,
+		"stretch_speed": 0.3
+	},
+	"HK": {
+		"buttons": 
+		[
+
+			["Geometry\nEditor", [0, 0, 10, 10], [90, 90, 90], "GE", "non", "Geometry Editor(<[-GE]>)"],
+			["Tile\nEditor", [0, 10, 10, 10], [90, 90, 90], "TE", "non", "Tile Editor(<[/TE]>)"],
+			["Camera\nEditor", [0, 20, 10, 10], [90, 90, 90], "CE", "non", "Camera Editor(<[-CE]>)"],
+			["Light\nEditor", [0, 30, 10, 10], [90, 90, 90], "LE", "non", "Light Editor(<[-LE]>)"],
+			["Effect\nEditor", [0, 40, 10, 10], [90, 90, 90], "FE", "non", "Effect Editor(<[-FE]>)"],
+			["Prop\nEditor", [0, 50, 10, 10], [90, 90, 90], "PE", "non", "Prop Editor(<[-PE]>)"],
+			["Level\nProperties", [0, 60, 10, 10], [90, 90, 90], "LP", "non", "Level Properties(<[-LP]>)"],
+			["Hotkeys", [0, 70, 10, 10], [90, 90, 90], "HK", "non", "Hotkeys(<[-HK]>)"],
+			["Menu", [0, 80, 10, 10], [90, 90, 90], "MN", "non", "MN(<[-MN]>)"],
+			["Global", [0, 90, 10, 10], [90, 90, 90], "globalkeys", "non", "Global(<[-globalkeys]>)"],
+
+			["To editor", [93, 0, 7, 4], [90, 90, 90], "goback", "non", "Goes to editor, hotkeys you watching"],
+			["Edit", [90, 93, 10, 7], [90, 90, 90], "edit", "non", "Opens default editor to edit hotkeys"],
+			["?", [98, 4, 2, 2], [90, 90, 90], "watch_keys", "non", "Hotkeys", ["editors.png", [6, 1]]]
+		],
+		"labels":[
+			["", [11, 0], [255, 255, 255], 18],
+			["", [21, 0], [255, 255, 255], 18]
+		]
+	}
+}
