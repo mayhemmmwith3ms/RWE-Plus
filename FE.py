@@ -27,11 +27,11 @@ class FE(MenuWithField):
 
         self.copymode = False
 
-        self.drawtiles = True
         renderer.commsgeocolors = False
         renderer.geo_full_render(renderer.lastlayer)
 
         super().__init__(surface, "FE", renderer)
+        self.drawtiles = True
         #self.fieldadd.set_colorkey(None)
         self.fieldadd.set_alpha(200)
         self.makeparams()

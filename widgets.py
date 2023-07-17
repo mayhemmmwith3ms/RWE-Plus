@@ -129,7 +129,7 @@ class button:
         if self.onmouseover():
             pg.mouse.set_cursor(pg.Cursor(pg.SYSTEM_CURSOR_HAND))
             cp = True
-            self.glow = min(self.glow + 1, 100)
+            self.glow = min(self.glow + 1, 1)
             if pg.mouse.get_pressed(3)[0] and bol and enablebuttons:
                 self.bol = False
                 bol = False
@@ -151,14 +151,14 @@ class button:
             #    bol = True
             #    self.bol = True
             self.glow = max(0, self.glow - 1)
-        paintcol = self.col.lerp(self.col2, self.glow / 100)
+        paintcol = self.col.lerp(self.col2, self.glow)
 
         pg.draw.rect(self.surface, paintcol, self.rect, 0, settings["global"]["roundbuttons"])
         if self.icon is None:
             textblit(self.surface, self.textimage, self.rect.center[0], self.rect.center[1], True)
             # mts(self.surface, self.text, self.rect.center[0], self.rect.center[1], black, centered=True, fontsize=fontsize)
         else:
-            g255 = int(self.glow / 100 * 255)
+            g255 = int(self.glow * 255)
             self.textimage.set_alpha(g255)
             textblit(self.surface, self.textimage, self.rect.center[0], self.rect.center[1], True)
             self.icon.set_alpha(255 - g255)
@@ -172,7 +172,7 @@ class button:
     def blitshadow(self):
         if not self.enabled or not self.visible:
             return
-        invglow = 100 - self.glow
+        invglow = 1 - self.glow
         r2 = self.rect.copy()
         r2 = r2.move(settings["global"]["doublerectoffsetx"] / 100 * invglow,
                      settings["global"]["doublerectoffsety"] / 100 * invglow)
@@ -253,7 +253,7 @@ class window:
         w = 6
         b = pg.Rect(self.rect)
         b.update(b.x - w, b.y - w, b.w + w + w, b.h + w + w)
-        pg.draw.rect(self.surface, self.border, b, 6, 6)
+        pg.draw.rect(self.surface, self.border, b, 6)
 
     def resize(self):
         self.field = pg.surface.Surface(

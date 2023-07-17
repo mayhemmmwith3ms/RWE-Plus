@@ -788,19 +788,19 @@ class MenuWithField(Menu):
             rect2 = pg.Rect(rect.x + self.size, rect.y + self.size, rect.w - self.size * 2, rect.h - self.size * 2)
             rect3 = pg.Rect(rect2.x + self.size * 8, rect2.y, rect2.w - self.size * 16, rect2.h)
             # print(camera_border, rect, self.size)
-            pg.draw.rect(self.surface, camera_border, rect, max(self.size // 3, 1))
-            pg.draw.rect(self.surface, camera_border, rect2, max(self.size // 4, 1))
+            pg.draw.rect(self.surface, camera_border, rect, 1)
+            pg.draw.rect(self.surface, camera_border, rect2, 1)
 
-            pg.draw.rect(self.surface, red, rect3, max(self.size // 3, 1))
+            pg.draw.rect(self.surface, red, rect3, 2)
 
             pg.draw.line(self.surface, camera_border, pg.Vector2(rect.center) - pg.Vector2(self.size * 5, 0),
                          pg.Vector2(rect.center) + pg.Vector2(self.size * 5, 0),
-                         self.size // 3 + 1)
+                         1)
 
             pg.draw.line(self.surface, camera_border, pg.Vector2(rect.center) - pg.Vector2(0, self.size * 5),
                          pg.Vector2(rect.center) + pg.Vector2(0, self.size * 5),
-                         self.size // 3 + 1)
-            pg.draw.circle(self.surface, camera_border, rect.center, self.size * 3, self.size // 3 + 1)
+                         1)
+            pg.draw.circle(self.surface, camera_border, rect.center, self.size * 3, 1)
 
             if "quads" not in self.data["CM"]:
                 self.data["CM"]["quads"] = []
@@ -836,21 +836,22 @@ class MenuWithField(Menu):
 
                 vec = pg.Vector2([tl, tr, br, bl][quadindx])
 
-                pg.draw.line(self.surface, camera_notheld, rect.center, vec, self.size // 3)
+                widgets.fastmts(self.surface, f"Order: {indx}", rect.centerx + self.size // 2, rect.centery + self.size // 2, white, settings["global"]["fontsize"] // 2)
+
+                pg.draw.line(self.surface, camera_notheld, rect.center, vec, 1)
 
                 rects = [rect.topleft, rect.topright, rect.bottomright, rect.bottomleft]
-                pg.draw.line(self.surface, camera_held, rects[quadindx], vec, self.size // 3)
+                pg.draw.line(self.surface, camera_held, rects[quadindx], vec, 1)
 
                 qlist = [rect.topleft, rect.topright, rect.bottomright, rect.bottomleft]
 
-                pg.draw.circle(self.surface, camera_held, qlist[quadindx], self.size * 5, self.size // 3)
-                widgets.fastmts(self.surface, f"Order: {indx}", rect.centerx, rect.centery, white)
+                pg.draw.circle(self.surface, camera_held, qlist[quadindx], self.size * 5, 1)
                 # pg.draw.circle(self.surface, camera_held, rect.topright, self.size * 5, self.size // 3)
                 # pg.draw.circle(self.surface, camera_held, rect.bottomleft, self.size * 5, self.size // 3)
                 # pg.draw.circle(self.surface, camera_held, rect.bottomright, self.size * 5, self.size // 3)
             elif hasattr(self, "held") and self.held and hasattr(self, "heldindex") and self.heldindex == indx:
                 widgets.fastmts(self.surface, f"Order: {indx}", rect.centerx, rect.centery, white)
-            pg.draw.polygon(self.surface, col, [tl, bl, br, tr], self.size // 3)
+            pg.draw.polygon(self.surface, col, [tl, bl, br, tr], 2)
 
     def getquad(self, indx):
         mpos = pg.Vector2(pg.mouse.get_pos())

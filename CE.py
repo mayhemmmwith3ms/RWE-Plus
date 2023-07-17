@@ -62,7 +62,7 @@ class CE(MenuWithField):
                         v += self.offset * self.size
                         startpos = pg.Vector2(val) / image1size * self.size + v
                         endpos = pg.Vector2(xpos, ypos) / image1size * self.size + v
-                        pg.draw.line(self.surface, purple, startpos, endpos, 3)
+                        pg.draw.line(self.surface, purple, startpos, endpos, 1)
                 val = makearr(val, "point")
                 self.data["CM"]["cameras"][self.heldindex] = val
 

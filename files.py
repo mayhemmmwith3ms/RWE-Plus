@@ -66,7 +66,8 @@ tag = "2.4.1"
 ofstop = 15
 ofsleft = 15
 
-image1size = 20
+image1size = 16
+tileSpriteCellSize = 20
 spritesize = 16
 image2sprite = spritesize / image1size
 sprite2image = image1size / spritesize

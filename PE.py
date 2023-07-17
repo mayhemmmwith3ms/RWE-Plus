@@ -70,6 +70,7 @@ class PE(MenuWithField):
         renderer.geo_full_render(renderer.lastlayer)
 
         super().__init__(surface, "PE", renderer)
+        self.drawtiles = True
         self.catlist = [[]]
         for category in self.props.keys():
             self.catlist[-1].append(category)

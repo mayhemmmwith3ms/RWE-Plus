@@ -88,15 +88,15 @@ class GE(MenuWithField):
         cellsize2 = [self.size, self.size]
         super().blit()
         mpos = pg.Vector2(pg.mouse.get_pos())
-
-        wltx = "Work Layer: " + str(self.layer + 1)
-        widgets.fastmts(self.surface, wltx, *(mpos + [10, -10]), white, 15)
-
+        #print(mpos)
         if self.selectedtool != self.lastselectedtool:
             self.lastselectedtool = self.selectedtool
             self.s0()
             self.recaption()
         if self.onfield:
+            wltx = "Work Layer: " + str(self.layer + 1)
+            widgets.fastmts(self.surface, wltx, *(mpos + [10, -10]), white, 15)
+
             curtool = [graphics["tools"][self.selectedtool][0] * graphics["tilesize"][0],
                        graphics["tools"][self.selectedtool][1] * graphics["tilesize"][1]]
             #nst = self.tools.convert_alpha(self.surface)

@@ -162,12 +162,12 @@ def inittolist():
                 tp = ""
             if tp == "box":  # math
                 ln = 4
-                size = (ln * sz[1] + (item["bfTiles"] * 2)) * image1size
+                size = (ln * sz[1] + (item["bfTiles"] * 2)) * tileSpriteCellSize
                 rect = pg.rect.Rect([0, size, sz[0] * spritesize, sz[1] * spritesize])
-            elif ((ln * sz[1] + (item["bfTiles"] * 2 * ln)) * image1size + 1) > img.get_height():
+            elif ((ln * sz[1] + (item["bfTiles"] * 2 * ln)) * tileSpriteCellSize + 1) > img.get_height():
                 rect = pg.rect.Rect([0, img.get_height() - sz[1] * spritesize, sz[0] * spritesize, sz[1] * spritesize])
             else:
-                size = (sz[1] + (item["bfTiles"] * 2)) * ln * image1size
+                size = (sz[1] + (item["bfTiles"] * 2)) * ln * tileSpriteCellSize
                 rect = pg.rect.Rect([0, size + 1, sz[0] * spritesize, sz[1] * spritesize])
 
             try:
@@ -252,6 +252,7 @@ def renderlevel(data):
     file = open(fl, "w")
     turntolingo(data, file)
     subprocess.Popen(f"\"{application_path}/drizzle/Drizzle.ConsoleApp{'' if islinux else '.exe'}\" render \"{fl}\"", shell=True)
+    #subprocess.Popen(f"\"{application_path}/drizzle/Drizzle.Editor{'' if islinux else '.exe'}\" --project \"{fl}\"-- render", shell=True)
     #os.system(f"{application_path}\\drizzle\\Drizzle.ConsoleApp.exe render {fl}")
     if not islinux:
         os.system("start " + resolvepath(path2renderedlevels))

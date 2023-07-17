@@ -54,6 +54,7 @@ class TE(MenuWithField):
         self.cols = False
 
         self.lastfg = False
+        self.lastfp = False
         self.brushsize = 1
 
         renderer.commsgeocolors = False
@@ -117,6 +118,7 @@ class TE(MenuWithField):
             pos2 = self.pos2
             posoffset = self.posoffset
             fg = self.findparampressed("force_geometry")
+            fp = self.findparampressed("force_place")
 
             self.movemiddle(bp)
 
@@ -128,10 +130,11 @@ class TE(MenuWithField):
                     cposxo = int(posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
                     cposyo = int(posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
 
-                    if posoffset != self.mpos or self.lastfg != fg:
+                    if posoffset != self.mpos or self.lastfg != fg or self.lastfp != fp:
                         self.cols = self.test_cols(cposxo, cposyo)
                         self.mpos = posoffset
                         self.lastfg = fg
+                        self.lastfp = fp
                         self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)}, Work Layer: {self.layer + 1}")
                         if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
                             self.labels[0].set_text(
@@ -205,6 +208,7 @@ class TE(MenuWithField):
                         self.renderer.tiles_render_area(self.area, self.layer)
                         self.renderer.geo_render_area(self.area, self.layer)
                         self.rfa()
+                        self.cols = self.test_cols(cposxo, cposyo)
 
                 def rectfirstframe(place):
                     if(place):
@@ -341,6 +345,7 @@ class TE(MenuWithField):
                     self.renderer.tiles_render_area(self.area, self.layer)
                     self.renderer.geo_render_area(self.area, self.layer)
                     self.rfa()
+                    self.cols = self.test_cols(cposxo, cposyo)
                     if(place):
                         self.mousp = True
                     else:
