@@ -57,6 +57,9 @@ class TE(MenuWithField):
         self.lastfp = False
         self.brushsize = 1
 
+        self.justPlacedChainHolders = []
+        self.blockNextPlacement = False
+
         renderer.commsgeocolors = False
         renderer.geo_full_render(renderer.lastlayer)
 
@@ -171,12 +174,37 @@ class TE(MenuWithField):
                         self.tileimage["image"].set_colorkey([255, 255, 255])
                         self.surface.blit(self.tileimage["image"], [cposx, cposy])
                         self.printcols(cposxo, cposyo, self.tileimage)
-                
+
+                    if self.justPlacedChainHolders:
+                        for chPos in self.justPlacedChainHolders:
+                            pg.draw.line(self.surface, red, self.FieldCoordToDrawPos(chPos, _offset = [self.size, self.size]),
+                                                                [pos2.x + self.size // 2, pos2.y + self.size // 2])
+                    #try:
+                    #    if (tlType := self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]["tp"]) not in ["material", "default"]:
+                    #        if tlType == "tileHead":
+                    #            #chainEnd = toarr(self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]["data"][2], "point")
+                    #            chHeadPos = [[int(posoffset.x + 1), int(posoffset.y + 1)], self.layer]
+                    #        if tlType == "tileBody":
+                    #            chHeadPos = [toarr(self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]["data"][0], "point"),
+                    #                        self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]["data"][1] - 1]
+                    #        if self.data["TE"]["tlMatrix"][int(chHeadPos[0][0] - 1)][int(chHeadPos[0][1] - 1)][chHeadPos[1]]["data"].__len__() == 3:
+                    #            chainEnd = toarr(self.data["TE"]["tlMatrix"][int(chHeadPos[0][0] - 1)][int(chHeadPos[0][1] - 1)][chHeadPos[1]]["data"][2], "point")
+                    #            pg.draw.circle(self.surface, red, self.FieldCoordToDrawPos(chainEnd, [self.size // 2, self.size // 2]), self.size // 3, 1)
+                    #except IndexError:
+                    #    pass
+
+                    if (chainHolderHead := self.GetTileHeadFromTilePart(self.data["TE"]["tlMatrix"][int(max(0, min(posoffset.x, self.levelwidth - 1)))][int(max(0, min(posoffset.y, self.levelheight - 1)))][self.layer])) not in [None, "stray"]:
+                        print(chainHolderHead)
+                        if chainHolderHead["data"][1] == "Chain Holder" and chainHolderHead["data"].__len__() == 3:
+                            chainEnd = toarr(chainHolderHead["data"][2], "point")
+                            pg.draw.circle(self.surface, red, self.FieldCoordToDrawPos(chainEnd, [self.size // 2, self.size // 2]), self.size // 3, 1)
+
                 def singlefirstframe(place):
                     if(place):
                         self.mousp = False
                     else:
                         self.mousp2 = False
+                        self.justPlacedChainHolders.clear()
                     self.emptyarea()
 
                 def singleheld(place):
@@ -197,18 +225,20 @@ class TE(MenuWithField):
                                 pg.draw.rect(self.fieldadd, red, [posoffset.x * self.size, posoffset.y * self.size, self.size, self.size])
 
                 def singlelastframe(place):
-                        self.detecthistory(["TE", "tlMatrix"], not fg)
-                        if fg:
-                            self.detecthistory(["GE"])
-                        self.fieldadd.fill(white)
-                        if(place):
-                            self.mousp = True
-                        else:
-                            self.mousp2 = True
-                        self.renderer.tiles_render_area(self.area, self.layer)
-                        self.renderer.geo_render_area(self.area, self.layer)
-                        self.rfa()
-                        self.cols = self.test_cols(cposxo, cposyo)
+                    self.detecthistory(["TE", "tlMatrix"], not fg)
+                    if fg:
+                        self.detecthistory(["GE"])
+                    self.fieldadd.fill(white)
+                    if(place):
+                        self.mousp = True
+                    else:
+                        self.mousp2 = True
+                    self.renderer.tiles_render_area(self.area, self.layer)
+                    self.renderer.geo_render_area(self.area, self.layer)
+                    self.rfa()
+                    self.cols = self.test_cols(cposxo, cposyo)
+                    if not self.justPlacedChainHolders:
+                        self.blockNextPlacement = False
 
                 def rectfirstframe(place):
                     if(place):
@@ -353,7 +383,13 @@ class TE(MenuWithField):
                         
                 if self.tool == 0:
                     if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
-                        singlefirstframe(True)
+                        if self.justPlacedChainHolders:
+                            for chPos in self.justPlacedChainHolders:
+                                self.data["TE"]["tlMatrix"][chPos[0]][chPos[1]][chPos[2]]["data"].append(makearr([cposxo, cposyo], "point"))
+                                self.data["TE"]["tlMatrix"][chPos[0]][chPos[1]][chPos[2]]["data"][0] = makearr([15, 22], "point") #dont fucking ask me why this works
+                            self.justPlacedChainHolders.clear()
+                        else:
+                            singlefirstframe(True)
                     elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
                         singleheld(True)
                     elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
@@ -608,7 +644,7 @@ class TE(MenuWithField):
                 pg.draw.rect(self.surface, blue, rect, 1)
             except:
                 pass
-
+    
     def brushpaint(self, pos: pg.Vector2, place = True):
         if self.squarebrush:
             for xp in range(self.brushsize):
@@ -803,6 +839,20 @@ class TE(MenuWithField):
         cat = self.buttonslist[-1].text
         self.set(cat, text)
 
+    def GetTileHeadFromTilePart(self, part):
+        if part["tp"] in ["default", "material"]:
+            return None
+        if part["tp"] == "tileHead":
+            return part
+        
+        headPos = [toarr(part["data"][0], "point"), part["data"][1] - 1]
+        headTile = self.data["TE"]["tlMatrix"][int(headPos[0][0] - 1)][int(headPos[0][1] - 1)][headPos[1]]
+
+        if headTile["tp"] == "tileHead":
+            return headTile
+        else:
+            return "stray"
+
     def set(self, cat, name, render=True):
         if not settings["TE"]["officialMouseControlStyle"]:
             self.tool = 0
@@ -922,6 +972,8 @@ class TE(MenuWithField):
 
 
     def place(self, x, y, render=False):
+        if self.blockNextPlacement:
+            return
         fg = self.findparampressed("force_geometry")
         w, h = self.tileimage["size"]
         px = x + int((w * .5) + .5) - 1 # center coordinates
@@ -971,6 +1023,10 @@ class TE(MenuWithField):
                         if fg:
                             self.data["GE"][xpos][ypos][self.layer + 1][0] = csp
         self.mpos = 1
+
+        if "Chain Holder" in self.tileimage["tags"]:
+            self.justPlacedChainHolders.append([x, y, self.layer])
+            self.blockNextPlacement = True
         #if fg:
         #    self.rfa()
 
