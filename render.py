@@ -325,8 +325,11 @@ class Renderer:
             curtool = [graphics["shows"][str(cell)][0] * image1size,
                        graphics["shows"][str(cell)][1] * image1size]
             
-            if(cell not in [0, 7]):
+            if(cell not in [0, 7] and not (cell == 1 and 11 in over)):
                 pixel.blit(convrender, [0, 0], [curtool, cellsize2])
+
+            if cell in [7]:
+                pixel.blit(convrender, [0, 0], [[graphics["shows2"]["SEMITR"][0] * image1size, graphics["shows2"]["SEMITR"][1] * image1size], cellsize2])
 
             if 4 in over and self.data["GE"][xp][yp][i][0] != 7:
                 self.data["GE"][xp][yp][i][1].remove(4)
@@ -334,8 +337,14 @@ class Renderer:
                 over.remove(11)
                 over.insert(0, 11)
             for addsindx, adds in enumerate(over):
-                curtool = [graphics["shows2"][str(adds)][0] * image1size,
-                           graphics["shows2"][str(adds)][1] * image1size]
+                invalid = False
+                try:
+                    curtool = [graphics["shows2"][str(adds)][0] * image1size,
+                            graphics["shows2"][str(adds)][1] * image1size]
+                except KeyError:
+                    invalid = True
+                    curtool = [graphics["shows2"]["SEMITR"][0] * image1size,
+                                 graphics["shows2"]["SEMITR"][1] * image1size]
                 bufftiles = self.data["EX2"]["extraTiles"]
                 bufftiles = pg.Rect(bufftiles[0], bufftiles[1],
                                     self.levelwidth - bufftiles[0] - bufftiles[2],
@@ -402,14 +411,17 @@ class Renderer:
                         else:  # if no breaks
                             if tilecounter == 7 and foundwire and foundair and pos != -1:  # if we found the right one
                                 curtool = [pos[0] * image1size, pos[1] * image1size]
-                if adds in [1, 2]:
-                    pixel.blit(convrender, [0, 0], [curtool, cellsize2])
+                if adds in [1, 2, 3, 11]:
+                    if(adds == 11 and cell in [2, 3, 4, 5]):
+                        pixel.blit(convrender, [0, 0], [[graphics["shows2"]["10"][0] * image1size, graphics["shows2"]["10"][1] * image1size], cellsize2])
+                    else:
+                        pixel.blit(convrender, [0, 0], [curtool, cellsize2])
                 else:
-                    isuckatcoding = renderedimage.convert_alpha(stackables)
-                    if i != 0:
-                        isuckatcoding.fill(red, special_flags=pg.BLEND_MULT)
+                    stackableSurf = renderedimage.convert_alpha(stackables)
+                    if i != 0 or invalid:
+                        stackableSurf.fill(red, special_flags=pg.BLEND_MULT)
                         
-                    stackables.blit(isuckatcoding, [0, 0], [curtool, cellsize2])
+                    stackables.blit(stackableSurf, [0, 0], [curtool, cellsize2])
         pixel.blit(stackables, [0, 0])
         return pixel
 
