@@ -135,7 +135,7 @@ class TE(MenuWithField):
                         self.mpos = posoffset
                         self.lastfg = fg
                         self.lastfp = fp
-                        self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)}, Work Layer: {self.layer + 1}, Zoom: {(self.size / image1size) * 100}%")
+                        self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / image1size) * 100}%")
                         if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
                             self.labels[0].set_text(
                                 "Tile: " + str(self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]))

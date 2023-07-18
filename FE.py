@@ -304,7 +304,7 @@ class FE(MenuWithField):
     def chtext(self):
         if len(self.data["FE"]["effects"]) > 0:
             self.labels[0].set_text(self.labels[0].originaltext % (self.data["FE"]["effects"][self.selectedeffect]["options"][self.paramindex][0], self.data["FE"]["effects"][self.selectedeffect]["options"][self.paramindex][2]))
-            self.labels[1].set_text(self.labels[1].originaltext + self.data["FE"]["effects"][self.selectedeffect]["nm"] + f", Zoom: {(self.size / image1size) * 100}%")
+            self.labels[1].set_text(self.labels[1].originaltext + self.data["FE"]["effects"][self.selectedeffect]["nm"] + f" | Zoom: {(self.size / image1size) * 100}%")
             self.buttons[self.settings["currentparamindex"]].set_text(str(self.paramindex))
         else:
             self.labels[0].set_text("")
@@ -369,31 +369,41 @@ class FE(MenuWithField):
     def prevparam(self):
         if self.paramindex - 1 >= 0:
             self.paramindex -= 1
+        else:
+            self.paramindex = len(self.data["FE"]["effects"][self.selectedeffect]["options"]) - 1
         self.makeparams()
 
     def nextparam(self):
         if self.paramindex + 1 < len(self.data["FE"]["effects"][self.selectedeffect]["options"]):
             self.paramindex += 1
+        else:
+            self.paramindex = 0
         self.makeparams()
 
     def nextcat(self):
-        self.innew = True
-        self.currentindex = 0
-        if self.currentcategory + 1 >= len(effects):
-            self.currentcategory = 0
+        #self.innew = True
+        if self.innew:
+            self.currentindex = 0
+            if self.currentcategory + 1 >= len(effects):
+                self.currentcategory = 0
+                self.rebuttons()
+                return
+            self.currentcategory += 1
             self.rebuttons()
-            return
-        self.currentcategory += 1
-        self.rebuttons()
+        else:
+            self.nextparam()
     def prevcat(self):
-        self.innew = True
-        self.currentindex = 0
-        if self.currentcategory - 1 < 0:
-            self.currentcategory = len(effects) - 1
+        #self.innew = True
+        if self.innew:
+            self.currentindex = 0
+            if self.currentcategory - 1 < 0:
+                self.currentcategory = len(effects) - 1
+                self.rebuttons()
+                return
+            self.currentcategory -= 1
             self.rebuttons()
-            return
-        self.currentcategory -= 1
-        self.rebuttons()
+        else:
+            self.prevparam()
 
     def resize(self):
         super().resize()
@@ -437,7 +447,8 @@ class FE(MenuWithField):
         if self.innew:
             self.addeffect(self.buttonslist[self.currentindex].text)
             return
-        self.deleteeffect()
+        #self.innew = True
+        #self.deleteeffect()
 
     def addeffect(self, text):
         self.innew = True
@@ -505,7 +516,7 @@ class FE(MenuWithField):
         self.innew = True
 
     def notinnewtab(self):
-        self.innew = False
+        self.innew = not self.innew
 
     def scrl_up_new(self):
         self.innewtab()
@@ -514,7 +525,8 @@ class FE(MenuWithField):
             self.currentindex = len(self.buttonslist) - 2
 
     def scrl_up_menu(self):
-        self.notinnewtab()
+        self.paramindex = 0
+        self.innew = False
         self.selectedeffect -= 1
         if self.selectedeffect < 0:
             self.selectedeffect = len(self.data["FE"]["effects"]) - 1
@@ -527,7 +539,8 @@ class FE(MenuWithField):
             self.currentindex = 0
 
     def scrl_down_menu(self):
-        self.notinnewtab()
+        self.paramindex = 0
+        self.innew = False
         self.selectedeffect += 1
         if self.selectedeffect > len(self.data["FE"]["effects"]) - 1:
             self.selectedeffect = 0

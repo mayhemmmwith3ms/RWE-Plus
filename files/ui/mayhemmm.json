@@ -308,20 +308,20 @@
 		"buttons": [
 			["v", [92, 2, 4, 4], [100, 100, 100], "scrl_down_new", "non", "Next effect(<[-scrl_down]>)", ["arrows.png", [2, 0]]],
 			["^", [88, 2, 4, 4], [100, 100, 100], "scrl_up_new", "non", "Previous effect(<[-scrl_up]>)", ["arrows.png", [1, 0]]],
-			[">", [84, 2, 4, 4], [100, 100, 100], "nextcat", "non", "Next category(<[-nextcat]>)", ["arrows.png", [0, 0]]],
+			[">", [84, 2, 4, 4], [100, 100, 100], "nextcat", "non", "Next category([<[-nextcat]>] while new effects list is selected)", ["arrows.png", [0, 0]]],
 			["Add", [78, 2, 6, 4], [100, 100, 100], "innewtab", "addordeleteselectedeffect", "Add effect to project(<[-innewtab]>)", ["icons.png", [3, 0]]],
-			["<", [74, 2, 4, 4], [100, 100, 100], "prevcat", "non", "Previous category(<[-prevcat]>)", ["arrows.png", [3, 0]]],
+			["<", [74, 2, 4, 4], [100, 100, 100], "prevcat", "non", "Previous category([<[-prevcat]>] while new effects list is selected)", ["arrows.png", [3, 0]]],
 
 
 			["v", [92, 60, 4, 4], [100, 100, 100], "scrl_down_menu", "non", "Next effect(<[-scrl_down]>)", ["arrows.png", [2, 0]]],
-			["Delete", [78, 60, 14, 4], [100, 100, 100], "notinnewtab", "addordeleteselectedeffect", "Delete effect from project(<[-notinnewtab]>)", ["icons.png", [0, 0]]],
+			["Delete", [78, 60, 14, 4], [100, 100, 100], "notinnewtab", "addordeleteselectedeffect", "Delete effect from project(<[-deleteeffect]>)", ["icons.png", [0, 0]]],
 			["Duplicate", [74, 56, 22, 4], [100, 100, 100], "notinnewtab", "duplicate", "Duplicate selected effect(<[-duplicate]>)"],
 			["^", [74, 60, 4, 4], [100, 100, 100], "scrl_up_menu", "non", "Previous effect(<[-scrl_up]>)", ["arrows.png", [1, 0]]],
 
 
-			["^", [2, 65, 4, 6], [100, 100, 100], "prevparam", "non", "Previous parameter(<[-prevparam]>)", ["arrows.png", [1, 0]]],
+			["^", [2, 65, 4, 6], [100, 100, 100], "prevparam", "non", "Previous parameter([<[-prevcat]>] while existing effects list is selected)", ["arrows.png", [1, 0]]],
 			["0", [2, 71, 4, 6], [100, 100, 100], "non", "non", "Current parameter"],
-			["v", [2, 77, 4, 6], [100, 100, 100], "nextparam", "non", "Next parameter(<[-nextparam]>)", ["arrows.png", [2, 0]]],
+			["v", [2, 77, 4, 6], [100, 100, 100], "nextparam", "non", "Next parameter([<[-nextcat]>] while existing effects list is selected)", ["arrows.png", [2, 0]]],
 			["CT", [2, 83, 4, 6], [100, 100, 100], "copytool", "non", "Copy effect zone(<[-copytool]>)", ["geometry.png", [1, 2]]],
 			["PS", [2, 89, 4, 6], [100, 100, 100], "pastedata", "non", "Paste(<[-pastedata]>)", ["geometry.png", [3, 6]]],
 			["?", [98, 0, 2, 2], [90, 90, 90], "watch_keys", "non", "Hotkeys", ["editors.png", [6, 1]]],
