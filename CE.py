@@ -26,7 +26,7 @@ class CE(MenuWithField):
 
     def blit(self):
         super().blit()
-        self.labels[0].set_text(self.labels[0].originaltext % len(self.data["CM"]["cameras"]))
+        self.labels[0].set_text(self.labels[0].originaltext % len(self.data["CM"]["cameras"]) + f", Zoom: {(self.size / image1size) * 100}%")
 
         if self.onfield and len(self.data["CM"]["cameras"]) > 0:
 

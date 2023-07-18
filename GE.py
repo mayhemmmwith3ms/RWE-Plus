@@ -113,7 +113,7 @@ class GE(MenuWithField):
             toolsized = pg.transform.scale(self.toolrender,
                                            pg.Vector2(self.toolrender.get_size()) / image1size * self.size).convert_alpha(self.surface)
             toolsized.fill(red, special_flags=pg.BLEND_RGBA_MULT)
-            self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)}, Work Layer: {self.layer + 1}")
+            self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)}, Work Layer: {self.layer + 1}, Zoom: {(self.size / image1size) * 100}%")
             #print(self.placetile)
             if self.selectedtool in graphics["codes"].keys():
                 if type(self.placetile) == int:

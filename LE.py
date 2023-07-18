@@ -101,7 +101,7 @@ class LE(MenuWithField):
             self.if_set(s[3], 3)
 
             self.labels[0].set_text("Image: " + graphics["shadowimages"][self.selectedimage])
-            self.labels[1].set_text(f"X: {curpos_on_field[0]}, Y: {curpos_on_field[1]}")
+            self.labels[1].set_text(f"X: {curpos_on_field[0]}, Y: {curpos_on_field[1]}, Zoom: {(self.size / image1size) * 100}%")
 
             self.surface.blit(self.tileimage, curpos)
             bp = self.getmouse

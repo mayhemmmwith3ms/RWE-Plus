@@ -344,6 +344,7 @@ def loadmenu():
                     keypress(window)
         window.fill(pg.color.Color(settings["global"]["color"]))
         surf.blit()
+        surf.justChangedZoom = False
         pg.display.flip()
         pg.display.update()
     pg.quit()

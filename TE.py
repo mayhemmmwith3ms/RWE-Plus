@@ -130,12 +130,12 @@ class TE(MenuWithField):
                     cposxo = int(posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
                     cposyo = int(posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
 
-                    if posoffset != self.mpos or self.lastfg != fg or self.lastfp != fp:
+                    if posoffset != self.mpos or self.lastfg != fg or self.lastfp != fp or self.justChangedZoom:
                         self.cols = self.test_cols(cposxo, cposyo)
                         self.mpos = posoffset
                         self.lastfg = fg
                         self.lastfp = fp
-                        self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)}, Work Layer: {self.layer + 1}")
+                        self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)}, Work Layer: {self.layer + 1}, Zoom: {(self.size / image1size) * 100}%")
                         if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
                             self.labels[0].set_text(
                                 "Tile: " + str(self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]))

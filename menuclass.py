@@ -36,6 +36,7 @@ class Menu:
         self.mousp1 = True
         self.mousp2 = True
 
+        self.justChangedZoom = False
         self.size = image1size
         self.message = ""
         self.buttons: list[widgets.button, ...] = []
@@ -572,7 +573,7 @@ class MenuWithField(Menu):
     def reload(self):
         global settings
         settings = json.load(open(path2ui + graphics["uifile"], "r"))
-        self.__init__(self.surface, self.menu, self.renderer)
+        self.__init__(self.surface, self.renderer)
 
     def movemiddle(self, bp):
         if bp[1] == 1 and self.mousp1 and (self.mousp2 and self.mousp):
@@ -705,6 +706,7 @@ class MenuWithField(Menu):
                 self.size += 1
                 self.offset -= pos - self.pos
                 self.renderfield()
+                self.justChangedZoom = True
             case "SD":
                 if not self.onfield:
                     return
@@ -713,6 +715,7 @@ class MenuWithField(Menu):
                     self.size -= 1
                     self.offset -= pos - self.pos
                     self.renderfield()
+                    self.justChangedZoom = True
             case "left":
                 self.offset.x += 1
             case "right":
@@ -777,6 +780,13 @@ class MenuWithField(Menu):
     def togglegrid(self):
         self.drawgrid = not self.drawgrid
         self.rfa()
+
+    def resetzoom(self):
+        pos = self.pos
+        self.size = image1size
+        self.offset -= pos - self.pos
+        self.renderfield()
+        self.justChangedZoom = True
 
     def rendercameras(self):
         closest = 0

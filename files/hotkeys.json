@@ -36,7 +36,8 @@
     	"K_l": "/-swichlayers",
     	"K_l+": "/-swichlayers_back",
     	"K_F1": "/-togglelayervisible",
-    	"K_F2": "/-toggletileslayervisible"
+    	"K_F2": "/-toggletileslayervisible",
+		"K_t+": "/-resetzoom"
   	},
   	"LD": {
   		"unlock_keys": [],

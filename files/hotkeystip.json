@@ -30,7 +30,8 @@
         "/-swichlayers": "Switch layers on menu with fields",
         "/-swichlayers_back": "Switch layers back",
         "/-togglelayervisible": "Toggles geometry layer",
-        "/-toggletileslayervisible": "Toggles tile layer"
+        "/-toggletileslayervisible": "Toggles tile layer",
+        "/-resetzoom": "Reset zoom level to default"
     },
     "LD": {
         "new": "New file",
