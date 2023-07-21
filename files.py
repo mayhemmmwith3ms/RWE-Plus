@@ -217,11 +217,11 @@ def map(x, in_min, in_max, out_min, out_max):
 
 
 def report():
-    webbrowser.open("https://github.com/timofey260/RWE-Plus/issues/new/choose")
+    webbrowser.open("https://github.com/methylredd/RWE-Plus/issues/new/choose")
 
 
 def github():
-    webbrowser.open("https://github.com/timofey260/RWE-Plus")
+    webbrowser.open("https://github.com/methylredd/RWE-Plus")
 
 
 effects = solveeffects(e)
