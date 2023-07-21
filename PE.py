@@ -66,7 +66,11 @@ class PE(MenuWithField):
         self.renderprop = True
         self.modpress = False
 
+        renderer.commsgeocolors = False
+        renderer.geo_full_render(renderer.lastlayer)
+
         super().__init__(surface, "PE", renderer)
+        self.drawtiles = True
         self.catlist = [[]]
         for category in self.props.keys():
             self.catlist[-1].append(category)
@@ -230,7 +234,7 @@ class PE(MenuWithField):
             for button in self.settingslist:
                 button.blit(sum(pg.display.get_window_size()) // 120)
         super().blit()
-        self.labels[2].set_text(self.labels[2].originaltext + str(self.prop_settings))
+        self.labels[2].set_text(self.labels[2].originaltext + str(self.prop_settings) + f" | Zoom: {(self.size / image1size) * 100}%")
         self.labels[0].set_text(self.labels[0].originaltext + "\n".join(self.notes))
         cir = [self.buttonslist[self.toolindex].rect.x + 3,
                self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
@@ -243,6 +247,12 @@ class PE(MenuWithField):
             pos2 = pg.Vector2(round(math.floor(realpos.x / s2) * s2 - self.selectedimage.get_width() / 2, 4),
                               round(math.floor(realpos.y / s2) * s2 - self.selectedimage.get_height() / 2, 4))
             pos2 += self.field.rect.topleft
+
+            posonfield = ((mpos - pg.Vector2(self.field.rect.topleft)) / self.size - pg.Vector2(self.xoffset, self.yoffset)) * spritesize
+            if self.snap:
+                posonfield = pg.Vector2(
+                    round(math.floor(realpos.x / (self.size / 2)) * (spritesize / 2) - self.xoffset * spritesize, 4),
+                    round(math.floor(realpos.y / (self.size / 2)) * (spritesize / 2) - self.yoffset * spritesize, 4))
 
             posoffset = self.posoffset * spritesize
             bp = self.getmouse
@@ -314,7 +324,7 @@ class PE(MenuWithField):
                         self.prop_settings = name[4]["settings"]
                         self.updateproptransform()
                 elif self.selectedprop["tp"] == "long":
-                    self.rectdata[0] = posoffset.copy()
+                    self.rectdata[0] = posonfield.copy()
                     self.rectdata[1] = mpos.copy()
                     self.transform_reset()
                 else:
@@ -323,7 +333,7 @@ class PE(MenuWithField):
                 if self.selectedprop["tp"] == "long" and self.renderprop:
                     self.transform_reset()
                     p1 = self.rectdata[0]
-                    p2 = posoffset
+                    p2 = posonfield
                     vec = p2 - p1
                     angle = math.degrees(math.atan2(vec.y, vec.x))
                     distance = p1.distance_to(p2)
@@ -344,12 +354,18 @@ class PE(MenuWithField):
                     self.rectdata[2] = pg.Vector2(i.get_size())
                     i = pg.transform.scale(i, [ww / spritesize * self.size, wh / spritesize * self.size])
                     i.set_colorkey(white)
-                    self.surface.blit(i, (self.rectdata[1] + mpos) / 2 - pg.Vector2(i.get_size()) / 2)
+                    if self.snap:
+                        dpos = pg.Vector2(
+                            round(math.floor(mpos.x / (self.size / 2)) * (self.size / 2), 4),
+                            round(math.floor(mpos.y / (self.size / 2)) * (self.size / 2), 4))
+                    else:
+                        dpos = mpos
+                    self.surface.blit(i, (self.rectdata[1] + dpos) / 2 - pg.Vector2(i.get_size()) / 2)
 
             elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
                 self.mousp = True
                 if self.selectedprop["tp"] == "long" and self.renderprop and not self.modpress:
-                    self.place((self.rectdata[0] + posoffset) / 2)
+                    self.place((self.rectdata[0] + posonfield) / 2)
                     self.transform_reset()
                 self.modpress = False
 
@@ -397,7 +413,11 @@ class PE(MenuWithField):
                         near = pg.Vector2(toarr(nearp, "point"))
                         ofc = pg.Vector2(self.xoffset, self.yoffset)
                         pos2 = (near / spritesize + ofc) * self.size + self.field.rect.topleft
-                        pg.draw.line(self.surface, red, mpos, pos2, 10)
+                        if self.copymode:
+                            selectLineCol = blue
+                        if self.delmode:
+                            selectLineCol = red
+                        pg.draw.line(self.surface, selectLineCol, mpos, pos2, 1)
             self.movemiddle(bp)
         else:
             if not self.matshow:
@@ -659,6 +679,8 @@ class PE(MenuWithField):
         self.loadimage()
 
         w, h = self.selectedimage.get_size()
+        w = w // 1.25
+        h = h // 1.25
         wd, hd = w / 2, h / 2
         self.quads = [[-wd, -hd], [wd, -hd], [wd, hd], [-wd, hd]]
         self.normheight = pg.Vector2(self.quads[0]).distance_to(pg.Vector2(self.quads[3]))
@@ -706,7 +728,7 @@ class PE(MenuWithField):
         if self.selectedprop["tp"] == "rope":
             points = []
             for segment in self.ropeobject.segments:
-                point = [segment["pos"].x, segment["pos"].y]
+                point = [segment["pos"].x * 1.25, segment["pos"].y * 1.25] #i love bandaid fix
                 point = makearr([round(point[0], 4), round(point[1], 4)], "point")
                 points.append(point)
             prop[4]["points"] = points

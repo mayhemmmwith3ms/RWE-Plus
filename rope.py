@@ -169,7 +169,7 @@ class RopeModel:
                     self.segments[A]["vel"] = Vector2(0, 0) # not a total fix
 
     def giveMiddleOfTile(self, pos):
-        return Vector2((pos.x * 20) - 10, (pos.y * 20) - 10)
+        return Vector2((pos.x * 16) - 8, (pos.y * 16) - 8)
 
     def sharedCheckVCollision(self, p, friction, layer):
         bounce = 0
@@ -186,7 +186,7 @@ class RopeModel:
                         if lastGridPos.y >= q and self.afaMvLvlEdit(lastGridPos, layer) == 1:
                             pass
                         else:
-                            p["Loc"].y = ((q-1) * 20) - p["SizePnt"].y
+                            p["Loc"].y = ((q-1) * 16) - p["SizePnt"].y
                             p["Frc"].x *= friction
                             p["Frc"].y = -p["Frc"].y * bounce
                             return p
@@ -203,14 +203,14 @@ class RopeModel:
                         if lastGridPos.y <= q and self.afaMvLvlEdit(lastGridPos, layer) != 1:
                             pass
                         else:
-                            p["Loc"].y = (q * 20) + p["SizePnt"].y
+                            p["Loc"].y = (q * 16) + p["SizePnt"].y
                             p["Frc"].x *= friction
                             p["Frc"].y = -p["Frc"].y * bounce
                             return p
         return p
 
     def giveGridPos(self, pos: Vector2):
-        return Vector2(int((pos.x / 20) + 0.4999), int((pos.y / 20) + 0.4999))
+        return Vector2(int((pos.x / 16) + 0.4999), int((pos.y / 16) + 0.4999))
 
     def afaMvLvlEdit(self, pos: Vector2, layer):
         if __name__ == "__main__":

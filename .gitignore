@@ -1,2 +1,10 @@
 # created by virtualenv automatically
-*
+
+dist/
+LevelEditorProjects/
+drizzle/Data/Levels/
+__pycache__/
+build/
+hotkeys_to_md.exe
+recent.txt
+main.spec

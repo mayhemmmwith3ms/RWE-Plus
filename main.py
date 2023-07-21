@@ -4,6 +4,7 @@ import traceback
 import requests
 from menus import *
 from tkinter.messagebox import askyesnocancel, askyesno
+from tkinter.filedialog import askopenfilename, asksaveasfilename
 import argparse
 from path_dict import PathDict
 from lingotojson import *
@@ -77,10 +78,13 @@ def keypress(window):
             surf.savef()
             run = False
         case "open":
-            openlevel(surf.asksaveasfilename(defaultextension=[".txt", ".wep"]), window)
+            #openlevel(surf.asksaveasfilename(defaultextension=[".txt", ".wep"]), window)
+            openlevel(askopenfilename(defaultextension=[".txt", ".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects"), window)
 
 
 def undohistory():
+    if not settings["global"]["enableundo"]:
+        return
     global undobuffer, redobuffer, file, surf
     if len(undobuffer) == 0:
         return
@@ -106,6 +110,8 @@ def undohistory():
 
 
 def redohistory():
+    if not settings["global"]["enableundo"]:
+        return
     global undobuffer, redobuffer, file, surf
     if len(redobuffer) == 0:
         return
@@ -147,6 +153,9 @@ def asktoexit(file, file2):
 
 def launchload(level):
     global surf, fullscreen, undobuffer, redobuffer, file, file2, run
+    recent = open(path + "recent.txt", "w")
+    recent.write(str(level))
+    recent.close()
     if level == -1:
         file = turntoproject(open(path + "default.txt", "r").read())
         file["level"] = ""
@@ -304,7 +313,8 @@ def loadmenu():
             case "new":
                 launch(-1)
             case "open":
-                file = surf.asksaveasfilename(defaultextension=[".txt", ".wep"])
+                #file = surf.asksaveasfilename(defaultextension=[".txt", ".wep"])
+                file = askopenfilename(defaultextension=[".txt", ".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
                 if file is not None and os.path.exists(file):
                     launch(file)
                     surf = load(window, renderer)
@@ -316,6 +326,18 @@ def loadmenu():
             case "load":
                 renderer = Renderer({"path": ""}, None, None, None, False)
                 surf = load(window, renderer)
+            case "recent":
+                file = None
+
+                if(os.path.exists(path + "recent.txt")):
+                    file = open(path + "recent.txt").read()
+                    
+                if file is not None and os.path.exists(file):
+                    launch(file)
+                    surf = load(window, renderer)
+                else:
+                    print("Most recent file either does not exist or was moved/deleted. Open a level normally to create one.")
+
         surf.message = ""
         if not pg.key.get_pressed()[pg.K_LCTRL]:
             for i in surf.uc:
@@ -323,6 +345,7 @@ def loadmenu():
                     keypress(window)
         window.fill(pg.color.Color(settings["global"]["color"]))
         surf.blit()
+        surf.justChangedZoom = False
         pg.display.flip()
         pg.display.update()
     pg.quit()

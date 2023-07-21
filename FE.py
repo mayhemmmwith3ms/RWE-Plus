@@ -27,7 +27,11 @@ class FE(MenuWithField):
 
         self.copymode = False
 
+        renderer.commsgeocolors = False
+        renderer.geo_full_render(renderer.lastlayer)
+
         super().__init__(surface, "FE", renderer)
+        self.drawtiles = True
         #self.fieldadd.set_colorkey(None)
         self.fieldadd.set_alpha(200)
         self.makeparams()
@@ -58,17 +62,26 @@ class FE(MenuWithField):
             if i.onmouseover():
                 effect = self.geteffect(i.text)
                 if effect is not None and effect.get("preview"):
-                    self.surface.blit(effect["preview"], i.rect.bottomright)
+                    if settings["global"]["previewleftside"]:
+                        previewPos = [i.rect.bottomleft[0] - effect["preview"].get_width(), i.rect.bottomleft[1]]
+                    self.surface.blit(effect["preview"], previewPos)
         for i in self.buttonslist2:
             i.blit(ts)
             if i.onmouseover():
                 effect = self.geteffect(i.text)
                 if effect is not None and effect.get("preview"):
                     if effect["preview"].get_height() + i.rect.y > self.surface.get_height():
-                        self.surface.blit(effect["preview"], [i.rect.x + i.rect.w,
-                                                              self.surface.get_height()-effect["preview"].get_height()])
+                        previewPos = [i.rect.x + i.rect.w, self.surface.get_height()-effect["preview"].get_height()]
+                        if settings["global"]["previewleftside"]:
+                            previewPos = [i.rect.bottomleft[0] - effect["preview"].get_width(), self.surface.get_height()-effect["preview"].get_height()]
+                        self.surface.blit(effect["preview"], previewPos)
                     else:
-                        self.surface.blit(effect["preview"], i.rect.bottomright)
+                        previewPos = i.rect.bottomright
+                        if settings["global"]["previewleftside"]:
+                            previewPos = [i.rect.bottomleft[0] - effect["preview"].get_width(), i.rect.bottomleft[1]]
+                        self.surface.blit(effect["preview"], previewPos)
+        
+        feCursor = settings["global"]["colors"]["FECursor"]
 
         cir = [self.buttonslist[self.currentindex].rect.x + 3,
                self.buttonslist[self.currentindex].rect.y + self.buttonslist[self.currentindex].rect.h / 2]
@@ -87,12 +100,16 @@ class FE(MenuWithField):
         mpos = pg.Vector2(pg.mouse.get_pos())
         bp = self.getmouse
 
-        if self.onfield and len(self.data["FE"]["effects"]) > 0:
-            if not self.copymode:
-                pg.draw.circle(self.surface, cursor, mpos, self.brushsize * self.size, 4)
-
+        if self.onfield and len(self.data["FE"]["effects"]) > 0:         
             posoffset = self.posoffset
             pos2 = self.pos2
+
+            if not self.copymode:
+                if self.brushsize <= 1:
+                    maxstrrect = [[pos2.x, pos2.y], [self.size, self.size]]
+                    pg.draw.rect(self.surface, feCursor, maxstrrect, 1)
+                else:
+                    pg.draw.circle(self.surface, feCursor, mpos, self.brushsize * self.size - (self.size // 2), 1)
 
             if posoffset != self.mpos:
                 self.mpos = posoffset
@@ -287,11 +304,11 @@ class FE(MenuWithField):
     def chtext(self):
         if len(self.data["FE"]["effects"]) > 0:
             self.labels[0].set_text(self.labels[0].originaltext % (self.data["FE"]["effects"][self.selectedeffect]["options"][self.paramindex][0], self.data["FE"]["effects"][self.selectedeffect]["options"][self.paramindex][2]))
-            self.labels[1].set_text(self.labels[1].originaltext + self.data["FE"]["effects"][self.selectedeffect]["nm"])
+            self.labels[1].set_text(self.labels[1].originaltext + self.data["FE"]["effects"][self.selectedeffect]["nm"] + f" | Zoom: {(self.size / image1size) * 100}%")
             self.buttons[self.settings["currentparamindex"]].set_text(str(self.paramindex))
         else:
             self.labels[0].set_text("")
-            self.labels[1].set_text("")
+            self.labels[1].set_text(f"Zoom: {(self.size / image1size) * 100}%")
             self.buttons[self.settings["currentparamindex"]].set_text("0")
 
     def changeparam(self, text): # "Delete", "Move Back", "Move Forth"
@@ -352,31 +369,41 @@ class FE(MenuWithField):
     def prevparam(self):
         if self.paramindex - 1 >= 0:
             self.paramindex -= 1
+        else:
+            self.paramindex = len(self.data["FE"]["effects"][self.selectedeffect]["options"]) - 1
         self.makeparams()
 
     def nextparam(self):
         if self.paramindex + 1 < len(self.data["FE"]["effects"][self.selectedeffect]["options"]):
             self.paramindex += 1
+        else:
+            self.paramindex = 0
         self.makeparams()
 
     def nextcat(self):
-        self.innew = True
-        self.currentindex = 0
-        if self.currentcategory + 1 >= len(effects):
-            self.currentcategory = 0
+        #self.innew = True
+        if self.innew:
+            self.currentindex = 0
+            if self.currentcategory + 1 >= len(effects):
+                self.currentcategory = 0
+                self.rebuttons()
+                return
+            self.currentcategory += 1
             self.rebuttons()
-            return
-        self.currentcategory += 1
-        self.rebuttons()
+        else:
+            self.nextparam()
     def prevcat(self):
-        self.innew = True
-        self.currentindex = 0
-        if self.currentcategory - 1 < 0:
-            self.currentcategory = len(effects) - 1
+        #self.innew = True
+        if self.innew:
+            self.currentindex = 0
+            if self.currentcategory - 1 < 0:
+                self.currentcategory = len(effects) - 1
+                self.rebuttons()
+                return
+            self.currentcategory -= 1
             self.rebuttons()
-            return
-        self.currentcategory -= 1
-        self.rebuttons()
+        else:
+            self.prevparam()
 
     def resize(self):
         super().resize()
@@ -420,7 +447,8 @@ class FE(MenuWithField):
         if self.innew:
             self.addeffect(self.buttonslist[self.currentindex].text)
             return
-        self.deleteeffect()
+        #self.innew = True
+        #self.deleteeffect()
 
     def addeffect(self, text):
         self.innew = True
@@ -488,7 +516,7 @@ class FE(MenuWithField):
         self.innew = True
 
     def notinnewtab(self):
-        self.innew = False
+        self.innew = not self.innew
 
     def scrl_up_new(self):
         self.innewtab()
@@ -497,7 +525,8 @@ class FE(MenuWithField):
             self.currentindex = len(self.buttonslist) - 2
 
     def scrl_up_menu(self):
-        self.notinnewtab()
+        self.paramindex = 0
+        self.innew = False
         self.selectedeffect -= 1
         if self.selectedeffect < 0:
             self.selectedeffect = len(self.data["FE"]["effects"]) - 1
@@ -510,7 +539,8 @@ class FE(MenuWithField):
             self.currentindex = 0
 
     def scrl_down_menu(self):
-        self.notinnewtab()
+        self.paramindex = 0
+        self.innew = False
         self.selectedeffect += 1
         if self.selectedeffect > len(self.data["FE"]["effects"]) - 1:
             self.selectedeffect = 0

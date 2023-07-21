@@ -5,6 +5,7 @@ from path_dict import PathDict
 from pathlib import Path
 from lingotojson import *
 import pygame as pg
+import menuclass
 
 colors = settings["global"]["colors"]  # NOQA
 
@@ -64,6 +65,8 @@ renderedimage = pg.transform.scale(tooltiles, [
             (tooltiles.get_width() / graphics["tilesize"][0]) * image1size,
             (tooltiles.get_height() / graphics["tilesize"][1]) * image1size])
 
+idk = pg.Surface([image1size, image1size])
+images = [idk, idk, idk]
 
 def quadsize(quad):
     mostleft = bignum
@@ -122,6 +125,7 @@ class Renderer:
         self.lastlayer = 0
         self.offset = pg.Vector2(0, 0)
         self.size = image1size
+        self.commsgeocolors = False
 
         if render:
             size = [len(data["GE"]) * image1size, len(data["GE"][0]) * image1size]
@@ -159,13 +163,14 @@ class Renderer:
                 if y:
                     continue
                 self.surf_tiles.fill(pg.Color(0, 0, 0, 0), [xp * image1size, yp * image1size, image1size, image1size])
-        for xp, x in enumerate(area):
-            for yp, y in enumerate(x):
-                if y:
-                    continue
-                self.render_tile_pixel(xp, yp, layer)
+        for drawLayer in range(2, -1, -1):
+            for xp, x in enumerate(area):
+                for yp, y in enumerate(x):
+                    if y:
+                        continue
+                    self.render_tile_pixel(xp, yp, layer, (drawLayer + layer) % 3)
 
-    def render_tile_pixel(self, xp, yp, l):
+    def render_tile_pixel(self, xp, yp, l, drawL):
         self.lastlayer = l
         tiledata = self.data["TE"]["tlMatrix"]
 
@@ -185,66 +190,68 @@ class Renderer:
                 it = notfoundtile
             return it
 
-        for layer in range(2, -1, -1):
-            cell = tiledata[xp][yp][layer]
-            posx = xp * image1size
-            posy = yp * image1size
+        cell = tiledata[xp][yp][drawL]
+        posx = xp * image1size
+        posy = yp * image1size
 
-            datcell = cell["tp"]
-            datdata = cell["data"]
-            if layer == 1 and self.data["GE"][xp][yp][0][0] != 0 and layer != l:
-                continue
-            elif layer == 2 and (self.data["GE"][xp][yp][0][0] != 0 or
-                                 self.data["GE"][xp][yp][1][0] != 0) and layer != l:
-                continue
-            if layer < l:
-                continue
+        datcell = cell["tp"]
+        datdata = cell["data"]
+        if not self.tilelayers[drawL]:
+            return
+        if datcell == "default":
+            # self.surf_tiles.fill(pg.Color(0, 0, 0, 0), [posx, posy, image1size, image1size])
+            # pg.draw.rect(field.field, red, [posx, posy, size, size], 3)
+            pass
+        elif datcell == "material":
+            if self.data["GE"][xp][yp][drawL][0] != 0:
+                try:
+                    it = findtileimage(datdata)
+                    ms = graphics["matsize"]
+                    rect = pg.Rect(ms[0] + posx, ms[0] + posy, ms[1], ms[1])
+                    col = [graphics["matposes"][datdata][0], graphics["matposes"][datdata][1], graphics["matposes"][datdata][2], 255]
+                    if(drawL != l):
+                        col[3] = 100
+                    pg.draw.rect(self.surf_tiles, col, rect)
+                    #if layer != l:
+                    #    it["image"].set_alpha(settings["global"]["tiles_secondarylayeralpha"])
+                    #else:
+                    #    it["image"].set_alpha(settings["global"]["tiles_primarylayeralpha"])
+                    #self.surf_tiles.blit(it["image"], [posx, posy])
+                    #it["image"].set_alpha(255)
+                except ValueError:
+                    self.surf_tiles.blit(notfound, [posx, posy])
 
-            if not self.tilelayers[layer]:
-                continue
-            if datcell == "default":
-                # self.surf_tiles.fill(pg.Color(0, 0, 0, 0), [posx, posy, image1size, image1size])
-                # pg.draw.rect(field.field, red, [posx, posy, size, size], 3)
-                pass
-            elif datcell == "material":
-                if self.data["GE"][xp][yp][layer][0] != 0:
-                    try:
-                        it = findtileimage(datdata)
-                        #ms = graphics["matsize"]
-                        #rect = pg.Rect(ms[0] + posx, ms[0] + posy, ms[1], ms[1])
-                        #pg.draw.rect(self.surf_tiles, graphics["matposes"][datdata], rect)
-                        if layer != l:
-                            it["image"].set_alpha(settings["global"]["tiles_secondarylayeralpha"])
-                        else:
-                            it["image"].set_alpha(settings["global"]["tiles_primarylayeralpha"])
-                        self.surf_tiles.blit(it["image"], [posx, posy])
-                        it["image"].set_alpha(255)
-                    except ValueError:
-                        self.surf_tiles.blit(notfound, [posx, posy])
-
-            elif datcell == "tileHead":
-                it = findtileimage(datdata[1])
-                cposx = posx - int((it["size"][0] * .5) + .5) * image1size + image1size
-                cposy = posy - int((it["size"][1] * .5) + .5) * image1size + image1size
-                siz = pg.rect.Rect([cposx, cposy, it["size"][0] * image1size, it["size"][1] * image1size])
-                if not settings["TE"]["LEtiles"]:
-                    pg.draw.rect(self.surf_tiles, it["color"], siz, 0)
-                if layer != l:
-                    it["image"].set_alpha(settings["global"]["tiles_secondarylayeralpha"])
-                else:
-                    it["image"].set_alpha(settings["global"]["tiles_primarylayeralpha"])
-                self.surf_tiles.blit(it["image"], [cposx, cposy])
-                it["image"].set_alpha(255)
-            elif datcell == "tileBody":
-                pass
+        elif datcell == "tileHead":
+            it = findtileimage(datdata[1])
+            cposx = posx - int((it["size"][0] * .5) + .5) * image1size + image1size
+            cposy = posy - int((it["size"][1] * .5) + .5) * image1size + image1size
+            siz = pg.rect.Rect([cposx, cposy, it["size"][0] * image1size, it["size"][1] * image1size])
+            if not settings["TE"]["LEtiles"]:
+                pg.draw.rect(self.surf_tiles, it["color"], siz, 0)
+            if drawL != l:
+                it["image"].set_alpha(settings["global"]["tiles_secondarylayeralpha"])
+            else:
+                it["image"].set_alpha(settings["global"]["tiles_primarylayeralpha"])
+            self.surf_tiles.blit(it["image"], [cposx, cposy])
+            it["image"].set_alpha(255)
+        elif datcell == "tileBody":
+            pass
         # self.surf_tiles.fill(pg.Color(0, 0, 0, 0), [posx, posy, image1size, image1size])
 
     def geo_full_render(self, layer):
         self.surf_geo.fill(color2)
-        area = [[False for _ in range(self.levelheight)] for _ in range(self.levelwidth)]
+        area = [[False for _ in range(self.levelheight)] for _ in range(self.levelwidth)]     
         self.geo_render_area(area, layer)
 
     def geo_render_area(self, area, layer):
+        images[0] = renderedimage.convert_alpha(idk)
+        images[1] = renderedimage.convert_alpha(idk)
+        images[2] = renderedimage.convert_alpha(idk)
+
+        images[0].fill(settings["GE"]["layerColors"][0], special_flags=pg.BLEND_MULT)
+        images[1].fill(settings["GE"]["layerColors"][1], special_flags=pg.BLEND_MULT)
+        images[2].fill(settings["GE"]["layerColors"][2], special_flags=pg.BLEND_MULT)
+
         for xp, x in enumerate(area):
             for yp, y in enumerate(x):
                 if y:
@@ -282,30 +289,62 @@ class Renderer:
                 return 0
         cellsize2 = [image1size, image1size]
         pixel = pg.Surface(cellsize2)
-        pixel.fill(color2)
-        for i in range(2, -1, -1):
+        pixel.fill(color)
+
+        stackables = pg.Surface(cellsize2)
+        stackables.set_colorkey([0, 0, 0, 0])
+        #stackables.fill([0, 0, 0, 0])
+        
+        geoRange = range(2, -1, -1)
+        if self.commsgeocolors:
+            geoRange = range(0, 3, 1)
+        
+        for i in geoRange:
             if not self.geolayers[i]:
                 continue
-            renderedimage.set_alpha(settings["global"]["secondarylayeralpha"])
-            if i == layer:
-                renderedimage.set_alpha(settings["global"]["primarylayeralpha"])
+            
+            imageIndex = i
+            if not self.commsgeocolors:
+                imageIndex = 0
+
+            convrender = images[imageIndex]
+            convrender.set_alpha(settings["global"]["secondarylayeralpha"])
+
+            if i == layer and not self.commsgeocolors:
+                convrender.set_alpha(settings["global"]["primarylayeralpha"])
+            if i == 0 and self.commsgeocolors:
+                convrender.set_alpha(255)
+
             self.data["GE"][xp][yp][i][1] = list(set(self.data["GE"][xp][yp][i][1]))
             cell = self.data["GE"][xp][yp][i][0]
+
             over: list = self.data["GE"][xp][yp][i][1]
             if cell == 7 and 4 not in over:
                 self.data["GE"][xp][yp][i][0] = 0
                 cell = self.data["GE"][xp][yp][i][0]
             curtool = [graphics["shows"][str(cell)][0] * image1size,
                        graphics["shows"][str(cell)][1] * image1size]
-            pixel.blit(renderedimage, [0, 0], [curtool, cellsize2])
+            
+            if(cell not in [0, 7] and not (cell == 1 and 11 in over)):
+                pixel.blit(convrender, [0, 0], [curtool, cellsize2])
+
+            if cell in [7]:
+                pixel.blit(convrender, [0, 0], [[graphics["shows2"]["SEMITR"][0] * image1size, graphics["shows2"]["SEMITR"][1] * image1size], cellsize2])
+
             if 4 in over and self.data["GE"][xp][yp][i][0] != 7:
                 self.data["GE"][xp][yp][i][1].remove(4)
             if 11 in over and over.index(11) != 0:
                 over.remove(11)
                 over.insert(0, 11)
             for addsindx, adds in enumerate(over):
-                curtool = [graphics["shows2"][str(adds)][0] * image1size,
-                           graphics["shows2"][str(adds)][1] * image1size]
+                invalid = False
+                try:
+                    curtool = [graphics["shows2"][str(adds)][0] * image1size,
+                            graphics["shows2"][str(adds)][1] * image1size]
+                except KeyError:
+                    invalid = True
+                    curtool = [graphics["shows2"]["SEMITR"][0] * image1size,
+                                 graphics["shows2"]["SEMITR"][1] * image1size]
                 bufftiles = self.data["EX2"]["extraTiles"]
                 bufftiles = pg.Rect(bufftiles[0], bufftiles[1],
                                     self.levelwidth - bufftiles[0] - bufftiles[2],
@@ -352,7 +391,7 @@ class Renderer:
                                 tilecounter += 1
                             if curtile in [0, 6] and tile in col4:  # if we found air in 4 places near
                                 foundair = True
-                                if 5 in incorner(xp - tile[0], yp - tile[1]):  # if opposite of air is wire
+                                if any(x in [5, 6, 7, 21, 19] for x in incorner(xp - tile[0], yp - tile[1])) :  # if opposite of air is wire
                                     foundwire = True
                                     match tile:
                                         case [0, 1]:  # N
@@ -365,14 +404,25 @@ class Renderer:
                                             pos = graphics["shortcutentrancetexture"]["W"]
                                 else:
                                     break
-                            if 5 in curhover and tile in col4:  # if wire in 4 places near
+                            if any(x in [5, 6, 7, 21, 19] for x in curhover) and tile in col4:  # if wire in 4 places near
                                 pathcount += 1
                                 if pathcount > 1:
                                     break
                         else:  # if no breaks
                             if tilecounter == 7 and foundwire and foundair and pos != -1:  # if we found the right one
                                 curtool = [pos[0] * image1size, pos[1] * image1size]
-                pixel.blit(renderedimage, [0, 0], [curtool, cellsize2])
+                if adds in [1, 2, 3, 11]:
+                    if(adds == 11 and cell in [2, 3, 4, 5]):
+                        pixel.blit(convrender, [0, 0], [[graphics["shows2"]["10"][0] * image1size, graphics["shows2"]["10"][1] * image1size], cellsize2])
+                    else:
+                        pixel.blit(convrender, [0, 0], [curtool, cellsize2])
+                else:
+                    stackableSurf = renderedimage.convert_alpha(stackables)
+                    if i != 0 or invalid:
+                        stackableSurf.fill(red, special_flags=pg.BLEND_MULT)
+                        
+                    stackables.blit(stackableSurf, [0, 0], [curtool, cellsize2])
+        pixel.blit(stackables, [0, 0])
         return pixel
 
     def findprop(self, name, cat=None):
@@ -429,7 +479,7 @@ class Renderer:
                 propcolor = toarr(self.findprop(prop[1])[0]["previewColor"], "color")  # wires
                 for point in prop[4]["points"]:
                     px, py = toarr(point, "point")
-                    pg.draw.circle(self.surf_props, propcolor, [px, py], 5)
+                    pg.draw.circle(self.surf_props, propcolor, [px // 1.25, py // 1.25], 1)
 
     def rerendereffect(self):
         self.rendereffect(self.effect_index)

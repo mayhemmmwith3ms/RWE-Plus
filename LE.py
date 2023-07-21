@@ -9,7 +9,7 @@ class LE(MenuWithField):
         self.field2 = widgets.window(self.surface, self.settings["d1"])
         self.field3 = self.field2.copy()
 
-        sc = [(self.levelwidth + ofsleft) * image1size, (self.levelheight + ofstop) * image1size]
+        sc = [(self.levelwidth + ofsleft) * renderedCellSize, (self.levelheight + ofstop) * renderedCellSize]
         try:
             lev = os.path.splitext(self.data["path"])[0] + ".png"
             #self.field2.field = pg.transform.scale(loadimage(lev), sc)
@@ -36,6 +36,9 @@ class LE(MenuWithField):
         self.pressed = [False] * 4
 
         self.images = {True: [], False: []}
+
+        renderer.commsgeocolors = False
+        renderer.geo_full_render(renderer.lastlayer)
 
         for i in graphics["shadowimages"]:
             img = loadimage(path2cast + i)
@@ -71,7 +74,9 @@ class LE(MenuWithField):
 
         self.field.field.blit(self.field3.field, fieldpos)
         if not pg.key.get_pressed()[pg.K_LSHIFT]:
+            self.field3.field.set_alpha(60)
             self.field.field.blit(self.field3.field, fieldpos2)
+            self.field3.field.set_alpha(150)
         self.field.blit(False)
         super().blit(False)
         mouspos = pg.mouse.get_pos()
@@ -96,7 +101,7 @@ class LE(MenuWithField):
             self.if_set(s[3], 3)
 
             self.labels[0].set_text("Image: " + graphics["shadowimages"][self.selectedimage])
-            self.labels[1].set_text(f"X: {curpos_on_field[0]}, Y: {curpos_on_field[1]}")
+            self.labels[1].set_text(f"X: {curpos_on_field[0]}, Y: {curpos_on_field[1]} | Zoom: {(self.size / image1size) * 100}%")
 
             self.surface.blit(self.tileimage, curpos)
             bp = self.getmouse
@@ -165,7 +170,7 @@ class LE(MenuWithField):
         self.field3.field = pg.transform.scale(self.field2.field,
                                                [(self.levelwidth + ofsleft) * self.size,
                                                 (self.levelheight + ofstop) * self.size])
-        self.field3.field.set_alpha(100)
+        self.field3.field.set_alpha(150)
         self.field3.field.set_colorkey(white)
 
     def renderfield(self):
@@ -174,7 +179,7 @@ class LE(MenuWithField):
 
     def save(self):
         if self.data["path"] == "":
-            level = self.asksaveasfilename(defaultextension=[".wep"])
+            level = asksaveasfilename(defaultextension=[".wep"])
             self.data["level"] = os.path.basename(level)
             self.data["path"] = level
             self.data["dir"] = os.path.abspath(level)

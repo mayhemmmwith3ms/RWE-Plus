@@ -2,7 +2,7 @@ from menuclass import *
 
 
 class GE(MenuWithField):
-    def __init__(self, surface: pg.surface.Surface, renderer):
+    def __init__(self, surface: pg.surface.Surface, renderer: render.Renderer):
         self.state = 0
         self.mx = 0
 
@@ -25,7 +25,11 @@ class GE(MenuWithField):
         self.fillshape2 = "rect"  # rect, rect-hollow, circle, circle-hollow, line
         self.brushsize = 1
 
+        renderer.commsgeocolors = True
+        renderer.geo_full_render(renderer.lastlayer)
+
         super().__init__(surface, "GE", renderer)
+        self.drawgrid = True
         self.emptyarea()
         self.air()
         self.rs()
@@ -84,14 +88,20 @@ class GE(MenuWithField):
         cellsize2 = [self.size, self.size]
         super().blit()
         mpos = pg.Vector2(pg.mouse.get_pos())
+        #print(mpos)
         if self.selectedtool != self.lastselectedtool:
             self.lastselectedtool = self.selectedtool
             self.s0()
             self.recaption()
         if self.onfield:
+            wltx = "Work Layer: " + str(self.layer + 1)
+            widgets.fastmts(self.surface, wltx, *(mpos + [10, -10]), white, 15)
+
             curtool = [graphics["tools"][self.selectedtool][0] * graphics["tilesize"][0],
                        graphics["tools"][self.selectedtool][1] * graphics["tilesize"][1]]
-            self.surface.blit(self.tools, mpos, [curtool, graphics["tilesize"]])
+            #nst = self.tools.convert_alpha(self.surface)
+            #nst.fill(red, special_flags=pg.BLEND_RGBA_MULT)
+            #self.surface.blit(nst, mpos, [curtool, graphics["tilesize"]])
 
             # cords = [math.floor(pg.mouse.get_pos()[0] / self.size) * self.size, math.floor(pg.mouse.get_pos()[1] / self.size) * self.size]
             # self.surface.blit(self.tools, pos, [curtool, graphics["tilesize"]])
@@ -101,14 +111,16 @@ class GE(MenuWithField):
             posoffset = self.posoffset
 
             toolsized = pg.transform.scale(self.toolrender,
-                                           pg.Vector2(self.toolrender.get_size()) / image1size * self.size)
-
-            self.labels[1].set_text(f"X: {posoffset.x}, Y: {posoffset.y}, Z: {self.layer + 1}")
+                                           pg.Vector2(self.toolrender.get_size()) / image1size * self.size).convert_alpha(self.surface)
+            toolsized.fill(red, special_flags=pg.BLEND_RGBA_MULT)
+            self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / image1size) * 100}%")
+            #print(self.placetile)
             if self.selectedtool in graphics["codes"].keys():
                 if type(self.placetile) == int:
                     if graphics["codes"][self.selectedtool] == 1:
                         curtool = [graphics["tileplaceicon"][str(self.placetile + self.state)][0] * self.size,
                                    graphics["tileplaceicon"][str(self.placetile + self.state)][1] * self.size]
+                        #print(self.placetile + self.state)
                     else:
                         curtool = [graphics["tileplaceicon"][str(self.placetile - self.state)][0] * self.size,
                                    graphics["tileplaceicon"][str(self.placetile - self.state)][1] * self.size]
@@ -123,7 +135,7 @@ class GE(MenuWithField):
                 self.labels[0].set_text(
                     f"Tile: {tilename} {self.data['GE'][int(posoffset.x)][int(posoffset.y)][self.layer]}")
 
-            bp = self.getmouse
+            bp = pg.mouse.get_pressed(3)
 
             if self.fillshape == "brush":
                 pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize, 5)
@@ -175,12 +187,33 @@ class GE(MenuWithField):
                 self.emptyarea()
             elif bp[2] == 1 and not self.mousp2 and (self.mousp and self.mousp1):
                 self.rectdata[1] = posoffset - self.rectdata[0]
-                # print(self.rectdata[2], pos2 - self.rectdata[2])
-                rect = self.vec2rect(self.rectdata[2], pos2)
+
+                righthalf = mpos.x > self.rectdata[2].x + 10
+                upperhalf = mpos.y > self.rectdata[2].y + 10
+                
+                tl = [0, 0]
+                br = [0, 0]
+
+                if not righthalf:
+                    tl[0] = pos2.x
+                    br[0] = self.rectdata[2].x + self.size
+                else:
+                    tl[0] = self.rectdata[2].x
+                    br[0] = pos2.x + self.size
+
+                if upperhalf:
+                    tl[1] = pos2.y + self.size
+                    br[1] = self.rectdata[2].y
+                else:
+                    tl[1] = self.rectdata[2].y + self.size
+                    br[1] = pos2.y
+
+                rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
+
                 tx = f"{abs(int(rect.w / self.size))}, {abs(int(rect.h / self.size))}"
                 widgets.fastmts(self.surface, tx, *mpos, white)
                 if self.fillshape2 in ["rect", "rect-hollow"] or self.selectedtool in ["CP", "CT", "SL"]:
-                    pg.draw.rect(self.surface, select, rect, 5)
+                    pg.draw.rect(self.surface, select, rect, 1)
                 elif self.fillshape2 in ["circle", "circle-hollow"]:
                     pg.draw.ellipse(self.surface, select, rect, 5)
                 elif self.fillshape2 == "line":
@@ -205,7 +238,27 @@ class GE(MenuWithField):
                 elif self.fillshape2 == "line":
                     self.linepoints(self.rectdata[0], posoffset)
                 elif self.fillshape2 in ["rect", "rect-hollow"]:
-                    rect = self.vec2rect(self.rectdata[0], posoffset)
+                    righthalf = mpos.x > self.rectdata[2].x + 10
+                    upperhalf = mpos.y > self.rectdata[2].y + 10
+                    
+                    tl = [0, 0]
+                    br = [0, 0]
+
+                    if not righthalf:
+                        tl[0] = posoffset.x
+                        br[0] = self.rectdata[0].x + 1
+                    else:
+                        tl[0] = self.rectdata[0].x
+                        br[0] = posoffset.x + 1
+
+                    if upperhalf:
+                        tl[1] = posoffset.y + 1
+                        br[1] = self.rectdata[0].y
+                    else:
+                        tl[1] = self.rectdata[0].y + 1
+                        br[1] = posoffset.y
+
+                    rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
                     for x in range(int(rect.w)):
                         for y in range(int(rect.h)):
                             vec = pg.Vector2(x, y)
@@ -251,7 +304,7 @@ class GE(MenuWithField):
                 pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
                 rect = pg.Rect([pos, pg.Vector2(len(geodata), len(geodata[0])) * self.size])
 
-                pg.draw.rect(self.surface, select, rect, 5)
+                pg.draw.rect(self.surface, blue, rect, 1)
             except:
                 pass
 
@@ -426,7 +479,7 @@ class GE(MenuWithField):
 
     def shortcutentrance(self):
         self.selectedtool = "SE"
-        self.placetile = 0.4
+        self.placetile = 7
         self.mx = 0
 
     def shortcut(self):
@@ -522,7 +575,7 @@ class GE(MenuWithField):
                     self.data["GE"][x][y][self.layer][0] = self.reverseslope(self.data["GE"][x][y][self.layer][0])
             elif self.placetile == 0.3:  # clear all
                 self.data["GE"][x][y] = [[0, []], [0, []], [0, []]]
-            elif self.placetile == 0.4:  # shortcut entrance
+            elif self.placetile == 7:  # shortcut entrance
                 self.data["GE"][x][y][self.layer][0] = 7
                 if 4 not in self.data["GE"][x][y][self.layer][1]:
                     self.data["GE"][x][y][self.layer][1].append(4)
@@ -536,6 +589,8 @@ class GE(MenuWithField):
                 if graphics["codes"][self.selectedtool] == 0:
                     if (abs(int(self.placetile))) + self.state not in self.data["GE"][x][y][self.layer][1]:
                         self.data["GE"][x][y][self.layer][1].append((abs(int(self.placetile))) + self.state)
+                    else:
+                        self.data["GE"][x][y][self.layer][1].remove((abs(int(self.placetile))) + self.state)
             else:
                 self.data["GE"][x][y][self.layer][0] = self.placetile
         if render:
@@ -562,7 +617,7 @@ class GE(MenuWithField):
                     self.data["GE"][x][y][self.layer][0] = self.reverseslope(self.data["GE"][x][y][self.layer][0])
             elif self.placetile == 0.3:
                 self.data["GE"][x][y] = [[0, []], [0, []], [0, []]]
-            elif self.placetile == 0.4:
+            elif self.placetile == 7:
                 self.data["GE"][x][y][self.layer][0] = 7
                 if 4 not in self.data["GE"][x][y][self.layer][1]:
                     self.data["GE"][x][y][self.layer][1].append(4)
@@ -576,6 +631,8 @@ class GE(MenuWithField):
                 if graphics["codes"][self.selectedtool] == 0:
                     if (abs(int(self.placetile))) + self.state not in self.data["GE"][x][y][self.layer][1]:
                         self.data["GE"][x][y][self.layer][1].append((abs(int(self.placetile))) + self.state)
+                    else:
+                        self.data["GE"][x][y][self.layer][1].remove((abs(int(self.placetile))) + self.state)
             else:
                 self.data["GE"][x][y][self.layer][0] = self.reverseslope(self.placetile)
         if render:

@@ -16,6 +16,9 @@ class CE(MenuWithField):
         self.camoffset = pg.Vector2(0, 0)
         self.pressed = [False] * 4
         self.heldpointindex = 0
+        
+        renderer.commsgeocolors = False
+        renderer.geo_full_render(renderer.lastlayer)
 
         self.rfa()
         self.blit()
@@ -23,7 +26,7 @@ class CE(MenuWithField):
 
     def blit(self):
         super().blit()
-        self.labels[0].set_text(self.labels[0].originaltext % len(self.data["CM"]["cameras"]))
+        self.labels[0].set_text(self.labels[0].originaltext % len(self.data["CM"]["cameras"]) + f" | Zoom: {(self.size / image1size) * 100}%")
 
         if self.onfield and len(self.data["CM"]["cameras"]) > 0:
 
@@ -59,7 +62,7 @@ class CE(MenuWithField):
                         v += self.offset * self.size
                         startpos = pg.Vector2(val) / image1size * self.size + v
                         endpos = pg.Vector2(xpos, ypos) / image1size * self.size + v
-                        pg.draw.line(self.surface, purple, startpos, endpos, 3)
+                        pg.draw.line(self.surface, purple, startpos, endpos, 1)
                 val = makearr(val, "point")
                 self.data["CM"]["cameras"][self.heldindex] = val
 
@@ -79,8 +82,12 @@ class CE(MenuWithField):
                     qlist = [rect.topleft, rect.topright, rect.bottomright, rect.bottomleft]
                     mouse = pg.Vector2(pg.mouse.get_pos()) - qlist[quadindx]
                     r, o = mouse.rotate(90).as_polar()
-                    self.data["CM"]["quads"][self.heldindex][quadindx] = \
-                        [round(o, 4), round(min(r / 100 / self.size * image1size, 1), 4)]
+                    if settings["CE"]["unlockangles"]:
+                        self.data["CM"]["quads"][self.heldindex][quadindx] = \
+                            [o, round(r / 100 / self.size * image1size, 4)]
+                    else:
+                        self.data["CM"]["quads"][self.heldindex][quadindx] = \
+                            [o, round(min(r / 100 / self.size * image1size, 1), 4)]
 
             elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
                 self.setcursor()
@@ -200,7 +207,10 @@ class CE(MenuWithField):
         if not self.held:
             cam = self.closestcameraindex()
             quadindx = self.getquad(cam)
-            self.data["CM"]["quads"][cam][quadindx][1] = round(min(self.data["CM"]["quads"][cam][quadindx][1] + self.settings["addspeed"], 1), 4)
+            if settings["CE"]["unlockangles"]:
+                self.data["CM"]["quads"][cam][quadindx][1] = round(self.data["CM"]["quads"][cam][quadindx][1] + self.settings["addspeed"], 4)
+            else:
+                self.data["CM"]["quads"][cam][quadindx][1] = round(min(self.data["CM"]["quads"][cam][quadindx][1] + self.settings["addspeed"], 1), 4)
 
     def adddown(self):  # ddddddddddd
         if not self.held:

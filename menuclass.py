@@ -3,6 +3,7 @@ import render
 import widgets
 import pyperclip
 from render import *
+from tkinter.filedialog import askopenfilename, asksaveasfilename
 
 inputfile = ''
 filepath = path2levels
@@ -35,6 +36,7 @@ class Menu:
         self.mousp1 = True
         self.mousp2 = True
 
+        self.justChangedZoom = False
         self.size = image1size
         self.message = ""
         self.buttons: list[widgets.button, ...] = []
@@ -82,7 +84,7 @@ class Menu:
         self.message = "%"
 
     def recaption(self):
-        pg.display.set_caption(f"{self.data['path']} | RWE+: {self.menu} | v{tag} | {self.custom_info}")
+        pg.display.set_caption(f"{self.data['path']} | OGSCULEDITOR+: {self.menu} | v{tag} | {self.custom_info}")
 
     def savef(self, saveas=False):
         if self.data["path"] != "" and not saveas:
@@ -90,7 +92,8 @@ class Menu:
             self.data["path"] = os.path.splitext(self.data["path"])[0] + ".wep"
             print(os.path.splitext(self.data["path"])[0] + ".wep")
         else:
-            savedest = self.asksaveasfilename()
+            #savedest = self.asksaveasfilename()
+            savedest = asksaveasfilename(defaultextension=[".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
             if savedest != "" and savedest is not None:
                 open(savedest, "w").write(json.dumps(self.data))
                 self.data["level"] = os.path.basename(savedest)
@@ -329,7 +332,8 @@ class Menu:
         return inputfile.replace("\n", "")
 
     def savef_txt(self):
-        savedest = self.asksaveasfilename(defaultextension=[".txt"])
+        #savedest = self.asksaveasfilename(defaultextension=[".txt"])
+        savedest = asksaveasfilename(defaultextension=[".txt"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
         if savedest != "":
             turntolingo(self.data, open(savedest, "w"))
 
@@ -572,7 +576,7 @@ class MenuWithField(Menu):
     def reload(self):
         global settings
         settings = json.load(open(path2ui + graphics["uifile"], "r"))
-        self.__init__(self.surface, self.menu, self.renderer)
+        self.__init__(self.surface, self.renderer)
 
     def movemiddle(self, bp):
         if bp[1] == 1 and self.mousp1 and (self.mousp2 and self.mousp):
@@ -589,12 +593,12 @@ class MenuWithField(Menu):
     def drawborder(self):
         rect = [self.xoffset * self.size, self.yoffset * self.size, self.levelwidth * self.size,
                 self.levelheight * self.size]
-        pg.draw.rect(self.field.field, border, rect, 5)
+        pg.draw.rect(self.field.field, border, rect, 1)
         fig = [(self.btiles[0] + self.xoffset) * self.size, (self.btiles[1] + self.yoffset) * self.size,
                (self.levelwidth - self.btiles[2] - self.btiles[0]) * self.size,
                (self.levelheight - self.btiles[3] - self.btiles[1]) * self.size]
         rect = pg.rect.Rect(fig)
-        pg.draw.rect(self.field.field, bftiles, rect, 5)
+        pg.draw.rect(self.field.field, bftiles, rect, 1)
         self.field.blit()
 
     def drawmap(self):
@@ -655,7 +659,8 @@ class MenuWithField(Menu):
         return False
 
     def blit(self, draw=True):
-        self.renderer.lastlayer = self.layer
+        if not self.renderer.commsgeocolors:
+            self.renderer.lastlayer = self.layer
         self.renderer.offset = self.offset
         self.renderer.size = self.size
         if draw:
@@ -666,13 +671,13 @@ class MenuWithField(Menu):
             widgets.fastmts(self.surface,
                             f"Effect({self.draweffects}): {self.data['FE']['effects'][self.draweffects - 1]['nm']}",
                             *self.field.rect.midleft, white)
-        mpos = pg.mouse.get_pos()
-        if self.drawgrid and self.field.rect.collidepoint(mpos):
-            pos2 = self.pos2
-            pg.draw.line(self.surface, cursor2, [self.field.rect.left, pos2[1]],
-                         [self.field.rect.right, pos2[1]])
-            pg.draw.line(self.surface, cursor2, [pos2[0], self.field.rect.top],
-                         [pos2[0], self.field.rect.bottom])
+        #mpos = pg.mouse.get_pos()
+        #if self.drawgrid and self.field.rect.collidepoint(mpos):
+            #pos2 = self.pos2
+            #pg.draw.line(self.surface, cursor2, [self.field.rect.left, pos2[1]],
+                         #[self.field.rect.right, pos2[1]])
+            #pg.draw.line(self.surface, cursor2, [pos2[0], self.field.rect.top],
+                         #[pos2[0], self.field.rect.bottom])
 
         super().blit()
 
@@ -682,16 +687,18 @@ class MenuWithField(Menu):
     def swichlayers(self):
         self.layer = (self.layer + 1) % 3
         self.mpos = 1
-        self.renderer.render_all(self.layer)
-        self.rfa()
+        if not self.renderer.commsgeocolors:
+            self.renderer.render_all(self.layer)
+            self.rfa()
 
     def swichlayers_back(self):
         self.layer -= 1
         if self.layer < 0:
             self.layer = 2
         self.mpos = 1
-        self.renderer.render_all(self.layer)
-        self.rfa()
+        if not self.renderer.commsgeocolors:
+            self.renderer.render_all(self.layer)
+            self.rfa()
 
     def send(self, message):
         super().send(message)
@@ -703,6 +710,7 @@ class MenuWithField(Menu):
                 self.size += 1
                 self.offset -= pos - self.pos
                 self.renderfield()
+                self.justChangedZoom = True
             case "SD":
                 if not self.onfield:
                     return
@@ -711,6 +719,7 @@ class MenuWithField(Menu):
                     self.size -= 1
                     self.offset -= pos - self.pos
                     self.renderfield()
+                    self.justChangedZoom = True
             case "left":
                 self.offset.x += 1
             case "right":
@@ -721,10 +730,14 @@ class MenuWithField(Menu):
                 self.offset.y -= 1
 
     def detecthistory(self, path, savedata=True):
+        if not settings["global"]["enableundo"]:
+            return
         super().detecthistory(path, savedata)
         self.renderer.data = self.data
 
     def updatehistory(self, paths):
+        if not settings["global"]["enableundo"]:
+            return
         super().updatehistory(paths)
         self.renderer.data = self.data
 
@@ -749,11 +762,16 @@ class MenuWithField(Menu):
         self.renderfield()
 
     def togglegeo(self):
-        self.drawgeo = not self.drawgeo
+        #self.drawgeo = not self.drawgeo
+        self.renderer.commsgeocolors = not self.renderer.commsgeocolors
+        self.drawgrid = self.renderer.commsgeocolors
+        self.render_geo_full()
         self.rfa()
 
     def toggletiles(self):
         self.drawtiles = not self.drawtiles
+        print(self.layer)
+        print(self.renderer.lastlayer)
         self.rfa()
 
     def toggleeffects(self):
@@ -772,6 +790,13 @@ class MenuWithField(Menu):
         self.drawgrid = not self.drawgrid
         self.rfa()
 
+    def resetzoom(self):
+        pos = self.pos
+        self.size = image1size
+        self.offset -= pos - self.pos
+        self.renderfield()
+        self.justChangedZoom = True
+
     def rendercameras(self):
         closest = 0
         if hasattr(self, "closestcameraindex"):
@@ -782,24 +807,19 @@ class MenuWithField(Menu):
             rect2 = pg.Rect(rect.x + self.size, rect.y + self.size, rect.w - self.size * 2, rect.h - self.size * 2)
             rect3 = pg.Rect(rect2.x + self.size * 8, rect2.y, rect2.w - self.size * 16, rect2.h)
             # print(camera_border, rect, self.size)
-            pg.draw.rect(self.surface, camera_border, rect.clip(self.field.rect), max(self.size // 3, 1))
-            pg.draw.rect(self.surface, camera_border, rect2.clip(self.field.rect), max(self.size // 4, 1))
+            pg.draw.rect(self.surface, camera_border, rect, 1)
+            pg.draw.rect(self.surface, camera_border, rect2, 1)
 
-            pg.draw.rect(self.surface, red, rect3.clip(self.field.rect), max(self.size // 3, 1))
+            pg.draw.rect(self.surface, red, rect3, 2)
 
-            line = self.field.rect.clipline(pg.Vector2(rect.center) - pg.Vector2(self.size * 5, 0),
-                         pg.Vector2(rect.center) + pg.Vector2(self.size * 5, 0))
-            if line:
-                pg.draw.line(self.surface, camera_border, line[0], line[1],
-                         self.size // 3 + 1)
+            pg.draw.line(self.surface, camera_border, pg.Vector2(rect.center) - pg.Vector2(self.size * 5, 0),
+                         pg.Vector2(rect.center) + pg.Vector2(self.size * 5, 0),
+                         1)
 
-            line = self.field.rect.clipline(pg.Vector2(rect.center) - pg.Vector2(0, self.size * 5),
-                         pg.Vector2(rect.center) + pg.Vector2(0, self.size * 5))
-            if line:
-                pg.draw.line(self.surface, camera_border, line[0], line[1],
-                         self.size // 3 + 1)
-            if self.field.rect.collidepoint(rect.center):
-                pg.draw.circle(self.surface, camera_border, rect.center, self.size * 3, self.size // 3 + 1)
+            pg.draw.line(self.surface, camera_border, pg.Vector2(rect.center) - pg.Vector2(0, self.size * 5),
+                         pg.Vector2(rect.center) + pg.Vector2(0, self.size * 5),
+                         1)
+            pg.draw.circle(self.surface, camera_border, rect.center, self.size * 3, 1)
 
             if "quads" not in self.data["CM"]:
                 self.data["CM"]["quads"] = []
@@ -835,31 +855,22 @@ class MenuWithField(Menu):
 
                 vec = pg.Vector2([tl, tr, br, bl][quadindx])
 
-                line = self.field.rect.clipline(rect.center, vec)
-                if line:
-                    pg.draw.line(self.surface, camera_notheld, line[0], line[1], self.size // 3)
+                widgets.fastmts(self.surface, f"Order: {indx}", rect.centerx + self.size // 2, rect.centery + self.size // 2, white, settings["global"]["fontsize"] // 2)
+
+                pg.draw.line(self.surface, camera_notheld, rect.center, vec, 1)
 
                 rects = [rect.topleft, rect.topright, rect.bottomright, rect.bottomleft]
-                line = self.field.rect.clipline(rects[quadindx], vec)
-                if line:
-                    pg.draw.line(self.surface, camera_held, line[0], line[1], self.size // 3)
+                pg.draw.line(self.surface, camera_held, rects[quadindx], vec, 1)
 
                 qlist = [rect.topleft, rect.topright, rect.bottomright, rect.bottomleft]
 
-                if self.field.rect.collidepoint(qlist[quadindx]):
-                    pg.draw.circle(self.surface, camera_held, qlist[quadindx], self.size * 5, self.size // 3)
-                if self.field.rect.collidepoint(rect.center):
-                    widgets.fastmts(self.surface, f"Order: {indx}", rect.centerx, rect.centery, white)
+                pg.draw.circle(self.surface, camera_held, qlist[quadindx], self.size * 5, 1)
                 # pg.draw.circle(self.surface, camera_held, rect.topright, self.size * 5, self.size // 3)
                 # pg.draw.circle(self.surface, camera_held, rect.bottomleft, self.size * 5, self.size // 3)
                 # pg.draw.circle(self.surface, camera_held, rect.bottomright, self.size * 5, self.size // 3)
             elif hasattr(self, "held") and self.held and hasattr(self, "heldindex") and self.heldindex == indx:
                 widgets.fastmts(self.surface, f"Order: {indx}", rect.centerx, rect.centery, white)
-            #pg.draw.polygon(self.surface, col, [tl, bl, br, tr], self.size // 3)
-            for i in [[tl, bl], [bl, br], [br, tr], [tr, tl]]:
-                line = self.field.rect.clipline(i[0], i[1])
-                if line:
-                    pg.draw.line(self.surface, col, line[0], line[1], self.size // 3)
+            pg.draw.polygon(self.surface, col, [tl, bl, br, tr], 2)
 
     def getquad(self, indx):
         mpos = pg.Vector2(pg.mouse.get_pos())
@@ -956,10 +967,22 @@ class MenuWithField(Menu):
 
     def rendergrid(self):
         w, h = self.f.get_size()
+        gridsurf = pg.Surface([w, h]).convert_alpha(self.f)
+        gridsurf.fill([0, 0, 0, 0])
+        col = [255, 255, 255]
+        col2 = [180, 180, 180]
         for x in range(0, w, image1size):
-            pg.draw.line(self.f, grid, [x, 0], [x, h])
+            if x % 40 == 0:
+                pg.draw.line(gridsurf, col, [x, 0], [x, h])
+            else:
+                pg.draw.line(gridsurf, col2, [x, 0], [x, h])
         for y in range(0, h, image1size):
-            pg.draw.line(self.f, grid, [0, y], [w, y])
+            if y % 40 == 0:
+                pg.draw.line(gridsurf, col, [0, y], [w, y])
+            else:
+                pg.draw.line(gridsurf, col2, [0, y], [w, y])
+        gridsurf.set_alpha(30)
+        self.f.blit(gridsurf, [0, 0])
 
     def findprop(self, name, cat=None):
         if cat is not None:
@@ -1031,6 +1054,9 @@ class MenuWithField(Menu):
         width = right - left
         height = bottom - top
         return pg.Rect(left, top, width, height)
+
+    def FieldCoordToDrawPos(self, pos, _offset = [0, 0]):
+        return [((pos[0] + self.offset[0]) * self.size + self.field.rect.topleft[0] + _offset[0]), ((pos[1] + self.offset[1]) * self.size + self.field.rect.topleft[1] + _offset[1])]
 
     @property
     def xoffset(self):

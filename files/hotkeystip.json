@@ -30,7 +30,8 @@
         "/-swichlayers": "Switch layers on menu with fields",
         "/-swichlayers_back": "Switch layers back",
         "/-togglelayervisible": "Toggles geometry layer",
-        "/-toggletileslayervisible": "Toggles tile layer"
+        "/-toggletileslayervisible": "Toggles tile layer",
+        "/-resetzoom": "Reset zoom level to default"
     },
     "LD": {
         "new": "New file",
@@ -163,7 +164,8 @@
         "-rotate_left": "Rotates prop to left",
         "rotate_speedup": "Rotates prop to right",
         "cursor_propdepth_inverse": "While pressed, press RMB to change depth down",
-        "-findpropmenu": "Opens find prop menu"
+        "-findpropmenu": "Opens find prop menu",
+        "-togglesnap": "Toggles prop grid snapping"
     },
     "FE": {
         "-changematshow": "Shows list of categories",

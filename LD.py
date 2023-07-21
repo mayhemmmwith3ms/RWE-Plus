@@ -25,6 +25,10 @@ class load(Menu):
     def github(self):
         github()
 
+    def recent(self):
+        self.message = "recent"
+
+
     @property
     def custom_info(self):
         return "Have fun!"

@@ -1,7 +1,7 @@
 {
 	"global": {
-		"color": "#828282",
-		"color2": "#606060",
+		"color": "#888888",
+		"color2": "#505050",
 		"width": 1280,
 		"height": 720,
 		"fullscreen": false,
@@ -14,11 +14,13 @@
 		"doublerect": true,
 		"doublerectoffsetx": -5,
 		"doublerectoffsety": 0,
-		"primarylayeralpha": 255,
+		"primarylayeralpha": 200,
 		"secondarylayeralpha": 50,
 		"tiles_primarylayeralpha": 255,
 		"tiles_secondarylayeralpha": 100,
 		"snap_error": 50,
+		"enableundo": false,
+		"previewleftside": true,
 		"colors": {
 			"cursor": [255, 0, 0],
 			"cursor2": [50, 0, 255],
@@ -28,6 +30,7 @@
 			"canplace": [0, 255, 0],
 			"cannotplace": [255, 0, 0],
 			"select": [255, 0, 0],
+			"FECursor": [255, 255, 255],
 			"layer1": [255, 0, 0],
 			"layer2": [0, 0, 255],
 
@@ -233,7 +236,13 @@
 			"6": "Platform",
 			"7": "Shortcut entrance",
 			"9": "Glass"
-		}
+		},
+		"cursorWorkLayerNum": true,
+		"layerColors": [
+			[0, 0, 0],
+			[0, 255, 0],
+			[255, 0, 0]
+		]
 	}, 
 	"TE":
 	{
@@ -269,7 +278,8 @@
 			["LMB - Place tile\nRMB - Fill\nMMB - Move", [2, 20], [255, 255, 255], 25]
 		],
 		"itemsize": 2,
-		"menucolor": [120, 120, 120]
+		"menucolor": [120, 120, 120],
+		"officialMouseControlStyle": true
 	},
 
 	"LE":{
@@ -367,8 +377,8 @@
 		],
 		"menucolor": [100, 0, 0],
 		"addspeed": 0.01,
-		"rotatespeed": 0.03
-
+		"rotatespeed": 0.03,
+		"unlockangles": false
 	},
 	"LP": {
 		"buttons": [
@@ -404,7 +414,7 @@
 
 	},
 	"PE":{
-		"category_count": 20,
+		"category_count": 30,
 		"buttons": [
 			["v", [92, 2, 4, 4], [100, 100, 100], "browse_next", "non", "Next prop(s)", ["arrows.png", [2, 0]]],
 			["^", [88, 2, 4, 4], [100, 100, 100], "browse_prev", "non", "Previous prop(w)", ["arrows.png", [1, 0]]],
