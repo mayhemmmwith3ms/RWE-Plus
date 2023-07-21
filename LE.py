@@ -9,7 +9,7 @@ class LE(MenuWithField):
         self.field2 = widgets.window(self.surface, self.settings["d1"])
         self.field3 = self.field2.copy()
 
-        sc = [(self.levelwidth + ofsleft) * image1size, (self.levelheight + ofstop) * image1size]
+        sc = [(self.levelwidth + ofsleft) * renderedCellSize, (self.levelheight + ofstop) * renderedCellSize]
         try:
             lev = os.path.splitext(self.data["path"])[0] + ".png"
             #self.field2.field = pg.transform.scale(loadimage(lev), sc)

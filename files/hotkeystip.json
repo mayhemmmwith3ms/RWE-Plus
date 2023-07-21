@@ -164,7 +164,8 @@
         "-rotate_left": "Rotates prop to left",
         "rotate_speedup": "Rotates prop to right",
         "cursor_propdepth_inverse": "While pressed, press RMB to change depth down",
-        "-findpropmenu": "Opens find prop menu"
+        "-findpropmenu": "Opens find prop menu",
+        "-togglesnap": "Toggles prop grid snapping"
     },
     "FE": {
         "-changematshow": "Shows list of categories",

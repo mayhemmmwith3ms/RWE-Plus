@@ -1052,7 +1052,7 @@ class MenuWithField(Menu):
         height = bottom - top
         return pg.Rect(left, top, width, height)
 
-    def FieldCoordToDrawPos(self, pos, _offset = None):
+    def FieldCoordToDrawPos(self, pos, _offset = [0, 0]):
         return [((pos[0] + self.offset[0]) * self.size + self.field.rect.topleft[0] + _offset[0]), ((pos[1] + self.offset[1]) * self.size + self.field.rect.topleft[1] + _offset[1])]
 
     @property

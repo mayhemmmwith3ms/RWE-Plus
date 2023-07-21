@@ -139,9 +139,23 @@ class TE(MenuWithField):
                         self.lastfg = fg
                         self.lastfp = fp
                         self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / image1size) * 100}%")
+
                         if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
-                            self.labels[0].set_text(
-                                "Tile: " + str(self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]))
+                            tl = self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]
+                            #try:
+                            if (tlh := self.GetTileHeadFromTilePart(tl)) not in [None, "stray"]:
+                                tlLabel = tlh["data"][1]
+                            elif tlh is None and tl["tp"] == "material":
+                                tlLabel = tl["data"]
+                            elif tlh is None and tl["tp"] == "default":
+                                tlLabel = "default"
+                            elif tlh == "stray":
+                                tlLabel = "STRAY TILE FRAGMENT"
+                            #except:
+                            #    tlLabel = "ERROR"
+                            #    print(f"Error occurred determining tile display type at mpos {int(posoffset.x)}, {int(posoffset.y)}")
+                            self.labels[0].set_text("Tile: " + tlLabel + " | Tile Data: " + str(tl))            
+
                     bord = (self.size // image1size + 1) // 2
                     selectrect = [
                         [cposx - bord, cposy - bord],
@@ -194,10 +208,20 @@ class TE(MenuWithField):
                     #    pass
 
                     if (chainHolderHead := self.GetTileHeadFromTilePart(self.data["TE"]["tlMatrix"][int(max(0, min(posoffset.x, self.levelwidth - 1)))][int(max(0, min(posoffset.y, self.levelheight - 1)))][self.layer])) not in [None, "stray"]:
-                        print(chainHolderHead)
                         if chainHolderHead["data"][1] == "Chain Holder" and chainHolderHead["data"].__len__() == 3:
                             chainEnd = toarr(chainHolderHead["data"][2], "point")
                             pg.draw.circle(self.surface, red, self.FieldCoordToDrawPos(chainEnd, [self.size // 2, self.size // 2]), self.size // 3, 1)
+                    try:
+                        if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
+                            hoveredTile = self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]
+                            if self.findparampressed("movepreview") and hoveredTile["tp"] not in ["default", "material"]:
+                                if hoveredTile["tp"] == "tileBody" and (tlhPos := [toarr(hoveredTile["data"][0], "point"), hoveredTile["data"][1]]) is not None:
+                                    tlhDrawPos = tlhPos[0]
+                                else:
+                                    tlhDrawPos = [int(posoffset.x + 1), int(posoffset.y + 1)]
+                                pg.draw.circle(self.surface, blue, self.FieldCoordToDrawPos(tlhDrawPos, [-self.size // 2, -self.size // 2]), self.size // 3, 1)
+                    except:
+                        print("Error occurred determining tileHead position")
 
                 def singlefirstframe(place):
                     if(place):
@@ -853,6 +877,11 @@ class TE(MenuWithField):
         else:
             return "stray"
 
+    def GetTileHeadPosFromTilePart(self, part):
+        if part["tp"] != "tileBody":
+            return None
+        return [toarr(part["data"][0], "point"), part["data"][1] - 1]
+
     def set(self, cat, name, render=True):
         if not settings["TE"]["officialMouseControlStyle"]:
             self.tool = 0
@@ -948,13 +977,6 @@ class TE(MenuWithField):
         py = y + int((h * .5) + .5) - 1
         if px >= self.levelwidth or py >= self.levelheight or px < 0 or py < 0:
             return
-        if self.findparampressed("movepreview"):
-            if prev:
-                pg.draw.rect(self.surface, black, [self.field.rect.x, self.field.rect.y, w * self.size, h * self.size], 0)
-            else:
-                px = (x + self.xoffset) * self.size + self.field.rect.x
-                py = (y + self.yoffset) * self.size + self.field.rect.y
-                pg.draw.rect(self.surface, black, [px, py, w * self.size, h * self.size], 0)
         for x2 in range(w):
             for y2 in range(h):
                 csp = sp[x2 * h + y2]
