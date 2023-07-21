@@ -1,11 +1,11 @@
-TE: Press <[-copytile]> to copy tile
-TE: Some of floors don't have their texture on different materials,\nso be careful with default material and material placing itself
+Tile Editor: Press <[-copytile]> to copy tile
+Tile Editor: Some materials do not have a designated appearance for floors
 
-LE: You can change shadow color using <[-inverse]> key(s)
+Light Editor: You can change shadow color using <[-inverse]> key(s)
 
-FE: To fill more, press <[str100]>
+Effects Editor: To paint with greater intensity, press <[str100]>
 
-GE: Press <[rotate]> to rotate beams and slopes
+Geometry Editor: Press <[rotate]> to rotate beams and slopes
 
 You can see tiles and props by hovering their buttons with mouse
 You can open categories list by pressing <[-changematshow]>,\nor clicking category button itself
@@ -18,23 +18,10 @@ Switch layers with <[-swichlayers]> key
 Use <[-swichcameras]> to enable camera showing on editor\nMight be helpful btw
 You can show any data in any editor by pressing\n<[/-togglegeo]>, <[/-toggletiles]>, <[/-toggleprops]> and <[/-toggleeffects]> buttons
 Copy geometry, tiles, effects and cameras by pressing <[-copylayer]>, <[-copytool]>, <[-copytool]>, <[-copycamera]>
-Undo your mistakes by pressing <[undo]> or redo changes with <[redo]>\nUse <[-undoshadow]> and <[-redoshadow]> for shadow image
-Use "..." button to find props(<[-findpropmenu]>),\ntiles(<[-findtile]>) and effects(<[-findeffect]>) with search menu
+Use "..." button to search the props list(<[-findpropmenu]>),\ntiles list(<[-findtile]>) and effects list(<[-findeffect]>)
 Toggle grid by pressing <[/-togglegrid]>
-Camera streshing can be done my mouse wit <[-edit]>
+Camera angles can be modified using the mouse cursor using the <[-edit]> key
 
-Border/buffer tiles is zone, what renders collision of floors,\nbeams and entrances. Behind it, all stackable blocks won't work
+Buffer tiles are the space outside of the white rectangle.\n Within the buffer tiles, geometry will repeat infinitely, special placeables won't function, and any entrances or shortcuts will crash the game when loaded
 Did you know, wht every effect with 'layers' option,\n'layers' option is always in first index
-Tile editor is my best and i hate Prop editor
-Prop editor ropes are here! uwu
-Use tutorial if you have trouble with RWE+
-w\ne\ne\ne\ne\ne\ne\ne\ne\ne\ne\ne\ne\ne
-THIS IS NOT LE+
 
-bruh
-Welcome to RWE+
-Pizza time!
-Stop listing this tips, time to make a level now!
-Press it again)------->
-Have fun here!
-https://www.youtube.com/watch?v=dQw4w9WgXcQ
