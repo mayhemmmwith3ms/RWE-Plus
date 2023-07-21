@@ -335,21 +335,40 @@ class PE(MenuWithField):
                     p1 = self.rectdata[0]
                     p2 = posonfield
                     vec = p2 - p1
-                    angle = math.degrees(math.atan2(vec.y, vec.x))
-                    distance = p1.distance_to(p2)
-                    newquads = self.quadsnor.copy()
-                    newquads[1][0] = distance + newquads[0][0]
-                    newquads[2][0] = distance + newquads[0][0]
+                    if vec.length() != 0:
+                        vecNormal = vec.normalize()
+                    else:
+                        vecNormal = pg.Vector2(0, 0)
+                    vecPerpendicularNormal = vecNormal.rotate(90)
                     q = []
-                    point = pg.Vector2(newquads[0])
-                    for quad in newquads:
-                        newq = pg.Vector2(quad).rotate(angle)
-                        if quad[0] < point.x:
-                            point.x = quad[0]
-                        if quad[1] < point.y:
-                            point.y = quad[1]
-                        q.append(newq)
+                    #print(self.selectedimage.get_size())
+                    pWidth = self.size * 1.5
+                    q.append(posonfield + vecPerpendicularNormal * pWidth)
+                    q.append(self.rectdata[0] + vecPerpendicularNormal * pWidth)
+                    q.append(self.rectdata[0] - vecPerpendicularNormal * pWidth)
+                    q.append(posonfield - vecPerpendicularNormal * pWidth)
+                    #angle = math.degrees(math.atan2(vec.y, vec.x))
+                    #distance = p1.distance_to(p2)
+                    #newquads = self.quadsnor.copy()
+                    #newquads[1][0] = distance + newquads[0][0]
+                    #newquads[2][0] = distance + newquads[0][0]
+                    #q = []
+                    #point = pg.Vector2(newquads[0])
+                    #for quad in newquads:
+                    #    newq = pg.Vector2(quad).rotate(angle)
+                    #    if quad[0] < point.x:
+                    #        point.x = quad[0]
+                    #    if quad[1] < point.y:
+                    #        point.y = quad[1]
+                    #    q.append(newq)
                     self.quads = q
+                    avgX = []
+                    avgY = []
+                    for quad in self.quads:
+                        avgX.append(quad[0])
+                        avgY.append(quad[1])
+                    avgX = sum(avgX) // len(avgX)
+                    avgY = sum(avgY) // len(avgY)
                     i, *_, ww, wh = quadtransform(q, self.selectedimage)
                     self.rectdata[2] = pg.Vector2(i.get_size())
                     i = pg.transform.scale(i, [ww / spritesize * self.size, wh / spritesize * self.size])
@@ -360,6 +379,7 @@ class PE(MenuWithField):
                             round(math.floor(mpos.y / (self.size / 2)) * (self.size / 2), 4))
                     else:
                         dpos = mpos
+                    #dpos = (((pg.Vector2(avgX, avgY) + pg.Vector2(self.field.rect.topleft)) * self.size) + pg.Vector2(self.xoffset, self.yoffset)) // spritesize
                     self.surface.blit(i, (self.rectdata[1] + dpos) / 2 - pg.Vector2(i.get_size()) / 2)
 
             elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
