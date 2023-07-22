@@ -68,6 +68,7 @@ ofsleft = 15
 
 previewCellSize = 16
 renderedCellSize = 20
+previewToRenderedFactor = float(renderedCellSize) / previewCellSize
 spritesize = 16
 image2sprite = spritesize / previewCellSize
 sprite2image = previewCellSize / spritesize

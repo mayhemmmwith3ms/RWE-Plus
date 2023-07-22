@@ -961,7 +961,7 @@ class MenuWithField(Menu):
         self.data["TE"]["tlMatrix"][x][y][self.layer] = {"tp": "default", "data": 0}
 
     def getcamerarect(self, cam):
-        pos = pg.Vector2(toarr(cam, "point"))
+        pos = pg.Vector2(toarr(cam, "point")) // (float(renderedCellSize) / previewCellSize)
         p = (pos / previewCellSize) * self.size + self.field.rect.topleft + self.offset * self.size
         return pg.Rect([p, [camw * self.size, camh * self.size]])
 

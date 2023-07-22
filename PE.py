@@ -713,8 +713,8 @@ class PE(MenuWithField):
         self.loadimage()
 
         w, h = self.selectedimage.get_size()
-        w = w // 1.25
-        h = h // 1.25
+        w = w // previewToRenderedFactor
+        h = h // previewToRenderedFactor
         wd, hd = w / 2, h / 2
         self.quads = [[-wd, -hd], [wd, -hd], [wd, hd], [-wd, hd]]
         self.normheight = pg.Vector2(self.quads[0]).distance_to(pg.Vector2(self.quads[3]))
@@ -763,7 +763,7 @@ class PE(MenuWithField):
         if self.selectedprop["tp"] == "rope":
             points = []
             for segment in self.ropeobject.segments:
-                point = [segment["pos"].x * 1.25, segment["pos"].y * 1.25] #i love bandaid fix
+                point = [segment["pos"].x * previewToRenderedFactor, segment["pos"].y * previewToRenderedFactor] #i love bandaid fix
                 point = makearr([round(point[0], 4), round(point[1], 4)], "point")
                 points.append(point)
             prop[4]["points"] = points
