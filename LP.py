@@ -243,7 +243,7 @@ class LP(MenuWithField):
         print("Done!")
         self.updatehistory([[]])
         self.renderer.data = self.data
-        self.renderer.set_surface([image1size * self.levelwidth, image1size * self.levelheight])
+        self.renderer.set_surface([previewCellSize * self.levelwidth, previewCellSize * self.levelheight])
         self.renderer.render_all(self.layer)
 
     def recount(self):
@@ -254,11 +254,11 @@ class LP(MenuWithField):
     def resizeimage(self, x, y, w, h):
         if self.shadowfield is not None:
             f2 = pg.surface.Surface(
-                [(abs(x) + self.gw + ofsleft) * image1size, (abs(y) + self.gh + ofstop) * image1size])
+                [(abs(x) + self.gw + ofsleft) * previewCellSize, (abs(y) + self.gh + ofstop) * previewCellSize])
             f2.fill(white)
-            f2.blit(self.shadowfield, [x * image1size, y * image1size])
+            f2.blit(self.shadowfield, [x * previewCellSize, y * previewCellSize])
             self.shadowfield = f2.subsurface(
-                pg.rect.Rect(0, 0, (self.gw + ofsleft) * image1size, (self.gh + ofstop) * image1size))
+                pg.rect.Rect(0, 0, (self.gw + ofsleft) * previewCellSize, (self.gh + ofstop) * previewCellSize))
             lev = os.path.splitext(self.data["path"])[0] + ".png"
             pg.image.save(self.shadowfield, lev)
 
@@ -272,7 +272,7 @@ class LP(MenuWithField):
                 pos[0] += x * spritesize
                 pos[1] += y * spritesize
                 newq.append(makearr(pos, "point"))
-                if x > w * image1size and y > h * image1size:
+                if x > w * previewCellSize and y > h * previewCellSize:
                     c += 1
                 if c == 4:
                     self.data["PR"]["props"].pop(indx)
@@ -280,8 +280,8 @@ class LP(MenuWithField):
                 newp = []
                 for points in prop[4]["points"]:
                     p = toarr(points, "point")
-                    p[0] += x * image1size
-                    p[1] += y * image1size
+                    p[0] += x * previewCellSize
+                    p[1] += y * previewCellSize
                     newp.append(makearr(p, "point"))
                 self.data["PR"]["props"][indx][4]["points"] = newp
             self.data["PR"]["props"][indx][3] = newq

@@ -37,7 +37,7 @@ class Menu:
         self.mousp2 = True
 
         self.justChangedZoom = False
-        self.size = image1size
+        self.size = previewCellSize
         self.message = ""
         self.buttons: list[widgets.button, ...] = []
         self.labels: list[widgets.lable, ...] = []
@@ -555,7 +555,7 @@ class MenuWithField(Menu):
         self.drawgrid = False
         self.selectedeffect = 0
 
-        self.f = pg.Surface([self.levelwidth * image1size, self.levelheight * image1size])
+        self.f = pg.Surface([self.levelwidth * previewCellSize, self.levelheight * previewCellSize])
 
         self.field = widgets.window(self.surface, self.settings["d1"])
         self.btiles = self.data["EX2"]["extraTiles"]
@@ -609,8 +609,8 @@ class MenuWithField(Menu):
 
     def renderfield(self):
         self.fieldmap = pg.surface.Surface([self.levelwidth * self.size, self.levelheight * self.size])
-        self.fieldmap.blit(pg.transform.scale(self.f, [self.f.get_width() / image1size * self.size,
-                                                       self.f.get_height() / image1size * self.size]), [0, 0])
+        self.fieldmap.blit(pg.transform.scale(self.f, [self.f.get_width() / previewCellSize * self.size,
+                                                       self.f.get_height() / previewCellSize * self.size]), [0, 0])
         self.fieldadd = pg.surface.Surface([self.levelwidth * self.size, self.levelheight * self.size])
         self.fieldadd.set_colorkey(white)
         self.fieldadd.fill(white)
@@ -621,7 +621,7 @@ class MenuWithField(Menu):
     def rfa(self):
         if self.layer != self.renderer.lastlayer:
             self.renderer.render_all(self.layer)
-        self.f = pg.Surface([self.levelwidth * image1size, self.levelheight * image1size])
+        self.f = pg.Surface([self.levelwidth * previewCellSize, self.levelheight * previewCellSize])
         if self.drawgeo:
             # self.renderer.geo_full_render(self.layer)
             self.f.blit(self.renderer.surf_geo, [0, 0])
@@ -792,7 +792,7 @@ class MenuWithField(Menu):
 
     def resetzoom(self):
         pos = self.pos
-        self.size = image1size
+        self.size = previewCellSize
         self.offset -= pos - self.pos
         self.renderfield()
         self.justChangedZoom = True
@@ -962,7 +962,7 @@ class MenuWithField(Menu):
 
     def getcamerarect(self, cam):
         pos = pg.Vector2(toarr(cam, "point"))
-        p = (pos / image1size) * self.size + self.field.rect.topleft + self.offset * self.size
+        p = (pos / previewCellSize) * self.size + self.field.rect.topleft + self.offset * self.size
         return pg.Rect([p, [camw * self.size, camh * self.size]])
 
     def rendergrid(self):
@@ -971,12 +971,12 @@ class MenuWithField(Menu):
         gridsurf.fill([0, 0, 0, 0])
         col = [255, 255, 255]
         col2 = [180, 180, 180]
-        for x in range(0, w, image1size):
+        for x in range(0, w, previewCellSize):
             if x % 40 == 0:
                 pg.draw.line(gridsurf, col, [x, 0], [x, h])
             else:
                 pg.draw.line(gridsurf, col2, [x, 0], [x, h])
-        for y in range(0, h, image1size):
+        for y in range(0, h, previewCellSize):
             if y % 40 == 0:
                 pg.draw.line(gridsurf, col, [0, y], [w, y])
             else:
@@ -1031,7 +1031,7 @@ class MenuWithField(Menu):
         return self.pos - self.offset
 
     def mouse2field_sized(self):
-        return self.mouse2field() * image1size
+        return self.mouse2field() * previewCellSize
 
     @property
     def pos(self):

@@ -66,11 +66,11 @@ tag = "2.4.1"
 ofstop = 15
 ofsleft = 15
 
-image1size = 16
+previewCellSize = 16
 renderedCellSize = 20
 spritesize = 16
-image2sprite = spritesize / image1size
-sprite2image = image1size / spritesize
+image2sprite = spritesize / previewCellSize
+sprite2image = previewCellSize / spritesize
 
 camw = 70  # camera width in blocks
 camh = 40  # camera height in blocks

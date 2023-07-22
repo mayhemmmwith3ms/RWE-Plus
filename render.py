@@ -62,10 +62,10 @@ color = pg.Color(settings["global"]["color"])
 color2 = pg.Color(settings["global"]["color2"])
 
 renderedimage = pg.transform.scale(tooltiles, [
-            (tooltiles.get_width() / graphics["tilesize"][0]) * image1size,
-            (tooltiles.get_height() / graphics["tilesize"][1]) * image1size])
+            (tooltiles.get_width() / graphics["tilesize"][0]) * previewCellSize,
+            (tooltiles.get_height() / graphics["tilesize"][1]) * previewCellSize])
 
-idk = pg.Surface([image1size, image1size])
+idk = pg.Surface([previewCellSize, previewCellSize])
 images = [idk, idk, idk]
 
 def quadsize(quad):
@@ -124,11 +124,11 @@ class Renderer:
 
         self.lastlayer = 0
         self.offset = pg.Vector2(0, 0)
-        self.size = image1size
+        self.size = previewCellSize
         self.commsgeocolors = False
 
         if render:
-            size = [len(data["GE"]) * image1size, len(data["GE"][0]) * image1size]
+            size = [len(data["GE"]) * previewCellSize, len(data["GE"][0]) * previewCellSize]
             self.surf_geo = pg.Surface(size)
             self.geolayers = [True, True, True]
             self.tilelayers = [True, True, True]
@@ -141,7 +141,7 @@ class Renderer:
 
     def set_surface(self, size=None):
         if size is None:  # auto
-            size = [self.levelwidth * image1size, self.levelheight * image1size]
+            size = [self.levelwidth * previewCellSize, self.levelheight * previewCellSize]
         self.surf_geo = pg.Surface(size)
         self.geolayers = [True, True, True]
         self.tilelayers = [True, True, True]
@@ -162,7 +162,7 @@ class Renderer:
             for yp, y in enumerate(x):
                 if y:
                     continue
-                self.surf_tiles.fill(pg.Color(0, 0, 0, 0), [xp * image1size, yp * image1size, image1size, image1size])
+                self.surf_tiles.fill(pg.Color(0, 0, 0, 0), [xp * previewCellSize, yp * previewCellSize, previewCellSize, previewCellSize])
         for drawLayer in range(2, -1, -1):
             for xp, x in enumerate(area):
                 for yp, y in enumerate(x):
@@ -180,8 +180,8 @@ class Renderer:
                 for i2 in self.tiles[i]:
                     if i2["name"] == name:
                         img = i2.copy()
-                        img["image"] = pg.transform.scale(img["image"], [img["image"].get_width() / 16 * image1size,
-                                                                         img["image"].get_height() / 16 * image1size])
+                        img["image"] = pg.transform.scale(img["image"], [img["image"].get_width() / 16 * previewCellSize,
+                                                                         img["image"].get_height() / 16 * previewCellSize])
                         it = img
                         break
                 if it is not None:
@@ -191,8 +191,8 @@ class Renderer:
             return it
 
         cell = tiledata[xp][yp][drawL]
-        posx = xp * image1size
-        posy = yp * image1size
+        posx = xp * previewCellSize
+        posy = yp * previewCellSize
 
         datcell = cell["tp"]
         datdata = cell["data"]
@@ -223,9 +223,9 @@ class Renderer:
 
         elif datcell == "tileHead":
             it = findtileimage(datdata[1])
-            cposx = posx - int((it["size"][0] * .5) + .5) * image1size + image1size
-            cposy = posy - int((it["size"][1] * .5) + .5) * image1size + image1size
-            siz = pg.rect.Rect([cposx, cposy, it["size"][0] * image1size, it["size"][1] * image1size])
+            cposx = posx - int((it["size"][0] * .5) + .5) * previewCellSize + previewCellSize
+            cposy = posy - int((it["size"][1] * .5) + .5) * previewCellSize + previewCellSize
+            siz = pg.rect.Rect([cposx, cposy, it["size"][0] * previewCellSize, it["size"][1] * previewCellSize])
             if not settings["TE"]["LEtiles"]:
                 pg.draw.rect(self.surf_tiles, it["color"], siz, 0)
             if drawL != l:
@@ -260,10 +260,10 @@ class Renderer:
                     try:
                         if not area[xp + i[0]][yp + i[1]]:
                             continue
-                        self.surf_geo.blit(self.render_geo_pixel(xp + i[0], yp + i[1], layer), [(xp + i[0]) * image1size, (yp + i[1]) * image1size])
+                        self.surf_geo.blit(self.render_geo_pixel(xp + i[0], yp + i[1], layer), [(xp + i[0]) * previewCellSize, (yp + i[1]) * previewCellSize])
                     except IndexError:
                         continue
-                self.surf_geo.blit(self.render_geo_pixel(xp, yp, layer), [xp * image1size, yp * image1size])
+                self.surf_geo.blit(self.render_geo_pixel(xp, yp, layer), [xp * previewCellSize, yp * previewCellSize])
 
     def render_all(self, layer):
         self.lastlayer = layer
@@ -287,7 +287,7 @@ class Renderer:
                 return self.data["GE"][x][y][i][0]
             except IndexError:
                 return 0
-        cellsize2 = [image1size, image1size]
+        cellsize2 = [previewCellSize, previewCellSize]
         pixel = pg.Surface(cellsize2)
         pixel.fill(color)
 
@@ -322,14 +322,14 @@ class Renderer:
             if cell == 7 and 4 not in over:
                 self.data["GE"][xp][yp][i][0] = 0
                 cell = self.data["GE"][xp][yp][i][0]
-            curtool = [graphics["shows"][str(cell)][0] * image1size,
-                       graphics["shows"][str(cell)][1] * image1size]
+            curtool = [graphics["shows"][str(cell)][0] * previewCellSize,
+                       graphics["shows"][str(cell)][1] * previewCellSize]
             
             if(cell not in [0, 7] and not (cell == 1 and 11 in over)):
                 pixel.blit(convrender, [0, 0], [curtool, cellsize2])
 
             if cell in [7]:
-                pixel.blit(convrender, [0, 0], [[graphics["shows2"]["SEMITR"][0] * image1size, graphics["shows2"]["SEMITR"][1] * image1size], cellsize2])
+                pixel.blit(convrender, [0, 0], [[graphics["shows2"]["SEMITR"][0] * previewCellSize, graphics["shows2"]["SEMITR"][1] * previewCellSize], cellsize2])
 
             if 4 in over and self.data["GE"][xp][yp][i][0] != 7:
                 self.data["GE"][xp][yp][i][1].remove(4)
@@ -339,12 +339,12 @@ class Renderer:
             for addsindx, adds in enumerate(over):
                 invalid = False
                 try:
-                    curtool = [graphics["shows2"][str(adds)][0] * image1size,
-                            graphics["shows2"][str(adds)][1] * image1size]
+                    curtool = [graphics["shows2"][str(adds)][0] * previewCellSize,
+                            graphics["shows2"][str(adds)][1] * previewCellSize]
                 except KeyError:
                     invalid = True
-                    curtool = [graphics["shows2"]["SEMITR"][0] * image1size,
-                                 graphics["shows2"]["SEMITR"][1] * image1size]
+                    curtool = [graphics["shows2"]["SEMITR"][0] * previewCellSize,
+                                 graphics["shows2"]["SEMITR"][1] * previewCellSize]
                 bufftiles = self.data["EX2"]["extraTiles"]
                 bufftiles = pg.Rect(bufftiles[0], bufftiles[1],
                                     self.levelwidth - bufftiles[0] - bufftiles[2],
@@ -376,7 +376,7 @@ class Renderer:
                             elif 11 in incorner(xp, yp + 1) and 11 in incorner(xp, yp - 1):
                                 pos = graphics["crackv"]
                         if pos != -1:
-                            curtool = [pos[0] * image1size, pos[1] * image1size]
+                            curtool = [pos[0] * previewCellSize, pos[1] * previewCellSize]
                     if adds == 4:  # shortcut entrance validation
                         # checklist
                         foundair = False
@@ -410,10 +410,10 @@ class Renderer:
                                     break
                         else:  # if no breaks
                             if tilecounter == 7 and foundwire and foundair and pos != -1:  # if we found the right one
-                                curtool = [pos[0] * image1size, pos[1] * image1size]
+                                curtool = [pos[0] * previewCellSize, pos[1] * previewCellSize]
                 if adds in [1, 2, 3, 11]:
                     if(adds == 11 and cell in [2, 3, 4, 5]):
-                        pixel.blit(convrender, [0, 0], [[graphics["shows2"]["10"][0] * image1size, graphics["shows2"]["10"][1] * image1size], cellsize2])
+                        pixel.blit(convrender, [0, 0], [[graphics["shows2"]["10"][0] * previewCellSize, graphics["shows2"]["10"][1] * previewCellSize], cellsize2])
                     else:
                         pixel.blit(convrender, [0, 0], [curtool, cellsize2])
                 else:
@@ -474,12 +474,12 @@ class Renderer:
             surf = pg.transform.scale(surf, [ww * sprite2image, wh * sprite2image])
             surf.set_colorkey(white)
             surf.set_alpha(190)
-            self.surf_props.blit(surf, [mostleft / spritesize * image1size, mosttop / spritesize * image1size])
+            self.surf_props.blit(surf, [mostleft / spritesize * previewCellSize, mosttop / spritesize * previewCellSize])
             if prop[4].get("points") is not None:
                 propcolor = toarr(self.findprop(prop[1])[0]["previewColor"], "color")  # wires
                 for point in prop[4]["points"]:
                     px, py = toarr(point, "point")
-                    pg.draw.circle(self.surf_props, propcolor, [px // 1.25, py // 1.25], 1)
+                    pg.draw.circle(self.surf_props, propcolor, [px // 1.25, py // 1.25], 4)
 
     def rerendereffect(self):
         self.rendereffect(self.effect_index)
@@ -493,7 +493,7 @@ class Renderer:
                 #surf.set_alpha(col.a)
                 #surf.fill(col)
                 #self.surf_effect.blit(surf, [xp * size, yp * size])
-                self.surf_effect.fill(col, [xp * image1size, yp * image1size, image1size, image1size])
+                self.surf_effect.fill(col, [xp * previewCellSize, yp * previewCellSize, previewCellSize, previewCellSize])
                 # pg.draw.rect(f, col, [xp * size, yp * size, size, size], 0)
 
     @property

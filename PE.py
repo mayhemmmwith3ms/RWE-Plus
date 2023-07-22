@@ -45,6 +45,8 @@ class PE(MenuWithField):
 
         self.normheight = 0
 
+        self.cursorRotation = 0
+
         self.selectedprop = self.props[list(self.props.keys())[self.currentcategory]][0]
         self.selectedimage: pg.Surface = self.selectedprop["images"][0]
         self.ropeobject = None
@@ -234,7 +236,7 @@ class PE(MenuWithField):
             for button in self.settingslist:
                 button.blit(sum(pg.display.get_window_size()) // 120)
         super().blit()
-        self.labels[2].set_text(self.labels[2].originaltext + str(self.prop_settings) + f" | Zoom: {(self.size / image1size) * 100}%")
+        self.labels[2].set_text(self.labels[2].originaltext + str(self.prop_settings) + f" | Zoom: {(self.size / previewCellSize) * 100}%")
         self.labels[0].set_text(self.labels[0].originaltext + "\n".join(self.notes))
         cir = [self.buttonslist[self.toolindex].rect.x + 3,
                self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
@@ -261,7 +263,7 @@ class PE(MenuWithField):
             self.renderprop = not self.delmode and not self.copymode
             if self.lastpos != mpos and self.selectedprop["tp"] == "rope":
                 self.lastpos = mpos.copy()
-                ropepos = (mpos - pg.Vector2(self.field.rect.topleft)) / self.size * image1size - pg.Vector2(self.xoffset, self.yoffset) * image1size
+                ropepos = (mpos - pg.Vector2(self.field.rect.topleft)) / self.size * previewCellSize - pg.Vector2(self.xoffset, self.yoffset) * previewCellSize
                 pA = pg.Vector2((self.quads[0][0] + self.quads[3][0]) / 2,
                                 (self.quads[0][1] + self.quads[3][1]) / 2) + ropepos
                 pB = pg.Vector2((self.quads[1][0] + self.quads[2][0]) / 2,
@@ -278,7 +280,7 @@ class PE(MenuWithField):
                                             self.prop_settings["release"])
 
             # pg.draw.circle(self.fieldmap, red, pg.Vector2(posoffset) / image1size * self.size, 20)
-
+            
             s = [self.findparampressed("stretch_topleft"),
                  self.findparampressed("stretch_topright"),
                  self.findparampressed("stretch_bottomright"),
@@ -321,6 +323,7 @@ class PE(MenuWithField):
                             vec = [round(vec.x, 4), round(vec.y, 4)]
                             quads2[i] = vec
                         self.quads = quads2
+                        self.cursorRotation = -(pg.Vector2(self.quads[2]) - pg.Vector2(self.quads[3])).angle_to(pg.Vector2(1, 0))
                         self.prop_settings = name[4]["settings"]
                         self.updateproptransform()
                 elif self.selectedprop["tp"] == "long":
@@ -381,6 +384,7 @@ class PE(MenuWithField):
                         dpos = mpos
                     #dpos = (((pg.Vector2(avgX, avgY) + pg.Vector2(self.field.rect.topleft)) * self.size) + pg.Vector2(self.xoffset, self.yoffset)) // spritesize
                     self.surface.blit(i, (self.rectdata[1] + dpos) / 2 - pg.Vector2(i.get_size()) / 2)
+                    
 
             elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
                 self.mousp = True
@@ -415,8 +419,8 @@ class PE(MenuWithField):
                         self.ropeobject.modelRopeUpdate()
                     color = toarr(self.ropeobject.prop["previewColor"], "color")
                     for segment in self.ropeobject.segments:
-                        posofwire = ((pg.Vector2(self.xoffset, self.yoffset) + (segment["pos"]) / image1size) * self.size) + pg.Vector2(self.field.rect.topleft)
-                        pg.draw.circle(self.surface, color, posofwire, 5)
+                        posofwire = ((pg.Vector2(self.xoffset, self.yoffset) + (segment["pos"]) / previewCellSize) * self.size) + pg.Vector2(self.field.rect.topleft)
+                        pg.draw.circle(self.surface, color, posofwire, 4)
             depthpos = [mpos[0] + 20, mpos[1]]
             if self.findparampressed("propvariation_change"):
                 varpos = [mpos[0] + 20, mpos[1] + 20]
@@ -449,6 +453,15 @@ class PE(MenuWithField):
                             w, h = item["images"][0].get_size()
                             self.surface.blit(pg.transform.scale(item["images"][0], [w, h]), button.rect.topright)
                         break
+
+        if self.onfield:
+            cRotVec = pg.Vector2(0, 1).rotate(self.cursorRotation)
+            pg.draw.line(self.surface, red, mpos + cRotVec * 8, mpos + cRotVec * 16)
+            pg.draw.line(self.surface, red, mpos - cRotVec * 8, mpos - cRotVec * 16)
+            cRotVec = cRotVec.rotate(90)
+            pg.draw.line(self.surface, blue, mpos + cRotVec * 8, mpos + cRotVec * 16)
+            pg.draw.line(self.surface, blue, mpos - cRotVec * 8, mpos - cRotVec * 16)
+            pg.draw.circle(self.surface, red, mpos, 8, 1)
 
         for button in self.buttonslist:
             button.blittooltip()
@@ -597,6 +610,7 @@ class PE(MenuWithField):
         self.snap = not self.snap
 
     def rotate(self, a):
+        self.cursorRotation += a
         for indx, quad in enumerate(self.quads):
             rot = rotatepoint(quad, a)
             qx, qy = rot.x, rot.y
@@ -705,6 +719,7 @@ class PE(MenuWithField):
         self.quads = [[-wd, -hd], [wd, -hd], [wd, hd], [-wd, hd]]
         self.normheight = pg.Vector2(self.quads[0]).distance_to(pg.Vector2(self.quads[3]))
         self.quadsnor = self.quads.copy()
+        self.cursorRotation = 0
         self.updateproptransform()
 
     def findpropmenu(self):
@@ -786,11 +801,23 @@ class PE(MenuWithField):
         self.rotate(270)
 
     def stretch(self, axis, pos):
-        for i, q in enumerate(self.quads):
-            if q[axis] > 0:
-                self.quads[i][axis] += pos
-            else:
-                self.quads[i][axis] -= pos
+        #for i, q in enumerate(self.quads):
+        #    if q[axis] > 0:
+        #        self.quads[i][axis] += pos
+        #    else:
+        #        self.quads[i][axis] -= pos
+        if axis == 0:
+            stretchVector = pg.Vector2(pos, 0).rotate(self.cursorRotation)
+            self.quads[1] += stretchVector
+            self.quads[2] += stretchVector
+            self.quads[0] -= stretchVector
+            self.quads[3] -= stretchVector
+        else:
+            stretchVector = pg.Vector2(0, pos).rotate(self.cursorRotation)
+            self.quads[0] -= stretchVector
+            self.quads[1] -= stretchVector
+            self.quads[2] += stretchVector
+            self.quads[3] += stretchVector
         self.updateproptransform()
     def stretchy_up(self):
         self.stretch(1, self.settings["stretch_speed"])

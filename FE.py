@@ -304,11 +304,11 @@ class FE(MenuWithField):
     def chtext(self):
         if len(self.data["FE"]["effects"]) > 0:
             self.labels[0].set_text(self.labels[0].originaltext % (self.data["FE"]["effects"][self.selectedeffect]["options"][self.paramindex][0], self.data["FE"]["effects"][self.selectedeffect]["options"][self.paramindex][2]))
-            self.labels[1].set_text(self.labels[1].originaltext + self.data["FE"]["effects"][self.selectedeffect]["nm"] + f" | Zoom: {(self.size / image1size) * 100}%")
+            self.labels[1].set_text(self.labels[1].originaltext + self.data["FE"]["effects"][self.selectedeffect]["nm"] + f" | Zoom: {(self.size / previewCellSize) * 100}%")
             self.buttons[self.settings["currentparamindex"]].set_text(str(self.paramindex))
         else:
             self.labels[0].set_text("")
-            self.labels[1].set_text(f"Zoom: {(self.size / image1size) * 100}%")
+            self.labels[1].set_text(f"Zoom: {(self.size / previewCellSize) * 100}%")
             self.buttons[self.settings["currentparamindex"]].set_text("0")
 
     def changeparam(self, text): # "Delete", "Move Back", "Move Forth"

@@ -26,7 +26,7 @@ class CE(MenuWithField):
 
     def blit(self):
         super().blit()
-        self.labels[0].set_text(self.labels[0].originaltext % len(self.data["CM"]["cameras"]) + f" | Zoom: {(self.size / image1size) * 100}%")
+        self.labels[0].set_text(self.labels[0].originaltext % len(self.data["CM"]["cameras"]) + f" | Zoom: {(self.size / previewCellSize) * 100}%")
 
         if self.onfield and len(self.data["CM"]["cameras"]) > 0:
 
@@ -40,7 +40,7 @@ class CE(MenuWithField):
             self.if_set(s[1], 1)
             self.if_set(s[2], 2)
             self.if_set(s[3], 3)
-            mpos = pg.Vector2(pg.mouse.get_pos()) / self.size * image1size
+            mpos = pg.Vector2(pg.mouse.get_pos()) / self.size * previewCellSize
             if self.held and self.heldindex < len(self.data["CM"]["cameras"]) and self.mode == "move":
                 val = list(self.camoffset + mpos)
                 val[0] = round(val[0], 4)
@@ -60,8 +60,8 @@ class CE(MenuWithField):
                     if s:
                         v = pg.Vector2(self.field.rect.topleft) + (pg.Vector2(camw/2, camh/2) * self.size)
                         v += self.offset * self.size
-                        startpos = pg.Vector2(val) / image1size * self.size + v
-                        endpos = pg.Vector2(xpos, ypos) / image1size * self.size + v
+                        startpos = pg.Vector2(val) / previewCellSize * self.size + v
+                        endpos = pg.Vector2(xpos, ypos) / previewCellSize * self.size + v
                         pg.draw.line(self.surface, purple, startpos, endpos, 1)
                 val = makearr(val, "point")
                 self.data["CM"]["cameras"][self.heldindex] = val
@@ -84,10 +84,10 @@ class CE(MenuWithField):
                     r, o = mouse.rotate(90).as_polar()
                     if settings["CE"]["unlockangles"]:
                         self.data["CM"]["quads"][self.heldindex][quadindx] = \
-                            [o, round(r / 100 / self.size * image1size, 4)]
+                            [o, round(r / 100 / self.size * previewCellSize, 4)]
                     else:
                         self.data["CM"]["quads"][self.heldindex][quadindx] = \
-                            [o, round(min(r / 100 / self.size * image1size, 1), 4)]
+                            [o, round(min(r / 100 / self.size * previewCellSize, 1), 4)]
 
             elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
                 self.setcursor()
@@ -163,7 +163,7 @@ class CE(MenuWithField):
             self.updatehistory([["CM", "quads", i]])
 
     def pickupcamera(self):
-        mpos = pg.Vector2(pg.mouse.get_pos()) / self.size * image1size
+        mpos = pg.Vector2(pg.mouse.get_pos()) / self.size * previewCellSize
         closeindex = self.closestcameraindex()
 
         self.heldindex = closeindex

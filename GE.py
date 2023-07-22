@@ -78,8 +78,8 @@ class GE(MenuWithField):
 
     def rs(self):
         self.toolrender = pg.transform.scale(self.tooltiles,
-                                             [self.tooltiles.get_width() / graphics["tilesize"][0] * image1size,
-                                              self.tooltiles.get_height() / graphics["tilesize"][1] * image1size])
+                                             [self.tooltiles.get_width() / graphics["tilesize"][0] * previewCellSize,
+                                              self.tooltiles.get_height() / graphics["tilesize"][1] * previewCellSize])
 
     def TE(self):
         self.message = "TE"
@@ -111,9 +111,9 @@ class GE(MenuWithField):
             posoffset = self.posoffset
 
             toolsized = pg.transform.scale(self.toolrender,
-                                           pg.Vector2(self.toolrender.get_size()) / image1size * self.size).convert_alpha(self.surface)
+                                           pg.Vector2(self.toolrender.get_size()) / previewCellSize * self.size).convert_alpha(self.surface)
             toolsized.fill(red, special_flags=pg.BLEND_RGBA_MULT)
-            self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / image1size) * 100}%")
+            self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / previewCellSize) * 100}%")
             #print(self.placetile)
             if self.selectedtool in graphics["codes"].keys():
                 if type(self.placetile) == int:
@@ -128,7 +128,7 @@ class GE(MenuWithField):
                     self.surface.blit(toolsized, pos2, [curtool, cellsize2])
             rect = [self.xoffset * self.size, self.yoffset * self.size, self.levelwidth * self.size,
                     self.levelheight * self.size]
-            pg.draw.rect(self.field.field, border, rect, self.size // image1size + 1)
+            pg.draw.rect(self.field.field, border, rect, self.size // previewCellSize + 1)
             if (0 <= posoffset.x < self.levelwidth) and (0 <= posoffset.y < self.levelheight):
                 tilename = settings["GE"]["names"][
                     str(self.data["GE"][int(posoffset.x)][int(posoffset.y)][self.layer][0])]

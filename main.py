@@ -100,7 +100,7 @@ def undohistory():
     surf.datalast = copy.deepcopy(pathdict.data)
     redobuffer.append(copy.deepcopy(undobuffer.pop()))
     if [surf.levelwidth, surf.levelheight] != lastsize:
-        surf.renderer.set_surface([image1size * surf.levelwidth, image1size * surf.levelheight])
+        surf.renderer.set_surface([previewCellSize * surf.levelwidth, previewCellSize * surf.levelheight])
     surf.onundo()
     if MenuWithField in type(surf).__bases__:
         surf.renderer.render_all(surf.layer)
@@ -127,7 +127,7 @@ def redohistory():
     surf.datalast = copy.deepcopy(pathdict.data)
     undobuffer.append(copy.deepcopy(redobuffer.pop()))
     if [surf.levelwidth, surf.levelheight] != lastsize:
-        surf.renderer.set_surface([image1size * surf.levelwidth, image1size * surf.levelheight])
+        surf.renderer.set_surface([previewCellSize * surf.levelwidth, previewCellSize * surf.levelheight])
     surf.onredo()
     if MenuWithField in type(surf).__bases__:
         surf.renderer.render_all(surf.layer)

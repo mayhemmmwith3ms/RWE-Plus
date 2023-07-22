@@ -138,7 +138,7 @@ class TE(MenuWithField):
                         self.mpos = posoffset
                         self.lastfg = fg
                         self.lastfp = fp
-                        self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / image1size) * 100}%")
+                        self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / previewCellSize) * 100}%")
 
                         if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
                             tl = self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]
@@ -156,7 +156,7 @@ class TE(MenuWithField):
                             #    print(f"Error occurred determining tile display type at mpos {int(posoffset.x)}, {int(posoffset.y)}")
                             self.labels[0].set_text("Tile: " + tlLabel + " | Tile Data: " + str(tl))            
 
-                    bord = (self.size // image1size + 1) // 2
+                    bord = (self.size // previewCellSize + 1) // 2
                     selectrect = [
                         [cposx - bord, cposy - bord],
                         [self.tileimage["image"].get_width() + bord * 2, self.tileimage["image"].get_height() + bord * 2]
@@ -972,7 +972,7 @@ class TE(MenuWithField):
         w, h = tile["size"]
         sp = tile["cols"][0]
         sp2 = tile["cols"][1]
-        shift = self.size // image1size + 1
+        shift = self.size // previewCellSize + 1
         px = x + int((w * .5) + .5) - 1  # center coordinates
         py = y + int((h * .5) + .5) - 1
         if px >= self.levelwidth or py >= self.levelheight or px < 0 or py < 0:

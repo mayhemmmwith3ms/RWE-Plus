@@ -213,14 +213,14 @@ def inittolist():
     counter = 1
     for k, v in graphics["matposes"].items():
         col = pg.Color(v)
-        img = pg.Surface([image1size, image1size], pg.SRCALPHA)
+        img = pg.Surface([previewCellSize, previewCellSize], pg.SRCALPHA)
         img.fill(pg.Color(0, 0, 0, 0))
         ms = graphics["matsize"]
         pg.draw.rect(img, v, pg.Rect(ms[0], ms[0], ms[1], ms[1]))
         try:
             preview = loadimage(path2materialPreviews + k + ".png")
         except FileNotFoundError:
-            preview = pg.Surface([image1size, image1size])
+            preview = pg.Surface([previewCellSize, previewCellSize])
             preview.set_alpha(0)
         preview.set_colorkey(pg.Color(255, 255, 255))
         solved_copy[matcat].append(
