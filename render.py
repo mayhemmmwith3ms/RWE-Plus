@@ -479,7 +479,7 @@ class Renderer:
                 propcolor = toarr(self.findprop(prop[1])[0]["previewColor"], "color")  # wires
                 for point in prop[4]["points"]:
                     px, py = toarr(point, "point")
-                    pg.draw.circle(self.surf_props, propcolor, [px // 1.25, py // 1.25], 4)
+                    pg.draw.circle(self.surf_props, propcolor, [px // previewToRenderedFactor, py // previewToRenderedFactor], 4)
 
     def rerendereffect(self):
         self.rendereffect(self.effect_index)
