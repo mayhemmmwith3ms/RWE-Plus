@@ -429,7 +429,7 @@ class PE(MenuWithField):
                 else:
                     widgets.fastmts(self.surface, f"Variation: {self.prop_settings.get('variation')}", *varpos, white)
             rl = sum(self.selectedprop["repeatL"]) if self.selectedprop.get("repeatL") else self.selectedprop["depth"]
-            widgets.fastmts(self.surface, f"Depth: {self.depth} to {rl + self.depth}", *depthpos, white)
+            widgets.fastmts(self.surface, f"Depth: {self.depth} to {rl + self.depth}", *depthpos, white, fontsize= settings["global"]["fontsize"] // 2)
             if self.copymode or self.delmode:
                 _, _, indx = self.find_nearest(*posoffset)
                 if indx != -1:

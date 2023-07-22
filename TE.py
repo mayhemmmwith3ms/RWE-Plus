@@ -410,7 +410,7 @@ class TE(MenuWithField):
                         if self.justPlacedChainHolders:
                             for chPos in self.justPlacedChainHolders:
                                 self.data["TE"]["tlMatrix"][chPos[0]][chPos[1]][chPos[2]]["data"].append(makearr([cposxo, cposyo], "point"))
-                                self.data["TE"]["tlMatrix"][chPos[0]][chPos[1]][chPos[2]]["data"][0] = makearr([15, 22], "point") #dont fucking ask me why this works
+                                #self.data["TE"]["tlMatrix"][chPos[0]][chPos[1]][chPos[2]]["data"][0] = makearr([15, 22], "point") #dont fucking ask me why this works
                             self.justPlacedChainHolders.clear()
                         else:
                             singlefirstframe(True)
@@ -1000,7 +1000,6 @@ class TE(MenuWithField):
         w, h = self.tileimage["size"]
         px = x + int((w * .5) + .5) - 1 # center coordinates
         py = y + int((h * .5) + .5) - 1
-        p = makearr(self.tileimage["cat"], "point")
         sp = self.tileimage["cols"][0]
         sp2 = self.tileimage["cols"][1]
         if not self.test_cols(x, y):
@@ -1012,10 +1011,11 @@ class TE(MenuWithField):
                                [x * self.size, y * self.size])
         for x2 in range(w):
             for y2 in range(h):
-                csp = sp[x2 * h + y2]
-                xpos = int(x + x2)
-                ypos = int(y + y2)
-                if xpos >= self.levelwidth or ypos >= self.levelheight or xpos < 0 or ypos < 0:
+                p = makearr([self.tileimage["cat"][0] + 4, self.tileimage["cat"][1]], "point")  # very bandaid fix, RWE loads tiles and materials in a different order than Drizzle,                                                                         
+                csp = sp[x2 * h + y2]                                                           # so whenever the tilehead category index is actually required for something to function
+                xpos = int(x + x2)                                                              # it Won't, because all of the tile category indices will be wrong
+                ypos = int(y + y2)                                                              # luckily, i don't know of much else that requires the head's category index other than chain holders,
+                if xpos >= self.levelwidth or ypos >= self.levelheight or xpos < 0 or ypos < 0: # which aren't the end of the world if they don't work. this fix should work unless material categories are added or removed
                     continue
                 if "material" in self.tileimage["tags"]:
                     self.area[xpos][ypos] = False
