@@ -48,6 +48,7 @@ white = pg.Color([255, 255, 255])
 gray = pg.Color([110, 110, 110])
 darkgray = pg.Color([80, 80, 80])
 purple = pg.Color([255, 0, 255])
+yellow = pg.Color([255, 255, 0])
 alpha = dc
 
 col8 = [

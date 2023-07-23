@@ -961,7 +961,7 @@ class MenuWithField(Menu):
         self.data["TE"]["tlMatrix"][x][y][self.layer] = {"tp": "default", "data": 0}
 
     def getcamerarect(self, cam):
-        pos = pg.Vector2(toarr(cam, "point")) // (float(renderedCellSize) / previewCellSize)
+        pos = pg.Vector2(toarr(cam, "point")) // previewToRenderedFactor
         p = (pos / previewCellSize) * self.size + self.field.rect.topleft + self.offset * self.size
         return pg.Rect([p, [camw * self.size, camh * self.size]])
 
@@ -1069,6 +1069,10 @@ class MenuWithField(Menu):
     @property
     def onfield(self):
         return self.field.rect.collidepoint(pg.mouse.get_pos())
+    
+    @property
+    def fieldScale(self):
+        return self.size / previewCellSize
 
     @property
     def custom_info(self):

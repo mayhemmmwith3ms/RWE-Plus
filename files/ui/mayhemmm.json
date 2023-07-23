@@ -458,7 +458,10 @@
 
 		"rotate_speed": 0.1,
 		"rotate_speedup": 1,
-		"stretch_speed": 0.3
+		"stretch_speed": 0.3,
+
+		"advancedcursor": true,
+		"showpoints": true
 	},
 	"HK": {
 		"buttons": 

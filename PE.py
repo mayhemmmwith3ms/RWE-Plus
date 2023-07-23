@@ -455,13 +455,22 @@ class PE(MenuWithField):
                         break
 
         if self.onfield:
-            cRotVec = pg.Vector2(0, 1).rotate(self.cursorRotation)
-            pg.draw.line(self.surface, red, mpos + cRotVec * 8, mpos + cRotVec * 16)
-            pg.draw.line(self.surface, red, mpos - cRotVec * 8, mpos - cRotVec * 16)
-            cRotVec = cRotVec.rotate(90)
-            pg.draw.line(self.surface, blue, mpos + cRotVec * 8, mpos + cRotVec * 16)
-            pg.draw.line(self.surface, blue, mpos - cRotVec * 8, mpos - cRotVec * 16)
-            pg.draw.circle(self.surface, red, mpos, 8, 1)
+            if self.settings["advancedcursor"]:
+                if self.findparampressed("moreinfo"):
+                    cursorCol = purple
+                else:
+                    cursorCol = yellow
+                cRotVec = pg.Vector2(0, 1).rotate(self.cursorRotation)
+                pg.draw.line(self.surface, cursorCol, mpos + cRotVec * 8, mpos + cRotVec * 16)
+                pg.draw.line(self.surface, cursorCol, mpos - cRotVec * 8, mpos - cRotVec * 16)
+                cRotVec = cRotVec.rotate(90)
+                pg.draw.line(self.surface, cursorCol, mpos + cRotVec * 8, mpos + cRotVec * 12)
+                pg.draw.line(self.surface, cursorCol, mpos - cRotVec * 8, mpos - cRotVec * 12)
+                pg.draw.circle(self.surface, cursorCol, mpos, 8, 1)
+
+            if self.settings["showpoints"]:
+                for q in self.quads:
+                    pg.draw.circle(self.surface, red, [q[0] * self.fieldScale, q[1] * self.fieldScale] + mpos, 2)
 
         for button in self.buttonslist:
             button.blittooltip()
@@ -611,11 +620,12 @@ class PE(MenuWithField):
 
     def rotate(self, a):
         self.cursorRotation += a
-        for indx, quad in enumerate(self.quads):
-            rot = rotatepoint(quad, a)
-            qx, qy = rot.x, rot.y
-            self.quads[indx] = [round(qx, 4), round(qy, 4)]
-        self.updateproptransform()
+        if (not self.findparampressed("moreinfo")) or not self.settings["advancedcursor"]:
+            for indx, quad in enumerate(self.quads):
+                rot = rotatepoint(quad, a)
+                qx, qy = rot.x, rot.y
+                self.quads[indx] = [round(qx, 4), round(qy, 4)]
+            self.updateproptransform()
 
     def flipx(self):
         for indx, quad in enumerate(self.quads):
@@ -801,23 +811,28 @@ class PE(MenuWithField):
         self.rotate(270)
 
     def stretch(self, axis, pos):
-        #for i, q in enumerate(self.quads):
-        #    if q[axis] > 0:
-        #        self.quads[i][axis] += pos
-        #    else:
-        #        self.quads[i][axis] -= pos
         if axis == 0:
-            stretchVector = pg.Vector2(pos, 0).rotate(self.cursorRotation)
-            self.quads[1] += stretchVector
-            self.quads[2] += stretchVector
-            self.quads[0] -= stretchVector
-            self.quads[3] -= stretchVector
+            stretchVector = pg.Vector2(pos, 0)
         else:
-            stretchVector = pg.Vector2(0, pos).rotate(self.cursorRotation)
-            self.quads[0] -= stretchVector
-            self.quads[1] -= stretchVector
-            self.quads[2] += stretchVector
-            self.quads[3] += stretchVector
+            stretchVector = pg.Vector2(0, pos)
+
+        absStretchVector = pg.Vector2(abs(stretchVector.x), abs(stretchVector.y)).rotate(self.cursorRotation + 90)
+        stretchVector = stretchVector.rotate(self.cursorRotation)
+        long = 0
+
+        def getDistAlongAxis(vector, axis):
+            return math.sin(axis.angle_to(vector) * 0.0174533) * vector.magnitude()
+
+        for i, q in enumerate(self.quads):
+            qVec = pg.Vector2(q)
+            distanceAlongAxis = getDistAlongAxis(qVec, absStretchVector)
+            if distanceAlongAxis > long:
+                long = distanceAlongAxis
+
+        for i, q in enumerate(self.quads):
+            qVec = pg.Vector2(q)
+            distanceAlongAxis = getDistAlongAxis(qVec, absStretchVector)
+            self.quads[i] += stretchVector * (distanceAlongAxis / long)
         self.updateproptransform()
     def stretchy_up(self):
         self.stretch(1, self.settings["stretch_speed"])

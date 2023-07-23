@@ -227,7 +227,8 @@
     	"K_x": "pauseropephysics",
 
     	"K_SPACE@@": "cursor_propdepth_inverse",
-    	"K_f+": "-findpropmenu"
+    	"K_f+": "-findpropmenu",
+		"K_LSHIFT": "moreinfo"
   	},
 	"FE": {
 		"unlock_keys": ["K_LEFT", "K_RIGHT", "K_UP", "K_DOWN"],
