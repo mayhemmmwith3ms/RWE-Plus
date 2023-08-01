@@ -897,6 +897,8 @@ class MenuWithField(Menu):
     def destroy(self, xp, yp):
         x = int(xp)
         y = int(yp)
+        if not self.canplaceit(x, y, x, y):
+            return
         self.area[x][y] = False
         def clearitem(mx, my, layer):
             val = self.data["TE"]["tlMatrix"][mx][my][layer]

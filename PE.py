@@ -628,14 +628,42 @@ class PE(MenuWithField):
             self.updateproptransform()
 
     def flipx(self):
-        for indx, quad in enumerate(self.quads):
-            self.quads[indx][0] = -quad[0]
-        self.updateproptransform()
+        #for indx, quad in enumerate(self.quads):
+        #    ax = pg.Vector2(1, 0).rotate(self.cursorRotation - 90)
+        #    vec = ax * abs(self.getDistAlongAxis(pg.Vector2(quad), ax))
+        #    print(self.getDistAlongAxis(pg.Vector2(quad), ax))
+        #    self.quads[indx] -= (quad - vec) * 2
+        #self.updateproptransform()
+
+        ax = pg.Vector2(0, 1).rotate(self.cursorRotation)
+        long = 0
+
+        for i, q in enumerate(self.quads):
+            qVec = pg.Vector2(q)
+            distanceAlongAxis = self.getDistAlongAxis(qVec, ax)
+            if distanceAlongAxis > long:
+                long = distanceAlongAxis
+        
+        self.stretch(0, -long * 2)
 
     def flipy(self):
-        for indx, quad in enumerate(self.quads):
-            self.quads[indx][1] = -self.quads[indx][1]
-        self.updateproptransform()
+        #for indx, quad in enumerate(self.quads):
+        #    ax = pg.Vector2(1, 0).rotate(self.cursorRotation)
+        #    vec = ax * self.getDistAlongAxis(pg.Vector2(quad), ax)
+        #    self.quads[indx] -= (quad - vec) * 2
+        #self.updateproptransform()
+
+        ax = pg.Vector2(1, 0).rotate(self.cursorRotation)
+        long = 0
+
+        for i, q in enumerate(self.quads):
+            qVec = pg.Vector2(q)
+            distanceAlongAxis = self.getDistAlongAxis(qVec, ax)
+            if distanceAlongAxis > long:
+                long = distanceAlongAxis
+        
+        self.stretch(1, -long * 2)
+
 
     def applytags(self):
         tags = self.selectedprop["tags"]
@@ -810,6 +838,9 @@ class PE(MenuWithField):
         self.transform_reset()
         self.rotate(270)
 
+    def getDistAlongAxis(self, vector, axis):
+        return math.sin(axis.angle_to(vector) * 0.0174533) * vector.magnitude()
+
     def stretch(self, axis, pos):
         if axis == 0:
             stretchVector = pg.Vector2(pos, 0)
@@ -820,19 +851,16 @@ class PE(MenuWithField):
         stretchVector = stretchVector.rotate(self.cursorRotation)
         long = 0
 
-        def getDistAlongAxis(vector, axis):
-            return math.sin(axis.angle_to(vector) * 0.0174533) * vector.magnitude()
-
         for i, q in enumerate(self.quads):
             qVec = pg.Vector2(q)
-            distanceAlongAxis = getDistAlongAxis(qVec, absStretchVector)
+            distanceAlongAxis = self.getDistAlongAxis(qVec, absStretchVector)
             if distanceAlongAxis > long:
                 long = distanceAlongAxis
 
         for i, q in enumerate(self.quads):
             qVec = pg.Vector2(q)
-            distanceAlongAxis = getDistAlongAxis(qVec, absStretchVector)
-            self.quads[i] += stretchVector * (distanceAlongAxis / long)
+            distanceAlongAxis = self.getDistAlongAxis(qVec, absStretchVector)
+            self.quads[i] -= stretchVector * (distanceAlongAxis / long)
         self.updateproptransform()
     def stretchy_up(self):
         self.stretch(1, self.settings["stretch_speed"])
