@@ -241,6 +241,18 @@ class LP(MenuWithField):
         self.resizeimage(x, y, w, h)
         self.recount_image()
         self.data["EX2"]["size"] = makearr([self.levelwidth, self.levelheight], "point")
+        #if x != 0 or y != 0:
+        #    for xp, xT in enumerate(self.data["TE"]["tlMatrix"]):
+        #        for yp, yT in enumerate(xT):
+        #          for l, lT in enumerate(yT):
+        #               print(self.data["TE"]["tlMatrix"][x][y][l]["tp"])
+        #               if self.data["TE"]["tlMatrix"][x][y][l]["tp"] == "tileBody":
+        #                   headPos = toarr(self.data["TE"]["tlMatrix"][x][y][l]["data"][0], "point")
+        #                   headPos[0] -= x
+        #                   headPos[1] -= y
+        #                   self.data["TE"]["tlMatrix"][x][y][l]["data"][0] = makearr(headPos, "point")
+
+
         print("Done!")
         self.updatehistory([[]])
         self.renderer.data = self.data
@@ -296,8 +308,8 @@ class LP(MenuWithField):
                 for layer, item in enumerate(yv):
                     if item["tp"] == "tileBody":
                         dat = toarr(item["data"][0], "point")
-                        dat[0] -= x
-                        dat[1] -= y
+                        dat[0] += x
+                        dat[1] += y
                         if dat[0] < 0 or dat[1] < 0 or dat[0] > self.levelwidth or dat[1] > self.levelheight:
                             cutted[xp][yp][layer] = {"tp": "default", "data": 0}
                         else:

@@ -228,13 +228,13 @@ def launch(level):
     os.system("cls")
     del loadi
     try:
-        request = requests.get("https://api.github.com/repos/timofey260/RWE-Plus/releases/latest", timeout=2)
+        request = requests.get("https://api.github.com/repos/methylredd/RWE-Plus/releases/latest", timeout=2)
         if request.status_code == 200:
             gittag = request.json()["tag_name"]
             if tag != gittag:
                 print("A new version of RWE+ is available!")
                 print(f"Current Version: {tag}, latest: {gittag}")
-                print("https://github.com/timofey260/RWE-Plus/releases/latest")
+                print("https://github.com/methylredd/RWE-Plus/releases/latest")
     except requests.exceptions.ConnectionError:
         print("Cannot find new RWE+ versions")
     except requests.exceptions.ReadTimeout:
