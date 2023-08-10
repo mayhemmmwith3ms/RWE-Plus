@@ -158,7 +158,7 @@ class Renderer:
         area = [[False for _ in range(self.levelheight)] for _ in range(self.levelwidth)]
         self.tiles_render_area(area, layer)
 
-    def tiles_render_area(self, area, layer):
+    def tiles_render_area(self, area, layer, allLayers = True):
         for xp, x in enumerate(area):
             for yp, y in enumerate(x):
                 if y:
@@ -169,7 +169,8 @@ class Renderer:
                 for yp, y in enumerate(x):
                     if y:
                         continue
-                    self.render_tile_pixel(xp, yp, layer, (drawLayer + layer) % 3)
+                    if (not (drawLayer != layer)) or allLayers:
+                        self.render_tile_pixel(xp, yp, layer, (drawLayer + layer) % 3)
 
     def render_tile_pixel(self, xp, yp, l, drawL):
         self.lastlayer = l

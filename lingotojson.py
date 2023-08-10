@@ -351,7 +351,7 @@ def getprops(tiles: dict):
 
         if "material" in items[0]["tags"]:
             continue
-        for indx, tile in enumerate(items[1:]):
+        for indx, tile in enumerate(items[0:]):
             if count <= 0:
                 count = settings["PE"]["elements_as_tiles_count"]
                 if title != "":
