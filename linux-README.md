@@ -8,7 +8,7 @@ most linux systems have python pre-installed or it can be installed with:
 
 `$ sudo apt install python3`
 
-next thing we need is download newest RWE+ [release](https://github.com/timofey260/RWE-Plus/releases/download/latest/), unzip and open it in terminal
+next thing we need is download newest RWE+ [release](https://github.com/methylredd/RWE-Plus/releases/download/latest/), unzip and open it in terminal
 
 then virtual environment can be installed and created with:
 

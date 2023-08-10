@@ -1,7 +1,7 @@
-# RWE![Plus](https://github.com/timofey260/RWE-Plus/blob/master/files/icon.png?raw=true)
+# RWE![Plus](https://github.com/methylredd/RWE-Plus/blob/master/files/icon.png?raw=true)
 A fork of timofey260's RWE-Plus, made to address many of its significant issues
 
-![icon](https://github.com/timofey260/RWE-Plus/blob/master/files/image.png?raw=true)
+![icon](https://github.com/methylredd/RWE-Plus/blob/master/files/image.png?raw=true)
 
 ## RWE+ features
 1. New UI with clickable buttons
