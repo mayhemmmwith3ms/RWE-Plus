@@ -73,7 +73,9 @@
   		"CageGrate": [50,190,190],
   		"BulkMetal": [50,19,190],
   		"MassiveBulkMetal": [255,19,19],
-  		"Dune Sand": [255, 255, 100]
+  		"Dune Sand": [255, 255, 100],
+		"MetalSlatHorizontal": [180, 200, 255],
+		"MetalSlatVertical": [180, 200, 255]
 	},
 	"shadowimages": [
 			"Internal_244_bigSignGradient1.png",
