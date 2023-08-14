@@ -216,7 +216,8 @@ class LP(MenuWithField):
 
     def water(self):
         self.tool = "env"
-        self.data["WL"]["waterLevel"] = 0
+        if self.data["WL"]["waterLevel"] < 0:
+            self.data["WL"]["waterLevel"] = 0
         self.recaption()
 
     def sizing(self):
