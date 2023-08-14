@@ -109,5 +109,6 @@
 			"Drought_393411_octagonLight.png",
 			"Drought_393412_octagonLightEmpty.png"
 
-		]
+		],
+		"nonOSbrowser" : false
 }

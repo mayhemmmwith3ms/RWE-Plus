@@ -147,7 +147,7 @@ def inittolist():
         for indx, item in enumerate(items[1:]):
             try:
                 img = loadimage(f"{path2graphics}{item['nm']}.png")
-            except FileNotFoundError:
+            except (FileNotFoundError, TypeError):
                 continue
             sz = toarr(item["sz"], "point")
             try:
@@ -219,7 +219,7 @@ def inittolist():
         pg.draw.rect(img, v, pg.Rect(ms[0], ms[0], ms[1], ms[1]))
         try:
             preview = loadimage(path2materialPreviews + k + ".png")
-        except FileNotFoundError:
+        except (FileNotFoundError, TypeError):
             preview = pg.Surface([previewCellSize, previewCellSize])
             preview.set_alpha(0)
         preview.set_colorkey(pg.Color(255, 255, 255))
@@ -251,9 +251,12 @@ def renderlevel(data):
     file = open(fl, "w")
     turntolingo(data, file)
     #print(f"\"{application_path}/drizzle/Drizzle.ConsoleApp{'' if islinux else '.exe'}")
-    subprocess.Popen([f"{application_path}/drizzle/Drizzle.ConsoleApp{'' if islinux else '.exe'}", "render", fl], shell=True)
     #os.system(f"{application_path}\\drizzle\\Drizzle.ConsoleApp.exe render {fl}")
     if not islinux:
+        subprocess.Popen([f"{application_path}/drizzle/Drizzle.ConsoleApp{'' if islinux else '.exe'}", "render", fl], shell=True)
+    else:
+        subprocess.Popen(f"\"{application_path}/drizzle/Drizzle.ConsoleApp\" render \"{fl}\"", shell=True)
+    if not graphics["nonOSbrowser"]:
         os.system("start " + resolvepath(path2renderedlevels))
 
 
@@ -283,7 +286,7 @@ def getprops(tiles: dict):
         for indx, item in enumerate(items[1:]):
             try:
                 img = loadimage(path2props + item["nm"] + ".png")
-            except FileNotFoundError:
+            except (FileNotFoundError, TypeError):
                 continue
             img.set_colorkey(pg.color.Color(255, 255, 255))
 

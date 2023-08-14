@@ -1,6 +1,5 @@
 from menuclass import *
 
-
 class LE(MenuWithField):
 
     def __init__(self, surface: pg.surface.Surface, renderer):
@@ -15,7 +14,7 @@ class LE(MenuWithField):
             #self.field2.field = pg.transform.scale(loadimage(lev), sc)
             self.field2.field = pg.Surface(sc)
             self.field2.field.blit(loadimage(lev), [0, 0])
-        except FileNotFoundError:
+        except (FileNotFoundError, TypeError):
             self.field2.field = pg.surface.Surface(sc)
             self.field2.field.fill(white)
 
@@ -179,13 +178,19 @@ class LE(MenuWithField):
 
     def save(self):
         if self.data["path"] == "":
-            level = asksaveasfilename(defaultextension=[".wep"])
-            self.data["level"] = os.path.basename(level)
-            self.data["path"] = level
-            self.data["dir"] = os.path.abspath(level)
-            self.message = "save"
-            lev = os.path.splitext(self.data["path"])[0] + ".png"
-            pg.image.save(self.field2.field, lev)
+            if graphics["nonOSbrowser"]:
+                level = self.asksaveasfilename(defaultextension=[".wep"])
+            else:
+                level = asksaveasfilename(defaultextension=[".wep"])
+            try:
+                self.data["level"] = os.path.basename(level)
+                self.data["path"] = level
+                self.data["dir"] = os.path.abspath(level)
+                self.message = "save"
+                lev = os.path.splitext(self.data["path"])[0] + ".png"
+                pg.image.save(self.field2.field, lev)
+            except TypeError:
+                self.message = "MN"
         else:
             lev = os.path.splitext(self.data["path"])[0] + ".png"
             pg.image.save(self.field2.field, lev)

@@ -78,8 +78,10 @@ def keypress(window):
             surf.savef()
             run = False
         case "open":
-            #openlevel(surf.asksaveasfilename(defaultextension=[".txt", ".wep"]), window)
-            openlevel(askopenfilename(defaultextension=[".txt", ".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects"), window)
+            if graphics["nonOSbrowser"]:
+                openlevel(surf.asksaveasfilename(defaultextension=[".txt", ".wep"]), window)
+            else:
+                openlevel(askopenfilename(defaultextension=[".txt", ".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects"), window)
 
 
 def undohistory():
@@ -313,8 +315,10 @@ def loadmenu():
             case "new":
                 launch(-1)
             case "open":
-                #file = surf.asksaveasfilename(defaultextension=[".txt", ".wep"])
-                file = askopenfilename(defaultextension=[".txt", ".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
+                if graphics["nonOSbrowser"]:
+                    file = surf.asksaveasfilename(defaultextension=[".txt", ".wep"])
+                else:
+                    file = askopenfilename(defaultextension=[".txt", ".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
                 if file is not None and os.path.exists(file):
                     launch(file)
                     surf = load(window, renderer)
@@ -374,7 +378,7 @@ if __name__ == "__main__":
     if args.filename is not None:
         try:
             launch(args.filename)
-        except FileNotFoundError:
+        except (FileNotFoundError, TypeError):
             print("File not found!")
             raise
         except Exception as e:

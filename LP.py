@@ -325,7 +325,7 @@ class LP(MenuWithField):
         try:
             lev = os.path.splitext(self.data["path"])[0] + ".png"
             self.shadowfield = loadimage(lev)
-        except FileNotFoundError:
+        except (FileNotFoundError, TypeError):
             self.shadowfield = None
 
     def cutdata(self, x, y, w, h, array, default_instance):
