@@ -186,7 +186,7 @@ class CE(MenuWithField):
         self.data["CM"]["quads"].append([[0, 0], [0, 0], [0, 0], [0, 0]])
         self.heldindex = len(self.data["CM"]["cameras"]) - 1
         self.held = True
-        self.camoffset = pg.Vector2(0, 0)
+        self.camoffset = pg.Vector2(0, 0)#(pg.Vector2(-640, -320) - self.field.rect.topleft) * (previewCellSize / self.size) - pg.Vector2(self.xoffset, self.yoffset) * self.size
         self.updatehistory([["CM"]])
 
     def closestcameraindex(self):

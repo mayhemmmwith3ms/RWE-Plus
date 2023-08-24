@@ -239,6 +239,7 @@ class LP(MenuWithField):
             self.data["FE"]["effects"][num]["mtrx"] = self.cutdata(x, y, w, h, effect["mtrx"], 0)
         self.recount()
         self.resizeprops(x, y, w, h)
+        self.resizeCameras(x, y, w, h)
         self.resizeimage(x, y, w, h)
         self.recount_image()
         self.data["EX2"]["size"] = makearr([self.levelwidth, self.levelheight], "point")
@@ -275,6 +276,11 @@ class LP(MenuWithField):
                 pg.rect.Rect(0, 0, (self.gw + ofsleft) * previewCellSize, (self.gh + ofstop) * previewCellSize))
             lev = os.path.splitext(self.data["path"])[0] + ".png"
             pg.image.save(self.shadowfield, lev)
+
+    def resizeCameras(self, x, y, w, h):
+        for i, c in enumerate(self.data["CM"]["cameras"]):
+            newPos = pg.Vector2(toarr(c, "point")) + pg.Vector2(x, y) * renderedCellSize
+            self.data["CM"]["cameras"][i] = makearr([newPos.x, newPos.y], "point")
 
     def resizeprops(self, x, y, w, h):
         for indx, prop in enumerate(self.data["PR"]["props"]):
