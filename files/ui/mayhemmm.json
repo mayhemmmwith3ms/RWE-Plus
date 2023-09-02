@@ -34,8 +34,8 @@
 			"layer1": [255, 0, 0],
 			"layer2": [0, 0, 255],
 
-			"mixcol_empty": [119, 7, 171, 200],
-			"mixcol_fill": [22, 166, 0, 200],
+			"mixcol_empty": [255, 0, 255, 200],
+			"mixcol_fill": [0, 255, 0, 200],
 
 			"camera_border": [50, 50, 50],
 			"camera_held": [255, 10, 5],
