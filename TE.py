@@ -917,7 +917,7 @@ class TE(MenuWithField):
         #    return False
         if "material" in self.tileimage["tags"]:
             return (self.data["GE"][x][y][self.layer][0] not in [0] or force_geo) \
-                and self.data["TE"]["tlMatrix"][x][y][self.layer]["tp"] == "default"
+                and (self.data["TE"]["tlMatrix"][x][y][self.layer]["tp"] == "default" or (force_place and self.data["TE"]["tlMatrix"][x][y][self.layer]["tp"] == "material"))
         for x2 in range(w):
             for y2 in range(h):
                 csp = sp[x2 * h + y2]
@@ -926,7 +926,7 @@ class TE(MenuWithField):
                 if xpos >= self.levelwidth or ypos >= self.levelheight or xpos < 0 or ypos < 0:
                     continue
                 if csp != -1:
-                    if self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]["tp"] not in ["default", "material"] and not (self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]["tp"] in ["default", "material", "tileBody"] and force_place):
+                    if self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]["tp"] not in ["default", "material"] and not (force_place):
                         return False
                     if self.data["GE"][xpos][ypos][self.layer][0] != csp and not force_geo:
                         return False
@@ -934,7 +934,7 @@ class TE(MenuWithField):
                     if self.layer + 1 <= 2:
                         csp2 = sp2[x2 * h + y2]
                         if csp2 != -1:
-                            if self.data["TE"]["tlMatrix"][xpos][ypos][self.layer + 1]["tp"] not in ["default", "material"] and not (self.data["TE"]["tlMatrix"][xpos][ypos][self.layer + 1]["tp"] in ["default", "material", "tileBody"] and force_place):
+                            if self.data["TE"]["tlMatrix"][xpos][ypos][self.layer + 1]["tp"] not in ["default", "material"] and not (force_place):
                                 return False
                             if self.data["GE"][xpos][ypos][self.layer + 1][0] != csp2 and not force_geo:
                                 return False
@@ -1015,7 +1015,7 @@ class TE(MenuWithField):
                 csp = sp[x2 * h + y2]                                                           # so whenever the tilehead category index is actually required for something to function
                 xpos = int(x + x2)                                                              # it Won't, because all of the tile category indices will be wrong
                 ypos = int(y + y2)                                                              # luckily, i don't know of much else that requires the head's category index other than chain holders,
-                if xpos >= self.levelwidth or ypos >= self.levelheight or xpos < 0 or ypos < 0: # which aren't the end of the world if they don't work. this fix should work unless material categories are added or removed
+                if xpos >= self.levelwidth or ypos >= self.levelheight or xpos < 0 or ypos < 0 or (self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]["tp"] == "tileHead"): # which aren't the end of the world if they don't work. this fix should work unless material categories are added or removed
                     continue
                 if "material" in self.tileimage["tags"]:
                     self.area[xpos][ypos] = False
