@@ -289,7 +289,7 @@ def getprops(tiles: dict):
             except (FileNotFoundError, TypeError):
                 continue
             img.set_colorkey(pg.color.Color(255, 255, 255))
-
+            img = img.convert(pg.Surface([previewCellSize, previewCellSize]))
             images = []
             if item.get("vars") is not None:
                 item["vars"] = max(item["vars"], 1)
@@ -305,7 +305,7 @@ def getprops(tiles: dict):
                     h = math.floor((hs / len(item["repeatL"])))
                     if item.get("sz") is not None and len(item["repeatL"]) < 2:
                         sz = toarr(item["sz"], "point")
-                        w = sz[0] * renderedCellSize
+                        w = min(sz[0] * renderedCellSize, ws)
                         h = sz[1] * renderedCellSize
 
                     cons = 0.4
@@ -320,16 +320,20 @@ def getprops(tiles: dict):
                     for varindx in range(vars):
                         curcol = gr
 
-                        for iindex, _ in enumerate(item["repeatL"]):
+                        for iindex in range(len(item["repeatL"])):
                             # print(img, item["nm"], varindx * w, hs - h, w, h)
                             curcol = curcol.lerp(bl, cons)
-                            ss = img.subsurface(varindx * w, (len(item["repeatL"]) - 1 - iindex) * h, w, h).copy()
-                            pxl = pg.PixelArray(ss)
-                            pxl.replace(bl, curcol)
-                            ss = pxl.make_surface()
+                            ss = img.subsurface(varindx * w, (len(item["repeatL"]) - 1 - iindex) * h + 1, w, h - 1).copy()
+                            if item["colorTreatment"] == "standard":
+                                ss = ss.convert(pg.Surface([previewCellSize, previewCellSize]))
+                                depthTintWhite = min((len(item["repeatL"]) - 1 - iindex) * min(25, 255 // len(item["repeatL"])), 254)
+                                ss.fill(pg.Color(depthTintWhite, depthTintWhite, depthTintWhite), special_flags=pg.BLEND_RGB_ADD)
+                            if item["colorTreatment"] == "bevel":
+                                pxl = pg.PixelArray(ss)
+                                pxl.replace(bl, curcol)
+                                ss = pxl.make_surface()
                             ss.set_colorkey(wh)
                             img.blit(ss, [0, hs - h])
-                            print(item["repeatL"])
 
             if item.get("vars") is not None:
                 for iindex in range(item["vars"]):
