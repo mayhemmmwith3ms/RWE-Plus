@@ -101,6 +101,10 @@ class Menu:
                 self.data["level"] = os.path.basename(savedest)
                 self.data["path"] = savedest
                 self.data["dir"] = os.path.abspath(savedest)
+
+                recent = open(path + "recent.txt", "w")
+                recent.write(str(savedest))
+                recent.close()
         print("Level saved!")
         self.recaption()
 
