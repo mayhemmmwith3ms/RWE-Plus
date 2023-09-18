@@ -329,6 +329,7 @@ def getprops(tiles: dict):
                             ss = pxl.make_surface()
                             ss.set_colorkey(wh)
                             img.blit(ss, [0, hs - h])
+                            print(item["repeatL"])
 
             if item.get("vars") is not None:
                 for iindex in range(item["vars"]):
@@ -383,7 +384,11 @@ def getprops(tiles: dict):
                 for layer in range(len(tile["repeatL"]) - 1, -1, -1):
                     rect = pg.Rect(0, layer * size.y + 1, truewidth, size.y)
                     try:
-                        returnimage.blit(img.subsurface(rect), [0, 0])
+                        currentLayerSurface = img.subsurface(rect)
+                        currentLayerSurface = currentLayerSurface.convert(pg.Surface([previewCellSize, previewCellSize]))
+                        depthTintWhite = min(layer * min(30, 255 // len(tile["repeatL"])), 254)
+                        currentLayerSurface.fill(pg.Color(depthTintWhite, depthTintWhite, depthTintWhite), special_flags=pg.BLEND_RGB_ADD)
+                        returnimage.blit(currentLayerSurface, [0, 0])
                     except ValueError:
                         if layer < 3:
                             errorimg = pg.transform.scale(notfound, size)
@@ -391,6 +396,10 @@ def getprops(tiles: dict):
                             returnimage.blit(errorimg, [0, 0])
                 #returnimage = pg.transform.scale(returnimage, pg.Vector2(returnimage.get_size()) / renderedCellSize * spritesize)
                 returnimage.set_colorkey(pg.Color(255, 255, 255))
+                returnimage = returnimage.convert_alpha(pg.Surface([previewCellSize, previewCellSize]))
+                pxl = pg.PixelArray(returnimage)
+                pxl.replace(wh, pg.Color(0,0,0,0))
+                returnimage = pxl.make_surface()
                 itemlist.append({
                     "nm": tile["name"],
                     "tp": "standard",
