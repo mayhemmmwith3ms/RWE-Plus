@@ -439,6 +439,10 @@ class FE(MenuWithField):
             print("No elements in list!")
         self.selectedeffect = 0
         self.paramindex = 0
+
+        if len(self.data["FE"]["effects"]) <= 0:
+            self.innew = True
+
         self.updatehistory([["FE"]])
         self.rebuttons()
         self.makeparams()
@@ -516,7 +520,10 @@ class FE(MenuWithField):
         self.innew = True
 
     def notinnewtab(self):
-        self.innew = not self.innew
+        if len(self.data["FE"]["effects"]) <= 0:
+            self.innew = True
+        else:
+            self.innew = not self.innew
 
     def scrl_up_new(self):
         self.innewtab()
