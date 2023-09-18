@@ -138,7 +138,7 @@ class GE(MenuWithField):
             bp = pg.mouse.get_pressed(3)
 
             if self.fillshape == "brush":
-                pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize, 5)
+                pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize - 0.5, 1)
 
             if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
                 if self.selectedtool == "MV":
@@ -363,7 +363,7 @@ class GE(MenuWithField):
             for yp, yd in enumerate(xd):
                 vec = pg.Vector2(xp, yp)
                 dist = pos.distance_to(vec)
-                if dist <= self.brushsize and self.area[xp][yp]:
+                if dist <= self.brushsize - 0.5 and self.area[xp][yp]:
                     self.place(vec, False)
                     self.drawtile(vec, toolsized)
 
