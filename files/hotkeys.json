@@ -266,7 +266,7 @@
 
   	},
   	"LE": {
-  		"unlock_keys": ["K_LEFT", "K_RIGHT", "K_UP", "K_DOWN", "K_w", "K_a", "K_s", "K_d", "K_q", "K_e", "K_KP8", "K_KP5", "K_KP2", "K_KP4", "K_KP6"],
+  		"unlock_keys": ["K_LEFT", "K_RIGHT", "K_UP", "K_DOWN", "K_w", "K_a", "K_s", "K_d", "K_q", "K_e", "K_i", "K_k", "K_j", "K_l"],
 
   		"K_ESCAPE": "-save",
   		
@@ -278,12 +278,11 @@
   		"K_s": "-hm",
   		"K_d": "-wp",
 
-  		"K_KP8": "-fp",
-  		"K_KP5": "-fm",
-  		"K_KP2": "-fm",
+  		"K_i": "-fp",
+  		"K_k": "-fm",
 
-  		"K_KP4": "-lp",
-  		"K_KP6": "-lm",
+  		"K_l": "-lp",
+  		"K_j": "-lm",
 
   		"K_q": "-rl",
   		"K_e": "-rr",
