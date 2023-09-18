@@ -33,7 +33,7 @@ class FE(MenuWithField):
         super().__init__(surface, "FE", renderer)
         self.drawtiles = True
         #self.fieldadd.set_colorkey(None)
-        self.fieldadd.set_alpha(200)
+        self.fieldadd.set_alpha(180)
         self.makeparams()
         self.rfa()
         self.rebuttons()
@@ -344,7 +344,7 @@ class FE(MenuWithField):
 
     def changeseed(self):
         try:
-            value = self.askint("Enter velue(type -1 for random)", False)
+            value = self.askint("Enter value (type -1 for random)", False)
             if value == -1:
                 self.data["FE"]["effects"][self.selectedeffect]["options"][self.paramindex][2] = random.randint(0, 500)
             if 0 <= value <= 500:
@@ -416,7 +416,7 @@ class FE(MenuWithField):
 
     def renderfield(self):
         super().renderfield()
-        self.fieldadd.set_alpha(200)
+        self.fieldadd.set_alpha(180)
         self.rf3()
         self.recaption()
         self.makeparams()
