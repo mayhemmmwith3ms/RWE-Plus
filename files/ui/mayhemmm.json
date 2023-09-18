@@ -5,7 +5,7 @@
 		"width": 1280,
 		"height": 720,
 		"fullscreen": false,
-		"fontsize": 30,
+		"fontsize": 25,
 		"colormul": 10,
 		"size": 100,
 		"font": "defaultfont.ttf",
@@ -216,7 +216,7 @@
 		],
 		"d1":
 		{
-			"rect": [18, 2, 80, 96],
+			"rect": [17, 2, 81, 96],
 			"color": [90, 90, 90],
 			"border": [150, 150, 150]
 		}, 
@@ -353,15 +353,15 @@
 	},
 	"CE":{
 		"buttons": [
-			["New", [2, 2, 4, 4], [100, 100, 100], "addcamera", "non", "Add new camera to level(<[-addcamera]>)", ["icons.png", [3, 0]]],
-			["Delete", [2, 6, 4, 4], [100, 100, 100], "deletecamera", "non", "Delete camera from level(<[-deletecamera]>)", ["icons.png", [0, 0]]],
-			["Copy", [2, 10, 4, 4], [100, 100, 100], "copycamera", "non", "Copy held camera(<[-copycamera]>)", ["geometry.png", [1, 2]]],
-			["Paste", [2, 14, 4, 4], [100, 100, 100], "pastedata", "non", "Paste camera(<[-pastedata]>)", ["geometry.png", [3, 6]]],
-			["Edit", [2, 19, 4, 4], [100, 100, 100], "edit", "non", "Enable edit mode(<[-edit]>)"],
-			["Move", [2, 23, 4, 4], [100, 100, 100], "move", "non", "Enable move mode(<[-move]>)"],
-			["Mode", [2, 23, 4, 4], [100, 100, 100], "togglemode", "non", "toggle between move and edit modes(<[-togglemode]>)"],
-			["^", [2, 27, 4, 4], [100, 100, 100], "camup", "non", "Moves selected camera up(<[-camup]>)", ["arrows.png", [1, 0]]],
-			["V", [2, 31, 4, 4], [100, 100, 100], "camdown", "non", "Moves selected camera down(<[-camdown]>)", ["arrows.png", [2, 0]]],
+			["New", [1, 2, 4, 4], [100, 100, 100], "addcamera", "non", "Add new camera to level(<[-addcamera]>)", ["icons.png", [3, 0]]],
+			["Delete", [1, 6, 4, 4], [100, 100, 100], "deletecamera", "non", "Delete camera from level(<[-deletecamera]>)", ["icons.png", [0, 0]]],
+			["Copy", [1, 10, 4, 4], [100, 100, 100], "copycamera", "non", "Copy held camera(<[-copycamera]>)", ["geometry.png", [1, 2]]],
+			["Paste", [1, 14, 4, 4], [100, 100, 100], "pastedata", "non", "Paste camera(<[-pastedata]>)", ["geometry.png", [3, 6]]],
+			["Edit", [1, 19, 4, 4], [100, 100, 100], "edit", "non", "Enable edit mode(<[-edit]>)"],
+			["Move", [1, 23, 4, 4], [100, 100, 100], "move", "non", "Enable move mode(<[-move]>)"],
+			["Mode", [1, 23, 4, 4], [100, 100, 100], "togglemode", "non", "toggle between move and edit modes(<[-togglemode]>)"],
+			["^", [1, 27, 4, 4], [100, 100, 100], "camup", "non", "Moves selected camera up(<[-camup]>)", ["arrows.png", [1, 0]]],
+			["V", [1, 31, 4, 4], [100, 100, 100], "camdown", "non", "Moves selected camera down(<[-camdown]>)", ["arrows.png", [2, 0]]],
 			["?", [98, 0, 2, 2], [90, 90, 90], "watch_keys", "non", "Hotkeys", ["editors.png", [6, 1]]]
 			
 		],
@@ -440,14 +440,14 @@
 		"seedchange_size": [10, 10],
 
 		"d1":{
-			"rect": [2, 2, 70, 62],
+			"rect": [2, 2, 70, 91],
 			"color": [90, 90, 90],
 			"border": [150, 150, 150]
 		},
 		"labels": [
 			["Notes:\n", [2, 64], [255, 255, 255], 25],
-			["Warning: ", [0, 94], [255, 50, 50], 25],
-			["Prop settings: ", [0, 97], [255, 255, 255], 25],
+			["Warning: ", [2, 94], [255, 50, 50], 25],
+			["Prop settings: ", [2, 97], [255, 255, 255], 25],
 			["LMB - Place Prop\nRMB - Depth+, <[cursor_propdepth_inverse]>+RMB - Depth-\nMMB - Move\n<[propvariation_change]>+LMB - Variation-, <[propvariation_change]>+RMB - Variation+", [2, 2], [255, 255, 255], 25]
 		],
 		"menucolor": [120, 120, 120],
