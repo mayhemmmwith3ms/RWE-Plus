@@ -576,9 +576,12 @@ class GE(MenuWithField):
             elif self.placetile == 0.3:  # clear all
                 self.data["GE"][x][y] = [[0, []], [0, []], [0, []]]
             elif self.placetile == 7:  # shortcut entrance
-                self.data["GE"][x][y][self.layer][0] = 7
-                if 4 not in self.data["GE"][x][y][self.layer][1]:
-                    self.data["GE"][x][y][self.layer][1].append(4)
+                if self.data["GE"][x][y][self.layer][0] == 7:
+                    self.data["GE"][x][y][self.layer][0] = 1
+                else:
+                    self.data["GE"][x][y][self.layer][0] = 7
+                    if 4 not in self.data["GE"][x][y][self.layer][1]:
+                        self.data["GE"][x][y][self.layer][1].append(4)
             elif self.placetile == 0.5:  # clear layer
                 self.data["GE"][x][y][self.layer] = [0, []]
             elif self.placetile == 0.6:  # clear upper
