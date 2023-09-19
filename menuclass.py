@@ -578,6 +578,7 @@ class MenuWithField(Menu):
         self.size = self.renderer.size
         self.rectdata = [pg.Vector2(0, 0), pg.Vector2(0, 0), pg.Vector2(0, 0)]
         self.layer = self.renderer.lastlayer
+        self.lastTileLayer = self.layer
         self.emptyarea()
         if renderall:
             self.rfa()
@@ -693,20 +694,35 @@ class MenuWithField(Menu):
     def swichcameras(self):
         self.drawcameras = not self.drawcameras
 
+    def rerenderActiveEditors(self, layer):
+        self.lastlayer = layer
+        if self.drawgeo:
+            self.renderer.geo_full_render(layer)
+        if self.drawtiles:
+            self.renderer.tiles_full_render(layer)
+        if self.drawprops:
+            self.renderer.props_full_render()
+        if self.draweffects and len(self.data["FE"]["effects"]):
+            self.renderer.rendereffect(0)
+
     def swichlayers(self):
         self.layer = (self.layer + 1) % 3
+        if self.drawtiles:
+            self.lastTileLayer = self.layer
         self.mpos = 1
         if not self.renderer.commsgeocolors:
-            self.renderer.render_all(self.layer)
+            self.rerenderActiveEditors(self.layer)
             self.rfa()
 
     def swichlayers_back(self):
         self.layer -= 1
         if self.layer < 0:
             self.layer = 2
+        if self.drawtiles:
+            self.lastTileLayer = self.layer
         self.mpos = 1
         if not self.renderer.commsgeocolors:
-            self.renderer.render_all(self.layer)
+            self.rerenderActiveEditors(self.layer)
             self.rfa()
 
     def send(self, message):
@@ -767,7 +783,7 @@ class MenuWithField(Menu):
 
     def render_tiles_full(self):
         self.renderer.tiles_full_render(self.layer)
-        self.f.blit(self.renderer.tiles, [0, 0])
+        self.f.blit(self.renderer.surf_tiles, [0, 0])
         self.renderfield()
 
     def togglegeo(self):
@@ -779,8 +795,8 @@ class MenuWithField(Menu):
 
     def toggletiles(self):
         self.drawtiles = not self.drawtiles
-        print(self.layer)
-        print(self.renderer.lastlayer)
+        if self.layer != self.lastTileLayer:
+            self.renderer.tiles_full_render(self.layer)
         self.rfa()
 
     def toggleeffects(self):

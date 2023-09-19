@@ -66,9 +66,6 @@ renderedimage = pg.transform.scale(tooltiles, [
             (tooltiles.get_width() / graphics["tilesize"][0]) * previewCellSize,
             (tooltiles.get_height() / graphics["tilesize"][1]) * previewCellSize])
 
-idk = pg.Surface([previewCellSize, previewCellSize])
-images = [idk, idk, idk]
-
 def quadsize(quad):
     mostleft = bignum
     mostright = 0
@@ -133,6 +130,14 @@ class Renderer:
             self.surf_geo = pg.Surface(size)
             self.geolayers = [True, True, True]
             self.tilelayers = [True, True, True]
+            self.geosurfaces = [
+                renderedimage.convert_alpha(pg.Surface([previewCellSize, previewCellSize])),
+                renderedimage.convert_alpha(pg.Surface([previewCellSize, previewCellSize])),
+                renderedimage.convert_alpha(pg.Surface([previewCellSize, previewCellSize]))
+            ]
+            self.geosurfaces[0].fill(settings["GE"]["layerColors"][0], special_flags=pg.BLEND_MULT)
+            self.geosurfaces[1].fill(settings["GE"]["layerColors"][1], special_flags=pg.BLEND_MULT)
+            self.geosurfaces[2].fill(settings["GE"]["layerColors"][2], special_flags=pg.BLEND_MULT)
             self.surf_tiles = pg.Surface(size)
             self.surf_tiles = self.surf_tiles.convert_alpha()
             self.surf_props = pg.Surface(size)
@@ -203,11 +208,11 @@ class Renderer:
         if datcell == "default":
             # self.surf_tiles.fill(pg.Color(0, 0, 0, 0), [posx, posy, image1size, image1size])
             # pg.draw.rect(field.field, red, [posx, posy, size, size], 3)
-            pass
+            return
         elif datcell == "material":
             if self.data["GE"][xp][yp][drawL][0] != 0:
                 try:
-                    it = findtileimage(datdata)
+                    #it = findtileimage(datdata)
                     ms = graphics["matsize"]
                     rect = pg.Rect(ms[0] + posx, ms[0] + posy, ms[1], ms[1])
                     col = [graphics["matposes"][datdata][0], graphics["matposes"][datdata][1], graphics["matposes"][datdata][2], 255]
@@ -235,7 +240,7 @@ class Renderer:
             else:
                 it["image"].set_alpha(settings["global"]["tiles_primarylayeralpha"])
             self.surf_tiles.blit(it["image"], [cposx, cposy])
-            it["image"].set_alpha(255)
+            #it["image"].set_alpha(255)
         elif datcell == "tileBody":
             pass
         # self.surf_tiles.fill(pg.Color(0, 0, 0, 0), [posx, posy, image1size, image1size])
@@ -246,14 +251,6 @@ class Renderer:
         self.geo_render_area(area, layer)
 
     def geo_render_area(self, area, layer):
-        images[0] = renderedimage.convert_alpha(idk)
-        images[1] = renderedimage.convert_alpha(idk)
-        images[2] = renderedimage.convert_alpha(idk)
-
-        images[0].fill(settings["GE"]["layerColors"][0], special_flags=pg.BLEND_MULT)
-        images[1].fill(settings["GE"]["layerColors"][1], special_flags=pg.BLEND_MULT)
-        images[2].fill(settings["GE"]["layerColors"][2], special_flags=pg.BLEND_MULT)
-
         for xp, x in enumerate(area):
             for yp, y in enumerate(x):
                 if y:
@@ -309,7 +306,7 @@ class Renderer:
             if not self.commsgeocolors:
                 imageIndex = 0
 
-            convrender = images[imageIndex]
+            convrender = self.geosurfaces[imageIndex]
             convrender.set_alpha(settings["global"]["secondarylayeralpha"])
 
             if i == layer and not self.commsgeocolors:
