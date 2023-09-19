@@ -23,7 +23,8 @@ class Menu:
         self.menu = name
         self.renderer = renderer
         self.data = renderer.data
-        self.datalast = copy.deepcopy(renderer.data)
+        if settings["global"]["enableundo"]:
+            self.datalast = copy.deepcopy(renderer.data)
         self.settings = settings[self.menu]
         self.hotkeys = hotkeys[name]
         self.historybuffer = []
