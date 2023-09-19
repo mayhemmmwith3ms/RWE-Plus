@@ -53,8 +53,8 @@ class LP(MenuWithField):
             s = pg.Surface([width, h])
             s.fill(blue)
             s.set_alpha(100)
-            self.field.field.blit(s, [self.xoffset * self.size, self.yoffset * self.size + top])
-        self.field.blit()
+            self.surface.blit(s, (self.offset - pg.Vector2(self.border[0], self.border[1])) * self.size + self.field.rect.topleft + pg.Vector2(0, top))
+        #self.field.blit()
         Menu.blit(self)
         for i in self.sliders:
             i.blit()
