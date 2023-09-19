@@ -11,6 +11,7 @@ class CE(MenuWithField):
         super().__init__(surface, "CE", renderer, renderall=False)
 
         self.held = False
+        self.cameraSnapActive = True
         self.heldindex = 0
         self.drawcameras = True
         self.camoffset = pg.Vector2(0, 0)
@@ -26,7 +27,7 @@ class CE(MenuWithField):
 
     def blit(self):
         super().blit()
-        self.labels[0].set_text(self.labels[0].originaltext % len(self.data["CM"]["cameras"]) + f" | Zoom: {(self.size / previewCellSize) * 100}%")
+        self.labels[0].set_text(self.labels[0].originaltext % len(self.data["CM"]["cameras"]) + f" | Snap: {'Active' if self.cameraSnapActive else 'Inactive'} | Zoom: {(self.size / previewCellSize) * 100}%")
 
         if self.onfield and len(self.data["CM"]["cameras"]) > 0:
 
@@ -50,19 +51,20 @@ class CE(MenuWithField):
                         continue
                     xpos, ypos = toarr(camera, "point")
                     valx, valy = val
-                    s = False
-                    if xpos - error < valx < xpos + error:
-                        val[0] = xpos
-                        s = True
-                    if ypos - error < valy < ypos + error:
-                        val[1] = ypos
-                        s = True
-                    if s:
-                        v = pg.Vector2(self.field.rect.topleft) + (pg.Vector2(camw/2, camh/2) * self.size)
-                        v += self.offset * self.size
-                        startpos = pg.Vector2(val) / previewCellSize * self.size + v
-                        endpos = pg.Vector2(xpos, ypos) / previewCellSize * self.size + v
-                        pg.draw.line(self.surface, purple, startpos, endpos, 1)
+                    if self.cameraSnapActive:
+                        s = False
+                        if xpos - error < valx < xpos + error:
+                            val[0] = xpos
+                            s = True
+                        if ypos - error < valy < ypos + error:
+                            val[1] = ypos
+                            s = True
+                        if s:
+                            v = pg.Vector2(self.field.rect.topleft) + (pg.Vector2(camw/2, camh/2) * self.size)
+                            v += self.offset * self.size
+                            startpos = pg.Vector2(val) / previewCellSize * self.size + v
+                            endpos = pg.Vector2(xpos, ypos) / previewCellSize * self.size + v
+                            pg.draw.line(self.surface, purple, startpos, endpos, 1)
                 val = makearr(val, "point")
                 self.data["CM"]["cameras"][self.heldindex] = val
 
@@ -103,6 +105,8 @@ class CE(MenuWithField):
         else:
             self.move()
 
+    def togglesnap(self):
+        self.cameraSnapActive = not self.cameraSnapActive
 
     def edit(self):
         if self.held:
