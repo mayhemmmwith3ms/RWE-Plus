@@ -107,11 +107,11 @@ class TE(MenuWithField):
             button.blit(sum(pg.display.get_window_size()) // 120)
         self.buttonslist[-1].blit(sum(pg.display.get_window_size()) // 100)
         try:
-            cir = [self.buttonslist[self.toolindex].rect.x + 3, self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
+            cir = [self.buttonslist[self.toolindex].rect.x + 10, self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
         except IndexError:
             self.toolindex = 0
-            cir = [self.buttonslist[self.toolindex].rect.x + 3, self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
-        pg.draw.circle(self.surface, cursor, cir, self.buttonslist[self.toolindex].rect.h / 2)
+            cir = [self.buttonslist[self.toolindex].rect.x + 10, self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
+        pg.draw.circle(self.surface, cursor, cir, self.buttonslist[self.toolindex].rect.h / 3)
         super().blit()
         mpos = pg.mouse.get_pos()
         bp = self.getmouse

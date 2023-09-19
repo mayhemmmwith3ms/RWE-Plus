@@ -238,9 +238,9 @@ class PE(MenuWithField):
         super().blit()
         self.labels[2].set_text(self.labels[2].originaltext + str(self.prop_settings) + f" | Zoom: {(self.size / previewCellSize) * 100}%")
         self.labels[0].set_text(self.labels[0].originaltext + "\n".join(self.notes))
-        cir = [self.buttonslist[self.toolindex].rect.x + 3,
+        cir = [self.buttonslist[self.toolindex].rect.x + 10,
                self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
-        pg.draw.circle(self.surface, cursor, cir, self.buttonslist[self.toolindex].rect.h / 2)
+        pg.draw.circle(self.surface, cursor, cir, self.buttonslist[self.toolindex].rect.h / 3)
         mpos = pg.Vector2(pg.mouse.get_pos())
         if self.onfield or any(self.helds):
 

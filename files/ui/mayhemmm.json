@@ -23,7 +23,7 @@
 		"previewleftside": true,
 		"colors": {
 			"cursor": [255, 0, 0],
-			"cursor2": [50, 0, 255],
+			"cursor2": [50, 50, 50],
 			"mirror": [100, 0, 0],
 			"bftiles": [255, 255, 255],
 			"border": [0, 0, 0],

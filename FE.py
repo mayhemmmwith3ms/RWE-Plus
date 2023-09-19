@@ -83,20 +83,14 @@ class FE(MenuWithField):
         
         feCursor = settings["global"]["colors"]["FECursor"]
 
-        cir = [self.buttonslist[self.currentindex].rect.x + 3,
+        cir = [self.buttonslist[self.currentindex].rect.x + 10,
                self.buttonslist[self.currentindex].rect.y + self.buttonslist[self.currentindex].rect.h / 2]
-        if self.innew:
-            pg.draw.circle(self.surface, cursor, cir, self.buttonslist[self.currentindex].rect.h / 2)
-        else:
-            pg.draw.circle(self.surface, cursor2, cir, self.buttonslist[self.currentindex].rect.h / 2)
+        pg.draw.circle(self.surface, cursor if self.innew else cursor2, cir, self.buttonslist[self.currentindex].rect.h / 3)  
         if len(self.buttonslist2) > 0:
-            cir2 = [self.buttonslist2[self.selectedeffect].rect.x + 3,
+            cir2 = [self.buttonslist2[self.selectedeffect].rect.x + 10,
                     self.buttonslist2[self.selectedeffect].rect.y + self.buttonslist2[self.selectedeffect].rect.h / 2]
+            pg.draw.circle(self.surface, cursor2 if self.innew else cursor, cir2, self.buttonslist2[self.selectedeffect].rect.h / 3)
 
-            if self.innew:
-                pg.draw.circle(self.surface, cursor2, cir2, self.buttonslist2[self.selectedeffect].rect.h / 2)
-            else:
-                pg.draw.circle(self.surface, cursor, cir2, self.buttonslist2[self.selectedeffect].rect.h / 2)
         mpos = pg.Vector2(pg.mouse.get_pos())
         bp = self.getmouse
 

@@ -289,7 +289,7 @@ class GE(MenuWithField):
                     py = self.mirrorpos[0] * 2 + (-py - 1)
                 px = px * self.size + self.field.rect.x
                 py = py * self.size + self.field.rect.y
-                pg.draw.rect(self.surface, cursor2, [px, py, self.size, self.size], 1)
+                pg.draw.rect(self.surface, cursor, [px, py, self.size, self.size], 1)
         if self.mirrorp:
 
             px = (self.mirrorpos[0] + self.xoffset) * self.size + self.field.rect.x
