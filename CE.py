@@ -44,8 +44,8 @@ class CE(MenuWithField):
             mpos = pg.Vector2(pg.mouse.get_pos()) / self.size * previewCellSize
             if self.held and self.heldindex < len(self.data["CM"]["cameras"]) and self.mode == "move":
                 val = list(self.camoffset + mpos)
-                val[0] = round(val[0], 4)
-                val[1] = round(val[1], 4)
+                val[0] = round(val[0] * previewToRenderedFactor, 4)
+                val[1] = round(val[1] * previewToRenderedFactor, 4)
                 for indx, camera in enumerate(self.data["CM"]["cameras"]):
                     if indx == self.heldindex:
                         continue
@@ -98,6 +98,7 @@ class CE(MenuWithField):
                 self.rfa()
 
             self.movemiddle(bp)
+            #print(self.offset)
 
     def togglemode(self):
         if self.mode == "move":
@@ -172,7 +173,9 @@ class CE(MenuWithField):
 
         self.heldindex = closeindex
         self.held = True
-        self.camoffset = pg.Vector2(toarr(self.data["CM"]["cameras"][self.heldindex], "point")) - mpos
+        self.camoffset = pg.Vector2(toarr(self.data["CM"]["cameras"][self.heldindex], "point")) // previewToRenderedFactor - mpos
+        print(self.camoffset)
+        print(self.offset)
 
     def placecamera(self):
         self.held = False
@@ -186,11 +189,12 @@ class CE(MenuWithField):
             self.updatehistory([["CM"]])
 
     def addcamera(self):
+        mpos = pg.Vector2(pg.mouse.get_pos()) / self.size * previewCellSize
         self.data["CM"]["cameras"].append(makearr([0, 0], "point"))
         self.data["CM"]["quads"].append([[0, 0], [0, 0], [0, 0], [0, 0]])
         self.heldindex = len(self.data["CM"]["cameras"]) - 1
         self.held = True
-        self.camoffset = pg.Vector2(0, 0)#(pg.Vector2(-640, -320) - self.field.rect.topleft) * (previewCellSize / self.size) - pg.Vector2(self.xoffset, self.yoffset) * self.size
+        self.camoffset = pg.Vector2(0, 0) - self.offset * previewCellSize - pg.Vector2(720, 480)
         self.updatehistory([["CM"]])
 
     def closestcameraindex(self):
