@@ -155,6 +155,12 @@ def asktoexit(file, file2):
 
 def launchload(level):
     global surf, fullscreen, undobuffer, redobuffer, file, file2, run
+
+    if (splitfilepath := os.path.splitext(level))[1] not in [".wep", ".txt"]:
+        level = splitfilepath[0] + ".wep"
+        if not os.path.exists(level):
+            level = splitfilepath[0] + ".txt"
+
     recent = open(path + "recent.txt", "w")
     recent.write(str(level))
     recent.close()
