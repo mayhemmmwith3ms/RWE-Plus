@@ -221,6 +221,8 @@ class GE(MenuWithField):
             elif bp[2] == 0 and not self.mousp2 and (self.mousp and self.mousp1):
                 if self.selectedtool == "CP" or self.selectedtool == "CT":
                     rect = self.vec2rect(self.rectdata[0], posoffset)
+                    rect.w += 1 #i'm sure theres a better solution to this :slugmod:
+                    rect.h += 1
                     data1 = self.data["GE"][rect.x:rect.x + rect.w]
                     data1 = [i[rect.y:rect.y + rect.h] for i in data1]
                     data1 = [[y[self.layer] for y in x] for x in data1]
