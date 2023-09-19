@@ -367,6 +367,8 @@ class FE(MenuWithField):
         self.addeffect(name)
 
     def prevparam(self):
+        if len(self.data["FE"]["effects"]) < 1:
+            return
         if self.paramindex - 1 >= 0:
             self.paramindex -= 1
         else:
@@ -374,6 +376,8 @@ class FE(MenuWithField):
         self.makeparams()
 
     def nextparam(self):
+        if len(self.data["FE"]["effects"]) < 1:
+            return
         if self.paramindex + 1 < len(self.data["FE"]["effects"][self.selectedeffect]["options"]):
             self.paramindex += 1
         else:
@@ -382,26 +386,33 @@ class FE(MenuWithField):
 
     def nextcat(self):
         #self.innew = True
-        if self.innew:
-            self.currentindex = 0
-            if self.currentcategory + 1 >= len(effects):
-                self.currentcategory = 0
-                self.rebuttons()
-                return
-            self.currentcategory += 1
+        self.currentindex = 0
+        if self.currentcategory + 1 >= len(effects):
+            self.currentcategory = 0
             self.rebuttons()
-        else:
-            self.nextparam()
+            return
+        self.currentcategory += 1
+        self.rebuttons()
+
     def prevcat(self):
         #self.innew = True
-        if self.innew:
-            self.currentindex = 0
-            if self.currentcategory - 1 < 0:
-                self.currentcategory = len(effects) - 1
-                self.rebuttons()
-                return
-            self.currentcategory -= 1
+        self.currentindex = 0
+        if self.currentcategory - 1 < 0:
+            self.currentcategory = len(effects) - 1
             self.rebuttons()
+            return
+        self.currentcategory -= 1
+        self.rebuttons()
+
+    def navnext(self):
+        if self.innew:
+            self.nextcat()
+        else:
+            self.nextparam()
+        
+    def navprev(self):
+        if self.innew:
+            self.prevcat()
         else:
             self.prevparam()
 

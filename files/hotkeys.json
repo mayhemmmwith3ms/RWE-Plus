@@ -252,8 +252,8 @@
 
 		"K_t": "str100",
 
-		"K_d": "-nextcat",
-		"K_a": "-prevcat",
+		"K_d": "-navnext",
+		"K_a": "-navprev",
 
 		"K_c+": "-copytool",
 		"K_v+": "-pastedata",

@@ -308,9 +308,9 @@
 		"buttons": [
 			["v", [91, 2, 3, 4], [100, 100, 100], "scrl_down_new", "non", "Next effect(<[-scrl_down]>)", ["arrows.png", [2, 0]]],
 			["^", [88, 2, 3, 4], [100, 100, 100], "scrl_up_new", "non", "Previous effect(<[-scrl_up]>)", ["arrows.png", [1, 0]]],
-			[">", [85, 2, 3, 4], [100, 100, 100], "nextcat", "non", "Next category([<[-nextcat]>] while new effects list is selected)", ["arrows.png", [0, 0]]],
+			[">", [85, 2, 3, 4], [100, 100, 100], "nextcat", "non", "Next category([<[-navnext]>] while new effects list is selected)", ["arrows.png", [0, 0]]],
 			["Add", [80, 2, 5, 4], [100, 100, 100], "innewtab", "addordeleteselectedeffect", "Add effect to project(<[-innewtab]>)", ["icons.png", [3, 0]]],
-			["<", [77, 2, 3, 4], [100, 100, 100], "prevcat", "non", "Previous category([<[-prevcat]>] while new effects list is selected)", ["arrows.png", [3, 0]]],
+			["<", [77, 2, 3, 4], [100, 100, 100], "prevcat", "non", "Previous category([<[-navprev]>] while new effects list is selected)", ["arrows.png", [3, 0]]],
 
 
 			["v", [95, 60, 4, 4], [100, 100, 100], "scrl_down_menu", "non", "Next effect(<[-scrl_down]>)", ["arrows.png", [2, 0]]],
@@ -319,8 +319,8 @@
 			["^", [77, 60, 4, 4], [100, 100, 100], "scrl_up_menu", "non", "Previous effect(<[-scrl_up]>)", ["arrows.png", [1, 0]]],
 
 
-			["^", [6, 83, 4, 6], [100, 100, 100], "prevparam", "non", "Previous parameter([<[-prevcat]>] while existing effects list is selected)", ["arrows.png", [1, 0]]],
-			["v", [6, 89, 4, 6], [100, 100, 100], "nextparam", "non", "Next parameter([<[-nextcat]>] while existing effects list is selected)", ["arrows.png", [2, 0]]],
+			["^", [6, 83, 4, 6], [100, 100, 100], "prevparam", "non", "Previous parameter([<[-navprev]>] while existing effects list is selected)", ["arrows.png", [1, 0]]],
+			["v", [6, 89, 4, 6], [100, 100, 100], "nextparam", "non", "Next parameter([<[-navnext]>] while existing effects list is selected)", ["arrows.png", [2, 0]]],
 			["CT", [2, 83, 4, 6], [100, 100, 100], "copytool", "non", "Copy effect zone(<[-copytool]>)", ["geometry.png", [1, 2]]],
 			["PS", [2, 89, 4, 6], [100, 100, 100], "pastedata", "non", "Paste(<[-pastedata]>)", ["geometry.png", [3, 6]]],
 			["?", [98, 0, 2, 2], [90, 90, 90], "watch_keys", "non", "Hotkeys", ["editors.png", [6, 1]]],
