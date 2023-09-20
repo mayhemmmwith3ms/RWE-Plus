@@ -240,9 +240,18 @@ class Renderer:
             else:
                 it["image"].set_alpha(settings["global"]["tiles_primarylayeralpha"])
             self.surf_tiles.blit(it["image"], [cposx, cposy])
-            #it["image"].set_alpha(255)
+            it["image"].set_alpha(255)
         elif datcell == "tileBody":
-            pass
+            tl = self.data["TE"]["tlMatrix"][xp][yp][drawL]
+            if self.GetTileHeadFromTilePart(tl) == "stray":
+                if drawL != l:
+                    self.geosurfaces[2].set_alpha(settings["global"]["tiles_secondarylayeralpha"])
+                else:
+                    self.geosurfaces[2].set_alpha(settings["global"]["tiles_primarylayeralpha"])
+
+                self.surf_tiles.blit(self.geosurfaces[2], [xp * previewCellSize, yp * previewCellSize], [[graphics["shows"]["0"][0] * previewCellSize, graphics["shows"]["0"][1] * previewCellSize], [previewCellSize, previewCellSize]])
+
+                self.geosurfaces[2].set_alpha(255)
         # self.surf_tiles.fill(pg.Color(0, 0, 0, 0), [posx, posy, image1size, image1size])
 
     def geo_full_render(self, layer):
@@ -494,6 +503,20 @@ class Renderer:
                 #self.surf_effect.blit(surf, [xp * size, yp * size])
                 self.surf_effect.fill(col, [xp * previewCellSize, yp * previewCellSize, previewCellSize, previewCellSize])
                 # pg.draw.rect(f, col, [xp * size, yp * size, size, size], 0)
+
+    def GetTileHeadFromTilePart(self, part):
+        if part["tp"] in ["default", "material"]:
+            return None
+        if part["tp"] == "tileHead":
+            return part
+        
+        headPos = [toarr(part["data"][0], "point"), part["data"][1] - 1]
+        headTile = self.data["TE"]["tlMatrix"][int(headPos[0][0] - 1)][int(headPos[0][1] - 1)][headPos[1]]
+
+        if headTile["tp"] == "tileHead":
+            return headTile
+        else:
+            return "stray"
 
     @property
     def hiddenlayer(self):
