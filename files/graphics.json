@@ -74,8 +74,16 @@
   		"BulkMetal": [50,19,190],
   		"MassiveBulkMetal": [255,19,19],
   		"Dune Sand": [255, 255, 100],
+		"GlassOutline": [190, 190, 190],
+		"BigBrickMat": [185, 0, 16],
+		"VentWall": [245, 67, 87],
+		"RidgedMetal": [255, 160, 200],
+	    "ConcreteBricks": [230, 255, 255],
 		"MetalSlatHorizontal": [180, 200, 255],
-		"MetalSlatVertical": [180, 200, 255]
+		"MetalSlatVertical": [180, 200, 255],
+		"IndustrialGrate": [20, 20, 120],
+		"EffectColorMatA": [255, 0, 255],
+		"EffectColorMatB": [0, 255, 255]
 	},
 	"shadowimages": [
 			"Internal_244_bigSignGradient1.png",
