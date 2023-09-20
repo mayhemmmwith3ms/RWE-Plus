@@ -29,6 +29,7 @@ class GE(MenuWithField):
         renderer.geo_full_render(renderer.lastlayer)
 
         super().__init__(surface, "GE", renderer)
+        self.drawwater = True
         self.drawgrid = True
         self.emptyarea()
         self.air()

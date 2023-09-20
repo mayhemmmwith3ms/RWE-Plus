@@ -562,6 +562,7 @@ class MenuWithField(Menu):
         self.drawprops = False
         self.draweffects = False
         self.drawgrid = False
+        self.drawwater = False
         self.selectedeffect = 0
 
         self.f = pg.Surface([self.levelwidth * previewCellSize, self.levelheight * previewCellSize])
@@ -615,7 +616,20 @@ class MenuWithField(Menu):
         self.field.field.fill(self.field.color)
         self.field.field.blit(self.fieldmap, [self.xoffset * self.size, self.yoffset * self.size])
         self.field.field.blit(self.fieldadd, [self.xoffset * self.size, self.yoffset * self.size])
+        if self.drawwater:
+            self.renderwater()
         self.drawborder()
+
+    def renderwater(self):
+        if self.data["WL"]["waterLevel"] > -1:
+            height = self.levelheight * self.size
+            width = self.levelwidth * self.size
+            top = height - ((wladd + self.data["WL"]["waterLevel"]) * self.size)
+            h = height - top + 1
+            s = pg.Surface([width, h])
+            s.fill(blue)
+            s.set_alpha(100)
+            self.field.field.blit(s, (self.offset) * self.size + pg.Vector2(0, top))
 
     def renderfield(self):
         self.fieldmap = pg.surface.Surface([self.levelwidth * self.size, self.levelheight * self.size])
@@ -813,6 +827,10 @@ class MenuWithField(Menu):
 
     def togglegrid(self):
         self.drawgrid = not self.drawgrid
+        self.rfa()
+
+    def togglewater(self):
+        self.drawwater = not self.drawwater
         self.rfa()
 
     def resetzoom(self):

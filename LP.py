@@ -38,22 +38,13 @@ class LP(MenuWithField):
         self.border = [0, 0, self.levelwidth, self.levelheight]
         self.shadowmode = False
         self.shadowfield = None
-
+        self.drawwater = True
         self.gw = self.levelwidth
         self.gh = self.levelheight
         self.resize()
 
     def blit(self):
         super().blit()
-        if self.data["WL"]["waterLevel"] > -1:
-            height = self.levelheight * self.size
-            width = self.levelwidth * self.size
-            top = height - ((wladd + self.data["WL"]["waterLevel"]) * self.size)
-            h = height - top + 1
-            s = pg.Surface([width, h])
-            s.fill(blue)
-            s.set_alpha(100)
-            self.surface.blit(s, (self.offset - pg.Vector2(self.border[0], self.border[1])) * self.size + self.field.rect.topleft + pg.Vector2(0, top))
         #self.field.blit()
         Menu.blit(self)
         for i in self.sliders:
