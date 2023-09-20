@@ -37,7 +37,7 @@
 			"mixcol_empty": [255, 0, 255, 150],
 			"mixcol_fill": [0, 255, 0, 150],
 
-			"camera_border": [50, 50, 50],
+			"camera_border": [80, 80, 80],
 			"camera_held": [255, 10, 5],
 			"camera_notheld": [50, 250, 40],
 

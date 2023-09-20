@@ -13,7 +13,7 @@ class CE(MenuWithField):
         self.held = False
         self.cameraSnapActive = True
         self.heldindex = 0
-        self.drawcameras = True
+        self.drawcameras = 2
         self.camoffset = pg.Vector2(0, 0)
         self.pressed = [False] * 4
         self.heldpointindex = 0

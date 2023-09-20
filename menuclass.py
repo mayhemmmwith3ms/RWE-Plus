@@ -558,7 +558,7 @@ class MenuWithField(Menu):
         self.menu = name
 
         self.drawgeo = True
-        self.drawcameras = False
+        self.drawcameras = 0
         self.drawtiles = False
         self.drawprops = False
         self.draweffects = False
@@ -693,7 +693,7 @@ class MenuWithField(Menu):
         self.renderer.size = self.size
         if draw:
             self.drawmap()
-        if self.drawcameras:
+        if self.drawcameras != 0:
             self.rendercameras()
         if self.draweffects != 0 and self.draweffects <= len(self.data['FE']['effects']):
             widgets.fastmts(self.surface,
@@ -710,7 +710,7 @@ class MenuWithField(Menu):
         super().blit()
 
     def swichcameras(self):
-        self.drawcameras = not self.drawcameras
+        self.drawcameras = (self.drawcameras + 1) % 3
 
     def rerenderActiveEditors(self, layer):
         self.lastlayer = layer
@@ -864,9 +864,9 @@ class MenuWithField(Menu):
             rect3 = pg.Rect(rect2.x + self.size * 8, rect2.y, rect2.w - self.size * 16, rect2.h)
             # print(camera_border, rect, self.size)
             pg.draw.rect(self.surface, camera_border, rect, 1)
-            pg.draw.rect(self.surface, camera_border, rect2, 1)
+            pg.draw.rect(self.surface, yellow, rect2, 1)
 
-            pg.draw.rect(self.surface, red, rect3, 2)
+            pg.draw.rect(self.surface, red, rect3, 1)
 
             pg.draw.line(self.surface, camera_border, pg.Vector2(rect.center) - pg.Vector2(self.size * 5, 0),
                          pg.Vector2(rect.center) + pg.Vector2(self.size * 5, 0),
@@ -926,7 +926,8 @@ class MenuWithField(Menu):
                 # pg.draw.circle(self.surface, camera_held, rect.bottomright, self.size * 5, self.size // 3)
             elif hasattr(self, "held") and self.held and hasattr(self, "heldindex") and self.heldindex == indx:
                 widgets.fastmts(self.surface, f"Order: {indx}", rect.centerx, rect.centery, white)
-            pg.draw.polygon(self.surface, col, [tl, bl, br, tr], 2)
+            if self.drawcameras == 2:
+                pg.draw.polygon(self.surface, col, [tl, bl, br, tr], 2)
 
     def getquad(self, indx):
         mpos = pg.Vector2(pg.mouse.get_pos())
