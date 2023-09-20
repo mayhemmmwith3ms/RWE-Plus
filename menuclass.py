@@ -719,7 +719,6 @@ class MenuWithField(Menu):
             pool.submit(self.renderer.geo_full_render, layer)
         if self.drawtiles:
             pool.submit(self.renderer.tiles_full_render, layer)
-        print("s")
         if self.drawprops:
             pool.submit(self.renderer.props_full_render)
         if self.draweffects and len(self.data["FE"]["effects"]):
