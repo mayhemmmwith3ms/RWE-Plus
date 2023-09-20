@@ -120,6 +120,7 @@ class TE(MenuWithField):
             # self.surface.blit(self.tools, pos, [curtool, graphics["tilesize"]])
             pos2 = self.pos2
             posoffset = self.posoffset
+            bord = (self.size // previewCellSize + 1) // 2
             fg = self.findparampressed("force_geometry")
             fp = self.findparampressed("force_place")
 
@@ -156,7 +157,6 @@ class TE(MenuWithField):
                             #    print(f"Error occurred determining tile display type at mpos {int(posoffset.x)}, {int(posoffset.y)}")
                             self.labels[0].set_text("Tile: " + tlLabel + " | Tile Data: " + str(tl))            
 
-                    bord = (self.size // previewCellSize + 1) // 2
                     selectrect = [
                         [cposx - bord, cposy - bord],
                         [self.tileimage["image"].get_width() + bord * 2, self.tileimage["image"].get_height() + bord * 2]
@@ -222,6 +222,10 @@ class TE(MenuWithField):
                                 pg.draw.circle(self.surface, blue, self.FieldCoordToDrawPos(tlhDrawPos, [-self.size // 2, -self.size // 2]), self.size // 3, 1)
                     except:
                         print("Error occurred determining tileHead position")
+                else:
+                    self.tool = 1
+                    if not (self.tool == 1 and (bp[0] or bp[2])):
+                        pg.draw.rect(self.surface, purple, [pos2.x - bord, pos2.y - bord, self.size + bord * 2, self.size + bord * 2], 1)
 
                 def singlefirstframe(place):
                     if(place):
@@ -399,7 +403,8 @@ class TE(MenuWithField):
                     self.renderer.tiles_render_area(self.area, self.layer)
                     self.renderer.geo_render_area(self.area, self.layer)
                     self.rfa()
-                    self.cols = self.test_cols(cposxo, cposyo)
+                    if self.tileimage["tp"] != "pattern":
+                        self.cols = self.test_cols(cposxo, cposyo)
                     if(place):
                         self.mousp = True
                     else:
@@ -889,6 +894,8 @@ class TE(MenuWithField):
             if i["name"] == name:
                 self.toolindex = num
                 self.tileimage2 = i.copy()
+                if self.tileimage is not None and self.tileimage["tp"] == "pattern" and self.tileimage2["tp"] != "pattern":
+                    self.tool = 0
                 if self.tileimage2["tp"] != "pattern" and render:
                     self.tileimage2["image"] = i["image"].copy()
                     self.tileimage2["image"].set_alpha(255)
