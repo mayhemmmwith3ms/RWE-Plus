@@ -108,7 +108,7 @@ class FE(MenuWithField):
             if posoffset != self.mpos:
                 self.mpos = posoffset
                 self.mmove = True
-
+            updatedCells = []
             if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
                 self.mousp = False
                 self.mmove = True
@@ -117,7 +117,7 @@ class FE(MenuWithField):
                 self.rectdata[1] = posoffset - self.rectdata[0]
                 if (0 <= posoffset.x < self.levelwidth) and (0 <= posoffset.y < self.levelheight) and self.mmove:
                     if not self.copymode:
-                        self.paint(posoffset.x, posoffset.y, 1)
+                        updatedCells = self.paint(posoffset.x, posoffset.y, 1)
                     self.mmove = False
                 if self.copymode:
                     rect = self.vec2rect(self.rectdata[2], pos2)
@@ -135,7 +135,7 @@ class FE(MenuWithField):
                 #self.detecthistory(["FE", "effects", self.selectedeffect, "mtrx"])
                 self.mousp = True
                 self.renderfield()
-                self.renderer.rerendereffect()
+                self.renderer.rendereffectselective(self.selectedeffect, updatedCells)
 
             if bp[2] == 1 and self.mousp2 and (self.mousp and self.mousp1):
                 self.mousp2 = False
@@ -143,13 +143,13 @@ class FE(MenuWithField):
             elif bp[2] == 1 and not self.mousp2 and (self.mousp and self.mousp1):
                 if (0 <= posoffset[0] < self.levelwidth) and (0 <= posoffset[1] < self.levelheight) and self.mmove:
                     if not self.copymode:
-                        self.paint(posoffset[0], posoffset[1], -1)
+                        updatedCells = self.paint(posoffset[0], posoffset[1], -1)
                         self.mmove = False
             elif bp[2] == 0 and not self.mousp2 and (self.mousp and self.mousp1):
                 self.updatehistory([["FE", "effects", self.selectedeffect, "mtrx"]])
                 self.mousp2 = True
                 self.renderfield()
-                self.renderer.rerendereffect()
+                self.renderer.rendereffectselective(self.selectedeffect, updatedCells)
 
             self.movemiddle(bp)
         for i in self.buttonslist:
@@ -499,7 +499,7 @@ class FE(MenuWithField):
         strength = 10 + (90 * self.findparampressed("str100"))
         if currenteffect in e["maxstr"]:
             strength = 10000
-
+        updatedCells = []
         for xp, xd in enumerate(self.data["FE"]["effects"][self.selectedeffect]['mtrx']):
             for yp, yd in enumerate(xd):
                 val = yd
@@ -511,8 +511,11 @@ class FE(MenuWithField):
                     if val == 100:
                         val = 100
                     self.data["FE"]["effects"][self.selectedeffect]['mtrx'][xp][yp] = round(val)
+                    updatedCells.append([xp, yp])
 
-        self.rf3()
+        #self.rf3()
+        self.rendermatrixselective(self.fieldadd, self.size, self.data["FE"]["effects"][self.selectedeffect]["mtrx"], updatedCells)
+        return updatedCells
 
     def bsup(self):
         self.brushsize += 1

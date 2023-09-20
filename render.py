@@ -6,6 +6,7 @@ from pathlib import Path
 from lingotojson import *
 import pygame as pg
 import menuclass
+import time
 
 colors = settings["global"]["colors"]  # NOQA
 
@@ -503,6 +504,12 @@ class Renderer:
                 #self.surf_effect.blit(surf, [xp * size, yp * size])
                 self.surf_effect.fill(col, [xp * previewCellSize, yp * previewCellSize, previewCellSize, previewCellSize])
                 # pg.draw.rect(f, col, [xp * size, yp * size, size, size], 0)
+
+    def rendereffectselective(self, indx, cells2refresh, mix=mixcol_empty):
+        for coord in cells2refresh:
+            cell = self.data["FE"]["effects"][indx]["mtrx"][coord[0]][coord[1]]
+            col = mix.lerp(mixcol_fill, cell / 100)
+            self.surf_effect.fill(col, [coord[0] * previewCellSize, coord[1] * previewCellSize, previewCellSize, previewCellSize])
 
     def GetTileHeadFromTilePart(self, part):
         if part["tp"] in ["default", "material"]:

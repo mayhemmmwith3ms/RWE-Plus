@@ -4,6 +4,8 @@ import widgets
 import pyperclip
 from render import *
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+import concurrent.futures
+import time
 
 inputfile = ''
 filepath = path2levels
@@ -15,7 +17,6 @@ def rotatepoint(point, angle):
     qx = math.cos(angle) * px - math.sin(angle) * py
     qy = math.sin(angle) * px + math.cos(angle) * py
     return pg.Vector2([qx, qy])
-
 
 class Menu:
     def __init__(self, surface: pg.surface.Surface, renderer, name):
@@ -564,6 +565,8 @@ class MenuWithField(Menu):
         self.drawgrid = False
         self.drawwater = False
         self.selectedeffect = 0
+        self.tic = 0
+        self.toc = 0
 
         self.f = pg.Surface([self.levelwidth * previewCellSize, self.levelheight * previewCellSize])
 
@@ -633,6 +636,7 @@ class MenuWithField(Menu):
 
     def renderfield(self):
         self.fieldmap = pg.surface.Surface([self.levelwidth * self.size, self.levelheight * self.size])
+        self.f = self.f.convert(self.fieldmap)
         self.fieldmap.blit(pg.transform.scale(self.f, [self.f.get_width() / previewCellSize * self.size,
                                                        self.f.get_height() / previewCellSize * self.size]), [0, 0])
         self.fieldadd = pg.surface.Surface([self.levelwidth * self.size, self.levelheight * self.size])
@@ -644,7 +648,7 @@ class MenuWithField(Menu):
 
     def rfa(self):
         if self.layer != self.renderer.lastlayer:
-            self.renderer.render_all(self.layer)
+            self.rerenderActiveEditors(self.layer)
         self.f = pg.Surface([self.levelwidth * previewCellSize, self.levelheight * previewCellSize])
         if self.drawgeo:
             # self.renderer.geo_full_render(self.layer)
@@ -710,16 +714,19 @@ class MenuWithField(Menu):
 
     def rerenderActiveEditors(self, layer):
         self.lastlayer = layer
+        pool = concurrent.futures.ThreadPoolExecutor(max_workers=2)
         if self.drawgeo:
-            self.renderer.geo_full_render(layer)
+            pool.submit(self.renderer.geo_full_render, layer)
         if self.drawtiles:
-            self.renderer.tiles_full_render(layer)
+            pool.submit(self.renderer.tiles_full_render, layer)
+        print("s")
         if self.drawprops:
-            self.renderer.props_full_render()
+            pool.submit(self.renderer.props_full_render)
         if self.draweffects and len(self.data["FE"]["effects"]):
-            self.renderer.rendereffect(0)
+            pool.submit(self.renderer.rendereffect, 0)
+        pool.shutdown(wait=True)
 
-    def swichlayers(self):
+    def swichlayers(self):     
         self.layer = (self.layer + 1) % 3
         if self.drawtiles:
             self.lastTileLayer = self.layer
@@ -738,6 +745,13 @@ class MenuWithField(Menu):
         if not self.renderer.commsgeocolors:
             self.rerenderActiveEditors(self.layer)
             self.rfa()
+
+    def StartTimer(self):
+        self.tic = time.perf_counter()
+
+    def StopTimer(self):
+        self.toc = time.perf_counter()
+        print(f"Rendered in {self.toc - self.tic:0.4f}")
 
     def send(self, message):
         super().send(message)
@@ -936,6 +950,11 @@ class MenuWithField(Menu):
             for yp, cell in enumerate(x):
                 col = mix.lerp(mixcol_fill, cell / 100)
                 pg.draw.rect(field, col, [xp * size, yp * size, size, size], 0)
+
+    def rendermatrixselective(self, field, size, matrix, changedCells, mix=mixcol_empty):
+        for cell in changedCells:
+            col = mix.lerp(mixcol_fill, matrix[cell[0]][cell[1]] / 100)
+            pg.draw.rect(field, col, [cell[0] * size, cell[1] * size, size, size], 0)
 
     def destroy(self, xp, yp):
         x = int(xp)
