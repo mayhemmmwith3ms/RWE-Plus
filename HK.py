@@ -24,6 +24,7 @@ class HK(Menu):
             try:
                 desc = self.keys[self.m][func]
             except KeyError:
+                print(f"Hotkey \"{key}\" has invalid description")
                 desc = "Error finding keybind description"
             tx = pg.key.name(getattr(pg, key.replace("@", "").replace("+", ""))).title() + "\n"
             tx2 = desc+"\n"
