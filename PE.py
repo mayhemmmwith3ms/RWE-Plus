@@ -68,6 +68,12 @@ class PE(MenuWithField):
         self.renderprop = True
         self.modpress = False
 
+        self.lastPropPivotPressed = False
+        self.propPivotPoint = []
+        self.lastPropPivotRot = 0
+        self.hasPropPivotBaseRot = False
+        self.propPivotBaseRot = 0
+
         renderer.commsgeocolors = False
         renderer.geo_full_render(renderer.lastlayer)
 
@@ -293,6 +299,24 @@ class PE(MenuWithField):
             self.if_set(s[1], 1)
             self.if_set(s[2], 2)
             self.if_set(s[3], 3)
+
+            rotPress = self.findparampressed("mouserotate")
+
+            if(rotPress and not self.lastPropPivotPressed):
+                self.propPivotPoint = mpos
+                self.lastPropPivotRot = 0
+            if(rotPress and self.lastPropPivotPressed):
+                rot = -(pg.Vector2(self.propPivotPoint) - pg.Vector2(mpos)).angle_to(pg.Vector2(1, 0))
+                if self.hasPropPivotBaseRot:
+                    self.rotate(rot - self.lastPropPivotRot)
+                self.lastPropPivotRot = rot
+                if mpos != self.propPivotPoint and not self.hasPropPivotBaseRot:
+                    self.hasPropPivotBaseRot = True
+                #pg.draw.circle(self.surface, red, self.rotPressHoldPos, 4)
+                pg.draw.line(self.surface, red, self.propPivotPoint, mpos)
+            
+            self.lastPropPivotPressed = rotPress
+
 
             if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
                 self.mousp = False
