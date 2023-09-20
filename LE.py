@@ -105,6 +105,9 @@ class LE(MenuWithField):
             self.surface.blit(self.tileimage, curpos)
             bp = self.getmouse
 
+            pg.draw.rect(self.field2.field, black, [0, 0, 1, 1])
+            pg.draw.rect(self.field2.field, black, [self.field2.field.get_width() - 1, self.field2.field.get_height() - 1, 1, 1])
+
             if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
                 self.mousp = False
                 self.n = 1
