@@ -314,6 +314,7 @@ class PE(MenuWithField):
                     self.hasPropPivotBaseRot = True
                 #pg.draw.circle(self.surface, red, self.rotPressHoldPos, 4)
                 pg.draw.line(self.surface, red, self.propPivotPoint, mpos)
+                pg.draw.line(self.surface, yellow, self.propPivotPoint, pg.Vector2(self.propPivotPoint) - pg.Vector2(16, 0))
             
             self.lastPropPivotPressed = rotPress
 
