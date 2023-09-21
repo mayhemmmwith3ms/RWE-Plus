@@ -119,6 +119,13 @@ class RopeModel:
 
         for i in range(int(self.release > -1), len(self.segments) - int(self.release < 1)):
             self.PushRopePointOutOfTerrain(i)
+        
+        if self.release > -1:
+            self.segments[0]["pos"] = self.posA.copy()
+            self.segments[0]["vel"] = Vector2(0, 0)
+        if self.release < 1:
+            self.segments[-1]["pos"] = self.posB.copy()
+            self.segments[-1]["vel"] = Vector2(0, 0)
 
 
     def ApplyRigidity(self, A):
