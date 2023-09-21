@@ -443,9 +443,12 @@ class PE(MenuWithField):
                     if not self.findparampressed("pauseropephysics"):
                         self.ropeobject.modelRopeUpdate()
                     color = toarr(self.ropeobject.prop["previewColor"], "color")
-                    for segment in self.ropeobject.segments:
+                    for sIndex, segment in enumerate(self.ropeobject.segments):
                         posofwire = ((pg.Vector2(self.xoffset, self.yoffset) + (segment["pos"]) / previewCellSize) * self.size) + pg.Vector2(self.field.rect.topleft)
+                        posofnext = ((pg.Vector2(self.xoffset, self.yoffset) + (self.ropeobject.segments[min(sIndex + 1, len(self.ropeobject.segments) - 1)]["pos"]) / previewCellSize) * self.size) + pg.Vector2(self.field.rect.topleft)
+                        pg.draw.line(self.surface, [200, 200, 200], posofwire, posofnext, 1)
                         pg.draw.circle(self.surface, color, posofwire, 4)
+                        #pg.draw.circle(self.surface, color, posofwire, self.ropeobject.segRad * self.fieldScale, 1)
             depthpos = [mpos[0] + 20, mpos[1]]
             if self.findparampressed("propvariation_change"):
                 varpos = [mpos[0] + 20, mpos[1] + 20]

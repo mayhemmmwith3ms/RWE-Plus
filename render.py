@@ -486,9 +486,12 @@ class Renderer:
             self.surf_props.blit(surf, [mostleft / spritesize * previewCellSize, mosttop / spritesize * previewCellSize])
             if prop[4].get("points") is not None:
                 propcolor = toarr(self.findprop(prop[1])[0]["previewColor"], "color")  # wires
-                for point in prop[4]["points"]:
+                for pIndex, point in enumerate(prop[4]["points"]):
                     px, py = toarr(point, "point")
+                    pxn, pyn = toarr(prop[4]["points"][min(pIndex + 1, len(prop[4]["points"]) - 1)], "point")
+                    pg.draw.line(self.surf_props, [200, 200, 200], [px // previewToRenderedFactor, py // previewToRenderedFactor], [pxn // previewToRenderedFactor, pyn // previewToRenderedFactor])
                     pg.draw.circle(self.surf_props, propcolor, [px // previewToRenderedFactor, py // previewToRenderedFactor], 4)
+
 
     def rerendereffect(self):
         self.rendereffect(self.effect_index)
