@@ -219,6 +219,7 @@
 		"K_b": "copy_mode",
 		"K_f": "propvariation_change",
 		"K_z": "mouserotate",
+		"K_c": "-changerelease",
 
 		"K_r": "-transform_reset",
 
