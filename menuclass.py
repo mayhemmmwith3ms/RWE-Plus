@@ -25,7 +25,7 @@ class Menu:
         self.renderer = renderer
         self.data = renderer.data
         if settings["enable_undo"]:
-            self.datalast = copy.deepcopy(renderer.data)
+            self.datalast = jsoncopy(renderer.data)
         self.menuUiSettings = uiSettings[self.menu]
         self.hotkeys = hotkeys[name]
         self.historybuffer = []
@@ -384,8 +384,8 @@ class Menu:
                 if ch != lastch:
                     h.append([historypath, [ch, lastch]])
             if len(h) > 0:
-                self.historybuffer.append(copy.deepcopy(h))
-            self.datalast = copy.deepcopy(self.data)
+                self.historybuffer.append(jsoncopy(h))
+            self.datalast = jsoncopy(self.data)
 
     def detecthistory(self, path, savedata=True):
         if self.data != self.datalast:
@@ -396,9 +396,9 @@ class Menu:
                 if x != pthlast[xindx]:
                     history.append([[xindx], [x, pthlast[xindx]]])
             if len(history) > 0:
-                self.historybuffer.append(copy.deepcopy(history))
+                self.historybuffer.append(jsoncopy(history))
             if savedata:
-                self.datalast = copy.deepcopy(self.data)
+                self.datalast = jsoncopy(self.data)
 
     def non(self):
         pass

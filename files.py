@@ -1,4 +1,4 @@
-import json
+import ujson as json
 import webbrowser
 
 import pygame as pg
@@ -94,6 +94,8 @@ def fs(sz):
         fonts[sz] = [f, f.size(allleters)[1]]
         return fonts[sz]
 
+def jsoncopy(data):
+    return json.loads(json.dumps(data))
 
 def solveeffects(effects):
     ef = []

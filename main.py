@@ -96,11 +96,11 @@ def undohistory():
     pathdict = PathDict(surf.data)
     for i in historyelem[1:]:
         pathdict[*historyelem[0], *i[0]] = i[1][1]
-    surf.data = copy.deepcopy(pathdict.data)
+    surf.data = jsoncopy(pathdict.data)
     file = surf.data
     surf.renderer.data = surf.data
-    surf.datalast = copy.deepcopy(pathdict.data)
-    redobuffer.append(copy.deepcopy(undobuffer.pop()))
+    surf.datalast = jsoncopy(pathdict.data)
+    redobuffer.append(jsoncopy(undobuffer.pop()))
     if [surf.levelwidth, surf.levelheight] != lastsize:
         surf.renderer.set_surface([previewCellSize * surf.levelwidth, previewCellSize * surf.levelheight])
     surf.onundo()
@@ -123,11 +123,11 @@ def redohistory():
     pathdict = PathDict(surf.data)
     for i in historyelem[1:]:
         pathdict[*historyelem[0], *i[0]] = i[1][0]
-    surf.data = copy.deepcopy(pathdict.data)
+    surf.data = jsoncopy(pathdict.data)
     file = surf.data
     surf.renderer.data = surf.data
-    surf.datalast = copy.deepcopy(pathdict.data)
-    undobuffer.append(copy.deepcopy(redobuffer.pop()))
+    surf.datalast = jsoncopy(pathdict.data)
+    undobuffer.append(jsoncopy(redobuffer.pop()))
     if [surf.levelwidth, surf.levelheight] != lastsize:
         surf.renderer.set_surface([previewCellSize * surf.levelwidth, previewCellSize * surf.levelheight])
     surf.onredo()

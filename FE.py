@@ -201,7 +201,7 @@ class FE(MenuWithField):
         self.chtext()
 
     def duplicate(self):
-        self.data["FE"]["effects"].append(copy.deepcopy(self.data["FE"]["effects"][self.selectedeffect]))
+        self.data["FE"]["effects"].append(jsoncopy(self.data["FE"]["effects"][self.selectedeffect]))
         self.updatehistory([["FE", "effects"]])
         self.rebuttons()
 
