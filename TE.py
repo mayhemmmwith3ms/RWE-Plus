@@ -105,10 +105,6 @@ class TE(MenuWithField):
         self.emptyarea()
 
     def updateSingleDrag(self, place):
-        mpos = pg.mouse.get_pos()
-        cposx = int(self.pos2.x) - int((self.tileimage["size"][0] * .5) + .5) * self.size + self.size
-        cposy = int(self.pos2.y) - int((self.tileimage["size"][1] * .5) + .5) * self.size + self.size
-
         cposxo = int(self.posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
         cposyo = int(self.posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
         if place:
@@ -128,10 +124,6 @@ class TE(MenuWithField):
                     pg.draw.rect(self.fieldadd, red, [self.posoffset.x * self.size, self.posoffset.y * self.size, self.size, self.size])
 
     def endSingleDrag(self, place):
-        mpos = pg.mouse.get_pos()
-        cposx = int(self.pos2.x) - int((self.tileimage["size"][0] * .5) + .5) * self.size + self.size
-        cposy = int(self.pos2.y) - int((self.tileimage["size"][1] * .5) + .5) * self.size + self.size
-
         cposxo = int(self.posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
         cposyo = int(self.posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
         self.detecthistory(["TE", "tlMatrix"], not self.findparampressed("force_geometry"))
@@ -151,11 +143,6 @@ class TE(MenuWithField):
 
     def updateRectDrag(self, place):
         mpos = pg.mouse.get_pos()
-        cposx = int(self.pos2.x) - int((self.tileimage["size"][0] * .5) + .5) * self.size + self.size
-        cposy = int(self.pos2.y) - int((self.tileimage["size"][1] * .5) + .5) * self.size + self.size
-
-        cposxo = int(self.posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
-        cposyo = int(self.posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
         self.rectdata[1] = self.posoffset - self.rectdata[0]
 
         righthalf = mpos[0] > self.rectdata[2].x + 10
@@ -189,9 +176,6 @@ class TE(MenuWithField):
 
     def endRectDrag(self, place):
         mpos = pg.mouse.get_pos()
-        cposx = int(self.pos2.x) - int((self.tileimage["size"][0] * .5) + .5) * self.size + self.size
-        cposy = int(self.pos2.y) - int((self.tileimage["size"][1] * .5) + .5) * self.size + self.size
-
         cposxo = int(self.posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
         cposyo = int(self.posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
         righthalf = mpos[0] > self.rectdata[2].x + 10
