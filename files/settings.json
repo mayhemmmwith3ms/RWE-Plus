@@ -5,6 +5,7 @@
     "enable_undo": false,
     "undo_history_limit": 25,
     "cursor_layer_num_display": true,
+    "hold_key_rect_drag": true,
 
     "TE_official_style_placement_controls": true,
 

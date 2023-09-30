@@ -118,7 +118,9 @@
 
     	"K_KP_DIVIDE": "-tool_line",
     	"K_KP_MULTIPLY": "-tool_pencil",
-    	"+K_KP_MULTIPLY": "-tool_brush"
+    	"+K_KP_MULTIPLY": "-tool_brush",
+
+		"K_LSHIFT": "alt"
   	},
   	"TE": {
   		"unlock_keys": ["K_LEFT", "K_RIGHT", "K_UP", "K_DOWN"],

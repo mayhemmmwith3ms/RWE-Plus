@@ -21,9 +21,13 @@ class GE(MenuWithField):
 
         self.replaceair = True
 
+        self.rectDragActive = False
+
         self.fillshape = "pencil"  # pencil, brush, fill
         self.fillshape2 = "rect"  # rect, rect-hollow, circle, circle-hollow, line
         self.brushsize = 1
+
+        self.toolsized = None
 
         renderer.commsgeocolors = True
         renderer.geo_full_render(renderer.lastlayer)
@@ -85,6 +89,144 @@ class GE(MenuWithField):
     def TE(self):
         self.message = "TE"
 
+    def beginSingleDrag(self):
+        if self.selectedtool == "MV":
+            self.rectdata[0] = self.pos
+            self.rectdata[1] = self.offset
+            self.field.field.fill(self.field.color)
+        elif self.fillshape == "fill":
+            self.bucket(self.posoffset)
+        else:
+            self.emptyarea()
+
+    def updateSingleDrag(self):
+        if self.selectedtool == "MV":
+            self.offset = self.rectdata[1] - (self.rectdata[0] - self.pos)
+        elif self.selectedtool == "CT":
+            pass
+        elif self.fillshape == "brush":
+            self.brushpaint(self.posoffset, self.toolsized)
+        elif (0 <= self.posoffset.x < self.levelwidth) and (0 <= self.posoffset.y < self.levelheight) and self.area[int(self.posoffset.x)][int(self.posoffset.y)]:
+            self.place(self.posoffset, False)
+            self.drawtile(self.posoffset, self.toolsized)
+    
+    def endSingleDrag(self):
+        self.fieldadd.fill(white)
+        paths = []
+        count = 0
+        for xindex, xpos in enumerate(self.area):
+            for yindex, ypos in enumerate(xpos):
+                if not ypos:
+                    paths.append(["GE", xindex, yindex, self.layer])
+                    count += 1
+        if len(paths) > 0:
+            if count < 20: # if we changed more than 20 pixels, changing history save method
+                self.updatehistory(paths)
+            else:
+                self.detecthistory(["GE"])
+        self.render_geo_area()
+        self.rfa()
+
+    def beginRectDrag(self):
+        self.rectdata = [self.posoffset, pg.Vector2(0, 0), self.pos2]
+        self.emptyarea()
+
+    def updateRectDrag(self):
+        mpos = pg.Vector2(pg.mouse.get_pos())
+
+        self.rectdata[1] = self.posoffset - self.rectdata[0]
+
+        righthalf = mpos.x > self.rectdata[2].x + 10
+        upperhalf = mpos.y > self.rectdata[2].y + 10
+        
+        tl = [0, 0]
+        br = [0, 0]
+
+        if not righthalf:
+            tl[0] = self.pos2.x
+            br[0] = self.rectdata[2].x + self.size
+        else:
+            tl[0] = self.rectdata[2].x
+            br[0] = self.pos2.x + self.size
+
+        if upperhalf:
+            tl[1] = self.pos2.y + self.size
+            br[1] = self.rectdata[2].y
+        else:
+            tl[1] = self.rectdata[2].y + self.size
+            br[1] = self.pos2.y
+
+        rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
+
+        tx = f"{abs(int(rect.w / self.size))}, {abs(int(rect.h / self.size))}"
+        widgets.fastmts(self.surface, tx, *mpos, white)
+        if self.fillshape2 in ["rect", "rect-hollow"] or self.selectedtool in ["CP", "CT", "SL"]:
+            pg.draw.rect(self.surface, select, rect, 1)
+        elif self.fillshape2 in ["circle", "circle-hollow"]:
+            pg.draw.ellipse(self.surface, select, rect, 5)
+        elif self.fillshape2 == "line":
+            pg.draw.line(self.surface, select, self.rectdata[2], self.pos2, 5)
+
+    def endRectDrag(self):
+        mpos = pg.Vector2(pg.mouse.get_pos())
+
+        if self.selectedtool == "CP" or self.selectedtool == "CT":
+            rect = self.vec2rect(self.rectdata[0], self.posoffset)
+            rect.w += 1 #i'm sure theres a better solution to this :slugmod:
+            rect.h += 1
+            data1 = self.data["GE"][rect.x:rect.x + rect.w]
+            data1 = [i[rect.y:rect.y + rect.h] for i in data1]
+            data1 = [[y[self.layer] for y in x] for x in data1]
+            pyperclip.copy(str(data1))
+            print("Copied!")
+        elif self.selectedtool == "SL":
+            rect = self.vec2rect(self.rectdata[0], self.posoffset)
+            for x in range(int(rect.w)):
+                for y in range(int(rect.h)):
+                    vec = pg.Vector2(x, y) + rect.topleft
+                    self.slopify(vec)
+        elif self.fillshape2 in ["circle", "circle-hollow"]:
+            rect = self.vec2rect(self.rectdata[0], self.posoffset)
+            rect2ellipse(rect, self.fillshape2 == "circle-hollow", self.place)
+        elif self.fillshape2 == "line":
+            self.linepoints(self.rectdata[0], self.posoffset)
+        elif self.fillshape2 in ["rect", "rect-hollow"]:
+            righthalf = mpos.x > self.rectdata[2].x + 10
+            upperhalf = mpos.y > self.rectdata[2].y + 10
+            
+            tl = [0, 0]
+            br = [0, 0]
+
+            if not righthalf:
+                tl[0] = self.posoffset.x
+                br[0] = self.rectdata[0].x + 1
+            else:
+                tl[0] = self.rectdata[0].x
+                br[0] = self.posoffset.x + 1
+
+            if upperhalf:
+                tl[1] = self.posoffset.y + 1
+                br[1] = self.rectdata[0].y
+            else:
+                tl[1] = self.rectdata[0].y + 1
+                br[1] = self.posoffset.y
+
+            rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
+            for x in range(int(rect.w)):
+                for y in range(int(rect.h)):
+                    vec = pg.Vector2(x, y)
+                    if self.fillshape2 == "rect" or (vec.x == 0 or vec.y == 0 or vec.x == int(rect.w)-1 or vec.y == int(rect.h)-1):
+                        self.place(vec + rect.topleft, False)
+        if self.selectedtool == "CT":
+            rect = self.vec2rect(self.rectdata[0], self.posoffset)
+            for x in range(int(rect.w)):
+                for y in range(int(rect.h)):
+                    vec = pg.Vector2(x, y)
+                    self.place(vec + rect.topleft, False)
+        self.detecthistory(["GE"])
+        self.render_geo_area()
+        self.rfa()
+
     def blit(self):
         cellsize2 = [self.size, self.size]
         super().blit()
@@ -111,9 +253,9 @@ class GE(MenuWithField):
             pg.draw.rect(self.surface, cursor, [pos2, [self.size, self.size]], 1)
             posoffset = self.posoffset
 
-            toolsized = pg.transform.scale(self.toolrender,
+            self.toolsized = pg.transform.scale(self.toolrender,
                                            pg.Vector2(self.toolrender.get_size()) / previewCellSize * self.size).convert_alpha(self.surface)
-            toolsized.fill(red, special_flags=pg.BLEND_RGBA_MULT)
+            self.toolsized.fill(red, special_flags=pg.BLEND_RGBA_MULT)
             self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / previewCellSize) * 100}%")
             #print(self.placetile)
             if self.selectedtool in graphics["codes"].keys():
@@ -126,7 +268,7 @@ class GE(MenuWithField):
                         curtool = [graphics["tileplaceicon"][str(self.placetile - self.state)][0] * self.size,
                                    graphics["tileplaceicon"][str(self.placetile - self.state)][1] * self.size]
                     # print([abs(self.field.rect.x - pos2[0]), abs(self.field.rect.y - pos2[1])])
-                    self.surface.blit(toolsized, pos2, [curtool, cellsize2])
+                    self.surface.blit(self.toolsized, pos2, [curtool, cellsize2])
             rect = [self.xoffset * self.size, self.yoffset * self.size, self.levelwidth * self.size,
                     self.levelheight * self.size]
             pg.draw.rect(self.field.field, border, rect, self.size // previewCellSize + 1)
@@ -141,142 +283,48 @@ class GE(MenuWithField):
             if self.fillshape == "brush":
                 pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize - 0.5, 1)
 
-            if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
-                if self.selectedtool == "MV":
-                    self.rectdata[0] = pos
-                    self.rectdata[1] = self.offset
-                    self.field.field.fill(self.field.color)
-                elif self.fillshape == "fill":
-                    self.bucket(posoffset)
+            if settings["hold_key_rect_drag"]:
+                if not self.rectDragActive:
+                    if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
+                        self.beginSingleDrag()
+                        self.mousp = False
+                    elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
+                        self.updateSingleDrag()
+                    elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
+                        self.endSingleDrag()
+                        self.mousp = True
                 else:
-                    self.emptyarea()
-                self.mousp = False
-            elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
-                if self.selectedtool == "MV":
-                    self.offset = self.rectdata[1] - (self.rectdata[0] - pos)
-                elif self.selectedtool == "CT":
-                    pass
-                elif self.fillshape == "brush":
-                    self.brushpaint(posoffset, toolsized)
-                elif (0 <= posoffset.x < self.levelwidth) and (0 <= posoffset.y < self.levelheight) and self.area[int(posoffset.x)][int(posoffset.y)]:
-                    self.place(posoffset, False)
-                    self.drawtile(posoffset, toolsized)
+                    if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
+                        self.beginRectDrag()
+                        self.mousp = False
+                    elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
+                        self.updateRectDrag()
+                    elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
+                        self.endRectDrag()
+                        self.mousp = True
 
-            elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
-                self.fieldadd.fill(white)
-                self.mousp = True
-                paths = []
-                count = 0
-                for xindex, xpos in enumerate(self.area):
-                    for yindex, ypos in enumerate(xpos):
-                        if not ypos:
-                            paths.append(["GE", xindex, yindex, self.layer])
-                            count += 1
-                if len(paths) > 0:
-                    if count < 20: # if we changed more than 20 pixels, changing history save method
-                        self.updatehistory(paths)
-                    else:
-                        self.detecthistory(["GE"])
-                self.render_geo_area()
-                self.rfa()
+                if bp[0] != 1:
+                    self.rectDragActive = self.findparampressed("alt")
+            else:
+                if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
+                    self.beginSingleDrag()
+                    self.mousp = False
+                elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
+                    self.updateSingleDrag()
+                elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
+                    self.endSingleDrag()
+                    self.mousp = True
+
+                if bp[2] == 1 and self.mousp2 and (self.mousp and self.mousp1):
+                    self.beginRectDrag()
+                    self.mousp2 = False
+                elif bp[2] == 1 and not self.mousp2 and (self.mousp and self.mousp1):
+                    self.updateRectDrag()
+                elif bp[2] == 0 and not self.mousp2 and (self.mousp and self.mousp1):
+                    self.endRectDrag()
+                    self.mousp2 = True
 
             self.movemiddle(bp)
-
-            if bp[2] == 1 and self.mousp2 and (self.mousp and self.mousp1):
-                self.mousp2 = False
-                self.rectdata = [posoffset, pg.Vector2(0, 0), pos2]
-                self.emptyarea()
-            elif bp[2] == 1 and not self.mousp2 and (self.mousp and self.mousp1):
-                self.rectdata[1] = posoffset - self.rectdata[0]
-
-                righthalf = mpos.x > self.rectdata[2].x + 10
-                upperhalf = mpos.y > self.rectdata[2].y + 10
-                
-                tl = [0, 0]
-                br = [0, 0]
-
-                if not righthalf:
-                    tl[0] = pos2.x
-                    br[0] = self.rectdata[2].x + self.size
-                else:
-                    tl[0] = self.rectdata[2].x
-                    br[0] = pos2.x + self.size
-
-                if upperhalf:
-                    tl[1] = pos2.y + self.size
-                    br[1] = self.rectdata[2].y
-                else:
-                    tl[1] = self.rectdata[2].y + self.size
-                    br[1] = pos2.y
-
-                rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
-
-                tx = f"{abs(int(rect.w / self.size))}, {abs(int(rect.h / self.size))}"
-                widgets.fastmts(self.surface, tx, *mpos, white)
-                if self.fillshape2 in ["rect", "rect-hollow"] or self.selectedtool in ["CP", "CT", "SL"]:
-                    pg.draw.rect(self.surface, select, rect, 1)
-                elif self.fillshape2 in ["circle", "circle-hollow"]:
-                    pg.draw.ellipse(self.surface, select, rect, 5)
-                elif self.fillshape2 == "line":
-                    pg.draw.line(self.surface, select, self.rectdata[2], pos2, 5)
-            elif bp[2] == 0 and not self.mousp2 and (self.mousp and self.mousp1):
-                if self.selectedtool == "CP" or self.selectedtool == "CT":
-                    rect = self.vec2rect(self.rectdata[0], posoffset)
-                    rect.w += 1 #i'm sure theres a better solution to this :slugmod:
-                    rect.h += 1
-                    data1 = self.data["GE"][rect.x:rect.x + rect.w]
-                    data1 = [i[rect.y:rect.y + rect.h] for i in data1]
-                    data1 = [[y[self.layer] for y in x] for x in data1]
-                    pyperclip.copy(str(data1))
-                    print("Copied!")
-                elif self.selectedtool == "SL":
-                    rect = self.vec2rect(self.rectdata[0], posoffset)
-                    for x in range(int(rect.w)):
-                        for y in range(int(rect.h)):
-                            vec = pg.Vector2(x, y) + rect.topleft
-                            self.slopify(vec)
-                elif self.fillshape2 in ["circle", "circle-hollow"]:
-                    rect = self.vec2rect(self.rectdata[0], posoffset)
-                    rect2ellipse(rect, self.fillshape2 == "circle-hollow", self.place)
-                elif self.fillshape2 == "line":
-                    self.linepoints(self.rectdata[0], posoffset)
-                elif self.fillshape2 in ["rect", "rect-hollow"]:
-                    righthalf = mpos.x > self.rectdata[2].x + 10
-                    upperhalf = mpos.y > self.rectdata[2].y + 10
-                    
-                    tl = [0, 0]
-                    br = [0, 0]
-
-                    if not righthalf:
-                        tl[0] = posoffset.x
-                        br[0] = self.rectdata[0].x + 1
-                    else:
-                        tl[0] = self.rectdata[0].x
-                        br[0] = posoffset.x + 1
-
-                    if upperhalf:
-                        tl[1] = posoffset.y + 1
-                        br[1] = self.rectdata[0].y
-                    else:
-                        tl[1] = self.rectdata[0].y + 1
-                        br[1] = posoffset.y
-
-                    rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
-                    for x in range(int(rect.w)):
-                        for y in range(int(rect.h)):
-                            vec = pg.Vector2(x, y)
-                            if self.fillshape2 == "rect" or (vec.x == 0 or vec.y == 0 or vec.x == int(rect.w)-1 or vec.y == int(rect.h)-1):
-                                self.place(vec + rect.topleft, False)
-                if self.selectedtool == "CT":
-                    rect = self.vec2rect(self.rectdata[0], posoffset)
-                    for x in range(int(rect.w)):
-                        for y in range(int(rect.h)):
-                            vec = pg.Vector2(x, y)
-                            self.place(vec + rect.topleft, False)
-                self.detecthistory(["GE"])
-                self.render_geo_area()
-                self.rfa()
-                self.mousp2 = True
 
             # aaah math
             if self.mirrorp:
