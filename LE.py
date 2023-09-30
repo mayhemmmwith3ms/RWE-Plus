@@ -5,7 +5,7 @@ class LE(MenuWithField):
     def __init__(self, surface: pg.surface.Surface, renderer):
         self.menu = "LE"
         super().__init__(surface, "LE", renderer)
-        self.field2 = widgets.window(self.surface, self.settings["d1"])
+        self.field2 = widgets.window(self.surface, self.menuUiSettings["d1"])
         self.field3 = self.field2.copy()
 
         sc = [(self.levelwidth + ofsleft) * renderedCellSize, (self.levelheight + ofstop) * renderedCellSize]
@@ -181,7 +181,7 @@ class LE(MenuWithField):
 
     def save(self):
         if self.data["path"] == "":
-            if graphics["nonOSbrowser"]:
+            if not settings["native_file_browser"]:
                 level = self.asksaveasfilename(defaultextension=[".wep"])
             else:
                 level = asksaveasfilename(defaultextension=[".wep"])

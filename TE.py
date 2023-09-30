@@ -67,7 +67,7 @@ class TE(MenuWithField):
         self.catlist = [[]]
         for category in self.items.keys():
             self.catlist[-1].append(category)
-            if len(self.catlist[-1]) >= self.settings["category_count"]:
+            if len(self.catlist[-1]) >= self.menuUiSettings["category_count"]:
                 self.catlist.append([])
         self.drawtiles = True
         self.set("materials 0", "Standard")
@@ -100,7 +100,7 @@ class TE(MenuWithField):
         self.message = "GE"
 
     def blit(self):
-        pg.draw.rect(self.surface, settings["TE"]["menucolor"], pg.rect.Rect(self.buttonslist[0].xy, [self.buttonslist[0].rect.w, len(self.buttonslist[:-1]) * self.buttonslist[0].rect.h + 1]))
+        pg.draw.rect(self.surface, uiSettings["TE"]["menucolor"], pg.rect.Rect(self.buttonslist[0].xy, [self.buttonslist[0].rect.w, len(self.buttonslist[:-1]) * self.buttonslist[0].rect.h + 1]))
         for button in self.buttonslist:
             button.blitshadow()
         for i, button in enumerate(self.buttonslist[:-1]):
@@ -126,7 +126,7 @@ class TE(MenuWithField):
 
             self.movemiddle(bp)
 
-            if settings["TE"]["officialMouseControlStyle"]:
+            if settings["TE_official_style_placement_controls"]:
                 if self.tileimage["tp"] != "pattern":
                     cposx = int(pos2.x) - int((self.tileimage["size"][0] * .5) + .5) * self.size + self.size
                     cposy = int(pos2.y) - int((self.tileimage["size"][1] * .5) + .5) * self.size + self.size
@@ -644,7 +644,7 @@ class TE(MenuWithField):
                         item = self.items[cat][index]
                         if item.get("preview"):
                             previewPos = button.rect.bottomright
-                            if settings["global"]["previewleftside"]:
+                            if uiSettings["global"]["previewleftside"]:
                                 previewPos = [button.rect.bottomleft[0] - item["preview"].get_width(), button.rect.bottomleft[1]]
                             self.surface.blit(item["preview"], previewPos)
                         if item["tp"] == "pattern":
@@ -652,7 +652,7 @@ class TE(MenuWithField):
                         w, h = item["size"]
                         w *= self.size
                         h *= self.size
-                        if not settings["TE"]["LEtiles"]:
+                        if not uiSettings["TE"]["LEtiles"]:
                             pg.draw.rect(self.surface, item["color"], [self.field.rect.x, self.field.rect.y, w, h])
                         self.surface.blit(pg.transform.scale(item["image"], [w, h]), [self.field.rect.x, self.field.rect.y])
                         self.printcols(0, 0, item, True)
@@ -700,17 +700,17 @@ class TE(MenuWithField):
     def cats(self):
         self.buttonslist = []
         if not self.matshow: # if cats not already used
-            self.currentcategory = self.toolindex // self.settings["category_count"]
-            self.toolindex %= self.settings["category_count"]
+            self.currentcategory = self.toolindex // self.menuUiSettings["category_count"]
+            self.toolindex %= self.menuUiSettings["category_count"]
         btn2 = None
         self.matshow = True
         for count, item in enumerate(self.catlist[self.currentcategory]):
             # rect = pg.rect.Rect([0, count * self.settings["itemsize"], self.field2.field.get_width(), self.settings["itemsize"]])
             # rect = pg.rect.Rect(0, 0, 100, 10)
-            cat = pg.rect.Rect(self.settings["catpos"])
-            btn2 = widgets.button(self.surface, cat, settings["global"]["color"], f"Categories {self.currentcategory}", onpress=self.changematshow)
+            cat = pg.rect.Rect(self.menuUiSettings["catpos"])
+            btn2 = widgets.button(self.surface, cat, uiSettings["global"]["color"], f"Categories {self.currentcategory}", onpress=self.changematshow)
 
-            rect = pg.rect.Rect(self.settings["itempos"])
+            rect = pg.rect.Rect(self.menuUiSettings["itempos"])
             rect = rect.move(0, rect.h * count)
             col = self.items[item][0]["color"]
             if count == self.toolindex:
@@ -773,11 +773,11 @@ class TE(MenuWithField):
         for count, item in enumerate(self.items[list(self.items.keys())[self.currentcategory]]):
             # rect = pg.rect.Rect([0, count * self.settings["itemsize"], self.field2.field.get_width(), self.settings["itemsize"]])
             # rect = pg.rect.Rect(0, 0, 100, 10)
-            cat = pg.rect.Rect(self.settings["catpos"])
-            btn2 = widgets.button(self.surface, cat, settings["global"]["color"], item["category"], onpress=self.changematshow,
+            cat = pg.rect.Rect(self.menuUiSettings["catpos"])
+            btn2 = widgets.button(self.surface, cat, uiSettings["global"]["color"], item["category"], onpress=self.changematshow,
                                   tooltip=self.returnkeytext("Select category(<[-changematshow]>)"))
 
-            rect = pg.rect.Rect(self.settings["itempos"])
+            rect = pg.rect.Rect(self.menuUiSettings["itempos"])
             rect = rect.move(0, rect.h * count)
             if item["category"] == "special" or "material" in item["tags"]:
                 btn = widgets.button(self.surface, rect, item["color"], item["name"], onpress=self.getmaterial)
@@ -851,7 +851,7 @@ class TE(MenuWithField):
 
     def changematshow(self):
         if self.matshow:
-            self.currentcategory = self.toolindex + self.currentcategory * self.settings["category_count"]
+            self.currentcategory = self.toolindex + self.currentcategory * self.menuUiSettings["category_count"]
             self.toolindex = 0
             cat = list(self.items.keys())[self.currentcategory]
             self.set(cat, self.items[cat][0]["name"])
@@ -888,7 +888,7 @@ class TE(MenuWithField):
         return [toarr(part["data"][0], "point"), part["data"][1] - 1]
 
     def set(self, cat, name, render=True):
-        if not settings["TE"]["officialMouseControlStyle"]:
+        if not settings["TE_official_style_placement_controls"]:
             self.tool = 0
         for num, i in enumerate(self.items[cat]):
             if i["name"] == name:

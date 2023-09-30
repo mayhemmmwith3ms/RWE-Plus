@@ -82,7 +82,7 @@ class PE(MenuWithField):
         self.catlist = [[]]
         for category in self.props.keys():
             self.catlist[-1].append(category)
-            if len(self.catlist[-1]) >= self.settings["category_count"]:
+            if len(self.catlist[-1]) >= self.menuUiSettings["category_count"]:
                 self.catlist.append([])
         self.drawprops = True
         cat = list(self.props.keys())[self.currentcategory]
@@ -113,10 +113,10 @@ class PE(MenuWithField):
         btn2 = None
         itemcat = list(self.props.keys())[self.currentcategory]
         for count, item in enumerate(self.props[itemcat]):
-            cat = pg.rect.Rect(self.settings["catpos"])
-            btn2 = widgets.button(self.surface, cat, settings["global"]["color"], itemcat, onpress=self.changematshow,
+            cat = pg.rect.Rect(self.menuUiSettings["catpos"])
+            btn2 = widgets.button(self.surface, cat, uiSettings["global"]["color"], itemcat, onpress=self.changematshow,
                                   tooltip=self.returnkeytext("Select category(<[-changematshow]>)"))
-            rect = pg.rect.Rect(self.settings["itempos"])
+            rect = pg.rect.Rect(self.menuUiSettings["itempos"])
             rect = rect.move(0, rect.h * count)
             btn = widgets.button(self.surface, rect, item["color"], item["nm"], onpress=self.setprop)
             self.buttonslist.append(btn)
@@ -124,7 +124,7 @@ class PE(MenuWithField):
             self.buttonslist.append(btn2)
         if self.toolindex > len(self.props[itemcat]):
             self.toolindex = 0
-        for i in self.settings["hide"]:
+        for i in self.menuUiSettings["hide"]:
             self.buttons[i].visible = True
         self.resize()
         self.settingsupdate()
@@ -134,15 +134,15 @@ class PE(MenuWithField):
         self.settingslist = []
         btn2 = None
         if not self.matshow:
-            self.currentcategory = self.toolindex // self.settings["category_count"]
-            self.toolindex %= self.settings["category_count"]
+            self.currentcategory = self.toolindex // self.menuUiSettings["category_count"]
+            self.toolindex %= self.menuUiSettings["category_count"]
         self.matshow = True
         for count, item in enumerate(self.catlist[self.currentcategory]):
             # rect = pg.rect.Rect([0, count * self.settings["itemsize"], self.field2.field.get_width(), self.settings["itemsize"]])
             # rect = pg.rect.Rect(0, 0, 100, 10)
-            cat = pg.rect.Rect(self.settings["catpos"])
-            btn2 = widgets.button(self.surface, cat, settings["global"]["color"], f"Categories {self.currentcategory}", onpress=self.changematshow)
-            rect = pg.rect.Rect(self.settings["itempos"])
+            cat = pg.rect.Rect(self.menuUiSettings["catpos"])
+            btn2 = widgets.button(self.surface, cat, uiSettings["global"]["color"], f"Categories {self.currentcategory}", onpress=self.changematshow)
+            rect = pg.rect.Rect(self.menuUiSettings["itempos"])
             rect = rect.move(0, rect.h * count)
             try:
                 col = self.props[item][0]["color"]
@@ -156,7 +156,7 @@ class PE(MenuWithField):
             self.buttonslist.append(btn)
         if btn2 is not None:
             self.buttonslist.append(btn2)
-        for i in self.settings["hide"]:
+        for i in self.menuUiSettings["hide"]:
             self.buttons[i].visible = False
         self.resize()
 
@@ -169,9 +169,9 @@ class PE(MenuWithField):
         self.settingslist = []
         for count, item in enumerate(self.prop_settings.items()):
             name, val = item
-            rect = pg.rect.Rect(self.settings["settingspos"])
+            rect = pg.rect.Rect(self.menuUiSettings["settingspos"])
             rect = rect.move(0, rect.h * count)
-            btn = widgets.button(self.surface, rect, self.settings["settingscolor"], name, onpress=self.changesettings,
+            btn = widgets.button(self.surface, rect, self.menuUiSettings["settingscolor"], name, onpress=self.changesettings,
                                  tooltip=str(self.getval(name, val)))
             self.settingslist.append(btn)
         self.resize()
@@ -230,7 +230,7 @@ class PE(MenuWithField):
 
     def blit(self):
         if len(self.buttonslist) > 1:
-            pg.draw.rect(self.surface, settings["TE"]["menucolor"], pg.rect.Rect(self.buttonslist[0].xy, [self.buttonslist[0].rect.w, len(self.buttonslist[:-1]) * self.buttonslist[0].rect.h + 1]))
+            pg.draw.rect(self.surface, uiSettings["TE"]["menucolor"], pg.rect.Rect(self.buttonslist[0].xy, [self.buttonslist[0].rect.w, len(self.buttonslist[:-1]) * self.buttonslist[0].rect.h + 1]))
             for button in self.buttonslist:
                 button.blitshadow()
             for button in self.buttonslist[:-1]:
@@ -457,7 +457,7 @@ class PE(MenuWithField):
                 else:
                     widgets.fastmts(self.surface, f"Variation: {self.prop_settings.get('variation')}", *varpos, white)
             rl = sum(self.selectedprop["repeatL"]) if self.selectedprop.get("repeatL") else self.selectedprop["depth"]
-            widgets.fastmts(self.surface, f"Depth: {self.depth} to {rl + self.depth}", *depthpos, white, fontsize= settings["global"]["fontsize"] // 2)
+            widgets.fastmts(self.surface, f"Depth: {self.depth} to {rl + self.depth}", *depthpos, white, fontsize= uiSettings["global"]["fontsize"] // 2)
             if self.copymode or self.delmode:
                 _, _, indx = self.find_nearest(*posoffset)
                 if indx != -1:
@@ -483,7 +483,7 @@ class PE(MenuWithField):
                         break
 
         if self.onfield:
-            if self.settings["advancedcursor"]:
+            if settings["PE_advanced_cursor"]:
                 if self.findparampressed("moreinfo"):
                     cursorCol = purple
                 else:
@@ -496,7 +496,7 @@ class PE(MenuWithField):
                 pg.draw.line(self.surface, cursorCol, mpos - cRotVec * 8, mpos - cRotVec * 12)
                 pg.draw.circle(self.surface, cursorCol, mpos, 8, 1)
 
-            if self.settings["showpoints"]:
+            if settings["PE_quad_display"]:
                 for q in self.quads:
                     pg.draw.circle(self.surface, red, [q[0] * self.fieldScale, q[1] * self.fieldScale] + mpos, 2)
 
@@ -581,7 +581,7 @@ class PE(MenuWithField):
 
     def changematshow(self):
         if self.matshow:
-            self.currentcategory = self.toolindex + self.currentcategory * self.settings["category_count"]
+            self.currentcategory = self.toolindex + self.currentcategory * self.menuUiSettings["category_count"]
             self.toolindex = 0
             cat = list(self.props.keys())[self.currentcategory]
             self.setprop(self.props[cat][0]["nm"], cat)
@@ -654,7 +654,7 @@ class PE(MenuWithField):
 
     def rotate(self, a):
         self.cursorRotation += a
-        if (not self.findparampressed("moreinfo")) or not self.settings["advancedcursor"]:
+        if (not self.findparampressed("moreinfo")) or not settings["PE_advanced_cursor"]:
             for indx, quad in enumerate(self.quads):
                 rot = rotatepoint(quad, a)
                 qx, qy = rot.x, rot.y
@@ -847,15 +847,15 @@ class PE(MenuWithField):
 
     def rotate_right(self):
         if self.findparampressed("rotate_speedup"):
-            self.rotate(self.settings["rotate_speedup"])
+            self.rotate(settings["PE_prop_rotate_extra_speed"])
         else:
-            self.rotate(self.settings["rotate_speed"])
+            self.rotate(settings["PE_prop_rotate_speed"])
 
     def rotate_left(self):
         if self.findparampressed("rotate_speedup"):
-            self.rotate(-self.settings["rotate_speedup"])
+            self.rotate(-settings["PE_prop_rotate_extra_speed"])
         else:
-            self.rotate(-self.settings["rotate_speed"])
+            self.rotate(-settings["PE_prop_rotate_speed"])
 
     def rotate0(self):
         self.transform_reset()
@@ -897,16 +897,16 @@ class PE(MenuWithField):
             self.quads[i] -= stretchVector * (distanceAlongAxis / long)
         self.updateproptransform()
     def stretchy_up(self):
-        self.stretch(1, self.settings["stretch_speed"])
+        self.stretch(1, settings["PE_prop_scale_speed"])
 
     def stretchy_down(self):
-        self.stretch(1, -self.settings["stretch_speed"])
+        self.stretch(1, -settings["PE_prop_scale_speed"])
 
     def stretchx_up(self):
-        self.stretch(0, self.settings["stretch_speed"])
+        self.stretch(0, settings["PE_prop_scale_speed"])
 
     def stretchx_down(self):
-        self.stretch(0, -self.settings["stretch_speed"])
+        self.stretch(0, -settings["PE_prop_scale_speed"])
 
     @property
     def custom_info(self):

@@ -24,9 +24,9 @@ class Menu:
         self.menu = name
         self.renderer = renderer
         self.data = renderer.data
-        if settings["global"]["enableundo"]:
+        if settings["enable_undo"]:
             self.datalast = copy.deepcopy(renderer.data)
-        self.settings = settings[self.menu]
+        self.menuUiSettings = uiSettings[self.menu]
         self.hotkeys = hotkeys[name]
         self.historybuffer = []
         self.uc = []
@@ -46,7 +46,7 @@ class Menu:
 
         widgets.resetpresses()
 
-        for i in self.settings["buttons"]:
+        for i in self.menuUiSettings["buttons"]:
             try:
                 f = getattr(self, i[3])
             except AttributeError:
@@ -63,7 +63,7 @@ class Menu:
                 self.buttons.append(
                     widgets.button(self.surface, pg.rect.Rect(i[1]), i[2], i[0], onpress=f,
                                    onrelease=f2, tooltip=self.returnkeytext(i[5]), icon=i[6]))
-        for i in self.settings["labels"]:
+        for i in self.menuUiSettings["labels"]:
             if len(i) == 3:
                 self.labels.append(widgets.lable(self.surface, self.returnkeytext(i[0]), i[1], i[2]))
             elif len(i) == 4:
@@ -94,7 +94,7 @@ class Menu:
             self.data["path"] = os.path.splitext(self.data["path"])[0] + ".wep"
             print(os.path.splitext(self.data["path"])[0] + ".wep")
         else:
-            if graphics["nonOSbrowser"]:
+            if not settings["native_file_browser"]:
                 savedest = self.asksaveasfilename()
             else:
                 savedest = asksaveasfilename(defaultextension=[".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
@@ -340,7 +340,7 @@ class Menu:
         return inputfile.replace("\n", "")
 
     def savef_txt(self):
-        if graphics["nonOSbrowser"]:
+        if not settings["native_file_browser"]:
             savedest = self.asksaveasfilename(defaultextension=[".txt"])
         else:
             savedest = asksaveasfilename(defaultextension=[".txt"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
@@ -350,7 +350,7 @@ class Menu:
     def blit(self, fontsize=None):
         if not self.touchesanything:
             self.setcursor()
-        if settings["global"]["doublerect"]:
+        if uiSettings["global"]["doublerect"]:
             for i in self.buttons:
                 i.blitshadow()
         for i in self.labels:
@@ -451,8 +451,8 @@ class Menu:
         self.message = message
 
     def reload(self):
-        global settings
-        settings = json.load(open(path2ui + graphics["uifile"], "r"))
+        global uiSettings
+        uiSettings = json.load(open(path2ui + settings["ui_theme"], "r"))
         self.__init__(self.surface, self.data, self.menu)
 
     def send(self, message):
@@ -570,7 +570,7 @@ class MenuWithField(Menu):
 
         self.f = pg.Surface([self.levelwidth * previewCellSize, self.levelheight * previewCellSize])
 
-        self.field = widgets.window(self.surface, self.settings["d1"])
+        self.field = widgets.window(self.surface, self.menuUiSettings["d1"])
         self.btiles = self.data["EX2"]["extraTiles"]
         self.fieldmap = self.field.field
 
@@ -588,8 +588,8 @@ class MenuWithField(Menu):
             self.rfa()
 
     def reload(self):
-        global settings
-        settings = json.load(open(path2ui + graphics["uifile"], "r"))
+        global uiSettings
+        uiSettings = json.load(open(path2ui + settings["ui_theme"], "r"))
         self.__init__(self.surface, self.renderer)
 
     def movemiddle(self, bp):
@@ -782,13 +782,13 @@ class MenuWithField(Menu):
                 self.offset.y -= 1
 
     def detecthistory(self, path, savedata=True):
-        if not settings["global"]["enableundo"]:
+        if not settings["enable_undo"]:
             return
         super().detecthistory(path, savedata)
         self.renderer.data = self.data
 
     def updatehistory(self, paths):
-        if not settings["global"]["enableundo"]:
+        if not settings["enable_undo"]:
             return
         super().updatehistory(paths)
         self.renderer.data = self.data
@@ -911,7 +911,7 @@ class MenuWithField(Menu):
 
                 vec = pg.Vector2([tl, tr, br, bl][quadindx])
 
-                widgets.fastmts(self.surface, f"Order: {indx}", rect.centerx + self.size // 2, rect.centery + self.size // 2, white, settings["global"]["fontsize"] // 2)
+                widgets.fastmts(self.surface, f"Order: {indx}", rect.centerx + self.size // 2, rect.centery + self.size // 2, white, uiSettings["global"]["fontsize"] // 2)
 
                 pg.draw.line(self.surface, camera_notheld, rect.center, vec, 1)
 

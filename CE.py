@@ -2,7 +2,7 @@ import render
 from menuclass import *
 from lingotojson import *
 
-error = settings["global"]["snap_error"] # snap error
+error = settings["snap_error"] # snap error
 
 class CE(MenuWithField):
     def __init__(self, surface: pg.surface.Surface, renderer: render.Renderer):
@@ -84,7 +84,7 @@ class CE(MenuWithField):
                     qlist = [rect.topleft, rect.topright, rect.bottomright, rect.bottomleft]
                     mouse = pg.Vector2(pg.mouse.get_pos()) - qlist[quadindx]
                     r, o = mouse.rotate(90).as_polar()
-                    if settings["CE"]["unlockangles"]:
+                    if settings["CE_unlock_angle"]:
                         self.data["CM"]["quads"][self.heldindex][quadindx] = \
                             [o, round(r / 100 / self.size * previewCellSize, 4)]
                     else:
@@ -215,31 +215,31 @@ class CE(MenuWithField):
         if not self.held:
             cam = self.closestcameraindex()
             quadindx = self.getquad(cam)
-            if settings["CE"]["unlockangles"]:
-                self.data["CM"]["quads"][cam][quadindx][1] = round(self.data["CM"]["quads"][cam][quadindx][1] + self.settings["addspeed"], 4)
+            if settings["CE_unlock_angle"]:
+                self.data["CM"]["quads"][cam][quadindx][1] = round(self.data["CM"]["quads"][cam][quadindx][1] + settings["CE_angle_add_speed"], 4)
             else:
-                self.data["CM"]["quads"][cam][quadindx][1] = round(min(self.data["CM"]["quads"][cam][quadindx][1] + self.settings["addspeed"], 1), 4)
+                self.data["CM"]["quads"][cam][quadindx][1] = round(min(self.data["CM"]["quads"][cam][quadindx][1] + settings["CE_angle_add_speed"], 1), 4)
 
     def adddown(self):  # ddddddddddd
         if not self.held:
             cam = self.closestcameraindex()
             quadindx = self.getquad(cam)
             self.data["CM"]["quads"][cam][quadindx][1] = round(
-                max(self.data["CM"]["quads"][cam][quadindx][1] - self.settings["addspeed"], 0), 4)
+                max(self.data["CM"]["quads"][cam][quadindx][1] - settings["CE_angle_add_speed"], 0), 4)
 
     def addleft(self):
         if not self.held:
             cam = self.closestcameraindex()
             quadindx = self.getquad(cam)
             self.data["CM"]["quads"][cam][quadindx][0] = math.floor(self.data["CM"]["quads"][cam][quadindx][0] -
-                                                          self.settings["rotatespeed"]) % 360
+                                                          settings["CE_angle_rotate_speed"]) % 360
 
     def addright(self):
         if not self.held:
             cam = self.closestcameraindex()
             quadindx = self.getquad(cam)
             self.data["CM"]["quads"][cam][quadindx][0] = math.ceil(
-                self.data["CM"]["quads"][cam][quadindx][0] + self.settings["rotatespeed"]) % 360
+                self.data["CM"]["quads"][cam][quadindx][0] + settings["CE_angle_rotate_speed"]) % 360
 
     @property
     def custom_info(self):

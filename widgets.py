@@ -1,6 +1,6 @@
 import pygame as pg
 import copy
-from files import settings, fs, path, map, allleters, loadimage
+from files import uiSettings, fs, path, map, allleters, loadimage
 from render import gray, darkgray
 
 pg.font.init()
@@ -8,20 +8,20 @@ pg.font.init()
 enablebuttons = True
 bol = True
 keybol = True
-mul = settings["global"]["colormul"]
+mul = uiSettings["global"]["colormul"]
 black = [0, 0, 0]
 white = [255, 255, 255]
 try:
-    tooltipcolor = settings["global"]["colors"]["tooltip"]
-    buttontextcolor = settings["global"]["colors"]["buttontext"]
-    buttontextcolorlight = settings["global"]["colors"]["buttontextlight"]
+    tooltipcolor = uiSettings["global"]["colors"]["tooltip"]
+    buttontextcolor = uiSettings["global"]["colors"]["buttontext"]
+    buttontextcolorlight = uiSettings["global"]["colors"]["buttontextlight"]
 except KeyError:
     tooltipcolor = white
     buttontextcolor = black
     buttontextcolorlight = white
 
 
-def fastmts(window, text: str, x: int, y: int, col=None, fontsize=settings["global"]["fontsize"], centered=False):
+def fastmts(window, text: str, x: int, y: int, col=None, fontsize=uiSettings["global"]["fontsize"], centered=False):
     if col is None:
         col = black
     fontr: pg.font.Font = fs(fontsize)[0]
@@ -29,13 +29,13 @@ def fastmts(window, text: str, x: int, y: int, col=None, fontsize=settings["glob
     textblit(window, surf, x, y, centered)
 
 
-def mts(text: str = "", col=None, fontsize=settings["global"]["fontsize"]):
+def mts(text: str = "", col=None, fontsize=uiSettings["global"]["fontsize"]):
     if col is None:
         col = black
     fontr: pg.font.Font = fs(fontsize)[0]
     sz: int = fs(fontsize)[1]
     if text == "RWE+":
-        fontr: pg.font.Font = pg.font.Font(path + "/" + settings["global"]["titlefont"], fontsize)
+        fontr: pg.font.Font = pg.font.Font(path + "/" + uiSettings["global"]["titlefont"], fontsize)
         sz: int = fontr.size(allleters)[1]
     items = text.split("\n")
     rendered = []
@@ -98,10 +98,10 @@ class button:
         self.icon = None
         self.loadicon = icon
         if icon is not None:
-            cut = [icon[1][0] * settings["global"]["size"], icon[1][1] * settings["global"]["size"],
-                   settings["global"]["size"], settings["global"]["size"]]
+            cut = [icon[1][0] * uiSettings["global"]["size"], icon[1][1] * uiSettings["global"]["size"],
+                   uiSettings["global"]["size"], uiSettings["global"]["size"]]
             image = loadimage(path + icon[0]).subsurface(cut)
-            wh = image.get_height() / settings["global"]["size"] * (rect.height / 100 * surface.get_height())
+            wh = image.get_height() / uiSettings["global"]["size"] * (rect.height / 100 * surface.get_height())
             size = [wh, wh]
             image = pg.transform.scale(image, size)
             self.icon = image
@@ -117,7 +117,7 @@ class button:
     def blit(self, fontsize=None):
         global bol
         if not self.enabled:
-            pg.draw.rect(self.surface, darkgray, self.rect, 0, settings["global"]["roundbuttons"])
+            pg.draw.rect(self.surface, darkgray, self.rect, 0, uiSettings["global"]["roundbuttons"])
             textblit(self.surface, self.textimage, self.rect.center[0], self.rect.center[1], True)
             return
         if not self.visible:
@@ -153,7 +153,7 @@ class button:
             self.glow = max(0, self.glow - 1)
         paintcol = self.col.lerp(self.col2, self.glow)
 
-        pg.draw.rect(self.surface, paintcol, self.rect, 0, settings["global"]["roundbuttons"])
+        pg.draw.rect(self.surface, paintcol, self.rect, 0, uiSettings["global"]["roundbuttons"])
         if self.icon is None:
             textblit(self.surface, self.textimage, self.rect.center[0], self.rect.center[1], True)
             # mts(self.surface, self.text, self.rect.center[0], self.rect.center[1], black, centered=True, fontsize=fontsize)
@@ -174,9 +174,9 @@ class button:
             return
         invglow = 1 - self.glow
         r2 = self.rect.copy()
-        r2 = r2.move(settings["global"]["doublerectoffsetx"] / 100 * invglow,
-                     settings["global"]["doublerectoffsety"] / 100 * invglow)
-        pg.draw.rect(self.surface, self.col2, r2, 0, settings["global"]["roundbuttons"])
+        r2 = r2.move(uiSettings["global"]["doublerectoffsetx"] / 100 * invglow,
+                     uiSettings["global"]["doublerectoffsety"] / 100 * invglow)
+        pg.draw.rect(self.surface, self.col2, r2, 0, uiSettings["global"]["roundbuttons"])
 
     def blittooltip(self):
         if not self.visible:
@@ -196,10 +196,10 @@ class button:
         self.set_text(self.text)
 
         if self.icon is not None:
-            cut = [self.loadicon[1][0] * settings["global"]["size"], self.loadicon[1][1] * settings["global"]["size"],
-                   settings["global"]["size"], settings["global"]["size"]]
+            cut = [self.loadicon[1][0] * uiSettings["global"]["size"], self.loadicon[1][1] * uiSettings["global"]["size"],
+                   uiSettings["global"]["size"], uiSettings["global"]["size"]]
             image = loadimage(path + self.loadicon[0]).subsurface(cut)
-            wh = image.get_height() / settings["global"]["size"] * self.rect.height
+            wh = image.get_height() / uiSettings["global"]["size"] * self.rect.height
             size = [wh, wh]
             image = pg.transform.scale(image, size)
             self.icon = image
@@ -338,7 +338,7 @@ class slider:
         pos2 = self.pos + pg.Vector2(self.len, 0)
 
         pg.draw.line(self.surface, buttontextcolor, self.pos, pos2, 5)
-        pg.draw.circle(self.surface, pg.Color(settings["global"]["colors"]["slidebar"]), sliderpos, s)
+        pg.draw.circle(self.surface, pg.Color(uiSettings["global"]["colors"]["slidebar"]), sliderpos, s)
         textblit(self.surface, self.textimage, self.pos.x, self.pos.y)
 
         if pg.mouse.get_pressed()[0] and self.mp:

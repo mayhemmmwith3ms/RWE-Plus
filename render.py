@@ -8,10 +8,10 @@ import pygame as pg
 import menuclass
 import time
 
-colors = settings["global"]["colors"]  # NOQA
+colors = uiSettings["global"]["colors"]  # NOQA
 
-color = pg.Color(settings["global"]["color"])
-color2 = pg.Color(settings["global"]["color2"])
+color = pg.Color(uiSettings["global"]["color"])
+color2 = pg.Color(uiSettings["global"]["color2"])
 
 dc = pg.Color(0, 0, 0, 0)
 
@@ -60,8 +60,8 @@ col8 = [
 
 col4 = [[0, -1], [-1, 0], [1, 0], [0, 1]]
 
-color = pg.Color(settings["global"]["color"])
-color2 = pg.Color(settings["global"]["color2"])
+color = pg.Color(uiSettings["global"]["color"])
+color2 = pg.Color(uiSettings["global"]["color2"])
 
 renderedimage = pg.transform.scale(tooltiles, [
             (tooltiles.get_width() / graphics["tilesize"][0]) * previewCellSize,
@@ -136,9 +136,9 @@ class Renderer:
                 renderedimage.convert_alpha(pg.Surface([previewCellSize, previewCellSize])),
                 renderedimage.convert_alpha(pg.Surface([previewCellSize, previewCellSize]))
             ]
-            self.geosurfaces[0].fill(settings["GE"]["layerColors"][0], special_flags=pg.BLEND_MULT)
-            self.geosurfaces[1].fill(settings["GE"]["layerColors"][1], special_flags=pg.BLEND_MULT)
-            self.geosurfaces[2].fill(settings["GE"]["layerColors"][2], special_flags=pg.BLEND_MULT)
+            self.geosurfaces[0].fill(uiSettings["GE"]["layerColors"][0], special_flags=pg.BLEND_MULT)
+            self.geosurfaces[1].fill(uiSettings["GE"]["layerColors"][1], special_flags=pg.BLEND_MULT)
+            self.geosurfaces[2].fill(uiSettings["GE"]["layerColors"][2], special_flags=pg.BLEND_MULT)
             self.surf_tiles = pg.Surface(size)
             self.surf_tiles = self.surf_tiles.convert_alpha()
             self.surf_props = pg.Surface(size)
@@ -234,21 +234,21 @@ class Renderer:
             cposx = posx - int((it["size"][0] * .5) + .5) * previewCellSize + previewCellSize
             cposy = posy - int((it["size"][1] * .5) + .5) * previewCellSize + previewCellSize
             siz = pg.rect.Rect([cposx, cposy, it["size"][0] * previewCellSize, it["size"][1] * previewCellSize])
-            if not settings["TE"]["LEtiles"]:
+            if not uiSettings["TE"]["LEtiles"]:
                 pg.draw.rect(self.surf_tiles, it["color"], siz, 0)
             if drawL != l:
-                it["image"].set_alpha(settings["global"]["tiles_secondarylayeralpha"])
+                it["image"].set_alpha(uiSettings["global"]["tiles_secondarylayeralpha"])
             else:
-                it["image"].set_alpha(settings["global"]["tiles_primarylayeralpha"])
+                it["image"].set_alpha(uiSettings["global"]["tiles_primarylayeralpha"])
             self.surf_tiles.blit(it["image"], [cposx, cposy])
             it["image"].set_alpha(255)
         elif datcell == "tileBody":
             tl = self.data["TE"]["tlMatrix"][xp][yp][drawL]
             if self.GetTileHeadFromTilePart(tl) == "stray":
                 if drawL != l:
-                    self.geosurfaces[2].set_alpha(settings["global"]["tiles_secondarylayeralpha"])
+                    self.geosurfaces[2].set_alpha(uiSettings["global"]["tiles_secondarylayeralpha"])
                 else:
-                    self.geosurfaces[2].set_alpha(settings["global"]["tiles_primarylayeralpha"])
+                    self.geosurfaces[2].set_alpha(uiSettings["global"]["tiles_primarylayeralpha"])
 
                 self.surf_tiles.blit(self.geosurfaces[2], [xp * previewCellSize, yp * previewCellSize], [[graphics["shows"]["0"][0] * previewCellSize, graphics["shows"]["0"][1] * previewCellSize], [previewCellSize, previewCellSize]])
 
@@ -317,10 +317,10 @@ class Renderer:
                 imageIndex = 0
 
             convrender = self.geosurfaces[imageIndex]
-            convrender.set_alpha(settings["global"]["secondarylayeralpha"])
+            convrender.set_alpha(uiSettings["global"]["secondarylayeralpha"])
 
             if i == layer and not self.commsgeocolors:
-                convrender.set_alpha(settings["global"]["primarylayeralpha"])
+                convrender.set_alpha(uiSettings["global"]["primarylayeralpha"])
             if i == 0 and self.commsgeocolors:
                 convrender.set_alpha(255)
 

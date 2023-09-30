@@ -18,8 +18,6 @@
 		"secondarylayeralpha": 50,
 		"tiles_primarylayeralpha": 255,
 		"tiles_secondarylayeralpha": 100,
-		"snap_error": 50,
-		"enableundo": false,
 		"previewleftside": true,
 		"colors": {
 			"cursor": [255, 0, 0],
@@ -237,7 +235,6 @@
 			"7": "Shortcut entrance",
 			"9": "Glass"
 		},
-		"cursorWorkLayerNum": true,
 		"layerColors": [
 			[0, 0, 0],
 			[0, 255, 0],
@@ -278,8 +275,7 @@
 			["LMB - Place tile\nRMB - Fill\nMMB - Move", [2, 20], [255, 255, 255], 25]
 		],
 		"itemsize": 2,
-		"menucolor": [120, 120, 120],
-		"officialMouseControlStyle": true
+		"menucolor": [120, 120, 120]
 	},
 
 	"LE":{
@@ -374,10 +370,7 @@
 			["Total cameras: %2d", [0, 97], [255, 255, 255], 25],
 			["LMB - Select camera/Edit\nMMB - Move", [6, 80], [255, 255, 255], 25]
 		],
-		"menucolor": [100, 0, 0],
-		"addspeed": 0.01,
-		"rotatespeed": 0.03,
-		"unlockangles": false
+		"menucolor": [100, 0, 0]
 	},
 	"LP": {
 		"buttons": [
@@ -453,14 +446,7 @@
 		"menucolor": [120, 120, 120],
 
 		"elements_as_tiles_count": 20,
-		"elements_as_tiles_color": [110, 110, 110],
-
-		"rotate_speed": 0.1,
-		"rotate_speedup": 1,
-		"stretch_speed": 0.3,
-
-		"advancedcursor": true,
-		"showpoints": true
+		"elements_as_tiles_color": [110, 110, 110]
 	},
 	"HK": {
 		"buttons": 

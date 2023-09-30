@@ -8,13 +8,13 @@ from tkinter.filedialog import askopenfilename, asksaveasfilename
 import argparse
 from path_dict import PathDict
 from lingotojson import *
-from files import settings, hotkeys, path, application_path
+from files import uiSettings, hotkeys, path, application_path
 
 widgets.keybol = True
 run = True
 keys = [pg.K_LCTRL, pg.K_LALT, pg.K_LSHIFT]
 movekeys = [pg.K_LEFT, pg.K_UP, pg.K_DOWN, pg.K_RIGHT]
-fullscreen = settings["global"]["fullscreen"]
+fullscreen = uiSettings["global"]["fullscreen"]
 file = ""
 file2 = ""
 undobuffer = []
@@ -78,14 +78,14 @@ def keypress(window):
             surf.savef()
             run = False
         case "open":
-            if graphics["nonOSbrowser"]:
+            if not settings["native_file_browser"]:
                 openlevel(surf.asksaveasfilename(defaultextension=[".txt", ".wep"]), window)
             else:
                 openlevel(askopenfilename(defaultextension=[".txt", ".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects"), window)
 
 
 def undohistory():
-    if not settings["global"]["enableundo"]:
+    if not settings["enable_undo"]:
         return
     global undobuffer, redobuffer, file, surf
     if len(undobuffer) == 0:
@@ -112,7 +112,7 @@ def undohistory():
 
 
 def redohistory():
-    if not settings["global"]["enableundo"]:
+    if not settings["enable_undo"]:
         return
     global undobuffer, redobuffer, file, surf
     if len(redobuffer) == 0:
@@ -225,8 +225,8 @@ def launch(level):
     propcolors = getcolors()
     props = getprops(items)
     file2 = copy.deepcopy(file)
-    width = settings["global"]["width"]
-    height = settings["global"]["height"]
+    width = uiSettings["global"]["width"]
+    height = uiSettings["global"]["height"]
 
     window = pg.display.set_mode([width, height], flags=pg.RESIZABLE | (pg.FULLSCREEN * fullscreen))
     pg.display.set_icon(loadimage(path + "icon.png"))
@@ -285,16 +285,16 @@ def launch(level):
             undobuffer.extend(surf.historybuffer)
             surf.historybuffer = []
             redobuffer = []
-            undobuffer = undobuffer[-graphics["historylimit"]:]
+            undobuffer = undobuffer[-settings["undo_history_limit"]:]
 
         if not pg.key.get_pressed()[pg.K_LCTRL]:
             for i in surf.uc:
                 if pg.key.get_pressed()[i]:
                     keypress(window)
-        if settings[surf.menu].get("menucolor") is not None:
-            window.fill(pg.color.Color(settings[surf.menu]["menucolor"]))
+        if uiSettings[surf.menu].get("menucolor") is not None:
+            window.fill(pg.color.Color(uiSettings[surf.menu]["menucolor"]))
         else:
-            window.fill(pg.color.Color(settings["global"]["color"]))
+            window.fill(pg.color.Color(uiSettings["global"]["color"]))
         surf.blit()
         pg.display.flip()
         pg.display.update()
@@ -321,7 +321,7 @@ def loadmenu():
             case "new":
                 launch(-1)
             case "open":
-                if graphics["nonOSbrowser"]:
+                if not settings["native_file_browser"]:
                     file = surf.asksaveasfilename(defaultextension=[".txt", ".wep"])
                 else:
                     file = askopenfilename(defaultextension=[".txt", ".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
@@ -353,7 +353,7 @@ def loadmenu():
             for i in surf.uc:
                 if pg.key.get_pressed()[i]:
                     keypress(window)
-        window.fill(pg.color.Color(settings["global"]["color"]))
+        window.fill(pg.color.Color(uiSettings["global"]["color"]))
         surf.blit()
         surf.justChangedZoom = False
         pg.display.flip()

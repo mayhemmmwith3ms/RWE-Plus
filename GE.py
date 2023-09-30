@@ -131,7 +131,7 @@ class GE(MenuWithField):
                     self.levelheight * self.size]
             pg.draw.rect(self.field.field, border, rect, self.size // previewCellSize + 1)
             if (0 <= posoffset.x < self.levelwidth) and (0 <= posoffset.y < self.levelheight):
-                tilename = settings["GE"]["names"][
+                tilename = uiSettings["GE"]["names"][
                     str(self.data["GE"][int(posoffset.x)][int(posoffset.y)][self.layer][0])]
                 self.labels[0].set_text(
                     f"Tile: {tilename} {self.data['GE'][int(posoffset.x)][int(posoffset.y)][self.layer]}")

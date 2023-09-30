@@ -26,7 +26,7 @@ class LP(MenuWithField):
         self.sliders = []
         self.tool = ""  # env, size
         super().__init__(surface, "LP", renderer)
-        for i in self.settings["sliders"]:
+        for i in self.menuUiSettings["sliders"]:
             self.sliders.append(widgets.slider(
                 self.surface,
                 i[0], i[1], i[2],
@@ -57,7 +57,7 @@ class LP(MenuWithField):
         self.labels[2].set_text(
             self.labels[2].originaltext % (self.data["WL"]["waterLevel"], str(self.data["WL"]["waterInFront"]==1)))
         for n, i in enumerate(self.sliders):
-            self.data[self.settings["sliders"][n][4][0]][self.settings["sliders"][n][4][1]] = round(i.value)
+            self.data[self.menuUiSettings["sliders"][n][4][0]][self.menuUiSettings["sliders"][n][4][1]] = round(i.value)
 
         if self.onfield:
             bp = self.getmouse

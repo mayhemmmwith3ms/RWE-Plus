@@ -135,7 +135,7 @@ def init_solve(files: list[str,]):
 
 
 def inittolist():
-    inv = settings["TE"]["LEtiles"]
+    inv = uiSettings["TE"]["LEtiles"]
     tilefiles = [path2graphics + i for i in graphics["tileinits"]]
     solved = init_solve(tilefiles)
     del solved['']
@@ -256,7 +256,7 @@ def renderlevel(data):
         subprocess.Popen([f"{application_path}/drizzle/Drizzle.ConsoleApp{'' if islinux else '.exe'}", "render", fl], shell=True)
     else:
         subprocess.Popen(f"\"{application_path}/drizzle/Drizzle.ConsoleApp\" render \"{fl}\"", shell=True)
-    if not graphics["nonOSbrowser"]:
+    if settings["native_file_browser"]:
         os.system("start " + resolvepath(path2renderedlevels))
 
 
@@ -361,7 +361,7 @@ def getprops(tiles: dict):
             continue
         for indx, tile in enumerate(items[0:]):
             if count <= 0:
-                count = settings["PE"]["elements_as_tiles_count"]
+                count = uiSettings["PE"]["elements_as_tiles_count"]
                 if title != "":
                     solved_copy[title] = itemlist
                     itemlist = []
@@ -409,7 +409,7 @@ def getprops(tiles: dict):
                     "tp": "standard",
                     "images": [returnimage],
                     "colorTreatment": "standard",
-                    "color": settings["PE"]["elements_as_tiles_color"],
+                    "color": uiSettings["PE"]["elements_as_tiles_color"],
                     "sz": list(pg.Vector2(tile["size"]) + pg.Vector2(tile["bfTiles"] * 2, tile["bfTiles"] * 2)),
                     "depth": 10 + int(tile["cols"][1] != []),
                     "repeatL": tile["repeatL"],

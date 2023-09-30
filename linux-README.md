@@ -32,6 +32,6 @@ After that, main.py can be ran using a bash script:
 If everything has been set up correctly, this will start RWE+.
 
 ## Additional info
-By default, this fork uses the default OS file browser to select files. This works fine on Windows, however appears to be unstable on Linux. The in-built file browser can be enabled by navigating to `files/graphics.json`, and changing `"nonOSbrowser"` to `true`.
+By default, this fork uses the default OS file browser to select files. This works fine on Windows, however appears to be unstable on Linux. The in-built file browser can be enabled by navigating to `files/settings.json`, and changing `"native_file_browser"` to `false`.
 
 RWE+ ships with a version of [Drizzle](https://github.com/SlimeCubed/Drizzle) compiled for Windows only. In order to render levels on Linux, you need to download the latest Linux build of Drizzle from the repository, and replace the contents of the `drizzle` folder with the contents of the release archive. **Note that as far as I have tested, the Linux build of Drizzle does not appear to function. This means for the time being, levels cannot be rendered on Linux.**

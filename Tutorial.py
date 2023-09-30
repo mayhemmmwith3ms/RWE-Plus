@@ -142,10 +142,10 @@ class TT(MenuWithField):
 
     def next(self):
         self.step += 1
-        if self.step >= len(self.settings["textlines"]):
+        if self.step >= len(self.menuUiSettings["textlines"]):
             self.message = "load"
             return
-        textline = self.settings["textlines"][self.step]
+        textline = self.menuUiSettings["textlines"][self.step]
         firstchar = textline[0]
         self.buttons[0].visible = True
         self.buttons[0].enabled = True
@@ -262,7 +262,7 @@ class TT(MenuWithField):
     def prev(self):
         if self.step - 1 >= 0:
             self.step -= 1
-            textline = self.settings["textlines"][self.step]
+            textline = self.menuUiSettings["textlines"][self.step]
             firstchar = textline[0]
             self.buttons[0].visible = True
             if firstchar == "?":
@@ -345,10 +345,10 @@ class TT(MenuWithField):
         btn2 = None
         itemcat = list(self.examplelist)[self.currentcategory]
         for count, item in enumerate(self.examplelist[itemcat]):
-            cat = pg.rect.Rect(self.settings["catpos"])
+            cat = pg.rect.Rect(self.menuUiSettings["catpos"])
             btn2 = widgets.button(self.surface, cat, settings["global"]["color"], itemcat, onpress=self.changematshow,
                                   tooltip=self.returnkeytext("Select category(<[-changematshow]>)"))
-            rect = pg.rect.Rect(self.settings["itempos"])
+            rect = pg.rect.Rect(self.menuUiSettings["itempos"])
             rect = rect.move(0, rect.h * count)
             btn = widgets.button(self.surface, rect, item["color"], item["nm"], onpress=self.settile)
             self.buttonslist.append(btn)
@@ -373,9 +373,9 @@ class TT(MenuWithField):
         if self.step == 15:
             self.next()
         for count, item in enumerate(self.examplelist.keys()):
-            cat = pg.rect.Rect(self.settings["catpos"])
+            cat = pg.rect.Rect(self.menuUiSettings["catpos"])
             btn2 = widgets.button(self.surface, cat, settings["global"]["color"], "Categories", onpress=self.changematshow)
-            rect = pg.rect.Rect(self.settings["itempos"])
+            rect = pg.rect.Rect(self.menuUiSettings["itempos"])
             rect = rect.move(0, rect.h * count)
             col = self.examplelist[item][0]["color"]
             if col is None:
@@ -403,7 +403,7 @@ class TT(MenuWithField):
         for cat, item in self.examplelist.items():
             for i in item:
                 nd[i["nm"]] = cat
-        name = self.find(nd, self.settings["findmenu_text"])
+        name = self.find(nd, self.menuUiSettings["findmenu_text"])
         if name is None:
             return
         cat = self.findcat(name)

@@ -41,7 +41,7 @@ class FE(MenuWithField):
         self.resize()
 
     def blit(self):
-        pg.draw.rect(self.surface, settings["TE"]["menucolor"], pg.rect.Rect(self.buttonslist[:-1][0].xy,
+        pg.draw.rect(self.surface, uiSettings["TE"]["menucolor"], pg.rect.Rect(self.buttonslist[:-1][0].xy,
                                                                              [self.buttonslist[:-1][0].rect.w,
                                                                               len(self.buttonslist[:-1]) *
                                                                               self.buttonslist[:-1][0].rect.h + 1]))
@@ -62,7 +62,7 @@ class FE(MenuWithField):
             if i.onmouseover():
                 effect = self.geteffect(i.text)
                 if effect is not None and effect.get("preview"):
-                    if settings["global"]["previewleftside"]:
+                    if uiSettings["global"]["previewleftside"]:
                         previewPos = [i.rect.bottomleft[0] - effect["preview"].get_width(), i.rect.bottomleft[1]]
                     self.surface.blit(effect["preview"], previewPos)
         for i in self.buttonslist2:
@@ -72,16 +72,16 @@ class FE(MenuWithField):
                 if effect is not None and effect.get("preview"):
                     if effect["preview"].get_height() + i.rect.y > self.surface.get_height():
                         previewPos = [i.rect.x + i.rect.w, self.surface.get_height()-effect["preview"].get_height()]
-                        if settings["global"]["previewleftside"]:
+                        if uiSettings["global"]["previewleftside"]:
                             previewPos = [i.rect.bottomleft[0] - effect["preview"].get_width(), self.surface.get_height()-effect["preview"].get_height()]
                         self.surface.blit(effect["preview"], previewPos)
                     else:
                         previewPos = i.rect.bottomright
-                        if settings["global"]["previewleftside"]:
+                        if uiSettings["global"]["previewleftside"]:
                             previewPos = [i.rect.bottomleft[0] - effect["preview"].get_width(), i.rect.bottomleft[1]]
                         self.surface.blit(effect["preview"], previewPos)
         
-        feCursor = settings["global"]["colors"]["FECursor"]
+        feCursor = uiSettings["global"]["colors"]["FECursor"]
 
         cir = [self.buttonslist[self.currentindex].rect.x + 10,
                self.buttonslist[self.currentindex].rect.y + self.buttonslist[self.currentindex].rect.h / 2]
@@ -171,31 +171,31 @@ class FE(MenuWithField):
         self.matshow = False
         btn2 = None
         for count, item in enumerate(effects[self.currentcategory]["efs"]):
-            cat = pg.rect.Rect(self.settings["catpos"])
-            btn2 = widgets.button(self.surface, cat, settings["global"]["color"], effects[self.currentcategory]["nm"], onpress=self.cats,
+            cat = pg.rect.Rect(self.menuUiSettings["catpos"])
+            btn2 = widgets.button(self.surface, cat, uiSettings["global"]["color"], effects[self.currentcategory]["nm"], onpress=self.cats,
                                   tooltip=self.returnkeytext("Select category(<[-changematshow]>)"))
 
-            rect = pg.rect.Rect(self.settings["itempos"])
+            rect = pg.rect.Rect(self.menuUiSettings["itempos"])
             rect = rect.move(0, rect.h * count)
-            btn = widgets.button(self.surface, rect, pg.Color(settings["global"]["color2"]), item["nm"], onpress=self.addeffect)
+            btn = widgets.button(self.surface, rect, pg.Color(uiSettings["global"]["color2"]), item["nm"], onpress=self.addeffect)
             self.buttonslist.append(btn)
         if btn2 is not None:
             self.buttonslist.append(btn2)
 
         self.buttonslist2 = []
         #instead of scroll
-        split2 = self.settings["itempos2"][1] + self.settings["itempos2"][3] * len(self.data["FE"]["effects"]) >= 100
+        split2 = self.menuUiSettings["itempos2"][1] + self.menuUiSettings["itempos2"][3] * len(self.data["FE"]["effects"]) >= 100
         count2 = 0
         for count, item in enumerate(self.data["FE"]["effects"]):
-            rect = pg.rect.Rect(self.settings["itempos2"])
+            rect = pg.rect.Rect(self.menuUiSettings["itempos2"])
             rect = rect.move(0, rect.h * count)
             if rect.y >= 100 and split2:
                 rect = rect.move(rect.width / 2, 0)
-                rect.y = self.settings["itempos2"][1] + self.settings["itempos2"][3] * count2
+                rect.y = self.menuUiSettings["itempos2"][1] + self.menuUiSettings["itempos2"][3] * count2
                 count2 += 1
             if split2:
                 rect.width = rect.width / 2
-            btn = widgets.button(self.surface, rect, pg.Color(settings["global"]["color2"]), item["nm"], onpress=self.selectmouseeffect)
+            btn = widgets.button(self.surface, rect, pg.Color(uiSettings["global"]["color2"]), item["nm"], onpress=self.selectmouseeffect)
             self.buttonslist2.append(btn)
         self.resize()
         self.chtext()
@@ -234,10 +234,10 @@ class FE(MenuWithField):
         self.matshow = True
         btn2 = None
         for count, item in enumerate(effects):
-            cat = pg.rect.Rect(self.settings["catpos"])
-            btn2 = widgets.button(self.surface, cat, settings["global"]["color"], "Categories",
+            cat = pg.rect.Rect(self.menuUiSettings["catpos"])
+            btn2 = widgets.button(self.surface, cat, uiSettings["global"]["color"], "Categories",
                                   onpress=self.changematshow)
-            rect = pg.rect.Rect(self.settings["itempos"])
+            rect = pg.rect.Rect(self.menuUiSettings["itempos"])
             rect = rect.move(0, rect.h * count)
             col = item["color"]
             if col is None:
@@ -274,12 +274,12 @@ class FE(MenuWithField):
         if len(self.data["FE"]["effects"]) == 0:
             return
         ws = pg.display.get_window_size()
-        addspace = self.settings["additionspace"] / 100 * ws[0]
-        ppos = self.settings["paramspos"]
+        addspace = self.menuUiSettings["additionspace"] / 100 * ws[0]
+        ppos = self.menuUiSettings["paramspos"]
 
         if len(self.data["FE"]["effects"][self.selectedeffect]["options"][self.paramindex][1]) < 1:
-            rect = pg.Rect([ppos, self.settings["seedchange_size"]])
-            btn = widgets.button(self.surface, rect, pg.Color(settings["global"]["color2"]), "Set seed",
+            rect = pg.Rect([ppos, self.menuUiSettings["seedchange_size"]])
+            btn = widgets.button(self.surface, rect, pg.Color(uiSettings["global"]["color2"]), "Set seed",
                                  onpress=self.changeseed)
             btn.resize()
             self.params.append(btn)
@@ -291,19 +291,19 @@ class FE(MenuWithField):
                 rect = pg.Rect(self.params[-1].rect.topright[0], ppos[1] / 100 * ws[1], w + addspace, h + addspace)
             except IndexError:
                 rect = pg.Rect(ppos[0] / 100 * ws[0], ppos[1] / 100 * ws[1], w + addspace, h + addspace)
-            btn = widgets.button(self.surface, rect, pg.Color(settings["global"]["color2"]), i, onpress=self.changeparam)
+            btn = widgets.button(self.surface, rect, pg.Color(uiSettings["global"]["color2"]), i, onpress=self.changeparam)
             self.params.append(btn)
-        self.buttons[self.settings['currentparamindex']].set_text(str(self.paramindex))
+        self.buttons[self.menuUiSettings['currentparamindex']].set_text(str(self.paramindex))
 
     def chtext(self):
         if len(self.data["FE"]["effects"]) > 0:
             self.labels[0].set_text(self.labels[0].originaltext % (self.data["FE"]["effects"][self.selectedeffect]["options"][self.paramindex][0], self.data["FE"]["effects"][self.selectedeffect]["options"][self.paramindex][2]))
             self.labels[1].set_text(self.labels[1].originaltext + self.data["FE"]["effects"][self.selectedeffect]["nm"] + f" | Zoom: {(self.size / previewCellSize) * 100}%")
-            self.buttons[self.settings["currentparamindex"]].set_text(str(self.paramindex))
+            self.buttons[self.menuUiSettings["currentparamindex"]].set_text(str(self.paramindex))
         else:
             self.labels[0].set_text("")
             self.labels[1].set_text(f"Zoom: {(self.size / previewCellSize) * 100}%")
-            self.buttons[self.settings["currentparamindex"]].set_text("0")
+            self.buttons[self.menuUiSettings["currentparamindex"]].set_text("0")
 
     def changeparam(self, text): # "Delete", "Move Back", "Move Forth"
         match text:

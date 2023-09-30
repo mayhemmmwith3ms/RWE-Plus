@@ -1,0 +1,20 @@
+{
+    "ui_theme": "mayhemmm.json",
+    "native_file_browser": true,
+    "snap_error": 50,
+    "enable_undo": false,
+    "undo_history_limit": 25,
+    "cursor_layer_num_display": true,
+
+    "TE_official_style_placement_controls": true,
+
+    "CE_angle_add_speed": 0.01,
+    "CE_angle_rotate_speed": 0.03,
+    "CE_unlock_angle": false,
+
+    "PE_prop_rotate_speed": 0.1,
+    "PE_prop_rotate_extra_speed": 1,
+    "PE_prop_scale_speed": 0.3,
+    "PE_advanced_cursor": true,
+    "PE_quad_display": true
+}

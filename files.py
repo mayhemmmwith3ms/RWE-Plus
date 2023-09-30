@@ -52,7 +52,8 @@ path2materialPreviews = resolvepath(path + "materialPreviews\\")
 pg.font.init()
 
 graphics = json.load(open(path + "graphics.json", "r"))
-settings = json.load(open(path2ui +  graphics["uifile"], "r"))
+settings = json.load(open(path + "settings.json", "r"))
+uiSettings = json.load(open(path2ui +  settings["ui_theme"], "r"))
 hotkeys = json.load(open(path + "hotkeys.json", "r"))
 e = json.load(open(path + "effects.json", "r"))
 
@@ -89,7 +90,7 @@ def fs(sz):
     if sz in fonts.keys():
         return fonts[sz]
     else:
-        f = pg.font.Font(path + "/" + settings["global"]["font"], sz)
+        f = pg.font.Font(path + "/" + uiSettings["global"]["font"], sz)
         fonts[sz] = [f, f.size(allleters)[1]]
         return fonts[sz]
 
