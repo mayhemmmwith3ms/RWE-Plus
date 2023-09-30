@@ -72,7 +72,7 @@ def keypress(window):
             surf.reload()
         case "save":
             surf.savef()
-            file2 = copy.deepcopy(file)
+            file2 = jsoncopy(file)
         case "new":
             print("New")
             surf.savef()
@@ -224,7 +224,7 @@ def launch(level):
     items = inittolist()
     propcolors = getcolors()
     props = getprops(items)
-    file2 = copy.deepcopy(file)
+    file2 = jsoncopy(file)
     width = uiSettings["global"]["width"]
     height = uiSettings["global"]["height"]
 
@@ -267,13 +267,13 @@ def launch(level):
                     surf.resize()
                 case "save":
                     surf.savef()
-                    file2 = copy.deepcopy(file)
+                    file2 = jsoncopy(file)
                 case "saveas":
                     surf.saveasf()
-                    file2 = copy.deepcopy(file)
+                    file2 = jsoncopy(file)
                 case "savetxt":
                     surf.savef_txt()
-                    file2 = copy.deepcopy(file)
+                    file2 = jsoncopy(file)
                 case _:
                     if surf.message in menulist:
                         surf = getattr(sys.modules[__name__], surf.message)(window, renderer)
