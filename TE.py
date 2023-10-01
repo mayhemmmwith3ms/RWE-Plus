@@ -396,7 +396,7 @@ class TE(MenuWithField):
                     try:
                         if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
                             hoveredTile = self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]
-                            if self.findparampressed("movepreview") and hoveredTile["tp"] not in ["default", "material"]:
+                            if self.findparampressed("force_place") and hoveredTile["tp"] not in ["default", "material"]:
                                 if hoveredTile["tp"] == "tileBody" and (tlhPos := [toarr(hoveredTile["data"][0], "point"), hoveredTile["data"][1]]) is not None:
                                     tlhDrawPos = tlhPos[0]
                                 else:
