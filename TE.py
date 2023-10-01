@@ -946,7 +946,7 @@ class TE(MenuWithField):
                         return False
                     if self.data["GE"][xpos][ypos][self.layer][0] != csp and not force_geo:
                         return False
-                if sp2 != 0:
+                if sp2 != 0 and sp2 != "void": #thanks Crane House Tile
                     if self.layer + 1 <= 2:
                         csp2 = sp2[x2 * h + y2]
                         if csp2 != -1:
@@ -996,7 +996,7 @@ class TE(MenuWithField):
         for x2 in range(w):
             for y2 in range(h):
                 csp = sp[x2 * h + y2]
-                if sp2 != 0:
+                if sp2 != 0 and sp2 != "void":
                     try:
                         csp = sp2[x2 * h + y2]
                     except IndexError:
@@ -1052,7 +1052,7 @@ class TE(MenuWithField):
                     self.area[xpos][ypos] = False
                     self.data["GE"][xpos][ypos][self.layer][0] = csp
 
-                if sp2 != 0:
+                if sp2 != 0 and sp2 != "void":
                     csp = sp2[x2 * h + y2]
                     if self.layer + 1 <= 2 and csp != -1:
                         p = makearr([px + 1, py + 1], "point")
