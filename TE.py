@@ -304,7 +304,7 @@ class TE(MenuWithField):
 
             self.movemiddle(bp)
 
-            if settings["TE_official_style_placement_controls"]:
+            if not settings["TE_legacy_RWE_placement_controls"]:
                 if self.tileimage["tp"] != "pattern":
                     cposx = int(pos2.x) - int((self.tileimage["size"][0] * .5) + .5) * self.size + self.size
                     cposy = int(pos2.y) - int((self.tileimage["size"][1] * .5) + .5) * self.size + self.size
@@ -313,7 +313,7 @@ class TE(MenuWithField):
                     cposyo = int(posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
 
                     if settings["hold_key_rect_drag"] and not (bp[0] == 1 or bp[2] == 1) and not self.tool == 2:
-                        if self.findparampressed("movepreview"):
+                        if self.findparampressed("alt_func"):
                             self.tool = 1
                         else:
                             self.tool = 0
@@ -897,7 +897,7 @@ class TE(MenuWithField):
         return [toarr(part["data"][0], "point"), part["data"][1] - 1]
 
     def set(self, cat, name, render=True):
-        if not settings["TE_official_style_placement_controls"]:
+        if settings["TE_legacy_RWE_placement_controls"]:
             self.tool = 0
         for num, i in enumerate(self.items[cat]):
             if i["name"] == name:

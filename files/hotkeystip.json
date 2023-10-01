@@ -112,7 +112,7 @@
         "-sad": "Sets selected material as default",
         "-copytile": "Copies tile in cursor",
         "-findtile": "Opens find tile menu",
-        "movepreview": "Hold to visualise the tile head of the tile the cursor is currently over",
+        "alt_func": "Hold to visualise the tile head of the tile the cursor is currently over",
         "-brushp": "Increase brush size",
         "-brushm": "decrease brush size",
         "-brush": "Enables Brush",

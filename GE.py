@@ -304,7 +304,7 @@ class GE(MenuWithField):
                         self.mousp = True
 
                 if bp[0] != 1:
-                    self.rectDragActive = self.findparampressed("alt")
+                    self.rectDragActive = self.findparampressed("alt_func")
             else:
                 if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
                     self.beginSingleDrag()
