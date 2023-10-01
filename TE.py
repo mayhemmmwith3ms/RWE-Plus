@@ -71,10 +71,12 @@ class TE(MenuWithField):
                 self.catlist.append([])
         self.drawtiles = True
         self.set("materials 0", "Standard")
-        self.currentcategory = len(self.items) - 2
+        self.currentcategory = 0
         self.labels[2].set_text("Default material: " + self.data["TE"]["defaultMaterial"])
         self.rfa()
         self.rebuttons()
+        self.toolindex = self.currentcategory
+        self.cats()
         self.blit()
         self.resize()
 
