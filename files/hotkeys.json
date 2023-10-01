@@ -138,7 +138,7 @@
     	"K_s": "-dt",
     	"K_TAB": "-cleartool",
     	"K_SPACE": "-changetools",
-    	"K_e": "-sad",
+    	"K_e+": "-sad",
     	"K_q": "-copytile",
     	"K_f+": "-findtile",
     	"K_LSHIFT": "movepreview",
