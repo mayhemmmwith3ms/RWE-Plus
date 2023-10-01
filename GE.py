@@ -107,8 +107,9 @@ class GE(MenuWithField):
         elif self.fillshape == "brush":
             self.brushpaint(self.posoffset, self.toolsized)
         elif (0 <= self.posoffset.x < self.levelwidth) and (0 <= self.posoffset.y < self.levelheight) and self.area[int(self.posoffset.x)][int(self.posoffset.y)]:
-            self.place(self.posoffset, False)
-            self.drawtile(self.posoffset, self.toolsized)
+            if self.selectedtool != "SL" or self.getSlopeOrientation(self.posoffset):
+                self.place(self.posoffset, False)
+                self.drawtile(self.posoffset, self.toolsized)
     
     def endSingleDrag(self):
         self.fieldadd.fill(white)
@@ -253,6 +254,9 @@ class GE(MenuWithField):
             pg.draw.rect(self.surface, cursor, [pos2, [self.size, self.size]], 1)
             posoffset = self.posoffset
 
+            if self.selectedtool == "SL":
+                validSlope = self.getSlopeOrientation(self.posoffset)
+
             self.toolsized = pg.transform.scale(self.toolrender,
                                            pg.Vector2(self.toolrender.get_size()) / previewCellSize * self.size).convert_alpha(self.surface)
             self.toolsized.fill(red, special_flags=pg.BLEND_RGBA_MULT)
@@ -268,6 +272,8 @@ class GE(MenuWithField):
                         curtool = [graphics["tileplaceicon"][str(self.placetile - self.state)][0] * self.size,
                                    graphics["tileplaceicon"][str(self.placetile - self.state)][1] * self.size]
                     # print([abs(self.field.rect.x - pos2[0]), abs(self.field.rect.y - pos2[1])])
+                    if self.selectedtool == "SL" and not validSlope:
+                        curtool = [graphics["tileplaceicon"]["UNDEFINEDSLOPE"][0] * self.size, graphics["tileplaceicon"]["UNDEFINEDSLOPE"][1] * self.size]
                     self.surface.blit(self.toolsized, pos2, [curtool, cellsize2])
             rect = [self.xoffset * self.size, self.yoffset * self.size, self.levelwidth * self.size,
                     self.levelheight * self.size]
@@ -282,7 +288,7 @@ class GE(MenuWithField):
 
             if self.fillshape == "brush":
                 pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize - 0.5, 1)
-
+            
             if settings["hold_key_rect_drag"]:
                 if not self.rectDragActive:
                     if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
@@ -359,34 +365,45 @@ class GE(MenuWithField):
             except:
                 pass
 
-    def slopify(self, pos: pg.Vector2):
+    def getSlopeOrientation(self, pos: pg.Vector2):
         x = int(pos.x)
         y = int(pos.y)
         wallcount = 0
         acell = [0] * 4
+        invalidAdjacentSlopes = [[3, 2], [3, 5], [5, 4], [2, 4]]
         if not self.canplaceit(x, y, x, y):
-            return
-        if self.data["GE"][x][y][self.layer][0] != 0:
             return
         for count, i in enumerate(col4):
             try:
                 cell = self.data["GE"][x+i[0]][y+i[1]][self.layer][0]
             except IndexError:
                 cell = self.data["EX"]["defaultTerrain"]
-            acell[count] = 1 if cell == 1 else 0
+            if cell in invalidAdjacentSlopes[count]:
+                return False
+            acell[count] = 1 if (cell == 1) else 0
             if cell in [1]:
                 wallcount += 1
         if wallcount == 2:
             if acell == [1, 1, 0, 0]:
                 self.state = 2
+                return True
             elif acell == [1, 0, 1, 0]:
                 self.state = 3
+                return True
             elif acell == [0, 0, 1, 1]:
                 self.state = 1
+                return True
             elif acell == [0, 1, 0, 1]:
                 self.state = 0
-            else:
-                return
+                return True
+        return False
+
+    def slopify(self, pos: pg.Vector2):
+        x = int(pos.x)
+        y = int(pos.y)
+        if self.data["GE"][x][y][self.layer][0] != 0:
+            return
+        if self.getSlopeOrientation(pg.Vector2(x, y)):
             self.place(pos, False)
 
     def drawtile(self, posoffset, toolsized):
@@ -491,7 +508,7 @@ class GE(MenuWithField):
     def slope(self):
         self.selectedtool = "SL"
         self.placetile = 2
-        self.mx = 4
+        self.mx = 0
 
     def floor(self):
         self.selectedtool = "FL"
