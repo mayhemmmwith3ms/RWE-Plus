@@ -431,14 +431,14 @@ class Menu:
                     keys[i] = mbuttons[4]
                 case _:
                     keys[i] = False
-            if key.find("ctrl") >= 0:
-                keys[i] = keys[i] and pg.key.get_mods() & pg.KMOD_CTRL
-            else:
-                keys[i] = keys[i] and not (pg.key.get_mods() & pg.KMOD_CTRL)
-            if key.find("shift") >= 0:
-                keys[i] = keys[i] and pg.key.get_mods() & pg.KMOD_SHIFT
-            else:
-                keys[i] = keys[i] and not (pg.key.get_mods() & pg.KMOD_SHIFT)
+            #if key.find("ctrl") >= 0:
+            #    keys[i] = keys[i] and pg.key.get_mods() & pg.KMOD_CTRL
+            #else:
+            #    keys[i] = keys[i] and not (pg.key.get_mods() & pg.KMOD_CTRL)
+            #if key.find("shift") >= 0:
+            #    keys[i] = keys[i] and pg.key.get_mods() & pg.KMOD_SHIFT
+            #else:
+            #    keys[i] = keys[i] and not (pg.key.get_mods() & pg.KMOD_SHIFT)
         return keys
 
     def resize(self):
