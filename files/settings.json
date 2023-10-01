@@ -7,7 +7,7 @@
     "cursor_layer_num_display": true,
     "hold_key_rect_drag": true,
 
-    "TE_legacy_RWE_placement_controls": true,
+    "TE_legacy_RWE_placement_controls": false,
 
     "CE_angle_add_speed": 0.01,
     "CE_angle_rotate_speed": 0.03,
