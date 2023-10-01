@@ -165,7 +165,7 @@ class TE(MenuWithField):
             tl[1] = self.rectdata[2].y + self.size
             br[1] = self.pos2.y
         
-        rectColor = purple
+        rectColor = purple if self.tool != 2 else blue
         if not place:
             rectColor = select
 
@@ -176,8 +176,6 @@ class TE(MenuWithField):
 
     def endRectDrag(self, place):
         mpos = pg.mouse.get_pos()
-        cposxo = int(self.posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
-        cposyo = int(self.posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
         righthalf = mpos[0] > self.rectdata[2].x + 10
         upperhalf = mpos[1] > self.rectdata[2].y + 10
         
@@ -200,6 +198,8 @@ class TE(MenuWithField):
 
         rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
         if self.tileimage["tp"] != "pattern" and self.tool != 2:
+            cposxo = int(self.posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
+            cposyo = int(self.posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
             for x in range(int(rect.w)):
                 for y in range(int(rect.h)):
                     if place:
@@ -272,7 +272,7 @@ class TE(MenuWithField):
         self.renderer.tiles_render_area(self.area, self.layer)
         self.renderer.geo_render_area(self.area, self.layer)
         self.rfa()
-        if self.tileimage["tp"] != "pattern":
+        if self.tileimage["tp"] != "pattern" and not self.tool == 2:
             self.cols = self.test_cols(cposxo, cposyo)
 
     def blit(self):
@@ -309,6 +309,12 @@ class TE(MenuWithField):
 
                     cposxo = int(posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
                     cposyo = int(posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
+
+                    if settings["hold_key_rect_drag"] and not (bp[0] == 1 or bp[2] == 1) and not self.tool == 2:
+                        if self.findparampressed("movepreview"):
+                            self.tool = 1
+                        else:
+                            self.tool = 0
 
                     if posoffset != self.mpos or self.lastfg != fg or self.lastfp != fp or self.justChangedZoom:
                         self.cols = self.test_cols(cposxo, cposyo)
@@ -760,7 +766,7 @@ class TE(MenuWithField):
         return None
 
     def copytool(self):
-        self.tool = 2
+        self.tool = 2 if self.tool != 2 else 0
 
     def selectcat(self, name):
         self.currentcategory = list(self.items.keys()).index(name)
@@ -1069,7 +1075,8 @@ class TE(MenuWithField):
         self.tool = 1
 
     def changetools(self):
-        self.tool = abs(1 - self.tool)
+        if not settings["hold_key_rect_drag"]:
+            self.tool = abs(1 - self.tool)
         self.brushmode = False
 
     def findtile(self):
