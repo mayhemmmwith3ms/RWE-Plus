@@ -177,7 +177,7 @@ class GE(MenuWithField):
             rect.h += 1
             data1 = self.data["GE"][rect.x:rect.x + rect.w]
             data1 = [i[rect.y:rect.y + rect.h] for i in data1]
-            data1 = [[y[self.layer] for y in x] for x in data1]
+            data1 = ["GE", [[y[self.layer] for y in x] for x in data1]]
             pyperclip.copy(str(data1))
             print("Copied!")
         elif self.selectedtool == "SL":
@@ -356,10 +356,10 @@ class GE(MenuWithField):
         if pg.key.get_pressed()[pg.K_LCTRL]:
             try:
                 geodata = eval(pyperclip.paste())
-                if type(geodata) != list:
+                if geodata[0] != "GE" or type(geodata[1]) != list:
                     return
                 pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
-                rect = pg.Rect([pos, pg.Vector2(len(geodata), len(geodata[0])) * self.size])
+                rect = pg.Rect([pos, pg.Vector2(len(geodata[1]), len(geodata[1][0])) * self.size])
 
                 pg.draw.rect(self.surface, blue, rect, 1)
             except:
@@ -468,9 +468,9 @@ class GE(MenuWithField):
         try:
             self.emptyarea()
             geodata = eval(pyperclip.paste())
-            if type(geodata) != list:
+            if geodata[0] != "GE" or type(geodata[1]) != list:
                 return
-            for xi, x in enumerate(geodata):
+            for xi, x in enumerate(geodata[1]):
                 for yi, y in enumerate(x):
                     pa = pg.Vector2(0, 0)
                     if self.field.rect.collidepoint(pg.mouse.get_pos()):

@@ -129,7 +129,7 @@ class FE(MenuWithField):
                 if self.copymode:
                     data1 = self.data["FE"]["effects"][self.selectedeffect]["mtrx"][rect.x:rect.w + rect.x]
                     data1 = [i[rect.y:rect.w + rect.y] for i in data1]
-                    pyperclip.copy(str(data1))
+                    pyperclip.copy(str(["FE", data1]))
                     print("Copied!")
                 self.updatehistory([["FE", "effects", self.selectedeffect, "mtrx"]])
                 #self.detecthistory(["FE", "effects", self.selectedeffect, "mtrx"])
@@ -211,9 +211,9 @@ class FE(MenuWithField):
     def pastedata(self):
         try:
             geodata = eval(pyperclip.paste())
-            if type(geodata) != list:
+            if geodata[0] != "FE" or type(geodata[1]) != list:
                 return
-            for xi, x in enumerate(geodata):
+            for xi, x in enumerate(geodata[1]):
                 for yi, y in enumerate(x):
                     pa = pg.Vector2(0, 0)
                     if self.field.rect.collidepoint(pg.mouse.get_pos()):

@@ -216,7 +216,7 @@ class TE(MenuWithField):
                     block = self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]
                     if block["tp"] == "material" or block["tp"] == "tileHead":
                         history.append([x, y, block])
-            pyperclip.copy(str(history))
+            pyperclip.copy(str(["TE", history]))
         elif place and self.tileimage["tp"] == "pattern":
             saved = self.tileimage
             savedtool = saved["name"]
@@ -586,7 +586,7 @@ class TE(MenuWithField):
                                 block = self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]
                                 if block["tp"] == "material" or block["tp"] == "tileHead":
                                     history.append([x, y, block])
-                        pyperclip.copy(str(history))
+                        pyperclip.copy(str(["TE", history]))
                     elif self.tool == 0 and self.tileimage["tp"] == "pattern":
                         saved = self.tileimage
                         savedtool = saved["name"]
@@ -670,14 +670,14 @@ class TE(MenuWithField):
             button.blittooltip()
         if pg.key.get_pressed()[pg.K_LCTRL]:
             try:
-                geodata: list = eval(pyperclip.paste())
-                if type(geodata) != list:
+                geodata = eval(pyperclip.paste())
+                if geodata[0] != "TE" or type(geodata[1]) != list:
                     return
                 pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
-                geodata.sort(key=lambda x: x[0])
-                sizex = geodata[-1][0] + 1
-                geodata.sort(key=lambda y: y[1])
-                sizey = geodata[-1][1] + 1
+                geodata[1].sort(key=lambda x: x[0])
+                sizex = geodata[1][-1][0] + 1
+                geodata[1].sort(key=lambda y: y[1])
+                sizey = geodata[1][-1][1] + 1
                 rect = pg.Rect([pos, pg.Vector2(sizex, sizey) * self.size])
                 pg.draw.rect(self.surface, blue, rect, 1)
             except:
@@ -733,11 +733,11 @@ class TE(MenuWithField):
     def pastedata(self):
         try:
             geodata = eval(pyperclip.paste())
-            if type(geodata) != list or len(pyperclip.paste()) <= 2:
+            if geodata[0] != "TE" or type(geodata[1]) != list or len(pyperclip.paste()) <= 2:
                 print("Error pasting data!")
                 return
             self.emptyarea()
-            for block in geodata:
+            for block in geodata[1]:
                 blockx, blocky, data = block
                 if data["tp"] == "material":
                     name = data["data"]

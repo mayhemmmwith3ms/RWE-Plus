@@ -140,16 +140,16 @@ class CE(MenuWithField):
 
     def copycamera(self):
         if self.held:
-            pyperclip.copy(str(self.data["CM"]["quads"][self.heldindex]))
+            pyperclip.copy(str(["CE", self.data["CM"]["quads"][self.heldindex]]))
 
     def pastedata(self):
         if not self.held:
             try:
                 geodata = eval(pyperclip.paste())
-                if type(geodata) != list or len(pyperclip.paste()) <= 2:
+                if geodata[0] != "CE" or type(geodata[1]) != list or len(pyperclip.paste()) <= 2:
                     return
                 self.data["CM"]["cameras"].append(makearr([0, 0], "point"))
-                self.data["CM"]["quads"].append(geodata)
+                self.data["CM"]["quads"].append(geodata[1])
                 self.held = True
                 self.heldindex = len(self.data["CM"]["cameras"]) - 1
                 self.detecthistory(["CM"])
