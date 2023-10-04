@@ -95,7 +95,9 @@
         "-tool_fill": "Changes LMB to fill",
         "-tool_line": "Changes RMB to line",
         "-tool_pencil": "Changes LMB to pencil",
-        "-tool_brush": "Changes LMB to brush"
+        "-tool_brush": "Changes LMB to brush",
+        "alt_func": "Hold to activate alt mouse mode (rectangle select)",
+        "brush_size_scroll": "Hold this key and scroll using the mouse wheel to change brush size"
     },
     "TE": {
         "force_geometry": "Hold to place a tile's geometry specs along with the tile",
@@ -112,12 +114,13 @@
         "-sad": "Sets selected material as default",
         "-copytile": "Copies tile in cursor",
         "-findtile": "Opens find tile menu",
-        "alt_func": "Hold to visualise the tile head of the tile the cursor is currently over",
+        "alt_func": "Hold to activate alt mouse mode (rectangle select)",
         "-brushp": "Increase brush size",
         "-brushm": "decrease brush size",
         "-brush": "Enables Brush",
         "-pencil": "Enables pencil",
-        "-togglebrush": "Toggles betwen pencil and brush"
+        "-togglebrush": "Toggles betwen pencil and brush",
+        "brush_size_scroll": "Hold this key and scroll using the mouse wheel to change brush size"
     },
     "CE": {
         "-addright": "Rotates nearest edge of nearest camera clockwise",
@@ -169,7 +172,8 @@
         "cursor_propdepth_inverse": "While pressed, press RMB to change depth down",
         "-findpropmenu": "Opens find prop menu",
         "-togglesnap": "Toggles prop grid snapping",
-        "moreinfo": "Hold to change rotation to only rotate the cursor. Useful in very niche cases"
+        "moreinfo": "Hold to change rotation to only rotate the cursor. Useful in very niche cases",
+        "changerelease": "Cycles through a rope prop's 'release' setting"
     },
     "FE": {
         "-changematshow": "Shows list of categories",
@@ -187,7 +191,8 @@
         "-copytool": "Copy tool",
         "-pastedata": "Paste effect area",
         "-findeffect": "Opens effect find menu",
-        "-deleteeffect": "Delete selected effect"
+        "-deleteeffect": "Delete selected effect",
+        "brush_size_scroll": "Hold this key and scroll using the mouse wheel to change brush size"
     },
     "LE": {
         "-save": "Saves shadow",
