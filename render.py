@@ -1,12 +1,8 @@
 from files import *
 import cv2
 import numpy as np
-from path_dict import PathDict
-from pathlib import Path
 from lingotojson import *
 import pygame as pg
-import menuclass
-import time
 
 colors = uiSettings["global"]["colors"]  # NOQA
 

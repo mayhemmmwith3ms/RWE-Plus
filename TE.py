@@ -671,7 +671,7 @@ class TE(MenuWithField):
         if pg.key.get_pressed()[pg.K_LCTRL]:
             try:
                 geodata = eval(pyperclip.paste())
-                if geodata[0] != "TE" or type(geodata[1]) != list:
+                if geodata[0] != "TE" or not isinstance(geodata[1], list):
                     return
                 pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
                 geodata[1].sort(key=lambda x: x[0])
@@ -733,7 +733,7 @@ class TE(MenuWithField):
     def pastedata(self):
         try:
             geodata = eval(pyperclip.paste())
-            if geodata[0] != "TE" or type(geodata[1]) != list or len(pyperclip.paste()) <= 2:
+            if geodata[0] != "TE" or not isinstance(geodata[1], list) or len(pyperclip.paste()) <= 2:
                 print("Error pasting data!")
                 return
             self.emptyarea()

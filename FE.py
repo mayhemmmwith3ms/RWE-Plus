@@ -211,7 +211,7 @@ class FE(MenuWithField):
     def pastedata(self):
         try:
             geodata = eval(pyperclip.paste())
-            if geodata[0] != "FE" or type(geodata[1]) != list:
+            if geodata[0] != "FE" or not isinstance(geodata[1], list):
                 return
             for xi, x in enumerate(geodata[1]):
                 for yi, y in enumerate(x):

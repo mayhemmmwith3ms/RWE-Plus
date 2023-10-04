@@ -263,7 +263,7 @@ class GE(MenuWithField):
             self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / previewCellSize) * 100}%")
             #print(self.placetile)
             if self.selectedtool in graphics["codes"].keys():
-                if type(self.placetile) == int:
+                if isinstance(self.placetile, int):
                     if graphics["codes"][self.selectedtool] == 1:
                         curtool = [graphics["tileplaceicon"][str(self.placetile + self.state)][0] * self.size,
                                    graphics["tileplaceicon"][str(self.placetile + self.state)][1] * self.size]
@@ -356,7 +356,7 @@ class GE(MenuWithField):
         if pg.key.get_pressed()[pg.K_LCTRL]:
             try:
                 geodata = eval(pyperclip.paste())
-                if geodata[0] != "GE" or type(geodata[1]) != list:
+                if geodata[0] != "GE" or not isinstance(geodata[1], list):
                     return
                 pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
                 rect = pg.Rect([pos, pg.Vector2(len(geodata[1]), len(geodata[1][0])) * self.size])
@@ -408,7 +408,7 @@ class GE(MenuWithField):
 
     def drawtile(self, posoffset, toolsized):
         cellsize2 = [self.size, self.size]
-        if type(self.placetile) == int:
+        if isinstance(self.placetile, int):
             curtool = [
                 graphics["tileplaceicon"][str(self.placetile + self.state)][0] * self.size,
                 graphics["tileplaceicon"][str(self.placetile + self.state)][1] * self.size]
@@ -468,7 +468,7 @@ class GE(MenuWithField):
         try:
             self.emptyarea()
             geodata = eval(pyperclip.paste())
-            if geodata[0] != "GE" or type(geodata[1]) != list:
+            if geodata[0] != "GE" or not isinstance(geodata[1], list):
                 return
             for xi, x in enumerate(geodata[1]):
                 for yi, y in enumerate(x):

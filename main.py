@@ -4,7 +4,7 @@ import traceback
 import requests
 from menus import *
 from tkinter.messagebox import askyesnocancel, askyesno
-from tkinter.filedialog import askopenfilename, asksaveasfilename
+from tkinter.filedialog import askopenfilename
 import argparse
 from path_dict import PathDict
 from lingotojson import *
@@ -387,7 +387,7 @@ if __name__ == "__main__":
         except (FileNotFoundError, TypeError):
             print("File not found!")
             raise
-        except Exception as e:
+        except Exception:
             # extra save level in case of eny crashes
             print(traceback.print_exc())
             ex = askyesno("Crash!!!",

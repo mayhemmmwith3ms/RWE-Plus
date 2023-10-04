@@ -359,8 +359,8 @@ class LP(MenuWithField):
 
     def cutmanually(self):
         try:
-            x = self.askint(f"Add or subtract tiles from Left", True)
-            y = self.askint(f"Add or subtract tiles from Top", False)
+            x = self.askint("Add or subtract tiles from Left", True)
+            y = self.askint("Add or subtract tiles from Top", False)
             w = self.askint(f"({self.levelwidth})Width", False)
             h = self.askint(f"({self.levelwidth})Height", False)
             self.cuteverydata([x, y, w, h])

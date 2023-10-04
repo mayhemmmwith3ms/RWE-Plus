@@ -728,9 +728,9 @@ class PE(MenuWithField):
                     self.prop_settings["variation"] = 0 if random else 1
 
                 if random:
-                    notes.append(f"Will put down a random variation.\nA specific variation can be selected from settings.\n")
+                    notes.append("Will put down a random variation.\nA specific variation can be selected from settings.\n")
                 else:
-                    notes.append(f"This prop comes with many variations.\nWhich variation can be selected from settings.\n")
+                    notes.append("This prop comes with many variations.\nWhich variation can be selected from settings.\n")
         elif self.selectedprop['tp'] == "rope":
                 self.prop_settings["release"] = 0
         elif self.selectedprop["tp"] in ["variedDecal", "variedSoft"]:

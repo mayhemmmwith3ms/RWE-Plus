@@ -6,6 +6,8 @@ from render import *
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 import concurrent.futures
 import time
+from path_dict import PathDict
+from pathlib import Path
 
 inputfile = ''
 filepath = path2levels
