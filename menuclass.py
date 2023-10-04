@@ -760,15 +760,18 @@ class MenuWithField(Menu):
             case "SU":
                 if not self.onfield:
                     return
-                pos = self.pos
-                self.size += 1
-                self.offset -= pos - self.pos
-                self.renderfield()
-                self.justChangedZoom = True
+                
+                if self.scroll_up():
+                    pos = self.pos
+                    self.size += 1
+                    self.offset -= pos - self.pos
+                    self.renderfield()
+                    self.justChangedZoom = True
             case "SD":
                 if not self.onfield:
                     return
-                if self.size - 1 > 0:
+                
+                if self.scroll_down() and self.size - 1 > 0:
                     pos = self.pos
                     self.size -= 1
                     self.offset -= pos - self.pos
@@ -782,6 +785,12 @@ class MenuWithField(Menu):
                 self.offset.y += 1
             case "down":
                 self.offset.y -= 1
+
+    def scroll_down(self):
+        return True
+
+    def scroll_up(self):
+        return True
 
     def detecthistory(self, path, savedata=True):
         if not settings["enable_undo"]:

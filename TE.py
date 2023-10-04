@@ -45,8 +45,8 @@ class TE(MenuWithField):
         self.blocks = p["blocks"]
         self.buttonslist = []
         self.toolindex = 0
-        self.brushmode = False
-        self.squarebrush = False
+        #self.brush_active = False
+        self.squarebrush = True
 
         self.tileimage = None
         self.tileimage2 = None
@@ -81,22 +81,10 @@ class TE(MenuWithField):
         self.resize()
 
     def brush(self):
-        self.brushmode = True
+        self.brushsize = 2
 
     def pencil(self):
         self.squarebrush = not self.squarebrush
-
-    def togglebrush(self):
-        self.brushmode = not self.brushmode
-        self.squarebrush = True
-        self.tool = 0
-        self.brushsize = 3
-
-    def brushp(self):
-        self.brushsize += 1
-
-    def brushm(self):
-        self.brushsize = max(self.brushsize-1, 1)
 
     def GE(self):
         self.message = "GE"
@@ -111,7 +99,7 @@ class TE(MenuWithField):
         cposyo = int(self.posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
         if place:
             if self.tileimage["tp"] != "pattern" or self.tool == 0:
-                if self.brushmode:
+                if self.brush_active:
                     self.brushpaint(pg.Vector2(cposxo, cposyo))
                 elif self.cols:
                     self.place(cposxo, cposyo)
@@ -119,7 +107,7 @@ class TE(MenuWithField):
                                     [cposxo * self.size, cposyo * self.size])
         else:
             if self.tileimage["tp"] != "pattern" or self.tool == 0:
-                if self.brushmode:
+                if self.brush_active:
                     self.brushpaint(pg.Vector2(cposxo, cposyo), False)
                 else:
                     self.destroy(self.posoffset.x, self.posoffset.y)
@@ -356,8 +344,8 @@ class TE(MenuWithField):
                         else:
                             rectCol = cannotplace
 
-                        if(self.brushmode):
-                            if self.squarebrush:
+                        if(self.brush_active):
+                            if self.squarebrush or self.brushsize <= 1:
                                 rect = pg.Rect([pos2 - [(self.brushsize // 2) * self.size, (self.brushsize // 2) * self.size], [self.brushsize * self.size, self.brushsize * self.size]])
                                 pg.draw.rect(self.surface, rectCol, rect, 1)
                             else:
@@ -486,7 +474,7 @@ class TE(MenuWithField):
                         self.tileimage["image"].set_colorkey([255, 255, 255])
                         self.surface.blit(self.tileimage["image"], [cposx, cposy])
                         self.printcols(cposxo, cposyo, self.tileimage)
-                if self.brushmode:
+                if self.brush_active:
                     if self.squarebrush:
                         rect = pg.Rect([pos2, [self.brushsize * self.size, self.brushsize * self.size]])
                         pg.draw.rect(self.surface, select, rect, 3)
@@ -1007,7 +995,23 @@ class TE(MenuWithField):
                 else:
                     printtile(shift, layer1)
 
+    def scroll_up(self):
+        if self.findparampressed("brush_size_scroll"):
+            self.brushp()
+            return False
+        return True
+    
+    def scroll_down(self):
+        if self.findparampressed("brush_size_scroll"):
+            self.brushm()
+            return False
+        return True
 
+    def brushp(self):
+        self.brushsize += 1
+
+    def brushm(self):
+        self.brushsize = max(self.brushsize-1, 1)
 
     def place(self, x, y, render=False):
         if self.blockNextPlacement:
@@ -1079,7 +1083,7 @@ class TE(MenuWithField):
     def changetools(self):
         if not settings["hold_key_rect_drag"]:
             self.tool = abs(1 - self.tool)
-        self.brushmode = False
+        self.brush_active = False
 
     def findtile(self):
         nd = {}
@@ -1131,6 +1135,9 @@ class TE(MenuWithField):
                     self.getmaterial(name)
                     return
         print("couldn't find tile")
+
+    def brush_active(self):
+        return self.brushsize > 1
 
     @property
     def custom_info(self):

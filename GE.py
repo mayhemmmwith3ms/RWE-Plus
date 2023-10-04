@@ -23,7 +23,8 @@ class GE(MenuWithField):
 
         self.rectDragActive = False
 
-        self.fillshape = "pencil"  # pencil, brush, fill
+        #self.fillshape = "pencil"  # pencil, brush, fill
+        self.bucketTool = False
         self.fillshape2 = "rect"  # rect, rect-hollow, circle, circle-hollow, line
         self.brushsize = 1
 
@@ -94,7 +95,7 @@ class GE(MenuWithField):
             self.rectdata[0] = self.pos
             self.rectdata[1] = self.offset
             self.field.field.fill(self.field.color)
-        elif self.fillshape == "fill":
+        elif self.bucketTool:
             self.bucket(self.posoffset)
         else:
             self.emptyarea()
@@ -104,7 +105,7 @@ class GE(MenuWithField):
             self.offset = self.rectdata[1] - (self.rectdata[0] - self.pos)
         elif self.selectedtool == "CT":
             pass
-        elif self.fillshape == "brush":
+        elif self.brush_active:
             self.brushpaint(self.posoffset, self.toolsized)
         elif (0 <= self.posoffset.x < self.levelwidth) and (0 <= self.posoffset.y < self.levelheight) and self.area[int(self.posoffset.x)][int(self.posoffset.y)]:
             if self.selectedtool != "SL" or self.get_slope_orientation(self.posoffset):
@@ -286,7 +287,7 @@ class GE(MenuWithField):
 
             bp = self.getmouse
 
-            if self.fillshape == "brush":
+            if self.brush_active and not self.rectDragActive:
                 pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize - 0.5, 1)
             
             if settings["hold_key_rect_drag"]:
@@ -628,6 +629,18 @@ class GE(MenuWithField):
         self.placetile = 0.5
         self.mx = 0
 
+    def scroll_up(self):
+        if self.findparampressed("brush_size_scroll"):
+            self.brushp()
+            return False
+        return True
+    
+    def scroll_down(self):
+        if self.findparampressed("brush_size_scroll"):
+            self.brushm()
+            return False
+        return True
+
     def place(self, pos, render=True):
         x = int(pos.x)
         y = int(pos.y)
@@ -745,15 +758,15 @@ class GE(MenuWithField):
         self.recaption()
 
     def tool_pencil(self):
-        self.fillshape = "pencil"
+        self.brushsize = 1
         self.recaption()
 
     def tool_brush(self):
-        self.fillshape = "brush"
+        self.brushsize = 2
         self.recaption()
 
     def tool_fill(self):
-        self.fillshape = "fill"
+        self.bucketTool = True
         self.recaption()
 
     def brushp(self):
@@ -765,6 +778,10 @@ class GE(MenuWithField):
     @property
     def custom_info(self):
         try:
-            return f"{super().custom_info} | Placing: {self.selectedtool} | LMB tool: {self.fillshape}, RMB tool: {self.fillshape2}"
+            return f"{super().custom_info} | Placing: {self.selectedtool} | LMB tool: remind me to reimplement this, RMB tool: {self.fillshape2}"
         except TypeError:
             return super().custom_info
+        
+    @property
+    def brush_active(self):
+        return self.brushsize > 1

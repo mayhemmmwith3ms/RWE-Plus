@@ -120,7 +120,8 @@
     	"K_KP_MULTIPLY": "-tool_pencil",
     	"+K_KP_MULTIPLY": "-tool_brush",
 
-		"K_LSHIFT": "alt_func"
+		"K_LSHIFT": "alt_func",
+		"K_LALT": "brush_size_scroll"
   	},
   	"TE": {
   		"unlock_keys": ["K_LEFT", "K_RIGHT", "K_UP", "K_DOWN"],
@@ -149,7 +150,8 @@
     	"K_b": "-brush",
     	"K_p": "-pencil",
     	"K_c": "-pencil",
-    	"K_v": "-togglebrush"
+    	"K_v": "-togglebrush",
+		"K_LALT": "brush_size_scroll"
 
   	},
 	"CE": {
@@ -266,9 +268,8 @@
 		"K_e+": "-findeffect",
 
 		"K_x": "-deleteeffect",
-		"K_DELETE": "-deleteeffect"
-
-
+		"K_DELETE": "-deleteeffect",
+		"K_LALT": "brush_size_scroll"
   	},
   	"LE": {
   		"unlock_keys": ["K_LEFT", "K_RIGHT", "K_UP", "K_DOWN", "K_w", "K_a", "K_s", "K_d", "K_q", "K_e", "K_i", "K_k", "K_j", "K_l"],

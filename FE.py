@@ -517,12 +517,23 @@ class FE(MenuWithField):
         self.rendermatrixselective(self.fieldadd, self.size, self.data["FE"]["effects"][self.selectedeffect]["mtrx"], updatedCells)
         return updatedCells
 
+    def scroll_up(self):
+        if self.findparampressed("brush_size_scroll"):
+            self.bsup()
+            return False
+        return True
+    
+    def scroll_down(self):
+        if self.findparampressed("brush_size_scroll"):
+            self.bsdown()
+            return False
+        return True
+
     def bsup(self):
         self.brushsize += 1
 
     def bsdown(self):
-        if self.brushsize - 1 > 0:
-            self.brushsize -= 1
+        self.brushsize = max(self.brushsize - 1, 0)
 
     def innewtab(self):
         self.innew = True
