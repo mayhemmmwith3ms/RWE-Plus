@@ -501,15 +501,17 @@ class FE(MenuWithField):
             strength = 10000
         updatedCells = []
         for xp, xd in enumerate(self.data["FE"]["effects"][self.selectedeffect]['mtrx']):
+            if abs(x - xp) > self.brushsize: # very rough condition to skip cells outside of brush range
+                continue
             for yp, yd in enumerate(xd):
+                if abs(y - yp) > self.brushsize:
+                    continue
                 val = yd
                 dist = 1.0 - (pg.Vector2(xp, yp).distance_to(pg.Vector2(x, y)) / self.brushsize)
-                if dist > 0:
+                if dist > 0 and dist < self.brushsize:
 
                     val = min(max(val + strength * dist * st, 0), 100)
-
-                    if val == 100:
-                        val = 100
+                    
                     self.data["FE"]["effects"][self.selectedeffect]['mtrx'][xp][yp] = round(val)
                     updatedCells.append([xp, yp])
 
