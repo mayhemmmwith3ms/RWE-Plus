@@ -294,6 +294,9 @@ class TE(MenuWithField):
 
             if not settings["TE_legacy_RWE_placement_controls"]:
                 if self.tileimage["tp"] != "pattern":
+                    if self.tileimage["size"][0] != 1 or self.tileimage["size"][1] != 1:
+                        self.brushsize = 1
+
                     cposx = int(pos2.x) - int((self.tileimage["size"][0] * .5) + .5) * self.size + self.size
                     cposy = int(pos2.y) - int((self.tileimage["size"][1] * .5) + .5) * self.size + self.size
 
@@ -344,7 +347,7 @@ class TE(MenuWithField):
                         else:
                             rectCol = cannotplace
 
-                        if(self.brush_active):
+                        if self.brush_active:
                             if self.squarebrush or self.brushsize <= 1:
                                 rect = pg.Rect([pos2 - [(self.brushsize // 2) * self.size, (self.brushsize // 2) * self.size], [self.brushsize * self.size, self.brushsize * self.size]])
                                 pg.draw.rect(self.surface, rectCol, rect, 1)
@@ -352,7 +355,6 @@ class TE(MenuWithField):
                                pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize, 1)
                         else:
                             pg.draw.rect(self.surface, rectCol, selectrect, 1)
-
                     if bp[2]:
                         drawTilePreview = False
 
@@ -443,6 +445,9 @@ class TE(MenuWithField):
                         self.mousp2 = True
             else:
                 if self.tileimage["tp"] != "pattern":
+                    if not (self.tileimage["size"][0] == 1 and self.tileimage["size"][1] == 1):
+                        self.brushsize = 1
+
                     cposx = int(pos2.x) - int((self.tileimage["size"][0] * .5) + .5) * self.size + self.size
                     cposy = int(pos2.y) - int((self.tileimage["size"][1] * .5) + .5) * self.size + self.size
 
