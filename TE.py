@@ -404,7 +404,7 @@ class TE(MenuWithField):
                                 else:
                                     tlhDrawPos = [int(posoffset.x + 1), int(posoffset.y + 1)]
                                 pg.draw.circle(self.surface, blue, self.FieldCoordToDrawPos(tlhDrawPos, [-self.size // 2, -self.size // 2]), self.size // 3, 1)
-                    except:
+                    except Exception:
                         print("Error occurred determining tileHead position")
                 else:
                     self.tool = 1
@@ -680,7 +680,7 @@ class TE(MenuWithField):
                 sizey = geodata[1][-1][1] + 1
                 rect = pg.Rect([pos, pg.Vector2(sizex, sizey) * self.size])
                 pg.draw.rect(self.surface, blue, rect, 1)
-            except:
+            except Exception:
                 pass
     
     def brushpaint(self, pos: pg.Vector2, place = True):
@@ -757,7 +757,7 @@ class TE(MenuWithField):
             self.detecthistory(["TE", "tlMatrix"])
             self.renderer.tiles_render_area(self.area, self.layer)
             self.rfa()
-        except:
+        except Exception:
             print("Error pasting data!")
 
     def findcat(self, itemname):

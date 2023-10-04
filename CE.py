@@ -148,7 +148,7 @@ class CE(MenuWithField):
         if not self.held:
             try:
                 geodata = eval(pyperclip.paste())
-                if geodata[0] != "CE" or type(geodata[1]) != list or len(pyperclip.paste()) <= 2:
+                if geodata[0] != "CE" or not isinstance(geodata[1], list) or len(pyperclip.paste()) <= 2:
                     return
                 self.data["CM"]["cameras"].append(makearr([0, 0], "point"))
                 self.data["CM"]["quads"].append(geodata[1])
@@ -156,7 +156,7 @@ class CE(MenuWithField):
                 self.heldindex = len(self.data["CM"]["cameras"]) - 1
                 self.detecthistory(["CM"])
                 self.rfa()
-            except:
+            except Exception:
                 print("Error pasting data!")
 
     def if_set(self, pressed, indx):
@@ -191,7 +191,7 @@ class CE(MenuWithField):
             self.updatehistory([["CM"]])
 
     def addcamera(self):
-        mpos = pg.Vector2(pg.mouse.get_pos()) / self.size * previewCellSize
+        #mpos = pg.Vector2(pg.mouse.get_pos()) / self.size * previewCellSize
         self.data["CM"]["cameras"].append(makearr([0, 0], "point"))
         self.data["CM"]["quads"].append([[0, 0], [0, 0], [0, 0], [0, 0]])
         self.heldindex = len(self.data["CM"]["cameras"]) - 1

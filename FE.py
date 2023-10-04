@@ -225,7 +225,7 @@ class FE(MenuWithField):
                     self.data["FE"]["effects"][self.selectedeffect]["mtrx"][xpos][ypos] = y
             self.detecthistory(["FE", "effects", self.selectedeffect, "mtrx"])
             self.rfa()
-        except:
+        except Exception:
             print("Error pasting data!")
 
     def cats(self):

@@ -362,7 +362,7 @@ class GE(MenuWithField):
                 rect = pg.Rect([pos, pg.Vector2(len(geodata[1]), len(geodata[1][0])) * self.size])
 
                 pg.draw.rect(self.surface, blue, rect, 1)
-            except:
+            except Exception:
                 pass
 
     def getSlopeOrientation(self, pos: pg.Vector2):
@@ -484,7 +484,7 @@ class GE(MenuWithField):
             self.detecthistory(["GE"])
             self.renderer.geo_render_area(self.area, self.layer)
             self.rfa()
-        except:
+        except Exception:
             print("Error pasting data!")
 
     def s0(self):

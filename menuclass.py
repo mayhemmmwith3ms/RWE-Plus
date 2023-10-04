@@ -60,11 +60,11 @@ class Menu:
             if len(i) == 6:
                 self.buttons.append(
                     widgets.button(self.surface, pg.rect.Rect(i[1]), i[2], i[0], onpress=f,
-                                   onrelease=f2, tooltip=self.returnkeytext(i[5])))
+                        onrelease=f2, tooltip=self.returnkeytext(i[5])))
             elif len(i) == 7:
                 self.buttons.append(
                     widgets.button(self.surface, pg.rect.Rect(i[1]), i[2], i[0], onpress=f,
-                                   onrelease=f2, tooltip=self.returnkeytext(i[5]), icon=i[6]))
+                        onrelease=f2, tooltip=self.returnkeytext(i[5]), icon=i[6]))
         for i in self.menuUiSettings["labels"]:
             if len(i) == 3:
                 self.labels.append(widgets.lable(self.surface, self.returnkeytext(i[0]), i[1], i[2]))

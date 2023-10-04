@@ -174,8 +174,8 @@ class Renderer:
                     if (not (drawLayer != layer)) or allLayers:
                         self.render_tile_pixel(xp, yp, layer, (drawLayer + layer) % 3)
 
-    def render_tile_pixel(self, xp, yp, l, drawL):
-        self.lastlayer = l
+    def render_tile_pixel(self, xp, yp, selectedLayer, drawL):
+        self.lastlayer = selectedLayer
         tiledata = self.data["TE"]["tlMatrix"]
 
         def findtileimage(name):
@@ -213,7 +213,7 @@ class Renderer:
                     ms = graphics["matsize"]
                     rect = pg.Rect(ms[0] + posx, ms[0] + posy, ms[1], ms[1])
                     col = [graphics["matposes"][datdata][0], graphics["matposes"][datdata][1], graphics["matposes"][datdata][2], 255]
-                    if(drawL != l):
+                    if(drawL != selectedLayer):
                         col[3] = 100
                     pg.draw.rect(self.surf_tiles, col, rect)
                     #if layer != l:
@@ -232,7 +232,7 @@ class Renderer:
             siz = pg.rect.Rect([cposx, cposy, it["size"][0] * previewCellSize, it["size"][1] * previewCellSize])
             if not uiSettings["TE"]["LEtiles"]:
                 pg.draw.rect(self.surf_tiles, it["color"], siz, 0)
-            if drawL != l:
+            if drawL != selectedLayer:
                 it["image"].set_alpha(uiSettings["global"]["tiles_secondarylayeralpha"])
             else:
                 it["image"].set_alpha(uiSettings["global"]["tiles_primarylayeralpha"])
@@ -241,7 +241,7 @@ class Renderer:
         elif datcell == "tileBody":
             tl = self.data["TE"]["tlMatrix"][xp][yp][drawL]
             if self.GetTileHeadFromTilePart(tl) == "stray":
-                if drawL != l:
+                if drawL != selectedLayer:
                     self.geosurfaces[2].set_alpha(uiSettings["global"]["tiles_secondarylayeralpha"])
                 else:
                     self.geosurfaces[2].set_alpha(uiSettings["global"]["tiles_primarylayeralpha"])
