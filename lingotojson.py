@@ -306,7 +306,7 @@ def getprops(tiles: dict):
                     if item.get("sz") is not None and len(item["repeatL"]) < 2:
                         sz = toarr(item["sz"], "point")
                         w = min(sz[0] * renderedCellSize, ws)
-                        h = sz[1] * renderedCellSize
+                        h = min(sz[1] * renderedCellSize, hs // len(item["repeatL"]))
 
                     cons = 0.4
                     wh = pg.Color("#ffffff")
