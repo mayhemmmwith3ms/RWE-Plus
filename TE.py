@@ -1136,6 +1136,7 @@ class TE(MenuWithField):
                     return
         print("couldn't find tile")
 
+    @property
     def brush_active(self):
         return self.brushsize > 1
 
