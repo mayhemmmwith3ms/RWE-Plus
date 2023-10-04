@@ -41,8 +41,8 @@ class Menu:
         self.justChangedZoom = False
         self.size = previewCellSize
         self.message = ""
-        self.buttons: list[widgets.button, ...] = []
-        self.labels: list[widgets.lable, ...] = []
+        self.buttons: list[widgets.button] = []
+        self.labels: list[widgets.lable] = []
 
         widgets.resetpresses()
 

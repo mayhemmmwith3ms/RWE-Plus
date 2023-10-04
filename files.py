@@ -83,7 +83,7 @@ bignum = 9999999  # just a big number
 inputpromtname = "RWE+ input"
 
 
-fonts: dict[[pg.font.Font, int], ...] = {}
+fonts = {}
 
 
 def fs(sz):
