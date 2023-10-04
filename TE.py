@@ -89,12 +89,12 @@ class TE(MenuWithField):
     def GE(self):
         self.message = "GE"
 
-    def beginSingleDrag(self, place):
+    def begin_drag(self, place):
         if not place:
             self.justPlacedChainHolders.clear()
         self.emptyarea()
 
-    def updateSingleDrag(self, place):
+    def update_drag(self, place):
         cposxo = int(self.posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
         cposyo = int(self.posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
         if place:
@@ -113,7 +113,7 @@ class TE(MenuWithField):
                     self.destroy(self.posoffset.x, self.posoffset.y)
                     pg.draw.rect(self.fieldadd, red, [self.posoffset.x * self.size, self.posoffset.y * self.size, self.size, self.size])
 
-    def endSingleDrag(self, place):
+    def end_drag(self, place):
         cposxo = int(self.posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
         cposyo = int(self.posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
         self.detecthistory(["TE", "tlMatrix"], not self.findparampressed("force_geometry"))
@@ -127,11 +127,11 @@ class TE(MenuWithField):
         if not self.justPlacedChainHolders:
             self.blockNextPlacement = False
 
-    def beginRectDrag(self, place):
+    def begin_rect_drag(self, place):
         self.rectdata = [self.posoffset, pg.Vector2(0, 0), self.pos2]
         self.emptyarea()
 
-    def updateRectDrag(self, place):
+    def update_rect_drag(self, place):
         mpos = pg.mouse.get_pos()
         self.rectdata[1] = self.posoffset - self.rectdata[0]
 
@@ -164,7 +164,7 @@ class TE(MenuWithField):
         widgets.fastmts(self.surface, tx, *mpos, white)
         pg.draw.rect(self.surface, rectColor, rect, 1)
 
-    def endRectDrag(self, place):
+    def end_rect_drag(self, place):
         mpos = pg.mouse.get_pos()
         righthalf = mpos[0] > self.rectdata[2].x + 10
         upperhalf = mpos[1] > self.rectdata[2].y + 10
@@ -316,7 +316,7 @@ class TE(MenuWithField):
                         if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
                             tl = self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]
                             #try:
-                            if (tlh := self.GetTileHeadFromTilePart(tl)) not in [None, "stray"]:
+                            if (tlh := self.get_tilehead_of_body(tl)) not in [None, "stray"]:
                                 tlLabel = tlh["data"][1]
                             elif tlh is None and tl["tp"] == "material":
                                 tlLabel = tl["data"]
@@ -379,7 +379,7 @@ class TE(MenuWithField):
                     #except IndexError:
                     #    pass
 
-                    if (chainHolderHead := self.GetTileHeadFromTilePart(self.data["TE"]["tlMatrix"][int(max(0, min(posoffset.x, self.levelwidth - 1)))][int(max(0, min(posoffset.y, self.levelheight - 1)))][self.layer])) not in [None, "stray"]:
+                    if (chainHolderHead := self.get_tilehead_of_body(self.data["TE"]["tlMatrix"][int(max(0, min(posoffset.x, self.levelwidth - 1)))][int(max(0, min(posoffset.y, self.levelheight - 1)))][self.layer])) not in [None, "stray"]:
                         if chainHolderHead["data"][1] == "Chain Holder" and chainHolderHead["data"].__len__() == 3:
                             chainEnd = toarr(chainHolderHead["data"][2], "point")
                             pg.draw.circle(self.surface, red, self.FieldCoordToDrawPos(chainEnd, [self.size // 2, self.size // 2]), self.size // 3, 1)
@@ -407,39 +407,39 @@ class TE(MenuWithField):
                                 #self.data["TE"]["tlMatrix"][chPos[0]][chPos[1]][chPos[2]]["data"][0] = makearr([15, 22], "point") #dont fucking ask me why this works
                             self.justPlacedChainHolders.clear()
                         else:
-                            self.beginSingleDrag(True)
+                            self.begin_drag(True)
                             self.mousp = False
                     elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
-                        self.updateSingleDrag(True)
+                        self.update_drag(True)
                     elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
-                        self.endSingleDrag(True)
+                        self.end_drag(True)
                         self.mousp = True
 
                     if bp[2] == 1 and self.mousp2 and (self.mousp and self.mousp1):
-                        self.beginSingleDrag(False)
+                        self.begin_drag(False)
                         self.mousp2 = False
                     elif bp[2] == 1 and not self.mousp2 and (self.mousp and self.mousp1):
-                        self.updateSingleDrag(False)
+                        self.update_drag(False)
                     elif bp[2] == 0 and not self.mousp2 and (self.mousp and self.mousp1):
-                        self.endSingleDrag(False)
+                        self.end_drag(False)
                         self.mousp2 = True
                 else:
                     if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
-                        self.beginRectDrag(True)
+                        self.begin_rect_drag(True)
                         self.mousp = False
                     elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
-                        self.updateRectDrag(True)
+                        self.update_rect_drag(True)
                     elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
-                        self.endRectDrag(True)
+                        self.end_rect_drag(True)
                         self.mousp = True
 
                     if bp[2] == 1 and self.mousp2 and (self.mousp and self.mousp1):
-                        self.beginRectDrag(False)
+                        self.begin_rect_drag(False)
                         self.mousp2 = False
                     elif bp[2] == 1 and not self.mousp2 and (self.mousp and self.mousp1):
-                        self.updateRectDrag(False)
+                        self.update_rect_drag(False)
                     elif bp[2] == 0 and not self.mousp2 and (self.mousp and self.mousp1):
-                        self.endRectDrag(False)
+                        self.end_rect_drag(False)
                         self.mousp2 = True
             else:
                 if self.tileimage["tp"] != "pattern":
@@ -865,7 +865,7 @@ class TE(MenuWithField):
         cat = self.buttonslist[-1].text
         self.set(cat, text)
 
-    def GetTileHeadFromTilePart(self, part):
+    def get_tilehead_of_body(self, part):
         if part["tp"] in ["default", "material"]:
             return None
         if part["tp"] == "tileHead":
@@ -879,7 +879,7 @@ class TE(MenuWithField):
         else:
             return "stray"
 
-    def GetTileHeadPosFromTilePart(self, part):
+    def get_tilehead_pos_from_body(self, part):
         if part["tp"] != "tileBody":
             return None
         return [toarr(part["data"][0], "point"), part["data"][1] - 1]
