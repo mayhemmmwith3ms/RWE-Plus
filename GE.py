@@ -89,7 +89,7 @@ class GE(MenuWithField):
     def TE(self):
         self.message = "TE"
 
-    def beginSingleDrag(self):
+    def begin_draw_drag(self):
         if self.selectedtool == "MV":
             self.rectdata[0] = self.pos
             self.rectdata[1] = self.offset
@@ -99,7 +99,7 @@ class GE(MenuWithField):
         else:
             self.emptyarea()
 
-    def updateSingleDrag(self):
+    def update_draw_drag(self):
         if self.selectedtool == "MV":
             self.offset = self.rectdata[1] - (self.rectdata[0] - self.pos)
         elif self.selectedtool == "CT":
@@ -107,11 +107,11 @@ class GE(MenuWithField):
         elif self.fillshape == "brush":
             self.brushpaint(self.posoffset, self.toolsized)
         elif (0 <= self.posoffset.x < self.levelwidth) and (0 <= self.posoffset.y < self.levelheight) and self.area[int(self.posoffset.x)][int(self.posoffset.y)]:
-            if self.selectedtool != "SL" or self.getSlopeOrientation(self.posoffset):
+            if self.selectedtool != "SL" or self.get_slope_orientation(self.posoffset):
                 self.place(self.posoffset, False)
                 self.drawtile(self.posoffset, self.toolsized)
     
-    def endSingleDrag(self):
+    def end_draw_drag(self):
         self.fieldadd.fill(white)
         paths = []
         count = 0
@@ -128,11 +128,11 @@ class GE(MenuWithField):
         self.render_geo_area()
         self.rfa()
 
-    def beginRectDrag(self):
+    def begin_rect_drag(self):
         self.rectdata = [self.posoffset, pg.Vector2(0, 0), self.pos2]
         self.emptyarea()
 
-    def updateRectDrag(self):
+    def update_rect_drag(self):
         mpos = pg.Vector2(pg.mouse.get_pos())
 
         self.rectdata[1] = self.posoffset - self.rectdata[0]
@@ -168,7 +168,7 @@ class GE(MenuWithField):
         elif self.fillshape2 == "line":
             pg.draw.line(self.surface, select, self.rectdata[2], self.pos2, 5)
 
-    def endRectDrag(self):
+    def end_rect_drag(self):
         mpos = pg.Vector2(pg.mouse.get_pos())
 
         if self.selectedtool == "CP" or self.selectedtool == "CT":
@@ -255,7 +255,7 @@ class GE(MenuWithField):
             posoffset = self.posoffset
 
             if self.selectedtool == "SL":
-                validSlope = self.getSlopeOrientation(self.posoffset)
+                validSlope = self.get_slope_orientation(self.posoffset)
 
             self.toolsized = pg.transform.scale(self.toolrender,
                                            pg.Vector2(self.toolrender.get_size()) / previewCellSize * self.size).convert_alpha(self.surface)
@@ -292,42 +292,42 @@ class GE(MenuWithField):
             if settings["hold_key_rect_drag"]:
                 if not self.rectDragActive:
                     if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
-                        self.beginSingleDrag()
+                        self.begin_draw_drag()
                         self.mousp = False
                     elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
-                        self.updateSingleDrag()
+                        self.update_draw_drag()
                     elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
-                        self.endSingleDrag()
+                        self.end_draw_drag()
                         self.mousp = True
                 else:
                     if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
-                        self.beginRectDrag()
+                        self.begin_rect_drag()
                         self.mousp = False
                     elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
-                        self.updateRectDrag()
+                        self.update_rect_drag()
                     elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
-                        self.endRectDrag()
+                        self.end_rect_drag()
                         self.mousp = True
 
                 if bp[0] != 1:
                     self.rectDragActive = self.findparampressed("alt_func")
             else:
                 if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
-                    self.beginSingleDrag()
+                    self.begin_draw_drag()
                     self.mousp = False
                 elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
-                    self.updateSingleDrag()
+                    self.update_draw_drag()
                 elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
-                    self.endSingleDrag()
+                    self.end_draw_drag()
                     self.mousp = True
 
                 if bp[2] == 1 and self.mousp2 and (self.mousp and self.mousp1):
-                    self.beginRectDrag()
+                    self.begin_rect_drag()
                     self.mousp2 = False
                 elif bp[2] == 1 and not self.mousp2 and (self.mousp and self.mousp1):
-                    self.updateRectDrag()
+                    self.update_rect_drag()
                 elif bp[2] == 0 and not self.mousp2 and (self.mousp and self.mousp1):
-                    self.endRectDrag()
+                    self.end_rect_drag()
                     self.mousp2 = True
 
             self.movemiddle(bp)
@@ -365,7 +365,7 @@ class GE(MenuWithField):
             except Exception:
                 pass
 
-    def getSlopeOrientation(self, pos: pg.Vector2):
+    def get_slope_orientation(self, pos: pg.Vector2):
         x = int(pos.x)
         y = int(pos.y)
         wallcount = 0
@@ -403,7 +403,7 @@ class GE(MenuWithField):
         y = int(pos.y)
         if self.data["GE"][x][y][self.layer][0] != 0:
             return
-        if self.getSlopeOrientation(pg.Vector2(x, y)):
+        if self.get_slope_orientation(pg.Vector2(x, y)):
             self.place(pos, False)
 
     def drawtile(self, posoffset, toolsized):
