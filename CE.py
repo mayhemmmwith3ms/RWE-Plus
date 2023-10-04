@@ -32,10 +32,12 @@ class CE(MenuWithField):
         if self.onfield and len(self.data["CM"]["cameras"]) > 0:
 
             bp = self.getmouse
-            s = [self.findparampressed("-addup"),
-                 self.findparampressed("-adddown"),
-                 self.findparampressed("-addleft"),
-                 self.findparampressed("-addright")]
+            s = [
+                self.findparampressed("-addup"),
+                self.findparampressed("-adddown"),
+                self.findparampressed("-addleft"),
+                self.findparampressed("-addright")
+            ]
 
             self.if_set(s[0], 0)
             self.if_set(s[1], 1)
@@ -232,7 +234,7 @@ class CE(MenuWithField):
             cam = self.closestcameraindex()
             quadindx = self.getquad(cam)
             self.data["CM"]["quads"][cam][quadindx][0] = math.floor(self.data["CM"]["quads"][cam][quadindx][0] -
-                                                          settings["CE_angle_rotate_speed"]) % 360
+                settings["CE_angle_rotate_speed"]) % 360
 
     def addright(self):
         if not self.held:

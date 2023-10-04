@@ -42,9 +42,9 @@ class FE(MenuWithField):
 
     def blit(self):
         pg.draw.rect(self.surface, uiSettings["TE"]["menucolor"], pg.rect.Rect(self.buttonslist[:-1][0].xy,
-                                                                             [self.buttonslist[:-1][0].rect.w,
-                                                                              len(self.buttonslist[:-1]) *
-                                                                              self.buttonslist[:-1][0].rect.h + 1]))
+                                                                            [self.buttonslist[:-1][0].rect.w,
+                                                                            len(self.buttonslist[:-1]) *
+                                                                            self.buttonslist[:-1][0].rect.h + 1]))
         ts = sum(pg.display.get_window_size()) // 120
         super().blit()
         for i in self.buttonslist:
@@ -84,7 +84,7 @@ class FE(MenuWithField):
         feCursor = uiSettings["global"]["colors"]["FECursor"]
 
         cir = [self.buttonslist[self.currentindex].rect.x + 10,
-               self.buttonslist[self.currentindex].rect.y + self.buttonslist[self.currentindex].rect.h / 2]
+            self.buttonslist[self.currentindex].rect.y + self.buttonslist[self.currentindex].rect.h / 2]
         pg.draw.circle(self.surface, cursor if self.innew else cursor2, cir, self.buttonslist[self.currentindex].rect.h / 3)  
         if len(self.buttonslist2) > 0:
             cir2 = [self.buttonslist2[self.selectedeffect].rect.x + 10,
@@ -173,7 +173,7 @@ class FE(MenuWithField):
         for count, item in enumerate(effects[self.currentcategory]["efs"]):
             cat = pg.rect.Rect(self.menuUiSettings["catpos"])
             btn2 = widgets.button(self.surface, cat, uiSettings["global"]["color"], effects[self.currentcategory]["nm"], onpress=self.cats,
-                                  tooltip=self.returnkeytext("Select category(<[-changematshow]>)"))
+                tooltip=self.returnkeytext("Select category(<[-changematshow]>)"))
 
             rect = pg.rect.Rect(self.menuUiSettings["itempos"])
             rect = rect.move(0, rect.h * count)
@@ -236,7 +236,7 @@ class FE(MenuWithField):
         for count, item in enumerate(effects):
             cat = pg.rect.Rect(self.menuUiSettings["catpos"])
             btn2 = widgets.button(self.surface, cat, uiSettings["global"]["color"], "Categories",
-                                  onpress=self.changematshow)
+                onpress=self.changematshow)
             rect = pg.rect.Rect(self.menuUiSettings["itempos"])
             rect = rect.move(0, rect.h * count)
             col = item["color"]
@@ -280,7 +280,7 @@ class FE(MenuWithField):
         if len(self.data["FE"]["effects"][self.selectedeffect]["options"][self.paramindex][1]) < 1:
             rect = pg.Rect([ppos, self.menuUiSettings["seedchange_size"]])
             btn = widgets.button(self.surface, rect, pg.Color(uiSettings["global"]["color2"]), "Set seed",
-                                 onpress=self.changeseed)
+                onpress=self.changeseed)
             btn.resize()
             self.params.append(btn)
             return

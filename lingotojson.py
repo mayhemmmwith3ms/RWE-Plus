@@ -1,6 +1,5 @@
 import re
 import subprocess
-
 from files import *
 import math
 
@@ -27,9 +26,15 @@ def tojson(string: str):
     t = string
     if closebracketscount > openbracketscount:
         t = t[:-1]
-    t = t.replace("#Data:", "#data:").replace("#Options:", "#options:") \
-         .replace("[#", "{#").replace("point(", "\"point(")\
-         .replace("rect(", "\"rect(").replace("color(", "\"color(").replace(")\"", ")").replace(")", ")\"").replace("void", "\"void\"")
+    t = t.replace("#Data:", "#data:")\
+        .replace("#Options:", "#options:")\
+        .replace("[#", "{#")\
+        .replace("point(", "\"point(")\
+        .replace("rect(", "\"rect(")\
+        .replace("color(", "\"color(")\
+        .replace(")\"", ")")\
+        .replace(")", ")\"")\
+        .replace("void", "\"void\"")
     count = 0
     m = list(t)
     brcount = 0

@@ -150,24 +150,23 @@ class LP(MenuWithField):
         wmp = self.levelwidth - po.x
         hmp = self.levelheight - po.y
         poses = [["btopbleft",     pg.Vector2(left,    top),     pg.Vector2(left-po.x,  top-po.y)],
-                 ["bleft",         pg.Vector2(left,    centery), pg.Vector2(left-po.x,  centery)],
-                 ["bbottombleft",  pg.Vector2(left,    bottom),  pg.Vector2(left-po.x,  bt[3]+po.y)],
-                 ["btop",          pg.Vector2(centerx, top),     pg.Vector2(centerx,    top-po.y)],
-                 ["bbottom",       pg.Vector2(centerx, bottom),  pg.Vector2(centerx,    bt[3]+po.y)],
-                 ["btopbright",    pg.Vector2(right,   top),     pg.Vector2(bt[2]+po.x, top-po.y)],
-                 ["bright",        pg.Vector2(right,   centery), pg.Vector2(bt[2]+po.x, centery)],
-                 ["bbottombright", pg.Vector2(right,   bottom),  pg.Vector2(bt[2]+po.x, bt[3]+po.y)],
+            ["bleft",         pg.Vector2(left,    centery), pg.Vector2(left-po.x,  centery)],
+            ["bbottombleft",  pg.Vector2(left,    bottom),  pg.Vector2(left-po.x,  bt[3]+po.y)],
+            ["btop",          pg.Vector2(centerx, top),     pg.Vector2(centerx,    top-po.y)],
+            ["bbottom",       pg.Vector2(centerx, bottom),  pg.Vector2(centerx,    bt[3]+po.y)],
+            ["btopbright",    pg.Vector2(right,   top),     pg.Vector2(bt[2]+po.x, top-po.y)],
+            ["bright",        pg.Vector2(right,   centery), pg.Vector2(bt[2]+po.x, centery)],
+            ["bbottombright", pg.Vector2(right,   bottom),  pg.Vector2(bt[2]+po.x, bt[3]+po.y)],
 
-                 ["ltoplleft", pg.Vector2(0, 0), pg.Vector2(-po.x, -po.y)],
-                 ["lleft", pg.Vector2(0, cy), pg.Vector2(-po.x, cy)],
-                 ["lbottomlleft", pg.Vector2(0, self.levelheight), pg.Vector2(-po.x, hmp)],
-                 ["ltop", pg.Vector2(cx, 0), pg.Vector2(cx, -po.y)],
-                 ["lbottom", pg.Vector2(cx, self.levelheight), pg.Vector2(centerx, hmp)],
-                 ["ltoplright", pg.Vector2(self.levelwidth, 0), pg.Vector2(wmp, -po.y)],
-                 ["lright", pg.Vector2(self.levelwidth, cy), pg.Vector2(wmp, centery)],
-                 ["lbottomlright", pg.Vector2(self.levelwidth, self.levelheight), pg.Vector2(wmp, hmp)]
-
-                 ]
+            ["ltoplleft", pg.Vector2(0, 0), pg.Vector2(-po.x, -po.y)],
+            ["lleft", pg.Vector2(0, cy), pg.Vector2(-po.x, cy)],
+            ["lbottomlleft", pg.Vector2(0, self.levelheight), pg.Vector2(-po.x, hmp)],
+            ["ltop", pg.Vector2(cx, 0), pg.Vector2(cx, -po.y)],
+            ["lbottom", pg.Vector2(cx, self.levelheight), pg.Vector2(centerx, hmp)],
+            ["ltoplright", pg.Vector2(self.levelwidth, 0), pg.Vector2(wmp, -po.y)],
+            ["lright", pg.Vector2(self.levelwidth, cy), pg.Vector2(wmp, centery)],
+            ["lbottomlright", pg.Vector2(self.levelwidth, self.levelheight), pg.Vector2(wmp, hmp)]
+        ]
         nearestindex = 0
         nearestdistance = bignum
         nearestpos = poses[0][2]

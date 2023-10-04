@@ -85,14 +85,14 @@ class LE(MenuWithField):
             curpos = [mouspos[0] - self.tileimage.get_width() / 2, mouspos[1] - self.tileimage.get_height() / 2]
 
             curpos_on_field = [mouspos_onfield[0] - self.tileimage.get_width() / 2,
-                               mouspos_onfield[1] - self.tileimage.get_height() / 2]
+                                mouspos_onfield[1] - self.tileimage.get_height() / 2]
 
             curpos_on_field2 = self.map_to_field(curpos_on_field[0], curpos_on_field[1])
 
             s = [self.findparampressed("-fp"),
-                 self.findparampressed("-fm"),
-                 self.findparampressed("-lp"),
-                 self.findparampressed("-lm")]
+                self.findparampressed("-fm"),
+                self.findparampressed("-lp"),
+                self.findparampressed("-lm")]
 
             self.if_set(s[0], 0)
             self.if_set(s[1], 1)

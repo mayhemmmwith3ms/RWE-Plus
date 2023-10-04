@@ -115,7 +115,7 @@ class PE(MenuWithField):
         for count, item in enumerate(self.props[itemcat]):
             cat = pg.rect.Rect(self.menuUiSettings["catpos"])
             btn2 = widgets.button(self.surface, cat, uiSettings["global"]["color"], itemcat, onpress=self.changematshow,
-                                  tooltip=self.returnkeytext("Select category(<[-changematshow]>)"))
+                tooltip=self.returnkeytext("Select category(<[-changematshow]>)"))
             rect = pg.rect.Rect(self.menuUiSettings["itempos"])
             rect = rect.move(0, rect.h * count)
             btn = widgets.button(self.surface, rect, item["color"], item["nm"], onpress=self.setprop)
@@ -172,7 +172,7 @@ class PE(MenuWithField):
             rect = pg.rect.Rect(self.menuUiSettings["settingspos"])
             rect = rect.move(0, rect.h * count)
             btn = widgets.button(self.surface, rect, self.menuUiSettings["settingscolor"], name, onpress=self.changesettings,
-                                 tooltip=str(self.getval(name, val)))
+                tooltip=str(self.getval(name, val)))
             self.settingslist.append(btn)
         self.resize()
 
@@ -245,7 +245,7 @@ class PE(MenuWithField):
         self.labels[2].set_text(self.labels[2].originaltext + str(self.prop_settings) + f" | Zoom: {(self.size / previewCellSize) * 100}%")
         self.labels[0].set_text(self.labels[0].originaltext + "\n".join(self.notes))
         cir = [self.buttonslist[self.toolindex].rect.x + 10,
-               self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
+            self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
         pg.draw.circle(self.surface, cursor, cir, self.buttonslist[self.toolindex].rect.h / 3)
         mpos = pg.Vector2(pg.mouse.get_pos())
         if self.onfield or any(self.helds):
@@ -287,10 +287,12 @@ class PE(MenuWithField):
 
             # pg.draw.circle(self.fieldmap, red, pg.Vector2(posoffset) / image1size * self.size, 20)
             
-            s = [self.findparampressed("stretch_topleft"),
-                 self.findparampressed("stretch_topright"),
-                 self.findparampressed("stretch_bottomright"),
-                 self.findparampressed("stretch_bottomleft")]
+            s = [
+                self.findparampressed("stretch_topleft"),
+                self.findparampressed("stretch_topright"),
+                self.findparampressed("stretch_bottomright"),
+                self.findparampressed("stretch_bottomleft")
+                ]
 
             qd = quadsize(self.quads)
             mosts = qd[2]

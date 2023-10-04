@@ -391,7 +391,7 @@ if __name__ == "__main__":
             # extra save level in case of eny crashes
             print(traceback.print_exc())
             ex = askyesno("Crash!!!",
-                          "Oops! RWE+ seems to be crashed, errorlog showed in console\nDo you want to save Level?")
+                        "Oops! RWE+ seems to be crashed, errorlog showed in console\nDo you want to save Level?")
             if ex:
                 surf.savef()
             raise

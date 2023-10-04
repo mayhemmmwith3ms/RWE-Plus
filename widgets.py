@@ -78,7 +78,7 @@ def resetpresses():
 
 class button:
     def __init__(self, surface: pg.surface.Surface, rect: pg.rect.Rect, col, text: str, icon=None, onpress=None,
-                 onrelease=None, tooltip: str = ""):
+            onrelease=None, tooltip: str = ""):
         self.surface = surface
         self.rect = copy.deepcopy(rect)
         self.lastrect = copy.deepcopy(rect)
@@ -99,7 +99,7 @@ class button:
         self.loadicon = icon
         if icon is not None:
             cut = [icon[1][0] * uiSettings["global"]["size"], icon[1][1] * uiSettings["global"]["size"],
-                   uiSettings["global"]["size"], uiSettings["global"]["size"]]
+                uiSettings["global"]["size"], uiSettings["global"]["size"]]
             image = loadimage(path + icon[0]).subsurface(cut)
             wh = image.get_height() / uiSettings["global"]["size"] * (rect.height / 100 * surface.get_height())
             size = [wh, wh]
@@ -197,7 +197,7 @@ class button:
 
         if self.icon is not None:
             cut = [self.loadicon[1][0] * uiSettings["global"]["size"], self.loadicon[1][1] * uiSettings["global"]["size"],
-                   uiSettings["global"]["size"], uiSettings["global"]["size"]]
+                uiSettings["global"]["size"], uiSettings["global"]["size"]]
             image = loadimage(path + self.loadicon[0]).subsurface(cut)
             wh = image.get_height() / uiSettings["global"]["size"] * self.rect.height
             size = [wh, wh]

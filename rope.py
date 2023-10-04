@@ -165,7 +165,7 @@ class RopeModel:
             if self.afaMvLvlEdit(gridPos + dir, self.layer) == 1:
                 midPos = self.giveMiddleOfTile(gridPos + dir)
                 terrainPos = Vector2(restrict(self.segments[A]["pos"].x, midPos.x - 10, midPos.x + 10),
-                                     restrict(self.segments[A]["pos"].y, midPos.y - 10, midPos.y + 10))
+                                    restrict(self.segments[A]["pos"].y, midPos.y - 10, midPos.y + 10))
                 terrainPos = ((terrainPos * 10) + midPos) / 11
 
                 dir = MoveToPoint(self.segments[A]["pos"], terrainPos, 1)

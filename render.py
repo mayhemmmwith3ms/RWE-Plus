@@ -98,7 +98,7 @@ def quadtransform(quads, image: pg.Surface):
     img = cv2.cvtColor(view, cv2.COLOR_RGB2RGBA) # NOQA
     ws, hs = img.shape[1::-1]
     pts1 = np.float32([[0, 0], [ws, 0],
-                       [ws, hs], [0, hs]])
+        [ws, hs], [0, hs]])
     q2 = []
     for q in quads:
         q2.append([q[0] - mosts[0], q[1] - mosts[1]])

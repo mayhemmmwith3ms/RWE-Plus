@@ -410,7 +410,7 @@ class TE(MenuWithField):
                     self.tool = 1
                     if not (self.tool == 1 and (bp[0] or bp[2])):
                         pg.draw.rect(self.surface, purple, [pos2.x - bord, pos2.y - bord, self.size + bord * 2, self.size + bord * 2], 1)
-                     
+
                 if self.tool == 0:
                     if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
                         if self.justPlacedChainHolders:
@@ -784,7 +784,7 @@ class TE(MenuWithField):
             # rect = pg.rect.Rect(0, 0, 100, 10)
             cat = pg.rect.Rect(self.menuUiSettings["catpos"])
             btn2 = widgets.button(self.surface, cat, uiSettings["global"]["color"], item["category"], onpress=self.changematshow,
-                                  tooltip=self.returnkeytext("Select category(<[-changematshow]>)"))
+                tooltip=self.returnkeytext("Select category(<[-changematshow]>)"))
 
             rect = pg.rect.Rect(self.menuUiSettings["itempos"])
             rect = rect.move(0, rect.h * count)
@@ -1036,16 +1036,16 @@ class TE(MenuWithField):
                 if "material" in self.tileimage["tags"]:
                     self.area[xpos][ypos] = False
                     self.data["TE"]["tlMatrix"][xpos][ypos][self.layer] = {"tp": "material",
-                                                                           "data": self.tileimage["name"]}
+                        "data": self.tileimage["name"]}
                 elif xpos == px and ypos == py:
                     self.area[xpos][ypos] = False
                     self.data["TE"]["tlMatrix"][xpos][ypos][self.layer] = {"tp": "tileHead",
-                                                                           "data": [p, self.tileimage["name"]]}
+                        "data": [p, self.tileimage["name"]]}
                 elif csp != -1:
                     p = makearr([px + 1, py + 1], "point")
                     # self.area[xpos][ypos] = False
                     self.data["TE"]["tlMatrix"][xpos][ypos][self.layer] = {"tp": "tileBody",
-                                                                           "data": [p, self.layer + 1]}
+                        "data": [p, self.layer + 1]}
                 if fg and csp != -1 or fg and "material" in self.tileimage["tags"]:
                     if csp == -1:
                         csp = 1
@@ -1057,7 +1057,7 @@ class TE(MenuWithField):
                     if self.layer + 1 <= 2 and csp != -1:
                         p = makearr([px + 1, py + 1], "point")
                         self.data["TE"]["tlMatrix"][xpos][ypos][self.layer + 1] = {"tp": "tileBody",
-                                                                                   "data": [p, self.layer + 1]}
+                            "data": [p, self.layer + 1]}
                         if fg:
                             self.data["GE"][xpos][ypos][self.layer + 1][0] = csp
         self.mpos = 1
