@@ -716,16 +716,26 @@ class MenuWithField(Menu):
 
     def rerenderActiveEditors(self, layer):
         self.lastlayer = layer
-        pool = concurrent.futures.ThreadPoolExecutor(max_workers=2)
-        if self.drawgeo:
-            pool.submit(self.renderer.geo_full_render, layer)
-        if self.drawtiles:
-            pool.submit(self.renderer.tiles_full_render, layer)
-        if self.drawprops:
-            pool.submit(self.renderer.props_full_render)
-        if self.draweffects and len(self.data["FE"]["effects"]):
-            pool.submit(self.renderer.rendereffect, 0)
-        pool.shutdown(wait=True)
+        if settings["multithreading"]:
+            pool = concurrent.futures.ThreadPoolExecutor(max_workers=2)
+            if self.drawgeo:
+                pool.submit(self.renderer.geo_full_render, layer)
+            if self.drawtiles:
+                pool.submit(self.renderer.tiles_full_render, layer)
+            if self.drawprops:
+                pool.submit(self.renderer.props_full_render)
+            if self.draweffects and len(self.data["FE"]["effects"]):
+                pool.submit(self.renderer.rendereffect, 0)
+            pool.shutdown(wait=True)
+        else:
+            if self.drawgeo:
+                self.renderer.geo_full_render(layer)
+            if self.drawtiles:
+                self.renderer.tiles_full_render(layer)
+            if self.drawprops:
+                self.renderer.props_full_render()
+            if self.draweffects and len(self.data["FE"]["effects"]):
+                self.renderer.rendereffect(0)
 
     def swichlayers(self):     
         self.layer = (self.layer + 1) % 3

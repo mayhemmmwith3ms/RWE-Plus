@@ -6,6 +6,7 @@
     "undo_history_limit": 25,
     "cursor_layer_num_display": true,
     "hold_key_rect_drag": true,
+    "multithreading": true,
 
     "TE_legacy_RWE_placement_controls": false,
 
