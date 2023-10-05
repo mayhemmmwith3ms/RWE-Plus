@@ -251,10 +251,6 @@ class PE(MenuWithField):
         if self.onfield or any(self.helds):
 
             realpos = mpos - self.field.rect.topleft
-            s2 = self.size / 2
-            pos2 = pg.Vector2(round(math.floor(realpos.x / s2) * s2 - self.selectedimage.get_width() / 2, 4),
-                              round(math.floor(realpos.y / s2) * s2 - self.selectedimage.get_height() / 2, 4))
-            pos2 += self.field.rect.topleft
 
             posonfield = ((mpos - pg.Vector2(self.field.rect.topleft)) / self.size - pg.Vector2(self.xoffset, self.yoffset)) * spritesize
             if self.snap:
@@ -303,9 +299,10 @@ class PE(MenuWithField):
             self.if_set(s[3], 3)
 
             rotPress = self.findparampressed("mouserotate")
+            drawPivotInfo = False
 
             if(rotPress and not self.lastPropPivotPressed):
-                self.propPivotPoint = mpos
+                self.propPivotPoint = mpos if not self.snap else self.get_snapped_pos(mpos)
                 self.lastPropPivotRot = 0
             if(rotPress and self.lastPropPivotPressed):
                 rot = -(pg.Vector2(self.propPivotPoint) - pg.Vector2(mpos)).angle_to(pg.Vector2(1, 0))
@@ -315,9 +312,8 @@ class PE(MenuWithField):
                 if mpos != self.propPivotPoint and not self.hasPropPivotBaseRot:
                     self.hasPropPivotBaseRot = True
                 #pg.draw.circle(self.surface, red, self.rotPressHoldPos, 4)
-                pg.draw.line(self.surface, red, self.propPivotPoint, mpos)
-                pg.draw.line(self.surface, yellow, self.propPivotPoint, pg.Vector2(self.propPivotPoint) - pg.Vector2(16, 0))
-            
+                drawPivotInfo = True
+
             self.lastPropPivotPressed = rotPress
 
 
@@ -403,15 +399,16 @@ class PE(MenuWithField):
                     self.rectdata[2] = pg.Vector2(i.get_size())
                     i = pg.transform.scale(i, [ww / spritesize * self.size, wh / spritesize * self.size])
                     i.set_colorkey(white)
+
                     if self.snap:
                         dpos = pg.Vector2(
                             round(math.floor(mpos.x / (self.size / 2)) * (self.size / 2), 4),
                             round(math.floor(mpos.y / (self.size / 2)) * (self.size / 2), 4))
                     else:
                         dpos = mpos
+
                     #dpos = (((pg.Vector2(avgX, avgY) + pg.Vector2(self.field.rect.topleft)) * self.size) + pg.Vector2(self.xoffset, self.yoffset)) // spritesize
                     self.surface.blit(i, (self.rectdata[1] + dpos) / 2 - pg.Vector2(i.get_size()) / 2)
-                    
 
             elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
                 self.mousp = True
@@ -432,15 +429,19 @@ class PE(MenuWithField):
             elif bp[2] == 0 and not self.mousp2 and (self.mousp and self.mousp1):
                 self.mousp2 = True
 
+            drawPreviewPos = mpos - pg.Vector2(self.selectedimage.get_size()) / 2
+            if not any(self.helds):
+                if rotPress:
+                    drawPreviewPos = self.propPivotPoint - pg.Vector2(self.selectedimage.get_size()) / 2
+                if self.snap:
+                    drawPreviewPos = self.get_snapped_pos(drawPreviewPos + pg.Vector2(self.selectedimage.get_size()) / 2) - pg.Vector2(self.selectedimage.get_size()) / 2
+            else:
+                q2s = pg.Vector2(mosts[0], mosts[1])
+                drawPreviewPos = self.helppoins + q2s
+
             if self.renderprop:
-                if not any(self.helds):
-                    if self.snap:
-                        self.surface.blit(self.selectedimage, pos2)
-                    else:
-                        self.surface.blit(self.selectedimage, mpos - pg.Vector2(self.selectedimage.get_size()) / 2)
-                else:
-                    q2s = pg.Vector2(mosts[0], mosts[1])
-                    self.surface.blit(self.selectedimage, self.helppoins + q2s)
+                self.surface.blit(self.selectedimage, drawPreviewPos)
+
                 if self.selectedprop["tp"] == "rope":
                     if not self.findparampressed("pauseropephysics"):
                         self.ropeobject.modelRopeUpdate()
@@ -472,6 +473,30 @@ class PE(MenuWithField):
                         if self.delmode:
                             selectLineCol = red
                         pg.draw.line(self.surface, selectLineCol, mpos, pos2, 1)
+            
+            drawPreviewPos += pg.Vector2(self.selectedimage.get_size()) / 2
+            
+            if drawPivotInfo:
+                pg.draw.line(self.surface, red, self.propPivotPoint, mpos)
+                pg.draw.line(self.surface, red, self.propPivotPoint, pg.Vector2(self.propPivotPoint) - pg.Vector2(16, 0))
+
+            if settings["PE_advanced_cursor"]:
+                if self.findparampressed("moreinfo"):
+                    cursorCol = purple
+                else:
+                    cursorCol = yellow
+                cRotVec = pg.Vector2(0, 1).rotate(self.cursorRotation)
+                pg.draw.line(self.surface, cursorCol, drawPreviewPos + cRotVec * 8, drawPreviewPos + cRotVec * 16)
+                pg.draw.line(self.surface, cursorCol, drawPreviewPos - cRotVec * 8, drawPreviewPos - cRotVec * 16)
+                cRotVec = cRotVec.rotate(90)
+                pg.draw.line(self.surface, cursorCol, drawPreviewPos + cRotVec * 8, drawPreviewPos + cRotVec * 12)
+                pg.draw.line(self.surface, cursorCol, drawPreviewPos - cRotVec * 8, drawPreviewPos - cRotVec * 12)
+                pg.draw.circle(self.surface, cursorCol, drawPreviewPos, 8, 1)
+
+            if settings["PE_quad_display"]:
+                for q in self.quads:
+                    pg.draw.circle(self.surface, red, [q[0] * self.fieldScale, q[1] * self.fieldScale] + drawPreviewPos, 2)
+
             self.movemiddle(bp)
         else:
             if not self.matshow:
@@ -484,28 +509,18 @@ class PE(MenuWithField):
                             self.surface.blit(pg.transform.scale(item["images"][0], [w, h]), button.rect.topright)
                         break
 
-        if self.onfield:
-            if settings["PE_advanced_cursor"]:
-                if self.findparampressed("moreinfo"):
-                    cursorCol = purple
-                else:
-                    cursorCol = yellow
-                cRotVec = pg.Vector2(0, 1).rotate(self.cursorRotation)
-                pg.draw.line(self.surface, cursorCol, mpos + cRotVec * 8, mpos + cRotVec * 16)
-                pg.draw.line(self.surface, cursorCol, mpos - cRotVec * 8, mpos - cRotVec * 16)
-                cRotVec = cRotVec.rotate(90)
-                pg.draw.line(self.surface, cursorCol, mpos + cRotVec * 8, mpos + cRotVec * 12)
-                pg.draw.line(self.surface, cursorCol, mpos - cRotVec * 8, mpos - cRotVec * 12)
-                pg.draw.circle(self.surface, cursorCol, mpos, 8, 1)
-
-            if settings["PE_quad_display"]:
-                for q in self.quads:
-                    pg.draw.circle(self.surface, red, [q[0] * self.fieldScale, q[1] * self.fieldScale] + mpos, 2)
-
         for button in self.buttonslist:
             button.blittooltip()
         for button in self.settingslist:
             button.blittooltip()
+
+    def get_snapped_pos(self, rawpos):
+            realpos = rawpos - self.field.rect.topleft
+            s2 = self.size / 2
+            pos2 = pg.Vector2(round(math.floor(realpos.x / s2) * s2, 4),
+                              round(math.floor(realpos.y / s2) * s2, 4))
+            pos2 += self.field.rect.topleft
+            return pos2
 
     def find_nearest(self, x, y):
         mpos = pg.Vector2(x, y)
