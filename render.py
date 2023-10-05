@@ -281,7 +281,7 @@ class Renderer:
         self.lastlayer = layer
         self.geo_full_render(layer)
         self.tiles_full_render(layer)
-        self.props_full_render()
+        self.props_full_render(layer)
         if len(self.data["FE"]["effects"]):
             self.rendereffect(0)
 
@@ -469,7 +469,7 @@ class Renderer:
         }
         return item, [0, 0]
 
-    def props_full_render(self):
+    def props_full_render(self, selectedlayer):
         self.surf_props.fill(dc)
         for indx, prop in enumerate(self.data["PR"]["props"]):
             var = 0
@@ -493,14 +493,22 @@ class Renderer:
             surf, mostleft, mosttop, ww, wh = quadtransform(quads, image)
             surf = pg.transform.scale(surf, [ww * sprite2image, wh * sprite2image])
             surf.set_colorkey(white)
-            surf.set_alpha(190)
+            layer_depth = selectedlayer * 10
+            dist_to_layer = abs(-self.data["PR"]["props"][indx][0] - layer_depth)
+            dist_factor = (35 - dist_to_layer) / 35
+            surf.set_alpha(190 * dist_factor)
             self.surf_props.blit(surf, [mostleft / spritesize * previewCellSize, mosttop / spritesize * previewCellSize])
             if prop[4].get("points") is not None:
+                cgrey = [200, 200, 200, 255]
                 propcolor = toarr(self.findprop(prop[1])[0]["previewColor"], "color")  # wires
+                propcolor.append(255)
+                for c in range(4):
+                    cgrey[c] = int(cgrey[c] * dist_factor)
+                    propcolor[c] = int(propcolor[c] * dist_factor)
                 for pIndex, point in enumerate(prop[4]["points"]):
                     px, py = toarr(point, "point")
                     pxn, pyn = toarr(prop[4]["points"][min(pIndex + 1, len(prop[4]["points"]) - 1)], "point")
-                    pg.draw.line(self.surf_props, [200, 200, 200], [px // previewToRenderedFactor, py // previewToRenderedFactor], [pxn // previewToRenderedFactor, pyn // previewToRenderedFactor])
+                    pg.draw.line(self.surf_props, cgrey, [px // previewToRenderedFactor, py // previewToRenderedFactor], [pxn // previewToRenderedFactor, pyn // previewToRenderedFactor])
                     pg.draw.circle(self.surf_props, propcolor, [px // previewToRenderedFactor, py // previewToRenderedFactor], 4)
 
 

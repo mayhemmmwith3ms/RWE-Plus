@@ -328,7 +328,7 @@ class PE(MenuWithField):
                     if len(self.data["PR"]["props"]) > 0:
                         *_, near = self.find_nearest(*posoffset)
                         self.data["PR"]["props"].pop(near)
-                        self.renderer.props_full_render()
+                        self.renderer.props_full_render(self.layer)
                         self.rfa()
                         self.updatehistory([["PR", "props"]])
                 elif self.copymode:
@@ -859,7 +859,7 @@ class PE(MenuWithField):
             prop[4]["points"] = points
         self.data["PR"]["props"].append(prop.copy())
         self.applytags()
-        self.renderer.props_full_render()
+        self.renderer.props_full_render(self.layer)
         self.rfa()
         self.updatehistory([["PR", "props"]])
 

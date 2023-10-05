@@ -723,7 +723,7 @@ class MenuWithField(Menu):
             if self.drawtiles:
                 pool.submit(self.renderer.tiles_full_render, layer)
             if self.drawprops:
-                pool.submit(self.renderer.props_full_render)
+                pool.submit(self.renderer.props_full_render, layer)
             if self.draweffects and len(self.data["FE"]["effects"]):
                 pool.submit(self.renderer.rendereffect, 0)
             pool.shutdown(wait=True)
@@ -733,7 +733,7 @@ class MenuWithField(Menu):
             if self.drawtiles:
                 self.renderer.tiles_full_render(layer)
             if self.drawprops:
-                self.renderer.props_full_render()
+                self.renderer.props_full_render(layer)
             if self.draweffects and len(self.data["FE"]["effects"]):
                 self.renderer.rendereffect(0)
 
