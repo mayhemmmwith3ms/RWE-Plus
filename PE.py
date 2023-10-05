@@ -316,6 +316,7 @@ class PE(MenuWithField):
 
             self.lastPropPivotPressed = rotPress
 
+            drawlong = False
 
             if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
                 self.mousp = False
@@ -368,7 +369,7 @@ class PE(MenuWithField):
                     vecPerpendicularNormal = vecNormal.rotate(90)
                     q = []
                     #print(self.selectedimage.get_size())
-                    pWidth = self.size * 1.5
+                    pWidth = (self.selectedimage.get_height() / 2) / self.fieldScale
                     q.append(posonfield + vecPerpendicularNormal * pWidth)
                     q.append(self.rectdata[0] + vecPerpendicularNormal * pWidth)
                     q.append(self.rectdata[0] - vecPerpendicularNormal * pWidth)
@@ -401,14 +402,14 @@ class PE(MenuWithField):
                     i.set_colorkey(white)
 
                     if self.snap:
-                        dpos = pg.Vector2(
-                            round(math.floor(mpos.x / (self.size / 2)) * (self.size / 2), 4),
-                            round(math.floor(mpos.y / (self.size / 2)) * (self.size / 2), 4))
+                        dpos = self.get_snapped_pos(mpos) - pg.Vector2(self.size / 4)
                     else:
                         dpos = mpos
 
                     #dpos = (((pg.Vector2(avgX, avgY) + pg.Vector2(self.field.rect.topleft)) * self.size) + pg.Vector2(self.xoffset, self.yoffset)) // spritesize
                     self.surface.blit(i, (self.rectdata[1] + dpos) / 2 - pg.Vector2(i.get_size()) / 2)
+
+                    drawlong = True
 
             elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
                 self.mousp = True
@@ -493,7 +494,7 @@ class PE(MenuWithField):
                 pg.draw.line(self.surface, cursorCol, drawPreviewPos - cRotVec * 8, drawPreviewPos - cRotVec * 12)
                 pg.draw.circle(self.surface, cursorCol, drawPreviewPos, 8, 1)
 
-            if settings["PE_quad_display"]:
+            if settings["PE_quad_display"] and not drawlong:
                 for q in self.quads:
                     pg.draw.circle(self.surface, red, [q[0] * self.fieldScale, q[1] * self.fieldScale] + drawPreviewPos, 2)
 
