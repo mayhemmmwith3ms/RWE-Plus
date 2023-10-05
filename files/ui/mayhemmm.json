@@ -15,9 +15,11 @@
 		"doublerectoffsetx": -5,
 		"doublerectoffsety": 0,
 		"primarylayeralpha": 200,
-		"secondarylayeralpha": 50,
+		"secondarylayeralpha": 90,
+		"thirdlayeralpha": 30, 
 		"tiles_primarylayeralpha": 255,
-		"tiles_secondarylayeralpha": 100,
+		"tiles_secondarylayeralpha": 50,
+		"tiles_thirdlayeralpha": 25,
 		"previewleftside": true,
 		"colors": {
 			"cursor": [255, 0, 0],

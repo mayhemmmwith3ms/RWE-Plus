@@ -657,7 +657,7 @@ class MenuWithField(Menu):
             self.f.blit(self.renderer.surf_geo, [0, 0])
         if self.drawtiles:
             # self.renderer.tiles_full_render(self.layer)
-            self.f.blit(self.renderer.surf_tiles, [0, 0])
+            self.f.blit(self.renderer.surf_tiles, [0, 0], special_flags=pg.BLEND_PREMULTIPLIED)
         if self.drawprops:
             # self.renderer.props_full_render()
             self.f.blit(self.renderer.surf_props, [0, 0])

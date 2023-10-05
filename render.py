@@ -200,6 +200,18 @@ class Renderer:
 
         datcell = cell["tp"]
         datdata = cell["data"]
+
+        layer_alpha = uiSettings["global"]["tiles_secondarylayeralpha"]
+
+        alpha_index = (drawL - selectedLayer) % 3
+
+        if alpha_index == 0:
+            layer_alpha = uiSettings["global"]["tiles_primarylayeralpha"]
+        if alpha_index == 1: 
+            layer_alpha = uiSettings["global"]["tiles_secondarylayeralpha"]
+        if alpha_index == 2:
+            layer_alpha = uiSettings["global"]["tiles_thirdlayeralpha"]
+
         if not self.tilelayers[drawL]:
             return
         if datcell == "default":
@@ -214,7 +226,8 @@ class Renderer:
                     rect = pg.Rect(ms[0] + posx, ms[0] + posy, ms[1], ms[1])
                     col = [graphics["matposes"][datdata][0], graphics["matposes"][datdata][1], graphics["matposes"][datdata][2], 255]
                     if(drawL != selectedLayer):
-                        col[3] = 100
+                        for s in range(4):
+                            col[s] = int(col[s] * layer_alpha // 255)
                     pg.draw.rect(self.surf_tiles, col, rect)
                     #if layer != l:
                     #    it["image"].set_alpha(settings["global"]["tiles_secondarylayeralpha"])
@@ -223,7 +236,7 @@ class Renderer:
                     #self.surf_tiles.blit(it["image"], [posx, posy])
                     #it["image"].set_alpha(255)
                 except ValueError:
-                    self.surf_tiles.blit(notfound, [posx, posy])
+                    self.surf_tiles.blit(notfound, [posx, posy], special_flags=pg.BLEND_PREMULTIPLIED)
 
         elif datcell == "tileHead":
             it = findtileimage(datdata[1])
@@ -232,21 +245,15 @@ class Renderer:
             siz = pg.rect.Rect([cposx, cposy, it["size"][0] * previewCellSize, it["size"][1] * previewCellSize])
             if not uiSettings["TE"]["LEtiles"]:
                 pg.draw.rect(self.surf_tiles, it["color"], siz, 0)
-            if drawL != selectedLayer:
-                it["image"].set_alpha(uiSettings["global"]["tiles_secondarylayeralpha"])
-            else:
-                it["image"].set_alpha(uiSettings["global"]["tiles_primarylayeralpha"])
-            self.surf_tiles.blit(it["image"], [cposx, cposy])
+            it["image"].set_alpha(layer_alpha)
+            self.surf_tiles.blit(it["image"], [cposx, cposy], special_flags=pg.BLEND_ALPHA_SDL2)
             it["image"].set_alpha(255)
         elif datcell == "tileBody":
             tl = self.data["TE"]["tlMatrix"][xp][yp][drawL]
             if self.GetTileHeadFromTilePart(tl) == "stray":
-                if drawL != selectedLayer:
-                    self.geosurfaces[2].set_alpha(uiSettings["global"]["tiles_secondarylayeralpha"])
-                else:
-                    self.geosurfaces[2].set_alpha(uiSettings["global"]["tiles_primarylayeralpha"])
+                self.geosurfaces[2].set_alpha(layer_alpha)
 
-                self.surf_tiles.blit(self.geosurfaces[2], [xp * previewCellSize, yp * previewCellSize], [[graphics["shows"]["0"][0] * previewCellSize, graphics["shows"]["0"][1] * previewCellSize], [previewCellSize, previewCellSize]])
+                self.surf_tiles.blit(self.geosurfaces[2], [xp * previewCellSize, yp * previewCellSize], [[graphics["shows"]["0"][0] * previewCellSize, graphics["shows"]["0"][1] * previewCellSize], [previewCellSize, previewCellSize]], special_flags=pg.BLEND_PREMULTIPLIED)
 
                 self.geosurfaces[2].set_alpha(255)
         # self.surf_tiles.fill(pg.Color(0, 0, 0, 0), [posx, posy, image1size, image1size])
@@ -313,10 +320,18 @@ class Renderer:
                 imageIndex = 0
 
             convrender = self.geosurfaces[imageIndex]
-            convrender.set_alpha(uiSettings["global"]["secondarylayeralpha"])
+            convrender.set_alpha(50)
 
-            if i == layer and not self.commsgeocolors:
-                convrender.set_alpha(uiSettings["global"]["primarylayeralpha"])
+            if not self.commsgeocolors:
+                if i != layer:
+                    if i == 0:
+                        convrender.set_alpha(uiSettings["global"]["primarylayeralpha"])
+                    if i == 1: 
+                        convrender.set_alpha(uiSettings["global"]["secondarylayeralpha"])
+                    if i == 2:
+                        convrender.set_alpha(uiSettings["global"]["thirdlayeralpha"])
+                else:
+                    convrender.set_alpha(uiSettings["global"]["primarylayeralpha"])
             if i == 0 and self.commsgeocolors:
                 convrender.set_alpha(255)
 
