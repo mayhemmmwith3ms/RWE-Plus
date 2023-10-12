@@ -1088,7 +1088,7 @@ class TE(MenuWithField):
     def changetools(self):
         if not settings["hold_key_rect_drag"]:
             self.tool = abs(1 - self.tool)
-        self.brush_active = False
+        self.brushsize = 1
 
     def findtile(self):
         nd = {}
