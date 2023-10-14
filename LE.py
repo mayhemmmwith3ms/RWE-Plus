@@ -63,7 +63,6 @@ class LE(MenuWithField):
         self.renderfield()
 
     def blit(self): # NOQA
-        self.StartTimer()
         self.fieldadd.fill(white)
         self.field.field.fill(self.field.color)
         super().blit(not pg.key.get_pressed()[pg.K_LCTRL])
@@ -143,7 +142,6 @@ class LE(MenuWithField):
                 self.save()
                 self.renderfield()
             self.movemiddle(bp)
-        self.StopTimer()
 
     def if_set(self, pressed, indx):
         if pressed and not self.pressed[indx]:
