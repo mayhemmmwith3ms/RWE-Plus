@@ -762,7 +762,7 @@ class MenuWithField(Menu):
 
     def StopTimer(self):
         self.toc = time.perf_counter()
-        print(f"Rendered in {self.toc - self.tic:0.4f}")
+        print(f"Timer took {(self.toc - self.tic) * 1000:0.4} ms")
 
     def send(self, message):
         super().send(message)
