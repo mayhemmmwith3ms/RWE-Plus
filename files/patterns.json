@@ -23,6 +23,30 @@
 			"patcat": "Alt grates",
 			"color": [75, 75, 240],
 			"prefix": "AltGrate"
+		},
+		{
+			"name": "Thin Pipe Path",
+			"tp": "path",
+			"category": "special",
+			"patcat": "Thin Pipes",
+			"color": [255, 255, 0],
+			"prefix": "Thin Pipes"
+		},
+		{
+			"name": "Wall Wire Path A",
+			"tp": "path",
+			"category": "special",
+			"patcat": "Wall wires",
+			"color": [255, 255, 0],
+			"prefix": "Wall wires"
+		},
+		{
+			"name": "Wall Wire Path B",
+			"tp": "path",
+			"category": "special",
+			"patcat": "Wall wires",
+			"color": [255, 255, 0],
+			"prefix": "Wall wires"
 		}
 	],
 	"blocks": {
@@ -36,5 +60,34 @@
 		"NE": "Block Corner NE",
 		"SE": "Block Corner SE",
 		"SW": "Block Corner SW"
+	},
+	"path_tiles": {
+		"Thin Pipe Path":{
+			"cat": "Thin Pipes",
+			"H": "Horizontal Pipe",
+			"V": "Vertical Pipe",
+			"NW": "Pipe WN",
+			"NE": "Pipe EN",
+			"SW": "Pipe WS",
+			"SE": "Pipe ES"
+		},
+		"Wall Wire Path A":{
+			"cat": "Wall wires",
+			"H": "WallWires Horizontal A",
+			"V": "WallWires Vertical A",
+			"NW": "WallWires NW",
+			"NE": "WallWires NE",
+			"SW": "WallWires SW",
+			"SE": "WallWires SE"
+		},
+		"Wall Wire Path B":{
+			"cat": "Wall wires",
+			"H": "WallWires Horizontal A",
+			"V": "WallWires Vertical A",
+			"NW": "WallWires Square NW",
+			"NE": "WallWires Square NE",
+			"SW": "WallWires Square SW",
+			"SE": "WallWires Square SE"
+		}
 	}
 }

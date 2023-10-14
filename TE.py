@@ -43,6 +43,7 @@ class TE(MenuWithField):
         for indx, pattern in enumerate(p["patterns"]):
             self.items["special"][indx]["cat"] = [len(self.items), indx + 1]
         self.blocks = p["blocks"]
+        self.pathtiles = p["path_tiles"]
         self.buttonslist = []
         self.toolindex = 0
         #self.brush_active = False
@@ -59,6 +60,7 @@ class TE(MenuWithField):
 
         self.justPlacedChainHolders = []
         self.blockNextPlacement = False
+        self.currentPathDrag = []
 
         renderer.commsgeocolors = False
         renderer.geo_full_render(renderer.lastlayer)
@@ -95,18 +97,28 @@ class TE(MenuWithField):
         self.emptyarea()
 
     def update_drag(self, place):
-        cposxo = int(self.posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
-        cposyo = int(self.posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
+        if not self.is_macro(self.tileimage):
+            cposxo = int(self.posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
+            cposyo = int(self.posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
         if place:
-            if self.tileimage["tp"] != "pattern" or self.tool == 0:
+            if not self.is_macro(self.tileimage):
                 if self.brush_active:
                     self.brushpaint(pg.Vector2(cposxo, cposyo))
                 elif self.cols:
                     self.place(cposxo, cposyo)
                     self.fieldadd.blit(self.tileimage["image"],
                                     [cposxo * self.size, cposyo * self.size])
+            if self.is_macro(self.tileimage):
+                match self.tileimage["tp"]:
+                    case "path":
+                        if (not self.currentPathDrag or self.posoffset != self.currentPathDrag[len(self.currentPathDrag) - 1]) and\
+                            (not self.currentPathDrag or self.is_adjacent_cell(pg.Vector2(self.posoffset.x, self.posoffset.y), self.currentPathDrag[len(self.currentPathDrag) - 1]))\
+                                and (not self.currentPathDrag or self.posoffset != self.currentPathDrag[len(self.currentPathDrag) - 2]):
+                            self.currentPathDrag.append(pg.Vector2(self.posoffset.x, self.posoffset.y))
+                            #pg.draw.rect(self.fieldadd, red, [self.posoffset.x * self.size, self.posoffset.y * self.size, self.size, self.size])
+                            self.draw_path_indicator()
         else:
-            if self.tileimage["tp"] != "pattern" or self.tool == 0:
+            if not self.is_macro(self.tileimage):
                 if self.brush_active:
                     self.brushpaint(pg.Vector2(cposxo, cposyo), False)
                 else:
@@ -114,8 +126,13 @@ class TE(MenuWithField):
                     pg.draw.rect(self.fieldadd, red, [self.posoffset.x * self.size, self.posoffset.y * self.size, self.size, self.size])
 
     def end_drag(self, place):
-        cposxo = int(self.posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
-        cposyo = int(self.posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
+        if self.is_macro(self.tileimage):
+            match self.tileimage["tp"]:
+                case "path":
+                    self.finalize_macro()
+        else:
+            self.cols = self.test_cols(int(self.posoffset.x), int(self.posoffset.y))
+
         self.detecthistory(["TE", "tlMatrix"], not self.findparampressed("force_geometry"))
         if self.findparampressed("force_geometry"):
             self.detecthistory(["GE"])
@@ -123,7 +140,7 @@ class TE(MenuWithField):
         self.renderer.tiles_render_area(self.area, self.layer)
         self.renderer.geo_render_area(self.area, self.layer)
         self.rfa()
-        self.cols = self.test_cols(cposxo, cposyo)
+        #self.cols = self.test_cols(cposxo, cposyo)
         if not self.justPlacedChainHolders:
             self.blockNextPlacement = False
 
@@ -187,7 +204,7 @@ class TE(MenuWithField):
             br[1] = self.posoffset.y
 
         rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
-        if self.tileimage["tp"] != "pattern" and self.tool != 2:
+        if not self.is_macro(self.tileimage) and self.tool != 2:
             cposxo = int(self.posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
             cposyo = int(self.posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
             for x in range(int(rect.w)):
@@ -205,7 +222,7 @@ class TE(MenuWithField):
                     if block["tp"] == "material" or block["tp"] == "tileHead":
                         history.append([x, y, block])
             pyperclip.copy(str(["TE", history]))
-        elif place and self.tileimage["tp"] == "pattern":
+        elif place and self.is_macro(self.tileimage):
             saved = self.tileimage
             savedtool = saved["name"]
             savedcat = saved["category"]
@@ -262,7 +279,7 @@ class TE(MenuWithField):
         self.renderer.tiles_render_area(self.area, self.layer)
         self.renderer.geo_render_area(self.area, self.layer)
         self.rfa()
-        if self.tileimage["tp"] != "pattern" and not self.tool == 2:
+        if not self.is_macro(self.tileimage) and not self.tool == 2:
             self.cols = self.test_cols(cposxo, cposyo)
 
     def blit(self):
@@ -293,7 +310,7 @@ class TE(MenuWithField):
             self.movemiddle(bp)
 
             if not settings["TE_legacy_RWE_placement_controls"]:
-                if self.tileimage["tp"] != "pattern":
+                if not self.is_macro(self.tileimage):
                     if self.tileimage["size"][0] != 1 or self.tileimage["size"][1] != 1:
                         self.brushsize = 1
 
@@ -397,9 +414,16 @@ class TE(MenuWithField):
                     except Exception:
                         print("Error occurred determining tileHead position")
                 else:
-                    self.tool = 1
-                    if not (self.tool == 1 and (bp[0] or bp[2])):
-                        pg.draw.rect(self.surface, purple, [pos2.x - bord, pos2.y - bord, self.size + bord * 2, self.size + bord * 2], 1)
+                    patternPrevCol = False
+                    if self.tileimage["tp"] == "pattern":
+                        self.tool = 1
+                        if not (self.tool == 1 and (bp[0] or bp[2])):
+                            patternPrevCol = purple
+                    if(self.tileimage["tp"] == "path"):
+                        if not (self.tool == 0 and (bp[0] or bp[2])):
+                            patternPrevCol = purple
+                    if patternPrevCol:
+                        pg.draw.rect(self.surface, patternPrevCol, [pos2.x - bord, pos2.y - bord, self.size + bord * 2, self.size + bord * 2], 1)
 
                 if self.tool == 0:
                     if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
@@ -444,7 +468,7 @@ class TE(MenuWithField):
                         self.end_rect_drag(False)
                         self.mousp2 = True
             else:
-                if self.tileimage["tp"] != "pattern":
+                if not self.is_macro(self.tileimage):
                     if not (self.tileimage["size"][0] == 1 and self.tileimage["size"][1] == 1):
                         self.brushsize = 1
 
@@ -491,7 +515,7 @@ class TE(MenuWithField):
                 elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
                     # if (0 <= posoffset[0] < self.levelwidth) and (0 <= posoffset[1] < self.levelheight):
                     #     pass
-                    if self.tileimage["tp"] != "pattern" or self.tool == 0:
+                    if not self.is_macro(self.tileimage) or self.tool == 0:
                         if self.tool == 0:
                             if self.cols:
                                     self.place(cposxo, cposyo)
@@ -564,7 +588,7 @@ class TE(MenuWithField):
                         br[1] = posoffset.y
 
                     rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
-                    if self.tileimage["tp"] != "pattern" and self.tool != 2:
+                    if not self.is_macro(self.tileimage) and self.tool != 2:
                         for x in range(int(rect.w)):
                             for y in range(int(rect.h)):
                                 if self.tool == 0:
@@ -580,7 +604,7 @@ class TE(MenuWithField):
                                 if block["tp"] == "material" or block["tp"] == "tileHead":
                                     history.append([x, y, block])
                         pyperclip.copy(str(["TE", history]))
-                    elif self.tool == 0 and self.tileimage["tp"] == "pattern":
+                    elif self.tool == 0 and self.is_macro(self.tileimage):
                         saved = self.tileimage
                         savedtool = saved["name"]
                         savedcat = saved["category"]
@@ -649,7 +673,7 @@ class TE(MenuWithField):
                             if uiSettings["global"]["previewleftside"]:
                                 previewPos = [button.rect.bottomleft[0] - item["preview"].get_width(), button.rect.bottomleft[1]]
                             self.surface.blit(item["preview"], previewPos)
-                        if item["tp"] == "pattern":
+                        if self.is_macro(item):
                             break
                         w, h = item["size"]
                         w *= self.size
@@ -773,6 +797,7 @@ class TE(MenuWithField):
         self.matshow = False
         btn2 = None
         for count, item in enumerate(self.items[list(self.items.keys())[self.currentcategory]]):
+            #print(item["category"])
             # rect = pg.rect.Rect([0, count * self.settings["itemsize"], self.field2.field.get_width(), self.settings["itemsize"]])
             # rect = pg.rect.Rect(0, 0, 100, 10)
             cat = pg.rect.Rect(self.menuUiSettings["catpos"])
@@ -804,7 +829,7 @@ class TE(MenuWithField):
                                            [self.levelwidth * self.size, self.levelheight * self.size])
         self.fieldadd.fill(white)
         super().renderfield()
-        if self.tileimage is not None and self.tileimage["tp"] != "pattern":
+        if self.tileimage is not None and not self.is_macro(self.tileimage):
             self.tileimage["image"] = pg.transform.scale(self.tileimage2["image"], [self.size * self.tileimage2["size"][0],
                                                                                 self.size * self.tileimage2["size"][1]])
             self.tileimage["image"].set_colorkey(None)
@@ -896,9 +921,9 @@ class TE(MenuWithField):
             if i["name"] == name:
                 self.toolindex = num
                 self.tileimage2 = i.copy()
-                if self.tileimage is not None and self.tileimage["tp"] == "pattern" and self.tileimage2["tp"] != "pattern":
+                if self.tileimage is not None and self.is_macro(self.tileimage) and not self.is_macro(self.tileimage2):
                     self.tool = 0
-                if self.tileimage2["tp"] != "pattern" and render:
+                if not self.is_macro(self.tileimage2) and render:
                     self.tileimage2["image"] = i["image"].copy()
                     self.tileimage2["image"].set_alpha(255)
                     self.tileimage = self.tileimage2.copy()
@@ -1140,6 +1165,59 @@ class TE(MenuWithField):
                     self.getmaterial(name)
                     return
         print("couldn't find tile")
+
+    def get_next_path_tile(self, init, path, indx):
+        tile = path[indx]
+        last = path[max(indx - 1, 0)]
+        next = path[min(indx + 1, len(path) - 1)]
+        diff = [last - tile, next - tile]
+
+        pathTile = "H"
+
+        if all(x in [[1, 0], [-1, 0]] for x in diff) or all(x in [[1, 0], [0, 0]] for x in diff) or all(x in [[-1, 0], [0, 0]] for x in diff):
+            pathTile = "H"
+        elif all(x in [[0, 1], [0, -1]] for x in diff) or all(x in [[0, 1], [0, 0]] for x in diff) or all(x in [[0, -1], [0, 0]] for x in diff):
+            pathTile = "V"
+        elif [0, -1] in diff and [1, 0] in diff:
+            pathTile = "NE"
+        elif [0, 1] in diff and [1, 0] in diff:
+            pathTile = "SE"
+        elif [0, -1] in diff and [-1, 0] in diff:
+            pathTile = "NW"
+        elif [0, 1] in diff and [-1, 0] in diff:
+            pathTile = "SW"
+
+        return self.pathtiles[init["name"]]["cat"], self.pathtiles[init["name"]][pathTile]
+
+    def finalize_macro(self):
+        macroInit = copy.deepcopy(self.tileimage)
+        match macroInit["tp"]:
+            case "path":
+                for indx, tile in enumerate(self.currentPathDrag):
+                    tile = pg.Vector2(tile)
+                    nCat, nName = self.get_next_path_tile(macroInit, self.currentPathDrag, indx)
+
+                    self.set(nCat, nName)
+                    self.place(tile.x, tile.y)
+
+        self.set("special", macroInit["name"])
+        self.currentPathDrag.clear()
+
+    def draw_path_indicator(self):
+        self.fieldadd.fill(white)
+        for indx, tile in enumerate(self.currentPathDrag):
+            tile = pg.Vector2(tile)
+            nCat, nName = self.get_next_path_tile(self.tileimage, self.currentPathDrag, indx)
+            for i in self.items[nCat]:
+                if i["name"] == nName:
+                    self.fieldadd.blit(i["image"],
+                        [tile.x * self.size, tile.y * self.size])
+
+    def is_macro(self, item):
+        return ["pattern", "path"].__contains__(item["tp"])
+
+    def is_adjacent_cell(self, c1, c2):
+        return (c1 - c2) in [[1, 0], [0, 1], [-1, 0], [0, -1]]
 
     @property
     def brush_active(self):
