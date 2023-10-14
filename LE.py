@@ -32,6 +32,9 @@ class LE(MenuWithField):
         self.tileimage = None
         self.tileimage2 = None
 
+        self.mouse_pivot_anchor = None
+        self.last_cur_pos = None
+
         self.pressed = [False] * 4
 
         self.images = {True: [], False: []}
@@ -60,6 +63,7 @@ class LE(MenuWithField):
         self.renderfield()
 
     def blit(self): # NOQA
+        self.StartTimer()
         self.fieldadd.fill(white)
         self.field.field.fill(self.field.color)
         super().blit(not pg.key.get_pressed()[pg.K_LCTRL])
@@ -102,8 +106,24 @@ class LE(MenuWithField):
             self.labels[0].set_text("Image: " + graphics["shadowimages"][self.selectedimage])
             self.labels[1].set_text(f"X: {curpos_on_field[0]}, Y: {curpos_on_field[1]} | Zoom: {(self.size / previewCellSize) * 100}%")
 
-            self.surface.blit(self.tileimage, curpos)
+            held_draw_pos = curpos
+
             bp = self.getmouse
+
+            if bp[2] == 1 and self.mousp2 and (self.mousp and self.mousp1):
+                self.mousp2 = False
+                self.mouse_pivot_anchor = mouspos
+                self.last_cur_pos = mouspos
+            elif bp[2] == 1 and not self.mousp2 and (self.mousp and self.mousp1):
+                self.direction = (pg.Vector2(self.mouse_pivot_anchor) - pg.Vector2(mouspos)).angle_to(pg.Vector2(1, 0)) + 90
+                self.rotate()
+                held_draw_pos = self.mouse_pivot_anchor
+                held_draw_pos = [held_draw_pos[0] - self.tileimage.get_width() / 2, held_draw_pos[1] - self.tileimage.get_height() / 2]
+                self.last_cur_pos = mouspos
+            elif bp[2] == 0 and not self.mousp2 and (self.mousp and self.mousp1):
+                self.mousp2 = True
+
+            self.surface.blit(self.tileimage, held_draw_pos)
 
             pg.draw.rect(self.field2.field, black, [0, 0, 1, 1])
             pg.draw.rect(self.field2.field, black, [self.field2.field.get_width() - 1, self.field2.field.get_height() - 1, 1, 1])
@@ -123,6 +143,7 @@ class LE(MenuWithField):
                 self.save()
                 self.renderfield()
             self.movemiddle(bp)
+        self.StopTimer()
 
     def if_set(self, pressed, indx):
         if pressed and not self.pressed[indx]:
