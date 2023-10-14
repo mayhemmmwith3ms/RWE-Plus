@@ -252,36 +252,36 @@ class LE(MenuWithField):
         self.retile()
 
     def rl(self):
-        self.direction += 1
+        self.direction += self.speed_mul
         self.rotate()
 
     def rr(self):
-        self.direction -= 1
+        self.direction -= self.speed_mul
         self.rotate()
 
     def hp(self):
-        self.imagerect[1] += 1
+        self.imagerect[1] += self.speed_mul
         if self.imagerect[1] == 0:
             self.imagerect[1] = 1
         self.setwh()
         self.retile()
 
     def hm(self):
-        self.imagerect[1] -= 1
+        self.imagerect[1] -= self.speed_mul
         if self.imagerect[1] == 0:
             self.imagerect[1] = -1
         self.setwh()
         self.retile()
 
     def wp(self):
-        self.imagerect[0] += 1
+        self.imagerect[0] += self.speed_mul
         if self.imagerect[0] == 0:
             self.imagerect[0] = 1
         self.setwh()
         self.retile()
 
     def wm(self):
-        self.imagerect[0] -= 1
+        self.imagerect[0] -= self.speed_mul
         if self.imagerect[0] == 0:
             self.imagerect[0] = -1
         self.setwh()
@@ -306,3 +306,7 @@ class LE(MenuWithField):
     def darkmod(self):
         if not self.mode:
             self.inverse()
+
+    @property
+    def speed_mul(self):
+        return 4 if self.findparampressed("speedup") else 1

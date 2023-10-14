@@ -295,7 +295,7 @@
 
   		"K_z": "-inverse",
   		"K_TAB": "-inverse",
-  		"K_SPACE": "-inverse",
+  		"K_SPACE": "speedup",
 
   		"K_a+": "-undoshadow",
   		"K_d+": "-redoshadow",
