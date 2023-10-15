@@ -1057,12 +1057,12 @@ class MenuWithField(Menu):
         col = [255, 255, 255]
         col2 = [180, 180, 180]
         for x in range(0, w, previewCellSize):
-            if x % 40 == 0:
+            if x % (previewCellSize * 2) == 0:
                 pg.draw.line(gridsurf, col, [x, 0], [x, h])
             else:
                 pg.draw.line(gridsurf, col2, [x, 0], [x, h])
         for y in range(0, h, previewCellSize):
-            if y % 40 == 0:
+            if y % (previewCellSize * 2) == 0:
                 pg.draw.line(gridsurf, col, [0, y], [w, y])
             else:
                 pg.draw.line(gridsurf, col2, [0, y], [w, y])
