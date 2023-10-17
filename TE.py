@@ -1067,6 +1067,8 @@ class TE(MenuWithField):
                 ypos = int(y + y2)                                                              # luckily, i don't know of much else that requires the head's category index other than chain holders,
                 if xpos >= self.levelwidth or ypos >= self.levelheight or xpos < 0 or ypos < 0 or (self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]["tp"] == "tileHead"): # which aren't the end of the world if they don't work. this fix should work unless material categories are added or removed
                     continue
+                if self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]["tp"] not in ("default", "tileBody"):
+                    self.area[xpos][ypos] = False
                 if "material" in self.tileimage["tags"]:
                     self.area[xpos][ypos] = False
                     self.data["TE"]["tlMatrix"][xpos][ypos][self.layer] = {"tp": "material",
