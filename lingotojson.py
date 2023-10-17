@@ -18,7 +18,7 @@ notfoundtile = {
     "cat": [1, 1],
     "tags": [""]
 }
-
+load_error_count = 0
 
 def tojson(string: str):
     closebracketscount = string.count("]")
@@ -118,23 +118,34 @@ def init_solve(files: list[str,]):
         cat = ''
         counter = 0
         counter2 = 2
-        for i in s:
+        findcategory = True #if true, all non-category lines will be ignored until a category line is found
+        for ln, i in enumerate(s):
             i = i.replace("\n", "")
             if len(i) > 1:
                 if i[0] == "-":
-                    counter2 += 1
-                    a[cat] = a2
-                    js = tojson(i[1:])
-                    a2 = [js]
-                    cat = js[0]
-                    counter = 0
-                else:
-                    js = tojson(i)
-                    item = {}
-                    for p, val in js.items():
-                        item[p] = val
-                    a2.append(item)
-                    counter += 1
+                    try:
+                        counter2 += 1
+                        a[cat] = a2
+                        js = tojson(i[1:])
+                        a2 = [js]
+                        cat = js[0]
+                        counter = 0
+                        findcategory = False
+                    except json.JSONDecodeError:
+                        log_to_load_log(f"Failed to convert init CATEGORY line \"{i}\" (line number: {ln}) in file \"{file}\"! Skipping line and all subsequent tiles!", True)
+                        findcategory = True
+                        continue
+                elif not findcategory:
+                    try:
+                        js = tojson(i)
+                        item = {}
+                        for p, val in js.items():
+                            item[p] = val
+                        a2.append(item)
+                        counter += 1
+                    except json.JSONDecodeError:
+                        log_to_load_log(f"Failed to convert init ITEM line \"{i}\" (line number: {ln}) in file \"{file}\"! Skipping line!", True)
+                        continue
         a[cat] = a2
     return a
 
@@ -143,7 +154,9 @@ def inittolist():
     inv = uiSettings["TE"]["LEtiles"]
     tilefiles = [path2graphics + i for i in graphics["tileinits"]]
     solved = init_solve(tilefiles)
-    del solved['']
+    solved = dict(i for i in solved.items() if len(i[1]) > 1) #remove categories with no tiles (prevents crash when loading TE)
+    #log_to_load_log(solved)
+    #del solved['']
     solved_copy = solved.copy()
     for catnum, catitem in enumerate(solved.items()):
         cat, items = catitem
@@ -153,17 +166,21 @@ def inittolist():
             try:
                 img = loadimage(f"{path2graphics}{item['nm']}.png")
             except (FileNotFoundError, TypeError):
+                log_to_load_log(f"Failed to load graphics for item \"{item['nm']}\"! Skipping!", True)
                 continue
             sz = toarr(item["sz"], "point")
             try:
                 ln = len(item["repeatL"])
             except KeyError:
                 ln = 1
+                if(item["tp"] not in ("voxelStructRockType", "box")):
+                    log_to_load_log(f"Failed to get repeatL for item \"{item['nm']}\"! This may cause issues when rendering!", True)
                 # sz:point(x,y) + ( #bfTiles * 2 )) * 20
             try:
                 tp = item["tp"]
             except KeyError:
                 tp = ""
+                log_to_load_log(f"Failed to get type for item \"{item['nm']}\"! This may cause issues when rendering!", True)
             if tp == "box":  # math
                 ln = 4
                 size = (ln * sz[1] + (item["bfTiles"] * 2)) * renderedCellSize
@@ -183,6 +200,7 @@ def inittolist():
                 except ValueError:
                     rect = pg.rect.Rect([0, 0, 1, 1])
                     img = img.subsurface(rect)
+                    log_to_load_log(f"Failed to separate preview image for item \"{item['nm']}\"! This may cause issues when rendering!", True)
             # srf = img.copy()
             # srf.fill(colr)
             # img.set_colorkey(pg.Color(0, 0, 0))
@@ -212,6 +230,9 @@ def inittolist():
                 "tags": item["tags"]
             }
             solved_copy[cat].append(newitem)
+        log_to_load_log("Successfully loaded tile category \"" + cat + "\" with items:\n[")
+        log_to_load_log(''.join([f"{it['name']}\n" for it in solved_copy[cat]]), nl=False)
+        log_to_load_log("]")
     matcat = "materials 0"
     matcatcount = 0
     solved_copy[matcat] = []
@@ -292,6 +313,7 @@ def getprops(tiles: dict):
             try:
                 img = loadimage(path2props + item["nm"] + ".png")
             except (FileNotFoundError, TypeError):
+                log_to_load_log(f"Failed to load graphics for item \"{item['nm']}\"! Skipping!", True)
                 continue
             img.set_colorkey(pg.color.Color(255, 255, 255))
             img = img.convert(pg.Surface([previewCellSize, previewCellSize]))
@@ -350,6 +372,9 @@ def getprops(tiles: dict):
             newitem["images"] = images
             newitem["color"] = list(colr)
             solved_copy[cat].append(newitem)
+        log_to_load_log("Successfully loaded prop category \"" + cat + "\" with items:\n[")
+        log_to_load_log(''.join([f"{it['nm']}\n" for it in solved_copy[cat]]), nl=False)
+        log_to_load_log("]")
     # solved_copy["material"] = []
     # for cat in tiles:
     #     pass
@@ -359,8 +384,10 @@ def getprops(tiles: dict):
     itemlist = []
     for cat, items in tiles.items():
         if not items:
-            print(cat, items)
+            log_to_load_log(f"Category \"{cat}\" was found empty while trying to load tiles into props!", True)
             continue
+        #else:
+        #    log_to_load_log(f"{cat}: {[j['name'] for _, j in enumerate(items)]}")
 
         if "material" in items[0]["tags"]:
             continue
@@ -382,7 +409,7 @@ def getprops(tiles: dict):
                 returnimage.fill(pg.Color(255, 255, 255))
                 try:
                     img = loadimage(path2graphics + tile["name"] + ".png")
-                except:
+                except Exception:
                     img = pg.transform.scale(notfound, size)
                     returnimage.blit(pg.transform.scale(notfound, size), [0, 0])
                     print(f"{tile['name']} is not Loaded properly")
@@ -403,6 +430,7 @@ def getprops(tiles: dict):
                             errorimg = pg.transform.scale(notfound, size)
                             errorimg.set_colorkey(pg.Color(255, 255, 255))
                             returnimage.blit(errorimg, [0, 0])
+                            log_to_load_log(f"Failed to slice graphics of prop \"{item['nm']}\"! This may cause issues when rendering!", True)
                 #returnimage = pg.transform.scale(returnimage, pg.Vector2(returnimage.get_size()) / renderedCellSize * spritesize)
                 returnimage.set_colorkey(pg.Color(255, 255, 255))
                 returnimage = returnimage.convert_alpha(pg.Surface([previewCellSize, previewCellSize]))
@@ -439,3 +467,15 @@ def turntolingo(string: dict, file):
         fl.write(tolingo(string["WL"]) + "\r")
         fl.write(tolingo(string["PR"]) + "\r")
 
+def log_to_load_log(message, error=False, nl=True):
+    global load_error_count
+    with open(application_path + "\\loadLog.txt", "a") as load_log:
+        load_log.write(f"{'[ERROR]: ' if error else ''}{message}")
+        if nl:
+            load_log.write("\n")
+    print(message)
+    if error:
+        load_error_count += 1
+
+def errorcount_get():
+    return load_error_count

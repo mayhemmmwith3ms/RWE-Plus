@@ -10,3 +10,5 @@ recent.txt
 main.spec
 .vscode/
 compile.bat
+loadLog.txt
+crashLog.txt

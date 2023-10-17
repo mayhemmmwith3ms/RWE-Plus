@@ -3,8 +3,9 @@ import traceback
 
 import requests
 from menus import *
-from tkinter.messagebox import askyesnocancel, askyesno
+from tkinter.messagebox import askyesnocancel, askyesno, showerror
 from tkinter.filedialog import askopenfilename
+import tkinter
 import argparse
 from path_dict import PathDict
 from lingotojson import *
@@ -20,7 +21,6 @@ file2 = ""
 undobuffer = []
 redobuffer = []
 surf: Menu | MenuWithField = None
-
 
 def openlevel(level, window):
     global run, file, file2, redobuffer, undobuffer, surf
@@ -152,7 +152,6 @@ def asktoexit(file, file2):
     else:
         sys.exit(0)
 
-
 def launchload(level):
     global surf, fullscreen, undobuffer, redobuffer, file, file2, run
 
@@ -160,7 +159,7 @@ def launchload(level):
         level = splitfilepath[0] + ".wep"
         if not os.path.exists(level):
             level = splitfilepath[0] + ".txt"
-            
+
     recent = open(path + "recent.txt", "w")
     recent.write(str(level))
     recent.close()
@@ -220,20 +219,39 @@ def launch(level):
     pg.display.flip()
     pg.display.update()
 
-    launchload(level)
-    items = inittolist()
-    propcolors = getcolors()
-    props = getprops(items)
-    file2 = jsoncopy(file)
-    width = uiSettings["global"]["width"]
-    height = uiSettings["global"]["height"]
+    with open(application_path + "\\loadLog.txt", "w") as load_log:
+        load_log.write("Start load!\n")
 
-    window = pg.display.set_mode([width, height], flags=pg.RESIZABLE | (pg.FULLSCREEN * fullscreen))
-    pg.display.set_icon(loadimage(path + "icon.png"))
-    renderer = Renderer(file, items, props, propcolors)
-    renderer.render_all(0)
-    surf = MN(window, renderer)
-    os.system("cls")
+    loadtimetic = time.perf_counter()
+    
+    try:
+        launchload(level)
+        items = inittolist()
+        propcolors = getcolors()
+        props = getprops(items)
+        file2 = jsoncopy(file)
+
+
+        loadtimetoc = time.perf_counter()
+
+        width = uiSettings["global"]["width"]
+        height = uiSettings["global"]["height"]
+
+        window = pg.display.set_mode([width, height], flags=pg.RESIZABLE | (pg.FULLSCREEN * fullscreen))
+        pg.display.set_icon(loadimage(path + "icon.png"))
+        renderer = Renderer(file, items, props, propcolors)
+        renderer.render_all(0)
+        surf = MN(window, renderer)
+        os.system("cls")
+        log_to_load_log(f"Loading completed in {(loadtimetoc - loadtimetic) * 1000:0.6} ms with {errorcount_get()} errors generated")
+    except Exception:
+        log_to_load_log(f"Uncaught exception during load\n{traceback.format_exc()}", error=True)
+
+        root = tkinter.Tk()
+        root.wm_attributes("-topmost", 1)
+        root.withdraw()
+        showerror("OGSCULEDITOR+ Error", "An unhandled exception has occurred during loading\nCheck loadLog.txt for more info", parent=root)
+        raise
     del loadi
     try:
         request = requests.get("https://api.github.com/repos/methylredd/RWE-Plus/releases/latest", timeout=2)
@@ -247,57 +265,67 @@ def launch(level):
         print("Cannot find new RWE+ versions")
     except requests.exceptions.ReadTimeout:
         print("Cannot find new RWE+ versions")
-    run = True
-    while run:
-        doevents(window)
-        if surf.message != "":
-            match surf.message:
-                case "undo":
-                    undohistory()
-                case "redo":
-                    redohistory()
-                case "%":
-                    surf = HK(window, renderer, surf.menu)
-                case "quit":
-                    asktoexit(file, file2)
-                case "fc":
-                    fullscreen = not fullscreen
-                    window = pg.display.set_mode([width, height], flags=pg.RESIZABLE | (pg.FULLSCREEN * fullscreen))
-                    # pg.display.toggle_fullscreen()
-                    surf.resize()
-                case "save":
-                    surf.savef()
-                    file2 = jsoncopy(file)
-                case "saveas":
-                    surf.saveasf()
-                    file2 = jsoncopy(file)
-                case "savetxt":
-                    surf.savef_txt()
-                    file2 = jsoncopy(file)
-                case _:
-                    if surf.message in menulist:
-                        surf = getattr(sys.modules[__name__], surf.message)(window, renderer)
-                    else:
-                        surf.send(surf.message)
-            surf.message = ""
-        if len(surf.historybuffer) > 0:
-            surf.historybuffer.reverse()
-            undobuffer.extend(surf.historybuffer)
-            surf.historybuffer = []
-            redobuffer = []
-            undobuffer = undobuffer[-settings["undo_history_limit"]:]
+    try:
+        run = True
+        while run:
+            doevents(window)
+            if surf.message != "":
+                match surf.message:
+                    case "undo":
+                        undohistory()
+                    case "redo":
+                        redohistory()
+                    case "%":
+                        surf = HK(window, renderer, surf.menu)
+                    case "quit":
+                        asktoexit(file, file2)
+                    case "fc":
+                        fullscreen = not fullscreen
+                        window = pg.display.set_mode([width, height], flags=pg.RESIZABLE | (pg.FULLSCREEN * fullscreen))
+                        # pg.display.toggle_fullscreen()
+                        surf.resize()
+                    case "save":
+                        surf.savef()
+                        file2 = jsoncopy(file)
+                    case "saveas":
+                        surf.saveasf()
+                        file2 = jsoncopy(file)
+                    case "savetxt":
+                        surf.savef_txt()
+                        file2 = jsoncopy(file)
+                    case _:
+                        if surf.message in menulist:
+                            surf = getattr(sys.modules[__name__], surf.message)(window, renderer)
+                        else:
+                            surf.send(surf.message)
+                surf.message = ""
+            if len(surf.historybuffer) > 0:
+                surf.historybuffer.reverse()
+                undobuffer.extend(surf.historybuffer)
+                surf.historybuffer = []
+                redobuffer = []
+                undobuffer = undobuffer[-settings["undo_history_limit"]:]
 
-        if not pg.key.get_pressed()[pg.K_LCTRL]:
-            for i in surf.uc:
-                if pg.key.get_pressed()[i]:
-                    keypress(window)
-        if uiSettings[surf.menu].get("menucolor") is not None:
-            window.fill(pg.color.Color(uiSettings[surf.menu]["menucolor"]))
-        else:
-            window.fill(pg.color.Color(uiSettings["global"]["color"]))
-        surf.blit()
-        pg.display.flip()
-        pg.display.update()
+            if not pg.key.get_pressed()[pg.K_LCTRL]:
+                for i in surf.uc:
+                    if pg.key.get_pressed()[i]:
+                        keypress(window)
+            if uiSettings[surf.menu].get("menucolor") is not None:
+                window.fill(pg.color.Color(uiSettings[surf.menu]["menucolor"]))
+            else:
+                window.fill(pg.color.Color(uiSettings["global"]["color"]))
+            surf.blit()
+            pg.display.flip()
+            pg.display.update()
+    except Exception:
+        with open(application_path + "\\crashLog.txt", "w") as crash_log:
+            crash_log.write(f"[ERROR] Uncaught exception during runtime\n{traceback.format_exc()}")
+
+            root = tkinter.Tk()
+            root.wm_attributes("-topmost", 1)
+            root.withdraw()
+            showerror("OGSCULEDITOR+ Error", "An unhandled exception has occurred during runtime\nCheck crashLog.txt for more info", parent=root)
+        raise
 
 
 def loadmenu():
@@ -338,9 +366,9 @@ def loadmenu():
                 surf = load(window, renderer)
             case "recent":
                 file = None
-
                 if(os.path.exists(path + "recent.txt")):
-                    file = open(path + "recent.txt").read()
+                    with open(path + "recent.txt") as recent_level:
+                        file = recent_level.read()
                     
                 if file is not None and os.path.exists(file):
                     launch(file)
