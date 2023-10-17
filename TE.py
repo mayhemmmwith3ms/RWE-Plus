@@ -1092,6 +1092,7 @@ class TE(MenuWithField):
                         p = makearr([px + 1, py + 1], "point")
                         self.data["TE"]["tlMatrix"][xpos][ypos][self.layer + 1] = {"tp": "tileBody",
                             "data": [p, self.layer + 1]}
+                        self.area[xpos][ypos] = False
                         if fg:
                             self.data["GE"][xpos][ypos][self.layer + 1][0] = csp
         self.mpos = 1
