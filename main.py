@@ -141,7 +141,10 @@ def redohistory():
 def asktoexit(file, file2):
     global run, surf
     if file2 != file:
-        ex = askyesnocancel("Exit from RWE+", "Do you want to save Changes?")
+        root = tkinter.Tk()
+        root.wm_attributes("-topmost", 1)
+        root.withdraw()
+        ex = askyesnocancel("Exit from OGSCULEDITOR+", "Do you want to save changes?", parent=root)
         if ex:
             surf.savef()
             sys.exit(0)
