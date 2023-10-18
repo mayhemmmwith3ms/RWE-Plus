@@ -67,6 +67,7 @@ class PE(MenuWithField):
         self.copymode = False
         self.renderprop = True
         self.modpress = False
+        self.block_next_placement = False
 
         self.lastPropPivotPressed = False
         self.propPivotPoint = []
@@ -320,44 +321,45 @@ class PE(MenuWithField):
 
             if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
                 self.mousp = False
-                if self.findparampressed("propvariation_change"):
-                    self.change_variation_up()
-                    self.settingsupdate()
-                elif self.delmode:
-                    self.modpress = True
-                    if len(self.data["PR"]["props"]) > 0:
-                        *_, near = self.find_nearest(*posoffset)
-                        self.data["PR"]["props"].pop(near)
-                        self.renderer.props_full_render(self.layer)
-                        self.rfa()
-                        self.updatehistory([["PR", "props"]])
-                elif self.copymode:
-                    self.modpress = True
-                    if len(self.data["PR"]["props"]) > 0:
-                        name, _, near = self.find_nearest(*posoffset)
-                        self.setprop(name[1])
-                        self.depth = -name[0]
-                        quad = []
-                        for q in name[3]:
-                            quad.append(pg.Vector2(toarr(q, "point")))
-                        quads2 = quad.copy()
-                        qv = sum(quad, start=pg.Vector2(0, 0)) / 4
-                        for i, q in enumerate(quad):
-                            vec = pg.Vector2(q) - qv
-                            vec = [round(vec.x, 4), round(vec.y, 4)]
-                            quads2[i] = vec
-                        self.quads = quads2
-                        self.cursorRotation = -(pg.Vector2(self.quads[2]) - pg.Vector2(self.quads[3])).angle_to(pg.Vector2(1, 0))
-                        self.prop_settings = name[4]["settings"]
-                        self.updateproptransform()
-                elif self.selectedprop["tp"] == "long":
-                    self.rectdata[0] = posonfield.copy()
-                    self.rectdata[1] = mpos.copy()
-                    self.transform_reset()
-                else:
-                    self.place()
+                if not self.block_next_placement:
+                    if self.findparampressed("propvariation_change"):
+                        self.change_variation_up()
+                        self.settingsupdate()
+                    elif self.delmode:
+                        self.modpress = True
+                        if len(self.data["PR"]["props"]) > 0:
+                            *_, near = self.find_nearest(*posoffset)
+                            self.data["PR"]["props"].pop(near)
+                            self.renderer.props_full_render(self.layer)
+                            self.rfa()
+                            self.updatehistory([["PR", "props"]])
+                    elif self.copymode:
+                        self.modpress = True
+                        if len(self.data["PR"]["props"]) > 0:
+                            name, _, near = self.find_nearest(*posoffset)
+                            self.setprop(name[1])
+                            self.depth = -name[0]
+                            quad = []
+                            for q in name[3]:
+                                quad.append(pg.Vector2(toarr(q, "point")))
+                            quads2 = quad.copy()
+                            qv = sum(quad, start=pg.Vector2(0, 0)) / 4
+                            for i, q in enumerate(quad):
+                                vec = pg.Vector2(q) - qv
+                                vec = [round(vec.x, 4), round(vec.y, 4)]
+                                quads2[i] = vec
+                            self.quads = quads2
+                            self.cursorRotation = -(pg.Vector2(self.quads[2]) - pg.Vector2(self.quads[3])).angle_to(pg.Vector2(1, 0))
+                            self.prop_settings = name[4]["settings"]
+                            self.updateproptransform()
+                    elif self.selectedprop["tp"] == "long":
+                        self.rectdata[0] = posonfield.copy()
+                        self.rectdata[1] = mpos.copy()
+                        self.transform_reset()
+                    else:
+                        self.place()
             elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
-                if self.selectedprop["tp"] == "long" and self.renderprop:
+                if self.selectedprop["tp"] == "long" and self.renderprop and not self.block_next_placement:
                     self.transform_reset()
                     p1 = self.rectdata[0]
                     p2 = posonfield
@@ -413,10 +415,11 @@ class PE(MenuWithField):
 
             elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
                 self.mousp = True
-                if self.selectedprop["tp"] == "long" and self.renderprop and not self.modpress:
+                if self.selectedprop["tp"] == "long" and self.renderprop and not self.modpress and not self.block_next_placement:
                     self.place((self.rectdata[0] + posonfield) / 2)
                     self.transform_reset()
                 self.modpress = False
+                self.block_next_placement = False
 
             if bp[2] == 1 and self.mousp2 and (self.mousp and self.mousp1):
                 self.mousp2 = False
@@ -821,6 +824,7 @@ class PE(MenuWithField):
         if name is None:
             return
         self.setprop(name)
+        self.block_next_placement = True
 
     def place(self, longpos=None):
         if not self.renderprop:

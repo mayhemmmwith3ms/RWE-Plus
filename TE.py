@@ -105,9 +105,10 @@ class TE(MenuWithField):
                 if self.brush_active:
                     self.brushpaint(pg.Vector2(cposxo, cposyo))
                 elif self.cols:
-                    self.place(cposxo, cposyo)
-                    self.fieldadd.blit(self.tileimage["image"],
-                                    [cposxo * self.size, cposyo * self.size])
+                    if not self.blockNextPlacement:
+                        self.place(cposxo, cposyo)
+                        self.fieldadd.blit(self.tileimage["image"],
+                                        [cposxo * self.size, cposyo * self.size])
             if self.is_macro(self.tileimage):
                 match self.tileimage["tp"]:
                     case "path":
@@ -1129,6 +1130,7 @@ class TE(MenuWithField):
         cat = self.findcat(name)
         self.selectcat(cat)
         self.set(cat, name)
+        self.blockNextPlacement = True
 
     def copytile(self):
         posoffset = self.posoffset
