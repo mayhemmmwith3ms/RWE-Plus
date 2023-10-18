@@ -45,12 +45,11 @@ class RopeModel:
         self.segments = []
         self.friction = prop["friction"]
         self.airFric = prop["airFric"]
-        self.segRad = prop["segRad"]
+        self.segRad = prop["segRad"] / 2
         self.rigid = prop["rigid"]
         self.edgeDirection = prop["edgeDirection"]
         self.selfPush = prop["selfPush"]
         self.sourcePush = prop["sourcePush"]
-
         numberOfSegments = int(max((Diag(pA, pB) / self.segmentLength) * lengthFac, 3))
         step = Diag(pA, pB) / numberOfSegments
         for i in range(1, numberOfSegments):
@@ -171,7 +170,7 @@ class RopeModel:
                 dir = MoveToPoint(self.segments[A]["pos"], terrainPos, 1)
                 dist = Diag(self.segments[A]["pos"], terrainPos) - 1
                 if dist < self.segRad:
-                    mov = dir * (dist - self.segRad) * 2
+                    mov = dir * (dist - self.segRad)
                     self.segments[A]["pos"] += mov
                     self.segments[A]["vel"] = Vector2(0, 0) # not a total fix
 
