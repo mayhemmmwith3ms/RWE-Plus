@@ -586,6 +586,7 @@ class MenuWithField(Menu):
         self.layer = self.renderer.lastlayer
         self.lastTileLayer = self.layer
         self.emptyarea()
+        self.renderer.rendergrid()
         if renderall:
             self.rfa()
 
@@ -662,7 +663,7 @@ class MenuWithField(Menu):
             # self.renderer.props_full_render()
             self.f.blit(self.renderer.surf_props, [0, 0])
         if self.drawgrid:
-            self.rendergrid()
+            self.f.blit(self.renderer.grid_surface, [0, 0])
         if self.draweffects != 0 and self.draweffects <= len(self.data['FE']['effects']):
             self.f.blit(self.renderer.surf_effect, [0, 0])
             # self.rendermatrix(self.f, image1size, self.data["FE"]["effects"][self.draweffects - 1]["mtrx"])
@@ -1049,25 +1050,6 @@ class MenuWithField(Menu):
         pos = pg.Vector2(toarr(cam, "point")) // previewToRenderedFactor
         p = (pos / previewCellSize) * self.size + self.field.rect.topleft + self.offset * self.size
         return pg.Rect([p, [camw * self.size, camh * self.size]])
-
-    def rendergrid(self):
-        w, h = self.f.get_size()
-        gridsurf = pg.Surface([w, h]).convert_alpha(self.f)
-        gridsurf.fill([0, 0, 0, 0])
-        col = [255, 255, 255]
-        col2 = [180, 180, 180]
-        for x in range(0, w, previewCellSize):
-            if x % (previewCellSize * 2) == 0:
-                pg.draw.line(gridsurf, col, [x, 0], [x, h])
-            else:
-                pg.draw.line(gridsurf, col2, [x, 0], [x, h])
-        for y in range(0, h, previewCellSize):
-            if y % (previewCellSize * 2) == 0:
-                pg.draw.line(gridsurf, col, [0, y], [w, y])
-            else:
-                pg.draw.line(gridsurf, col2, [0, y], [w, y])
-        gridsurf.set_alpha(30)
-        self.f.blit(gridsurf, [0, 0])
 
     def findprop(self, name, cat=None):
         if cat is not None:

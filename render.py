@@ -121,6 +121,7 @@ class Renderer:
         self.offset = pg.Vector2(0, 0)
         self.size = previewCellSize
         self.color_geo = False
+        self.grid_surface: pg.surface = pg.Surface((previewCellSize, previewCellSize))
 
         if render:
             size = [len(data["GE"]) * previewCellSize, len(data["GE"][0]) * previewCellSize]
@@ -532,6 +533,24 @@ class Renderer:
             cell = self.data["FE"]["effects"][indx]["mtrx"][coord[0]][coord[1]]
             col = mix.lerp(mixcol_fill, cell / 100)
             self.surf_effect.fill(col, [coord[0] * previewCellSize, coord[1] * previewCellSize, previewCellSize, previewCellSize])
+
+    def rendergrid(self):
+        w, h = [self.levelwidth * previewCellSize, self.levelheight * previewCellSize]
+        self.grid_surface = pg.Surface([w, h]).convert_alpha()
+        self.grid_surface.fill([0, 0, 0, 0])
+        col = [255, 255, 255]
+        col2 = [180, 180, 180]
+        for x in range(0, w, previewCellSize):
+            if x % (previewCellSize * 2) == 0:
+                pg.draw.line(self.grid_surface, col, [x, 0], [x, h])
+            else:
+                pg.draw.line(self.grid_surface, col2, [x, 0], [x, h])
+        for y in range(0, h, previewCellSize):
+            if y % (previewCellSize * 2) == 0:
+                pg.draw.line(self.grid_surface, col, [0, y], [w, y])
+            else:
+                pg.draw.line(self.grid_surface, col2, [0, y], [w, y])
+        self.grid_surface.set_alpha(30)
 
     def GetTileHeadFromTilePart(self, part):
         if part["tp"] in ["default", "material"]:

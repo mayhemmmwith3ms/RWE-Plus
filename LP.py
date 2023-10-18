@@ -233,6 +233,7 @@ class LP(MenuWithField):
         self.resizeimage(x, y, w, h)
         self.recount_image()
         self.data["EX2"]["size"] = makearr([self.levelwidth, self.levelheight], "point")
+        self.renderer.rendergrid()
         #if x != 0 or y != 0:
         #    for xp, xT in enumerate(self.data["TE"]["tlMatrix"]):
         #        for yp, yT in enumerate(xT):
