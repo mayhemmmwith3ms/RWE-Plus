@@ -1,4 +1,4 @@
-from lingotojson import turntolingo
+from lingotojson import turntolingo  # noqa: F401
 from menuclass import *
 import random
 

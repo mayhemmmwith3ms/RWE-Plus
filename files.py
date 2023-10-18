@@ -111,8 +111,8 @@ def solveeffects(effects):
                 d["options"].append(i)
             for indx, option in enumerate(d["options"]):
                 if option[0].lower() == "layers": # idk why, but it is what it is
-                    l = d["options"].pop(indx)
-                    d["options"].insert(1, l)
+                    lr = d["options"].pop(indx)
+                    d["options"].insert(1, lr)
                     break
             efcat["efs"].append(d)
         ef.append(efcat)

@@ -41,8 +41,8 @@ def mts(text: str = "", col=None, fontsize=ui_settings["global"]["fontsize"]):
     rendered = []
     w = 0
     poses = []
-    for l in items:
-        render = fontr.render(l, True, col, None)
+    for ln in items:
+        render = fontr.render(ln, True, col, None)
         rendered.append(render)
         h = render.get_height()
         poses.append(h)

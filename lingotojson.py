@@ -292,9 +292,9 @@ def getcolors():
     for line in solved:
         if line[0] != '[':
             continue
-        l = tojson(line)
-        l[1] = toarr(l[1], "color")
-        cols.append(l)
+        ln = tojson(line)
+        ln[1] = toarr(ln[1], "color")
+        cols.append(ln)
     return cols
 
 
