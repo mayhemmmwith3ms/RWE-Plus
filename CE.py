@@ -70,8 +70,8 @@ class CE(MenuWithField):
                 val = makearr(val, "point")
                 self.data["CM"]["cameras"][self.heldindex] = val
 
-            if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
-                self.mousp = False
+            if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
+                self.last_lmb = False
                 if self.mode == "move":
                     if not self.held:
                         self.pickupcamera()
@@ -79,7 +79,7 @@ class CE(MenuWithField):
                         self.placecamera()
                 else:
                     self.setcursor(pg.SYSTEM_CURSOR_SIZEALL)
-            elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
+            elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                 if self.mode == "edit" and self.held:
                     quadindx = self.getquad(self.heldindex)
                     rect = self.getcamerarect(self.data["CM"]["cameras"][self.heldindex])
@@ -93,10 +93,10 @@ class CE(MenuWithField):
                         self.data["CM"]["quads"][self.heldindex][quadindx] = \
                             [o, round(min(r / 100 / self.size * preview_cell_size, 1), 4)]
 
-            elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
+            elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                 self.setcursor()
                 self.detecthistory(["CM", "quads", self.heldindex])
-                self.mousp = True
+                self.last_lmb = True
                 self.rfa()
 
             self.movemiddle(bp)

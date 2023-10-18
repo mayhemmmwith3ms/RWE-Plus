@@ -81,10 +81,10 @@ class TT(MenuWithField):
             pos2 = self.pos2
             pg.draw.rect(self.surface, cursor, [pos2, [self.size, self.size]], 1)
             posoffset = self.posoffset
-            if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
-                self.mousp = False
+            if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
+                self.last_lmb = False
                 self.emptyarea()
-            elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1) and self.step > 5:
+            elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb) and self.step > 5:
                 placeblock = 1
                 if self.selectedtool == "AR":
                     placeblock = 0
@@ -93,25 +93,25 @@ class TT(MenuWithField):
                 if (0 <= posoffset[0] < self.levelwidth) and (0 <= posoffset[1] < self.levelheight):
                     self.area[int(posoffset[0])][int(posoffset[1])] = False
                     self.data["GE"][int(posoffset[0])][int(posoffset[1])][self.layer][0] = placeblock
-            elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
+            elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                 if self.step == 6 or (self.selectedtool == "AR" and self.step == 8) \
                                   or (self.selectedtool == "SL" and self.step == 10):
                     self.enablenext()
-                self.mousp = True
+                self.last_lmb = True
                 self.render_geo_area()
                 self.rfa()
 
-            if bp[2] == 1 and self.mousp2 and (self.mousp and self.mousp1):
-                self.mousp2 = False
+            if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
+                self.last_rmb = False
                 self.rectdata = [posoffset, pg.Vector2(0, 0), pos2]
                 self.emptyarea()
-            elif bp[2] == 1 and not self.mousp2 and (self.mousp and self.mousp1) and self.step > 6:
+            elif bp[2] == 1 and not self.last_rmb and (self.last_lmb and self.last_mmb) and self.step > 6:
                 self.rectdata[1] = posoffset - self.rectdata[0]
                 rect = self.vec2rect(self.rectdata[2], pos2)
                 tx = f"{int(rect.w / self.size)}, {int(rect.h / self.size)}"
                 widgets.fastmts(self.surface, tx, *mpos, white)
                 pg.draw.rect(self.surface, select, rect, 5)
-            elif bp[2] == 0 and not self.mousp2 and (self.mousp and self.mousp1):
+            elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
                 if self.step == 7 or (self.selectedtool == "AR" and self.step == 8) \
                                   or (self.selectedtool == "SL" and self.step == 10):
                     self.enablenext()
@@ -130,7 +130,7 @@ class TT(MenuWithField):
                 self.detecthistory(["GE"])
                 self.renderer.geo_render_area(self.area, self.layer)
                 self.rfa()
-                self.mousp2 = True
+                self.last_rmb = True
 
             if self.step > 0:
                 self.movemiddle(bp)

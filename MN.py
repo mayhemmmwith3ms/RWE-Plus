@@ -11,9 +11,9 @@ class MN(MenuWithField):
         super().__init__(surface, "MN", renderer)
         tips = set(open(path + "tips.txt", "r").readlines())
         self.tips = list(tips)
-        self.mousp = True
-        self.mousp1 = True
-        self.mousp2 = True
+        self.last_lmb = True
+        self.last_mmb = True
+        self.last_rmb = True
         self.tips.remove("\n")
         self.nexttip()
         self.resize()

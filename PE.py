@@ -319,8 +319,8 @@ class PE(MenuWithField):
 
             drawlong = False
 
-            if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
-                self.mousp = False
+            if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
+                self.last_lmb = False
                 if not self.block_next_placement:
                     if self.findparampressed("propvariation_change"):
                         self.change_variation_up()
@@ -358,7 +358,7 @@ class PE(MenuWithField):
                         self.transform_reset()
                     else:
                         self.place()
-            elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
+            elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                 if self.selectedprop["tp"] == "long" and self.renderprop and not self.block_next_placement:
                     self.transform_reset()
                     p1 = self.rectdata[0]
@@ -413,16 +413,16 @@ class PE(MenuWithField):
 
                     drawlong = True
 
-            elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
-                self.mousp = True
+            elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                self.last_lmb = True
                 if self.selectedprop["tp"] == "long" and self.renderprop and not self.modpress and not self.block_next_placement:
                     self.place((self.rectdata[0] + posonfield) / 2)
                     self.transform_reset()
                 self.modpress = False
                 self.block_next_placement = False
 
-            if bp[2] == 1 and self.mousp2 and (self.mousp and self.mousp1):
-                self.mousp2 = False
+            if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
+                self.last_rmb = False
                 if self.findparampressed("propvariation_change"):
                     self.change_variation_down()
                     self.settingsupdate()
@@ -430,8 +430,8 @@ class PE(MenuWithField):
                     self.depth_down()
                 else:
                     self.depth_up()
-            elif bp[2] == 0 and not self.mousp2 and (self.mousp and self.mousp1):
-                self.mousp2 = True
+            elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
+                self.last_rmb = True
 
             drawPreviewPos = mpos - pg.Vector2(self.selectedimage.get_size()) / 2
             if not any(self.helds):

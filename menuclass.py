@@ -36,9 +36,9 @@ class Menu:
         self.recaption()
         print("Entered " + self.menu)
 
-        self.mousp = False
-        self.mousp1 = True
-        self.mousp2 = True
+        self.last_lmb = False
+        self.last_mmb = True
+        self.last_rmb = True
 
         self.justChangedZoom = False
         self.size = preview_cell_size
@@ -596,15 +596,15 @@ class MenuWithField(Menu):
         self.__init__(self.surface, self.renderer)
 
     def movemiddle(self, bp):
-        if bp[1] == 1 and self.mousp1 and (self.mousp2 and self.mousp):
+        if bp[1] == 1 and self.last_mmb and (self.last_rmb and self.last_lmb):
             self.rectdata[0] = self.pos
             self.rectdata[1] = self.offset
-            self.mousp1 = False
-        elif bp[1] == 1 and not self.mousp1 and (self.mousp2 and self.mousp):
+            self.last_mmb = False
+        elif bp[1] == 1 and not self.last_mmb and (self.last_rmb and self.last_lmb):
             self.offset = self.rectdata[1] - (self.rectdata[0] - self.pos)
-        elif bp[1] == 0 and not self.mousp1 and (self.mousp2 and self.mousp):
+        elif bp[1] == 0 and not self.last_mmb and (self.last_rmb and self.last_lmb):
             self.field.field.fill(self.field.color)
-            self.mousp1 = True
+            self.last_mmb = True
             self.renderfield()
 
     def drawborder(self):

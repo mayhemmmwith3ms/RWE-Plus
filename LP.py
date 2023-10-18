@@ -75,14 +75,14 @@ class LP(MenuWithField):
                 pg.draw.rect(self.surface, red, rect, 5)
             else:
                 self.setcursor()
-            if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
-                self.mousp = False
+            if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
+                self.last_lmb = False
                 if self.tool == "env":
                     self.moveoffset.y = self.data["WL"]["waterLevel"] + int(posoffset.y)
                 elif self.tool == "size":
                     self.heldpoint = heldpoint
                     self.moveoffset = pos
-            elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
+            elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                 if self.tool == "env":
                     self.data["WL"]["waterLevel"] = max(int(self.moveoffset.y - posoffset.y), 0)
                 elif self.tool == "size":
@@ -121,7 +121,7 @@ class LP(MenuWithField):
 
                     self.data["EX2"]["extraTiles"] = self.btiles
                     widgets.fastmts(self.surface, f"X:{int(chx)}, Y:{int(chy)}", mpos.x, mpos.y, white)
-            elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
+            elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                 if self.tool == "env":
                     self.updatehistory([["WL", "waterLevel"]])
                 if self.tool == "size":
@@ -132,7 +132,7 @@ class LP(MenuWithField):
                     self.updatehistory([["EX2", "extraTiles"]])
                     self.heldpoint = ""
                 self.recaption()
-                self.mousp = True
+                self.last_lmb = True
                 self.rfa()
             self.movemiddle(bp)
 

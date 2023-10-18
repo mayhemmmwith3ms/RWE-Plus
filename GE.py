@@ -294,44 +294,44 @@ class GE(MenuWithField):
             
             if settings["hold_key_rect_drag"]:
                 if not self.rectDragActive:
-                    if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
+                    if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
                         self.begin_draw_drag()
-                        self.mousp = False
-                    elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
+                        self.last_lmb = False
+                    elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                         self.update_draw_drag()
-                    elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
+                    elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                         self.end_draw_drag()
-                        self.mousp = True
+                        self.last_lmb = True
                 else:
-                    if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
+                    if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
                         self.begin_rect_drag()
-                        self.mousp = False
-                    elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
+                        self.last_lmb = False
+                    elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                         self.update_rect_drag()
-                    elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
+                    elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                         self.end_rect_drag()
-                        self.mousp = True
+                        self.last_lmb = True
 
                 if bp[0] != 1:
                     self.rectDragActive = self.findparampressed("alt_func")
             else:
-                if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
+                if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
                     self.begin_draw_drag()
-                    self.mousp = False
-                elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
+                    self.last_lmb = False
+                elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                     self.update_draw_drag()
-                elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
+                elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                     self.end_draw_drag()
-                    self.mousp = True
+                    self.last_lmb = True
 
-                if bp[2] == 1 and self.mousp2 and (self.mousp and self.mousp1):
+                if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
                     self.begin_rect_drag()
-                    self.mousp2 = False
-                elif bp[2] == 1 and not self.mousp2 and (self.mousp and self.mousp1):
+                    self.last_rmb = False
+                elif bp[2] == 1 and not self.last_rmb and (self.last_lmb and self.last_mmb):
                     self.update_rect_drag()
-                elif bp[2] == 0 and not self.mousp2 and (self.mousp and self.mousp1):
+                elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
                     self.end_rect_drag()
-                    self.mousp2 = True
+                    self.last_rmb = True
 
             self.movemiddle(bp)
 

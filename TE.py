@@ -427,7 +427,7 @@ class TE(MenuWithField):
                         pg.draw.rect(self.surface, patternPrevCol, [pos2.x - bord, pos2.y - bord, self.size + bord * 2, self.size + bord * 2], 1)
 
                 if self.tool == 0:
-                    if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
+                    if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
                         if self.justPlacedChainHolders:
                             for chPos in self.justPlacedChainHolders:
                                 self.data["TE"]["tlMatrix"][chPos[0]][chPos[1]][chPos[2]]["data"].append(makearr([cposxo, cposyo], "point"))
@@ -435,39 +435,39 @@ class TE(MenuWithField):
                             self.justPlacedChainHolders.clear()
                         else:
                             self.begin_drag(True)
-                            self.mousp = False
-                    elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
+                            self.last_lmb = False
+                    elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                         self.update_drag(True)
-                    elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
+                    elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                         self.end_drag(True)
-                        self.mousp = True
+                        self.last_lmb = True
 
-                    if bp[2] == 1 and self.mousp2 and (self.mousp and self.mousp1):
+                    if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
                         self.begin_drag(False)
-                        self.mousp2 = False
-                    elif bp[2] == 1 and not self.mousp2 and (self.mousp and self.mousp1):
+                        self.last_rmb = False
+                    elif bp[2] == 1 and not self.last_rmb and (self.last_lmb and self.last_mmb):
                         self.update_drag(False)
-                    elif bp[2] == 0 and not self.mousp2 and (self.mousp and self.mousp1):
+                    elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
                         self.end_drag(False)
-                        self.mousp2 = True
+                        self.last_rmb = True
                 else:
-                    if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
+                    if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
                         self.begin_rect_drag(True)
-                        self.mousp = False
-                    elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
+                        self.last_lmb = False
+                    elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                         self.update_rect_drag(True)
-                    elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
+                    elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                         self.end_rect_drag(True)
-                        self.mousp = True
+                        self.last_lmb = True
 
-                    if bp[2] == 1 and self.mousp2 and (self.mousp and self.mousp1):
+                    if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
                         self.begin_rect_drag(False)
-                        self.mousp2 = False
-                    elif bp[2] == 1 and not self.mousp2 and (self.mousp and self.mousp1):
+                        self.last_rmb = False
+                    elif bp[2] == 1 and not self.last_rmb and (self.last_lmb and self.last_mmb):
                         self.update_rect_drag(False)
-                    elif bp[2] == 0 and not self.mousp2 and (self.mousp and self.mousp1):
+                    elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
                         self.end_rect_drag(False)
-                        self.mousp2 = True
+                        self.last_rmb = True
             else:
                 if not self.is_macro(self.tileimage):
                     if not (self.tileimage["size"][0] == 1 and self.tileimage["size"][1] == 1):
@@ -510,10 +510,10 @@ class TE(MenuWithField):
                         pg.draw.rect(self.surface, select, rect, 3)
                     else:
                         pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize, 5)
-                if bp[0] == 1 and self.mousp and (self.mousp2 and self.mousp1):
-                    self.mousp = False
+                if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
+                    self.last_lmb = False
                     self.emptyarea()
-                elif bp[0] == 1 and not self.mousp and (self.mousp2 and self.mousp1):
+                elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                     # if (0 <= posoffset[0] < self.levelwidth) and (0 <= posoffset[1] < self.levelheight):
                     #     pass
                     if not self.is_macro(self.tileimage) or self.tool == 0:
@@ -525,21 +525,21 @@ class TE(MenuWithField):
                         elif self.tool == 1:
                             self.destroy(posoffset.x, posoffset.y)
                             pg.draw.rect(self.fieldadd, red, [posoffset.x * self.size, posoffset.y * self.size, self.size, self.size])
-                elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
+                elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                     self.detecthistory(["TE", "tlMatrix"], not fg)
                     if fg:
                         self.detecthistory(["GE"])
                     self.fieldadd.fill(white)
-                    self.mousp = True
+                    self.last_lmb = True
                     self.renderer.tiles_render_area(self.area, self.layer)
                     self.renderer.geo_render_area(self.area, self.layer)
                     self.rfa()
 
-                if bp[2] == 1 and self.mousp2 and (self.mousp and self.mousp1):
-                    self.mousp2 = False
+                if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
+                    self.last_rmb = False
                     self.rectdata = [posoffset, pg.Vector2(0, 0), pos2]
                     self.emptyarea()
-                elif bp[2] == 1 and not self.mousp2 and (self.mousp and self.mousp1):
+                elif bp[2] == 1 and not self.last_rmb and (self.last_lmb and self.last_mmb):
                     self.rectdata[1] = posoffset - self.rectdata[0]
 
                     righthalf = mpos[0] > self.rectdata[2].x + 10
@@ -566,7 +566,7 @@ class TE(MenuWithField):
                     tx = f"{int(rect.w / self.size)}, {int(rect.h / self.size)}"
                     widgets.fastmts(self.surface, tx, *mpos, white)
                     pg.draw.rect(self.surface, select, rect, 1)
-                elif bp[2] == 0 and not self.mousp2 and (self.mousp and self.mousp1):
+                elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
                     # self.rectdata = [self.rectdata[0], posoffset]
                     righthalf = mpos[0] > self.rectdata[2].x + 10
                     upperhalf = mpos[1] > self.rectdata[2].y + 10
@@ -662,7 +662,7 @@ class TE(MenuWithField):
                     self.renderer.tiles_render_area(self.area, self.layer)
                     self.renderer.geo_render_area(self.area, self.layer)
                     self.rfa()
-                    self.mousp2 = True
+                    self.last_rmb = True
         else:
             if not self.matshow:
                 for index, button in enumerate(self.buttonslist[:-1]):
