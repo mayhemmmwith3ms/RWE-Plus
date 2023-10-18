@@ -3,6 +3,7 @@ import render
 import widgets
 import pyperclip  # noqa: F401
 from render import *
+import tkinter
 from tkinter.filedialog import askopenfilename, asksaveasfilename  # noqa: F401
 import concurrent.futures
 import time
@@ -96,10 +97,7 @@ class Menu:
             self.data["path"] = os.path.splitext(self.data["path"])[0] + ".wep"
             print(os.path.splitext(self.data["path"])[0] + ".wep")
         else:
-            if not settings["native_file_browser"]:
-                savedest = self.asksaveasfilename()
-            else:
-                savedest = asksaveasfilename(defaultextension=[".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
+            savedest = self.save_file_dialog()
             if savedest != "" and savedest is not None:
                 open(savedest, "w").write(json.dumps(self.data))
                 self.data["level"] = os.path.basename(savedest)
@@ -342,10 +340,7 @@ class Menu:
         return inputfile.replace("\n", "")
 
     def savef_txt(self):
-        if not settings["native_file_browser"]:
-            savedest = self.asksaveasfilename(defaultextension=[".txt"])
-        else:
-            savedest = asksaveasfilename(defaultextension=[".txt"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
+        savedest = self.save_file_dialog(extension=[".txt"])
         if savedest != "":
             turntolingo(self.data, open(savedest, "w"))
 
@@ -528,6 +523,27 @@ class Menu:
             string = string.replace(fgroup[0], rep)
         # string = re.sub(pat, rep, text, flags=re.IGNORECASE)
         return string
+    
+    def save_file_dialog(self, extension=[".wep"]):
+        if not settings["native_file_browser"]:
+            level = self.asksaveasfilename(defaultextension=extension)
+        else:
+            root = tkinter.Tk()
+            root.wm_attributes("-topmost", 1)
+            root.withdraw()
+            level = asksaveasfilename(defaultextension=extension, parent=root)
+        return level
+    
+    def open_file_dialog(self, extension=[".txt", ".wep"]):
+        if not settings["native_file_browser"]:
+            level = self.asksaveasfilename(defaultextension=extension)
+        else:
+            root = tkinter.Tk()
+            root.wm_attributes("-topmost", 1)
+            root.withdraw()
+            level = askopenfilename(defaultextension=extension, initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects", parent=root)
+        return level
+
 
     @property
     def custom_info(self):

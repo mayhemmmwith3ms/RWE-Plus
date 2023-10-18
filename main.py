@@ -4,7 +4,7 @@ import traceback
 import requests
 from menus import *
 from tkinter.messagebox import askyesnocancel, askyesno, showerror
-from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askopenfilename  # noqa: F401
 import tkinter
 import argparse
 from path_dict import PathDict
@@ -78,10 +78,8 @@ def keypress(window):
             surf.savef()
             run = False
         case "open":
-            if not settings["native_file_browser"]:
-                openlevel(surf.asksaveasfilename(defaultextension=[".txt", ".wep"]), window)
-            else:
-                openlevel(askopenfilename(defaultextension=[".txt", ".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects"), window)
+            openlevel(surf.open_file_dialog(), window)
+
 
 
 def undohistory():
@@ -352,10 +350,7 @@ def loadmenu():
             case "new":
                 launch(-1)
             case "open":
-                if not settings["native_file_browser"]:
-                    file = surf.asksaveasfilename(defaultextension=[".txt", ".wep"])
-                else:
-                    file = askopenfilename(defaultextension=[".txt", ".wep"], initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects")
+                file = surf.open_file_dialog()
                 if file is not None and os.path.exists(file):
                     launch(file)
                     surf = load(window, renderer)

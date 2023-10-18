@@ -200,10 +200,7 @@ class LE(MenuWithField):
 
     def save(self):
         if self.data["path"] == "":
-            if not settings["native_file_browser"]:
-                level = self.asksaveasfilename(defaultextension=[".wep"])
-            else:
-                level = asksaveasfilename(defaultextension=[".wep"])
+            level = self.save_file_dialog()
             try:
                 self.data["level"] = os.path.basename(level)
                 self.data["path"] = level
