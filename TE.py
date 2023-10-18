@@ -1096,7 +1096,7 @@ class TE(MenuWithField):
         self.tool = 1
 
     def changetools(self):
-        if not settings["hold_key_rect_drag"]:
+        if not settings["hold_key_rect_drag"] and self.last_lmb and self.last_rmb:
             self.tool = abs(1 - self.tool)
         self.brushsize = 1
 
