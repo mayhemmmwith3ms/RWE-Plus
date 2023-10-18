@@ -689,7 +689,7 @@ class MenuWithField(Menu):
         return False
 
     def blit(self, draw=True):
-        if not self.renderer.commsgeocolors:
+        if not self.renderer.color_geo:
             self.renderer.lastlayer = self.layer
         self.renderer.offset = self.offset
         self.renderer.size = self.size
@@ -742,7 +742,7 @@ class MenuWithField(Menu):
         if self.drawtiles:
             self.lastTileLayer = self.layer
         self.mpos = 1
-        if not self.renderer.commsgeocolors:
+        if not self.renderer.color_geo:
             self.rerenderActiveEditors(self.layer)
             self.rfa()
 
@@ -753,7 +753,7 @@ class MenuWithField(Menu):
         if self.drawtiles:
             self.lastTileLayer = self.layer
         self.mpos = 1
-        if not self.renderer.commsgeocolors:
+        if not self.renderer.color_geo:
             self.rerenderActiveEditors(self.layer)
             self.rfa()
 
@@ -836,8 +836,8 @@ class MenuWithField(Menu):
 
     def togglegeo(self):
         #self.drawgeo = not self.drawgeo
-        self.renderer.commsgeocolors = not self.renderer.commsgeocolors
-        self.drawgrid = self.renderer.commsgeocolors
+        self.renderer.color_geo = not self.renderer.color_geo
+        self.drawgrid = self.renderer.color_geo
         self.render_geo_full()
         self.rfa()
 

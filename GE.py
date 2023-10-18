@@ -30,7 +30,7 @@ class GE(MenuWithField):
 
         self.toolsized = None
 
-        renderer.commsgeocolors = True
+        renderer.color_geo = True
         renderer.geo_full_render(renderer.lastlayer)
 
         super().__init__(surface, "GE", renderer)

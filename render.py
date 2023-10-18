@@ -120,7 +120,7 @@ class Renderer:
         self.lastlayer = 0
         self.offset = pg.Vector2(0, 0)
         self.size = previewCellSize
-        self.commsgeocolors = False
+        self.color_geo = False
 
         if render:
             size = [len(data["GE"]) * previewCellSize, len(data["GE"][0]) * previewCellSize]
@@ -308,7 +308,7 @@ class Renderer:
         #stackables.fill([0, 0, 0, 0])
         
         geoRange = range(2, -1, -1)
-        if self.commsgeocolors:
+        if self.color_geo:
             geoRange = range(0, 3, 1)
         
         for i in geoRange:
@@ -316,13 +316,13 @@ class Renderer:
                 continue
             
             imageIndex = i
-            if not self.commsgeocolors:
+            if not self.color_geo:
                 imageIndex = 0
 
             convrender = self.geosurfaces[imageIndex]
             convrender.set_alpha(50)
 
-            if not self.commsgeocolors:
+            if not self.color_geo:
                 if i != layer:
                     if i == 0:
                         convrender.set_alpha(uiSettings["global"]["primarylayeralpha"])
@@ -332,7 +332,7 @@ class Renderer:
                         convrender.set_alpha(uiSettings["global"]["thirdlayeralpha"])
                 else:
                     convrender.set_alpha(uiSettings["global"]["primarylayeralpha"])
-            if i == 0 and self.commsgeocolors:
+            if i == 0 and self.color_geo:
                 convrender.set_alpha(255)
 
             self.data["GE"][xp][yp][i][1] = list(set(self.data["GE"][xp][yp][i][1]))

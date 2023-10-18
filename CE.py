@@ -18,7 +18,7 @@ class CE(MenuWithField):
         self.pressed = [False] * 4
         self.heldpointindex = 0
         
-        renderer.commsgeocolors = False
+        renderer.color_geo = False
         renderer.geo_full_render(renderer.lastlayer)
 
         self.rfa()

@@ -62,7 +62,7 @@ class TE(MenuWithField):
         self.blockNextPlacement = False
         self.currentPathDrag = []
 
-        renderer.commsgeocolors = False
+        renderer.color_geo = False
         renderer.geo_full_render(renderer.lastlayer)
 
         super().__init__(surface, "TE", renderer, False)

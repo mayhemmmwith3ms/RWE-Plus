@@ -5,7 +5,7 @@ import random
 
 class MN(MenuWithField):
     def __init__(self, surface: pg.surface.Surface, renderer: Renderer):
-        renderer.commsgeocolors = False
+        renderer.color_geo = False
         renderer.geo_full_render(renderer.lastlayer)
         
         super().__init__(surface, "MN", renderer)
