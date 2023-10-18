@@ -69,7 +69,7 @@ class TE(MenuWithField):
         self.catlist = [[]]
         for category in self.items.keys():
             self.catlist[-1].append(category)
-            if len(self.catlist[-1]) >= self.menuUiSettings["category_count"]:
+            if len(self.catlist[-1]) >= self.menu_ui_settings["category_count"]:
                 self.catlist.append([])
         self.drawtiles = True
         self.set("materials 0", "Standard")
@@ -284,7 +284,7 @@ class TE(MenuWithField):
             self.cols = self.test_cols(cposxo, cposyo)
 
     def blit(self):
-        pg.draw.rect(self.surface, uiSettings["TE"]["menucolor"], pg.rect.Rect(self.buttonslist[0].xy, [self.buttonslist[0].rect.w, len(self.buttonslist[:-1]) * self.buttonslist[0].rect.h + 1]))
+        pg.draw.rect(self.surface, ui_settings["TE"]["menucolor"], pg.rect.Rect(self.buttonslist[0].xy, [self.buttonslist[0].rect.w, len(self.buttonslist[:-1]) * self.buttonslist[0].rect.h + 1]))
         for button in self.buttonslist:
             button.blitshadow()
         for i, button in enumerate(self.buttonslist[:-1]):
@@ -304,7 +304,7 @@ class TE(MenuWithField):
             # self.surface.blit(self.tools, pos, [curtool, graphics["tilesize"]])
             pos2 = self.pos2
             posoffset = self.posoffset
-            bord = (self.size // previewCellSize + 1) // 2
+            bord = (self.size // preview_cell_size + 1) // 2
             fg = self.findparampressed("force_geometry")
             fp = self.findparampressed("force_place")
 
@@ -332,7 +332,7 @@ class TE(MenuWithField):
                         self.mpos = posoffset
                         self.lastfg = fg
                         self.lastfp = fp
-                        self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / previewCellSize) * 100}%")
+                        self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / preview_cell_size) * 100}%")
 
                         if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
                             tl = self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]
@@ -383,7 +383,7 @@ class TE(MenuWithField):
 
                     if self.justPlacedChainHolders:
                         for chPos in self.justPlacedChainHolders:
-                            pg.draw.line(self.surface, red, self.FieldCoordToDrawPos(chPos, _offset = [self.size, self.size]),
+                            pg.draw.line(self.surface, red, self.field_to_draw_pos(chPos, _offset = [self.size, self.size]),
                                                                 [pos2.x + self.size // 2, pos2.y + self.size // 2])
                     #try:
                     #    if (tlType := self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]["tp"]) not in ["material", "default"]:
@@ -402,7 +402,7 @@ class TE(MenuWithField):
                     if (chainHolderHead := self.get_tilehead_of_body(self.data["TE"]["tlMatrix"][int(max(0, min(posoffset.x, self.levelwidth - 1)))][int(max(0, min(posoffset.y, self.levelheight - 1)))][self.layer])) not in [None, "stray"]:
                         if chainHolderHead["data"][1] == "Chain Holder" and chainHolderHead["data"].__len__() == 3:
                             chainEnd = toarr(chainHolderHead["data"][2], "point")
-                            pg.draw.circle(self.surface, red, self.FieldCoordToDrawPos(chainEnd, [self.size // 2, self.size // 2]), self.size // 3, 1)
+                            pg.draw.circle(self.surface, red, self.field_to_draw_pos(chainEnd, [self.size // 2, self.size // 2]), self.size // 3, 1)
                     try:
                         if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
                             hoveredTile = self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]
@@ -411,7 +411,7 @@ class TE(MenuWithField):
                                     tlhDrawPos = tlhPos[0]
                                 else:
                                     tlhDrawPos = [int(posoffset.x + 1), int(posoffset.y + 1)]
-                                pg.draw.circle(self.surface, blue, self.FieldCoordToDrawPos(tlhDrawPos, [-self.size // 2, -self.size // 2]), self.size // 3, 1)
+                                pg.draw.circle(self.surface, blue, self.field_to_draw_pos(tlhDrawPos, [-self.size // 2, -self.size // 2]), self.size // 3, 1)
                     except Exception:
                         print("Error occurred determining tileHead position")
                 else:
@@ -671,7 +671,7 @@ class TE(MenuWithField):
                         item = self.items[cat][index]
                         if item.get("preview"):
                             previewPos = button.rect.bottomright
-                            if uiSettings["global"]["previewleftside"]:
+                            if ui_settings["global"]["previewleftside"]:
                                 previewPos = [button.rect.bottomleft[0] - item["preview"].get_width(), button.rect.bottomleft[1]]
                             self.surface.blit(item["preview"], previewPos)
                         if self.is_macro(item):
@@ -679,7 +679,7 @@ class TE(MenuWithField):
                         w, h = item["size"]
                         w *= self.size
                         h *= self.size
-                        if not uiSettings["TE"]["LEtiles"]:
+                        if not ui_settings["TE"]["LEtiles"]:
                             pg.draw.rect(self.surface, item["color"], [self.field.rect.x, self.field.rect.y, w, h])
                         self.surface.blit(pg.transform.scale(item["image"], [w, h]), [self.field.rect.x, self.field.rect.y])
                         self.printcols(0, 0, item, True)
@@ -727,17 +727,17 @@ class TE(MenuWithField):
     def cats(self):
         self.buttonslist = []
         if not self.matshow: # if cats not already used
-            self.currentcategory = self.toolindex // self.menuUiSettings["category_count"]
-            self.toolindex %= self.menuUiSettings["category_count"]
+            self.currentcategory = self.toolindex // self.menu_ui_settings["category_count"]
+            self.toolindex %= self.menu_ui_settings["category_count"]
         btn2 = None
         self.matshow = True
         for count, item in enumerate(self.catlist[self.currentcategory]):
             # rect = pg.rect.Rect([0, count * self.settings["itemsize"], self.field2.field.get_width(), self.settings["itemsize"]])
             # rect = pg.rect.Rect(0, 0, 100, 10)
-            cat = pg.rect.Rect(self.menuUiSettings["catpos"])
-            btn2 = widgets.button(self.surface, cat, uiSettings["global"]["color"], f"Categories {self.currentcategory}", onpress=self.changematshow)
+            cat = pg.rect.Rect(self.menu_ui_settings["catpos"])
+            btn2 = widgets.button(self.surface, cat, ui_settings["global"]["color"], f"Categories {self.currentcategory}", onpress=self.changematshow)
 
-            rect = pg.rect.Rect(self.menuUiSettings["itempos"])
+            rect = pg.rect.Rect(self.menu_ui_settings["itempos"])
             rect = rect.move(0, rect.h * count)
             col = self.items[item][0]["color"]
             if count == self.toolindex:
@@ -801,11 +801,11 @@ class TE(MenuWithField):
             #print(item["category"])
             # rect = pg.rect.Rect([0, count * self.settings["itemsize"], self.field2.field.get_width(), self.settings["itemsize"]])
             # rect = pg.rect.Rect(0, 0, 100, 10)
-            cat = pg.rect.Rect(self.menuUiSettings["catpos"])
-            btn2 = widgets.button(self.surface, cat, uiSettings["global"]["color"], item["category"], onpress=self.changematshow,
+            cat = pg.rect.Rect(self.menu_ui_settings["catpos"])
+            btn2 = widgets.button(self.surface, cat, ui_settings["global"]["color"], item["category"], onpress=self.changematshow,
                 tooltip=self.returnkeytext("Select category(<[-changematshow]>)"))
 
-            rect = pg.rect.Rect(self.menuUiSettings["itempos"])
+            rect = pg.rect.Rect(self.menu_ui_settings["itempos"])
             rect = rect.move(0, rect.h * count)
             if item["category"] == "special" or "material" in item["tags"]:
                 btn = widgets.button(self.surface, rect, item["color"], item["name"], onpress=self.getmaterial)
@@ -879,7 +879,7 @@ class TE(MenuWithField):
 
     def changematshow(self):
         if self.matshow:
-            self.currentcategory = self.toolindex + self.currentcategory * self.menuUiSettings["category_count"]
+            self.currentcategory = self.toolindex + self.currentcategory * self.menu_ui_settings["category_count"]
             self.toolindex = 0
             cat = list(self.items.keys())[self.currentcategory]
             self.set(cat, self.items[cat][0]["name"])
@@ -895,25 +895,6 @@ class TE(MenuWithField):
     def getmaterial(self, text):
         cat = self.buttonslist[-1].text
         self.set(cat, text)
-
-    def get_tilehead_of_body(self, part):
-        if part["tp"] in ["default", "material"]:
-            return None
-        if part["tp"] == "tileHead":
-            return part
-        
-        headPos = [toarr(part["data"][0], "point"), part["data"][1] - 1]
-        headTile = self.data["TE"]["tlMatrix"][int(headPos[0][0] - 1)][int(headPos[0][1] - 1)][headPos[1]]
-
-        if headTile["tp"] == "tileHead":
-            return headTile
-        else:
-            return "stray"
-
-    def get_tilehead_pos_from_body(self, part):
-        if part["tp"] != "tileBody":
-            return None
-        return [toarr(part["data"][0], "point"), part["data"][1] - 1]
 
     def set(self, cat, name, render=True):
         if settings["TE_legacy_RWE_placement_controls"]:
@@ -1007,7 +988,7 @@ class TE(MenuWithField):
         w, h = tile["size"]
         sp = tile["cols"][0]
         sp2 = tile["cols"][1]
-        shift = self.size // previewCellSize + 1
+        shift = self.size // preview_cell_size + 1
         px = x + int((w * .5) + .5) - 1  # center coordinates
         py = y + int((h * .5) + .5) - 1
         if px >= self.levelwidth or py >= self.levelheight or px < 0 or py < 0:

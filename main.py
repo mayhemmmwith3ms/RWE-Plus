@@ -9,13 +9,13 @@ import tkinter
 import argparse
 from path_dict import PathDict
 from lingotojson import *
-from files import uiSettings, hotkeys, path, application_path
+from files import ui_settings, hotkeys, path, application_path
 
 widgets.keybol = True
 run = True
 keys = [pg.K_LCTRL, pg.K_LALT, pg.K_LSHIFT]
 movekeys = [pg.K_LEFT, pg.K_UP, pg.K_DOWN, pg.K_RIGHT]
-fullscreen = uiSettings["global"]["fullscreen"]
+fullscreen = ui_settings["global"]["fullscreen"]
 file = ""
 file2 = ""
 undobuffer = []
@@ -102,7 +102,7 @@ def undohistory():
     surf.datalast = jsoncopy(pathdict.data)
     redobuffer.append(jsoncopy(undobuffer.pop()))
     if [surf.levelwidth, surf.levelheight] != lastsize:
-        surf.renderer.set_surface([previewCellSize * surf.levelwidth, previewCellSize * surf.levelheight])
+        surf.renderer.set_surface([preview_cell_size * surf.levelwidth, preview_cell_size * surf.levelheight])
     surf.onundo()
     if MenuWithField in type(surf).__bases__:
         surf.renderer.render_all(surf.layer)
@@ -129,7 +129,7 @@ def redohistory():
     surf.datalast = jsoncopy(pathdict.data)
     undobuffer.append(jsoncopy(redobuffer.pop()))
     if [surf.levelwidth, surf.levelheight] != lastsize:
-        surf.renderer.set_surface([previewCellSize * surf.levelwidth, previewCellSize * surf.levelheight])
+        surf.renderer.set_surface([preview_cell_size * surf.levelwidth, preview_cell_size * surf.levelheight])
     surf.onredo()
     if MenuWithField in type(surf).__bases__:
         surf.renderer.render_all(surf.layer)
@@ -237,8 +237,8 @@ def launch(level):
 
         loadtimetoc = time.perf_counter()
 
-        width = uiSettings["global"]["width"]
-        height = uiSettings["global"]["height"]
+        width = ui_settings["global"]["width"]
+        height = ui_settings["global"]["height"]
 
         window = pg.display.set_mode([width, height], flags=pg.RESIZABLE | (pg.FULLSCREEN * fullscreen))
         pg.display.set_icon(loadimage(path + "icon.png"))
@@ -313,10 +313,10 @@ def launch(level):
                 for i in surf.uc:
                     if pg.key.get_pressed()[i]:
                         keypress(window)
-            if uiSettings[surf.menu].get("menucolor") is not None:
-                window.fill(pg.color.Color(uiSettings[surf.menu]["menucolor"]))
+            if ui_settings[surf.menu].get("menucolor") is not None:
+                window.fill(pg.color.Color(ui_settings[surf.menu]["menucolor"]))
             else:
-                window.fill(pg.color.Color(uiSettings["global"]["color"]))
+                window.fill(pg.color.Color(ui_settings["global"]["color"]))
             surf.blit()
             pg.display.flip()
             pg.display.update()
@@ -384,7 +384,7 @@ def loadmenu():
             for i in surf.uc:
                 if pg.key.get_pressed()[i]:
                     keypress(window)
-        window.fill(pg.color.Color(uiSettings["global"]["color"]))
+        window.fill(pg.color.Color(ui_settings["global"]["color"]))
         surf.blit()
         surf.justChangedZoom = False
         pg.display.flip()

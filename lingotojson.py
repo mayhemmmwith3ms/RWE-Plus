@@ -151,7 +151,7 @@ def init_solve(files: list[str,]):
 
 
 def inittolist():
-    inv = uiSettings["TE"]["LEtiles"]
+    inv = ui_settings["TE"]["LEtiles"]
     tilefiles = [path2graphics + i for i in graphics["tileinits"]]
     solved = init_solve(tilefiles)
     solved = dict(i for i in solved.items() if len(i[1]) > 1) #remove categories with no tiles (prevents crash when loading TE)
@@ -183,12 +183,12 @@ def inittolist():
                 log_to_load_log(f"Failed to get type for item \"{item['nm']}\"! This may cause issues when rendering!", True)
             if tp == "box":  # math
                 ln = 4
-                size = (ln * sz[1] + (item["bfTiles"] * 2)) * renderedCellSize
+                size = (ln * sz[1] + (item["bfTiles"] * 2)) * render_cell_size
                 rect = pg.rect.Rect([0, size, sz[0] * spritesize, sz[1] * spritesize])
-            elif ((ln * sz[1] + (item["bfTiles"] * 2 * ln)) * renderedCellSize + 1) > img.get_height():
+            elif ((ln * sz[1] + (item["bfTiles"] * 2 * ln)) * render_cell_size + 1) > img.get_height():
                 rect = pg.rect.Rect([0, img.get_height() - sz[1] * spritesize, sz[0] * spritesize, sz[1] * spritesize])
             else:
-                size = (sz[1] + (item["bfTiles"] * 2)) * ln * renderedCellSize
+                size = (sz[1] + (item["bfTiles"] * 2)) * ln * render_cell_size
                 rect = pg.rect.Rect([0, size + 1, sz[0] * spritesize, sz[1] * spritesize])
 
             try:
@@ -239,14 +239,14 @@ def inittolist():
     counter = 1
     for k, v in graphics["matposes"].items():
         col = pg.Color(v)
-        img = pg.Surface([previewCellSize, previewCellSize], pg.SRCALPHA)
+        img = pg.Surface([preview_cell_size, preview_cell_size], pg.SRCALPHA)
         img.fill(pg.Color(0, 0, 0, 0))
         ms = graphics["matsize"]
         pg.draw.rect(img, v, pg.Rect(ms[0], ms[0], ms[1], ms[1]))
         try:
             preview = loadimage(path2materialPreviews + k + ".png")
         except (FileNotFoundError, TypeError):
-            preview = pg.Surface([previewCellSize, previewCellSize])
+            preview = pg.Surface([preview_cell_size, preview_cell_size])
             preview.set_alpha(0)
         preview.set_colorkey(pg.Color(255, 255, 255))
         solved_copy[matcat].append(
@@ -316,7 +316,7 @@ def getprops(tiles: dict):
                 log_to_load_log(f"Failed to load graphics for item \"{item['nm']}\"! Skipping!", True)
                 continue
             img.set_colorkey(pg.color.Color(255, 255, 255))
-            img = img.convert(pg.Surface([previewCellSize, previewCellSize]))
+            img = img.convert(pg.Surface([preview_cell_size, preview_cell_size]))
             images = []
             if item.get("vars") is not None:
                 item["vars"] = max(item["vars"], 1)
@@ -332,8 +332,8 @@ def getprops(tiles: dict):
                     h = math.floor((hs / len(item["repeatL"])))
                     if item.get("sz") is not None and len(item["repeatL"]) < 2:
                         sz = toarr(item["sz"], "point")
-                        w = min(sz[0] * renderedCellSize, ws)
-                        h = min(sz[1] * renderedCellSize, hs // len(item["repeatL"]))
+                        w = min(sz[0] * render_cell_size, ws)
+                        h = min(sz[1] * render_cell_size, hs // len(item["repeatL"]))
 
                     cons = 0.4
                     wh = pg.Color("#ffffff")
@@ -352,7 +352,7 @@ def getprops(tiles: dict):
                             curcol = curcol.lerp(bl, cons)
                             ss = img.subsurface(varindx * w, (len(item["repeatL"]) - 1 - iindex) * h + 1, w, h - 1).copy()
                             if item["colorTreatment"] == "standard":
-                                ss = ss.convert(pg.Surface([previewCellSize, previewCellSize]))
+                                ss = ss.convert(pg.Surface([preview_cell_size, preview_cell_size]))
                                 depthTintWhite = min((len(item["repeatL"]) - 1 - iindex) * min(25, 255 // len(item["repeatL"])), 254)
                                 ss.fill(pg.Color(depthTintWhite, depthTintWhite, depthTintWhite), special_flags=pg.BLEND_RGB_ADD)
                             if item["colorTreatment"] == "bevel":
@@ -393,7 +393,7 @@ def getprops(tiles: dict):
             continue
         for indx, tile in enumerate(items[0:]):
             if count <= 0:
-                count = uiSettings["PE"]["elements_as_tiles_count"]
+                count = ui_settings["PE"]["elements_as_tiles_count"]
                 if title != "":
                     solved_copy[title] = itemlist
                     itemlist = []
@@ -404,7 +404,7 @@ def getprops(tiles: dict):
                 # returnimage.fill(pg.Color(255, 255, 255))
                 # returnimage.blit(tile["image"], pg.Vector2(spritesize, spritesize) * tile["bfTiles"])
                 # returnimage.set_colorkey(pg.Color(255, 255, 255))
-                size = (pg.Vector2(tile["size"]) + pg.Vector2(tile["bfTiles"], tile["bfTiles"]) * 2) * renderedCellSize
+                size = (pg.Vector2(tile["size"]) + pg.Vector2(tile["bfTiles"], tile["bfTiles"]) * 2) * render_cell_size
                 returnimage = pg.Surface(size)
                 returnimage.fill(pg.Color(255, 255, 255))
                 try:
@@ -421,7 +421,7 @@ def getprops(tiles: dict):
                     rect = pg.Rect(0, layer * size.y + 1, truewidth, size.y)
                     try:
                         currentLayerSurface = img.subsurface(rect)
-                        currentLayerSurface = currentLayerSurface.convert(pg.Surface([previewCellSize, previewCellSize]))
+                        currentLayerSurface = currentLayerSurface.convert(pg.Surface([preview_cell_size, preview_cell_size]))
                         depthTintWhite = min(layer * min(30, 255 // len(tile["repeatL"])), 254)
                         currentLayerSurface.fill(pg.Color(depthTintWhite, depthTintWhite, depthTintWhite), special_flags=pg.BLEND_RGB_ADD)
                         returnimage.blit(currentLayerSurface, [0, 0])
@@ -433,7 +433,7 @@ def getprops(tiles: dict):
                             log_to_load_log(f"Failed to slice graphics of prop \"{item['nm']}\"! This may cause issues when rendering!", True)
                 #returnimage = pg.transform.scale(returnimage, pg.Vector2(returnimage.get_size()) / renderedCellSize * spritesize)
                 returnimage.set_colorkey(pg.Color(255, 255, 255))
-                returnimage = returnimage.convert_alpha(pg.Surface([previewCellSize, previewCellSize]))
+                returnimage = returnimage.convert_alpha(pg.Surface([preview_cell_size, preview_cell_size]))
                 pxl = pg.PixelArray(returnimage)
                 pxl.replace(wh, pg.Color(0,0,0,0))
                 returnimage = pxl.make_surface()
@@ -442,7 +442,7 @@ def getprops(tiles: dict):
                     "tp": "standard",
                     "images": [returnimage],
                     "colorTreatment": "standard",
-                    "color": uiSettings["PE"]["elements_as_tiles_color"],
+                    "color": ui_settings["PE"]["elements_as_tiles_color"],
                     "sz": list(pg.Vector2(tile["size"]) + pg.Vector2(tile["bfTiles"] * 2, tile["bfTiles"] * 2)),
                     "depth": 10 + int(tile["cols"][1] != []),
                     "repeatL": tile["repeatL"],

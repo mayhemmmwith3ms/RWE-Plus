@@ -26,7 +26,7 @@ class LP(MenuWithField):
         self.sliders = []
         self.tool = ""  # env, size
         super().__init__(surface, "LP", renderer)
-        for i in self.menuUiSettings["sliders"]:
+        for i in self.menu_ui_settings["sliders"]:
             self.sliders.append(widgets.slider(
                 self.surface,
                 i[0], i[1], i[2],
@@ -57,7 +57,7 @@ class LP(MenuWithField):
         self.labels[2].set_text(
             self.labels[2].originaltext % (self.data["WL"]["waterLevel"], str(self.data["WL"]["waterInFront"]==1)))
         for n, i in enumerate(self.sliders):
-            self.data[self.menuUiSettings["sliders"][n][4][0]][self.menuUiSettings["sliders"][n][4][1]] = round(i.value)
+            self.data[self.menu_ui_settings["sliders"][n][4][0]][self.menu_ui_settings["sliders"][n][4][1]] = round(i.value)
 
         if self.onfield:
             bp = self.getmouse
@@ -249,7 +249,7 @@ class LP(MenuWithField):
         print("Done!")
         self.updatehistory([[]])
         self.renderer.data = self.data
-        self.renderer.set_surface([previewCellSize * self.levelwidth, previewCellSize * self.levelheight])
+        self.renderer.set_surface([preview_cell_size * self.levelwidth, preview_cell_size * self.levelheight])
         self.renderer.render_all(self.layer)
 
     def recount(self):
@@ -260,17 +260,17 @@ class LP(MenuWithField):
     def resizeimage(self, x, y, w, h):
         if self.shadowfield is not None:
             f2 = pg.surface.Surface(
-                [(abs(x) + self.gw + ofsleft) * previewCellSize, (abs(y) + self.gh + ofstop) * previewCellSize])
+                [(abs(x) + self.gw + ofsleft) * preview_cell_size, (abs(y) + self.gh + ofstop) * preview_cell_size])
             f2.fill(white)
-            f2.blit(self.shadowfield, [x * previewCellSize, y * previewCellSize])
+            f2.blit(self.shadowfield, [x * preview_cell_size, y * preview_cell_size])
             self.shadowfield = f2.subsurface(
-                pg.rect.Rect(0, 0, (self.gw + ofsleft) * previewCellSize, (self.gh + ofstop) * previewCellSize))
+                pg.rect.Rect(0, 0, (self.gw + ofsleft) * preview_cell_size, (self.gh + ofstop) * preview_cell_size))
             lev = os.path.splitext(self.data["path"])[0] + ".png"
             pg.image.save(self.shadowfield, lev)
 
     def resizeCameras(self, x, y, w, h):
         for i, c in enumerate(self.data["CM"]["cameras"]):
-            newPos = pg.Vector2(toarr(c, "point")) + pg.Vector2(x, y) * renderedCellSize
+            newPos = pg.Vector2(toarr(c, "point")) + pg.Vector2(x, y) * render_cell_size
             self.data["CM"]["cameras"][i] = makearr([newPos.x, newPos.y], "point")
 
     def resizeprops(self, x, y, w, h):
@@ -283,7 +283,7 @@ class LP(MenuWithField):
                 pos[0] += x * spritesize
                 pos[1] += y * spritesize
                 newq.append(makearr(pos, "point"))
-                if x > w * previewCellSize and y > h * previewCellSize:
+                if x > w * preview_cell_size and y > h * preview_cell_size:
                     c += 1
                 if c == 4:
                     self.data["PR"]["props"].pop(indx)
@@ -291,8 +291,8 @@ class LP(MenuWithField):
                 newp = []
                 for points in prop[4]["points"]:
                     p = toarr(points, "point")
-                    p[0] += x * previewCellSize
-                    p[1] += y * previewCellSize
+                    p[0] += x * preview_cell_size
+                    p[1] += y * preview_cell_size
                     newp.append(makearr(p, "point"))
                 self.data["PR"]["props"][indx][4]["points"] = newp
             self.data["PR"]["props"][indx][3] = newq

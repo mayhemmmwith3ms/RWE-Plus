@@ -27,7 +27,7 @@ class CE(MenuWithField):
 
     def blit(self):
         super().blit()
-        self.labels[0].set_text(self.labels[0].originaltext % len(self.data["CM"]["cameras"]) + f" | Snap: {'Active' if self.cameraSnapActive else 'Inactive'} | Zoom: {(self.size / previewCellSize) * 100}%")
+        self.labels[0].set_text(self.labels[0].originaltext % len(self.data["CM"]["cameras"]) + f" | Snap: {'Active' if self.cameraSnapActive else 'Inactive'} | Zoom: {(self.size / preview_cell_size) * 100}%")
 
         if self.onfield and len(self.data["CM"]["cameras"]) > 0:
 
@@ -43,11 +43,11 @@ class CE(MenuWithField):
             self.if_set(s[1], 1)
             self.if_set(s[2], 2)
             self.if_set(s[3], 3)
-            mpos = pg.Vector2(pg.mouse.get_pos()) / self.size * previewCellSize
+            mpos = pg.Vector2(pg.mouse.get_pos()) / self.size * preview_cell_size
             if self.held and self.heldindex < len(self.data["CM"]["cameras"]) and self.mode == "move":
                 val = list(self.camoffset + mpos)
-                val[0] = round(val[0] * previewToRenderedFactor, 4)
-                val[1] = round(val[1] * previewToRenderedFactor, 4)
+                val[0] = round(val[0] * preview_to_render_fac, 4)
+                val[1] = round(val[1] * preview_to_render_fac, 4)
                 for indx, camera in enumerate(self.data["CM"]["cameras"]):
                     if indx == self.heldindex:
                         continue
@@ -64,8 +64,8 @@ class CE(MenuWithField):
                         if s:
                             v = pg.Vector2(self.field.rect.topleft) + (pg.Vector2(camw/2, camh/2) * self.size)
                             v += self.offset * self.size
-                            startpos = pg.Vector2(val) / previewCellSize * self.size + v
-                            endpos = pg.Vector2(xpos, ypos) / previewCellSize * self.size + v
+                            startpos = pg.Vector2(val) / preview_cell_size * self.size + v
+                            endpos = pg.Vector2(xpos, ypos) / preview_cell_size * self.size + v
                             pg.draw.line(self.surface, purple, startpos, endpos, 1)
                 val = makearr(val, "point")
                 self.data["CM"]["cameras"][self.heldindex] = val
@@ -88,10 +88,10 @@ class CE(MenuWithField):
                     r, o = mouse.rotate(90).as_polar()
                     if settings["CE_unlock_angle"]:
                         self.data["CM"]["quads"][self.heldindex][quadindx] = \
-                            [o, round(r / 100 / self.size * previewCellSize, 4)]
+                            [o, round(r / 100 / self.size * preview_cell_size, 4)]
                     else:
                         self.data["CM"]["quads"][self.heldindex][quadindx] = \
-                            [o, round(min(r / 100 / self.size * previewCellSize, 1), 4)]
+                            [o, round(min(r / 100 / self.size * preview_cell_size, 1), 4)]
 
             elif bp[0] == 0 and not self.mousp and (self.mousp2 and self.mousp1):
                 self.setcursor()
@@ -170,12 +170,12 @@ class CE(MenuWithField):
             self.updatehistory([["CM", "quads", i]])
 
     def pickupcamera(self):
-        mpos = pg.Vector2(pg.mouse.get_pos()) / self.size * previewCellSize
+        mpos = pg.Vector2(pg.mouse.get_pos()) / self.size * preview_cell_size
         closeindex = self.closestcameraindex()
 
         self.heldindex = closeindex
         self.held = True
-        self.camoffset = pg.Vector2(toarr(self.data["CM"]["cameras"][self.heldindex], "point")) // previewToRenderedFactor - mpos
+        self.camoffset = pg.Vector2(toarr(self.data["CM"]["cameras"][self.heldindex], "point")) // preview_to_render_fac - mpos
         print(self.camoffset)
         print(self.offset)
 
@@ -196,7 +196,7 @@ class CE(MenuWithField):
         self.data["CM"]["quads"].append([[0, 0], [0, 0], [0, 0], [0, 0]])
         self.heldindex = len(self.data["CM"]["cameras"]) - 1
         self.held = True
-        self.camoffset = pg.Vector2(0, 0) - self.offset * previewCellSize - pg.Vector2(720, 480)
+        self.camoffset = pg.Vector2(0, 0) - self.offset * preview_cell_size - pg.Vector2(720, 480)
         self.updatehistory([["CM"]])
 
     def closestcameraindex(self):

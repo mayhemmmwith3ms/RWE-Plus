@@ -5,10 +5,10 @@ class LE(MenuWithField):
     def __init__(self, surface: pg.surface.Surface, renderer):
         self.menu = "LE"
         super().__init__(surface, "LE", renderer)
-        self.field2 = widgets.window(self.surface, self.menuUiSettings["d1"])
+        self.field2 = widgets.window(self.surface, self.menu_ui_settings["d1"])
         self.field3 = self.field2.copy()
 
-        sc = [(self.levelwidth + ofsleft) * renderedCellSize, (self.levelheight + ofstop) * renderedCellSize]
+        sc = [(self.levelwidth + ofsleft) * render_cell_size, (self.levelheight + ofstop) * render_cell_size]
         try:
             lev = os.path.splitext(self.data["path"])[0] + ".png"
             #self.field2.field = pg.transform.scale(loadimage(lev), sc)
@@ -103,7 +103,7 @@ class LE(MenuWithField):
             self.if_set(s[3], 3)
 
             self.labels[0].set_text("Image: " + graphics["shadowimages"][self.selectedimage])
-            self.labels[1].set_text(f"X: {curpos_on_field[0]}, Y: {curpos_on_field[1]} | Zoom: {(self.size / previewCellSize) * 100}%")
+            self.labels[1].set_text(f"X: {curpos_on_field[0]}, Y: {curpos_on_field[1]} | Zoom: {(self.size / preview_cell_size) * 100}%")
 
             held_draw_pos = curpos
 

@@ -53,7 +53,7 @@ pg.font.init()
 
 graphics = json.load(open(path + "graphics.json", "r"))
 settings = json.load(open(path + "settings.json", "r"))
-uiSettings = json.load(open(path2ui +  settings["ui_theme"], "r"))
+ui_settings = json.load(open(path2ui +  settings["ui_theme"], "r"))
 hotkeys = json.load(open(path + "hotkeys.json", "r"))
 e = json.load(open(path + "effects.json", "r"))
 
@@ -67,12 +67,12 @@ tag = "2.9.0"
 ofstop = 15
 ofsleft = 15
 
-previewCellSize = 16
-renderedCellSize = 20
-previewToRenderedFactor = float(renderedCellSize) / previewCellSize
+preview_cell_size = 16
+render_cell_size = 20
+preview_to_render_fac = float(render_cell_size) / preview_cell_size
 spritesize = 16
-image2sprite = spritesize / previewCellSize
-sprite2image = previewCellSize / spritesize
+image2sprite = spritesize / preview_cell_size
+sprite2image = preview_cell_size / spritesize
 
 camw = 70  # camera width in blocks
 camh = 40  # camera height in blocks
@@ -90,7 +90,7 @@ def fs(sz):
     if sz in fonts.keys():
         return fonts[sz]
     else:
-        f = pg.font.Font(path + "/" + uiSettings["global"]["font"], sz)
+        f = pg.font.Font(path + "/" + ui_settings["global"]["font"], sz)
         fonts[sz] = [f, f.size(allleters)[1]]
         return fonts[sz]
 

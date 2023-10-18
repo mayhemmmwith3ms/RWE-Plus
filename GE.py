@@ -84,8 +84,8 @@ class GE(MenuWithField):
 
     def rs(self):
         self.toolrender = pg.transform.scale(self.tooltiles,
-                                             [self.tooltiles.get_width() / graphics["tilesize"][0] * previewCellSize,
-                                              self.tooltiles.get_height() / graphics["tilesize"][1] * previewCellSize])
+                                             [self.tooltiles.get_width() / graphics["tilesize"][0] * preview_cell_size,
+                                              self.tooltiles.get_height() / graphics["tilesize"][1] * preview_cell_size])
 
     def TE(self):
         self.message = "TE"
@@ -113,6 +113,7 @@ class GE(MenuWithField):
                 self.drawtile(self.posoffset, self.toolsized)
     
     def end_draw_drag(self):
+        self.start_perftimer()
         self.fieldadd.fill(white)
         paths = []
         count = 0
@@ -128,6 +129,7 @@ class GE(MenuWithField):
                 self.detecthistory(["GE"])
         self.render_geo_area()
         self.rfa()
+        self.stop_perftimer()
 
     def begin_rect_drag(self):
         self.rectdata = [self.posoffset, pg.Vector2(0, 0), self.pos2]
@@ -259,9 +261,9 @@ class GE(MenuWithField):
                 validSlope = self.get_slope_orientation(self.posoffset)
 
             self.toolsized = pg.transform.scale(self.toolrender,
-                                           pg.Vector2(self.toolrender.get_size()) / previewCellSize * self.size).convert_alpha(self.surface)
+                                           pg.Vector2(self.toolrender.get_size()) / preview_cell_size * self.size).convert_alpha(self.surface)
             self.toolsized.fill(red, special_flags=pg.BLEND_RGBA_MULT)
-            self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / previewCellSize) * 100}%")
+            self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / preview_cell_size) * 100}%")
             #print(self.placetile)
             if self.selectedtool in graphics["codes"].keys():
                 if isinstance(self.placetile, int):
@@ -278,9 +280,9 @@ class GE(MenuWithField):
                     self.surface.blit(self.toolsized, pos2, [curtool, cellsize2])
             rect = [self.xoffset * self.size, self.yoffset * self.size, self.levelwidth * self.size,
                     self.levelheight * self.size]
-            pg.draw.rect(self.field.field, border, rect, self.size // previewCellSize + 1)
+            pg.draw.rect(self.field.field, border, rect, self.size // preview_cell_size + 1)
             if (0 <= posoffset.x < self.levelwidth) and (0 <= posoffset.y < self.levelheight):
-                tilename = uiSettings["GE"]["names"][
+                tilename = ui_settings["GE"]["names"][
                     str(self.data["GE"][int(posoffset.x)][int(posoffset.y)][self.layer][0])]
                 self.labels[0].set_text(
                     f"Tile: {tilename} {self.data['GE'][int(posoffset.x)][int(posoffset.y)][self.layer]}")

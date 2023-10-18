@@ -83,7 +83,7 @@ class PE(MenuWithField):
         self.catlist = [[]]
         for category in self.props.keys():
             self.catlist[-1].append(category)
-            if len(self.catlist[-1]) >= self.menuUiSettings["category_count"]:
+            if len(self.catlist[-1]) >= self.menu_ui_settings["category_count"]:
                 self.catlist.append([])
         self.drawprops = True
         cat = list(self.props.keys())[self.currentcategory]
@@ -114,10 +114,10 @@ class PE(MenuWithField):
         btn2 = None
         itemcat = list(self.props.keys())[self.currentcategory]
         for count, item in enumerate(self.props[itemcat]):
-            cat = pg.rect.Rect(self.menuUiSettings["catpos"])
-            btn2 = widgets.button(self.surface, cat, uiSettings["global"]["color"], itemcat, onpress=self.changematshow,
+            cat = pg.rect.Rect(self.menu_ui_settings["catpos"])
+            btn2 = widgets.button(self.surface, cat, ui_settings["global"]["color"], itemcat, onpress=self.changematshow,
                 tooltip=self.returnkeytext("Select category(<[-changematshow]>)"))
-            rect = pg.rect.Rect(self.menuUiSettings["itempos"])
+            rect = pg.rect.Rect(self.menu_ui_settings["itempos"])
             rect = rect.move(0, rect.h * count)
             btn = widgets.button(self.surface, rect, item["color"], item["nm"], onpress=self.setprop)
             self.buttonslist.append(btn)
@@ -125,7 +125,7 @@ class PE(MenuWithField):
             self.buttonslist.append(btn2)
         if self.toolindex > len(self.props[itemcat]):
             self.toolindex = 0
-        for i in self.menuUiSettings["hide"]:
+        for i in self.menu_ui_settings["hide"]:
             self.buttons[i].visible = True
         self.resize()
         self.settingsupdate()
@@ -135,15 +135,15 @@ class PE(MenuWithField):
         self.settingslist = []
         btn2 = None
         if not self.matshow:
-            self.currentcategory = self.toolindex // self.menuUiSettings["category_count"]
-            self.toolindex %= self.menuUiSettings["category_count"]
+            self.currentcategory = self.toolindex // self.menu_ui_settings["category_count"]
+            self.toolindex %= self.menu_ui_settings["category_count"]
         self.matshow = True
         for count, item in enumerate(self.catlist[self.currentcategory]):
             # rect = pg.rect.Rect([0, count * self.settings["itemsize"], self.field2.field.get_width(), self.settings["itemsize"]])
             # rect = pg.rect.Rect(0, 0, 100, 10)
-            cat = pg.rect.Rect(self.menuUiSettings["catpos"])
-            btn2 = widgets.button(self.surface, cat, uiSettings["global"]["color"], f"Categories {self.currentcategory}", onpress=self.changematshow)
-            rect = pg.rect.Rect(self.menuUiSettings["itempos"])
+            cat = pg.rect.Rect(self.menu_ui_settings["catpos"])
+            btn2 = widgets.button(self.surface, cat, ui_settings["global"]["color"], f"Categories {self.currentcategory}", onpress=self.changematshow)
+            rect = pg.rect.Rect(self.menu_ui_settings["itempos"])
             rect = rect.move(0, rect.h * count)
             try:
                 col = self.props[item][0]["color"]
@@ -157,7 +157,7 @@ class PE(MenuWithField):
             self.buttonslist.append(btn)
         if btn2 is not None:
             self.buttonslist.append(btn2)
-        for i in self.menuUiSettings["hide"]:
+        for i in self.menu_ui_settings["hide"]:
             self.buttons[i].visible = False
         self.resize()
 
@@ -170,9 +170,9 @@ class PE(MenuWithField):
         self.settingslist = []
         for count, item in enumerate(self.prop_settings.items()):
             name, val = item
-            rect = pg.rect.Rect(self.menuUiSettings["settingspos"])
+            rect = pg.rect.Rect(self.menu_ui_settings["settingspos"])
             rect = rect.move(0, rect.h * count)
-            btn = widgets.button(self.surface, rect, self.menuUiSettings["settingscolor"], name, onpress=self.changesettings,
+            btn = widgets.button(self.surface, rect, self.menu_ui_settings["settingscolor"], name, onpress=self.changesettings,
                 tooltip=str(self.getval(name, val)))
             self.settingslist.append(btn)
         self.resize()
@@ -231,7 +231,7 @@ class PE(MenuWithField):
 
     def blit(self):
         if len(self.buttonslist) > 1:
-            pg.draw.rect(self.surface, uiSettings["TE"]["menucolor"], pg.rect.Rect(self.buttonslist[0].xy, [self.buttonslist[0].rect.w, len(self.buttonslist[:-1]) * self.buttonslist[0].rect.h + 1]))
+            pg.draw.rect(self.surface, ui_settings["TE"]["menucolor"], pg.rect.Rect(self.buttonslist[0].xy, [self.buttonslist[0].rect.w, len(self.buttonslist[:-1]) * self.buttonslist[0].rect.h + 1]))
             for button in self.buttonslist:
                 button.blitshadow()
             for button in self.buttonslist[:-1]:
@@ -243,7 +243,7 @@ class PE(MenuWithField):
             for button in self.settingslist:
                 button.blit(sum(pg.display.get_window_size()) // 120)
         super().blit()
-        self.labels[2].set_text(self.labels[2].originaltext + str(self.prop_settings) + f" | Zoom: {(self.size / previewCellSize) * 100}%")
+        self.labels[2].set_text(self.labels[2].originaltext + str(self.prop_settings) + f" | Zoom: {(self.size / preview_cell_size) * 100}%")
         self.labels[0].set_text(self.labels[0].originaltext + "\n".join(self.notes))
         cir = [self.buttonslist[self.toolindex].rect.x + 10,
             self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
@@ -266,7 +266,7 @@ class PE(MenuWithField):
             self.renderprop = not self.delmode and not self.copymode
             if self.lastpos != mpos and self.selectedprop["tp"] == "rope":
                 self.lastpos = mpos.copy()
-                ropepos = (mpos - pg.Vector2(self.field.rect.topleft)) / self.size * previewCellSize - pg.Vector2(self.xoffset, self.yoffset) * previewCellSize
+                ropepos = (mpos - pg.Vector2(self.field.rect.topleft)) / self.size * preview_cell_size - pg.Vector2(self.xoffset, self.yoffset) * preview_cell_size
                 pA = pg.Vector2((self.quads[0][0] + self.quads[3][0]) / 2,
                                 (self.quads[0][1] + self.quads[3][1]) / 2) + ropepos
                 pB = pg.Vector2((self.quads[1][0] + self.quads[2][0]) / 2,
@@ -451,8 +451,8 @@ class PE(MenuWithField):
                         self.ropeobject.modelRopeUpdate()
                     color = toarr(self.ropeobject.prop["previewColor"], "color")
                     for sIndex, segment in enumerate(self.ropeobject.segments):
-                        posofwire = ((pg.Vector2(self.xoffset, self.yoffset) + (segment["pos"]) / previewCellSize) * self.size) + pg.Vector2(self.field.rect.topleft)
-                        posofnext = ((pg.Vector2(self.xoffset, self.yoffset) + (self.ropeobject.segments[min(sIndex + 1, len(self.ropeobject.segments) - 1)]["pos"]) / previewCellSize) * self.size) + pg.Vector2(self.field.rect.topleft)
+                        posofwire = ((pg.Vector2(self.xoffset, self.yoffset) + (segment["pos"]) / preview_cell_size) * self.size) + pg.Vector2(self.field.rect.topleft)
+                        posofnext = ((pg.Vector2(self.xoffset, self.yoffset) + (self.ropeobject.segments[min(sIndex + 1, len(self.ropeobject.segments) - 1)]["pos"]) / preview_cell_size) * self.size) + pg.Vector2(self.field.rect.topleft)
                         pg.draw.line(self.surface, [200, 200, 200], posofwire, posofnext, 1)
                         pg.draw.circle(self.surface, color, posofwire, 4)
                         #pg.draw.circle(self.surface, color, posofwire, self.ropeobject.segRad * self.fieldScale, 1)
@@ -464,7 +464,7 @@ class PE(MenuWithField):
                 else:
                     widgets.fastmts(self.surface, f"Variation: {self.prop_settings.get('variation')}", *varpos, white)
             rl = sum(self.selectedprop["repeatL"]) if self.selectedprop.get("repeatL") else self.selectedprop["depth"]
-            widgets.fastmts(self.surface, f"Depth: {self.depth} to {rl + self.depth}", *depthpos, white, fontsize= uiSettings["global"]["fontsize"] // 2)
+            widgets.fastmts(self.surface, f"Depth: {self.depth} to {rl + self.depth}", *depthpos, white, fontsize= ui_settings["global"]["fontsize"] // 2)
             if self.copymode or self.delmode:
                 _, _, indx = self.find_nearest(*posoffset)
                 if indx != -1:
@@ -602,7 +602,7 @@ class PE(MenuWithField):
 
     def changematshow(self):
         if self.matshow:
-            self.currentcategory = self.toolindex + self.currentcategory * self.menuUiSettings["category_count"]
+            self.currentcategory = self.toolindex + self.currentcategory * self.menu_ui_settings["category_count"]
             self.toolindex = 0
             cat = list(self.props.keys())[self.currentcategory]
             self.setprop(self.props[cat][0]["nm"], cat)
@@ -806,8 +806,8 @@ class PE(MenuWithField):
         self.loadimage()
 
         w, h = self.selectedimage.get_size()
-        w = w // previewToRenderedFactor
-        h = h // previewToRenderedFactor
+        w = w // preview_to_render_fac
+        h = h // preview_to_render_fac
         wd, hd = w / 2, h / 2
         self.quads = [[-wd, -hd], [wd, -hd], [wd, hd], [-wd, hd]]
         self.normheight = pg.Vector2(self.quads[0]).distance_to(pg.Vector2(self.quads[3]))
@@ -857,7 +857,7 @@ class PE(MenuWithField):
         if self.selectedprop["tp"] == "rope":
             points = []
             for segment in self.ropeobject.segments:
-                point = [segment["pos"].x * previewToRenderedFactor, segment["pos"].y * previewToRenderedFactor] #i love bandaid fix
+                point = [segment["pos"].x * preview_to_render_fac, segment["pos"].y * preview_to_render_fac] #i love bandaid fix
                 point = makearr([round(point[0], 4), round(point[1], 4)], "point")
                 points.append(point)
             prop[4]["points"] = points

@@ -4,10 +4,10 @@ import numpy as np
 from lingotojson import *
 import pygame as pg
 
-colors = uiSettings["global"]["colors"]  # NOQA
+colors = ui_settings["global"]["colors"]  # NOQA
 
-color = pg.Color(uiSettings["global"]["color"])
-color2 = pg.Color(uiSettings["global"]["color2"])
+color = pg.Color(ui_settings["global"]["color"])
+color2 = pg.Color(ui_settings["global"]["color2"])
 
 dc = pg.Color(0, 0, 0, 0)
 
@@ -56,12 +56,12 @@ col8 = [
 
 col4 = [[0, -1], [-1, 0], [1, 0], [0, 1]]
 
-color = pg.Color(uiSettings["global"]["color"])
-color2 = pg.Color(uiSettings["global"]["color2"])
+color = pg.Color(ui_settings["global"]["color"])
+color2 = pg.Color(ui_settings["global"]["color2"])
 
 renderedimage = pg.transform.scale(tooltiles, [
-            (tooltiles.get_width() / graphics["tilesize"][0]) * previewCellSize,
-            (tooltiles.get_height() / graphics["tilesize"][1]) * previewCellSize])
+            (tooltiles.get_width() / graphics["tilesize"][0]) * preview_cell_size,
+            (tooltiles.get_height() / graphics["tilesize"][1]) * preview_cell_size])
 
 def quadsize(quad):
     mostleft = bignum
@@ -119,23 +119,23 @@ class Renderer:
 
         self.lastlayer = 0
         self.offset = pg.Vector2(0, 0)
-        self.size = previewCellSize
+        self.size = preview_cell_size
         self.color_geo = False
-        self.grid_surface: pg.surface = pg.Surface((previewCellSize, previewCellSize))
+        self.grid_surface: pg.surface = pg.Surface((preview_cell_size, preview_cell_size))
 
         if render:
-            size = [len(data["GE"]) * previewCellSize, len(data["GE"][0]) * previewCellSize]
+            size = [len(data["GE"]) * preview_cell_size, len(data["GE"][0]) * preview_cell_size]
             self.surf_geo = pg.Surface(size)
             self.geolayers = [True, True, True]
             self.tilelayers = [True, True, True]
             self.geosurfaces = [
-                renderedimage.convert_alpha(pg.Surface([previewCellSize, previewCellSize])),
-                renderedimage.convert_alpha(pg.Surface([previewCellSize, previewCellSize])),
-                renderedimage.convert_alpha(pg.Surface([previewCellSize, previewCellSize]))
+                renderedimage.convert_alpha(pg.Surface([preview_cell_size, preview_cell_size])),
+                renderedimage.convert_alpha(pg.Surface([preview_cell_size, preview_cell_size])),
+                renderedimage.convert_alpha(pg.Surface([preview_cell_size, preview_cell_size]))
             ]
-            self.geosurfaces[0].fill(uiSettings["GE"]["layerColors"][0], special_flags=pg.BLEND_MULT)
-            self.geosurfaces[1].fill(uiSettings["GE"]["layerColors"][1], special_flags=pg.BLEND_MULT)
-            self.geosurfaces[2].fill(uiSettings["GE"]["layerColors"][2], special_flags=pg.BLEND_MULT)
+            self.geosurfaces[0].fill(ui_settings["GE"]["layerColors"][0], special_flags=pg.BLEND_MULT)
+            self.geosurfaces[1].fill(ui_settings["GE"]["layerColors"][1], special_flags=pg.BLEND_MULT)
+            self.geosurfaces[2].fill(ui_settings["GE"]["layerColors"][2], special_flags=pg.BLEND_MULT)
             self.surf_tiles = pg.Surface(size)
             self.surf_tiles = self.surf_tiles.convert_alpha()
             self.surf_props = pg.Surface(size)
@@ -145,7 +145,7 @@ class Renderer:
 
     def set_surface(self, size=None):
         if size is None:  # auto
-            size = [self.levelwidth * previewCellSize, self.levelheight * previewCellSize]
+            size = [self.levelwidth * preview_cell_size, self.levelheight * preview_cell_size]
         self.surf_geo = pg.Surface(size)
         self.geolayers = [True, True, True]
         self.tilelayers = [True, True, True]
@@ -166,7 +166,7 @@ class Renderer:
             for yp, y in enumerate(x):
                 if y:
                     continue
-                self.surf_tiles.fill(pg.Color(0, 0, 0, 0), [xp * previewCellSize, yp * previewCellSize, previewCellSize, previewCellSize])
+                self.surf_tiles.fill(pg.Color(0, 0, 0, 0), [xp * preview_cell_size, yp * preview_cell_size, preview_cell_size, preview_cell_size])
         for drawLayer in range(2, -1, -1):
             for xp, x in enumerate(area):
                 for yp, y in enumerate(x):
@@ -185,8 +185,8 @@ class Renderer:
                 for i2 in self.tiles[i]:
                     if i2["name"] == name:
                         img = i2.copy()
-                        img["image"] = pg.transform.scale(img["image"], [img["image"].get_width() / 16 * previewCellSize,
-                                                                         img["image"].get_height() / 16 * previewCellSize])
+                        img["image"] = pg.transform.scale(img["image"], [img["image"].get_width() / 16 * preview_cell_size,
+                                                                         img["image"].get_height() / 16 * preview_cell_size])
                         it = img
                         break
                 if it is not None:
@@ -196,22 +196,22 @@ class Renderer:
             return it
 
         cell = tiledata[xp][yp][drawL]
-        posx = xp * previewCellSize
-        posy = yp * previewCellSize
+        posx = xp * preview_cell_size
+        posy = yp * preview_cell_size
 
         datcell = cell["tp"]
         datdata = cell["data"]
 
-        layer_alpha = uiSettings["global"]["tiles_secondarylayeralpha"]
+        layer_alpha = ui_settings["global"]["tiles_secondarylayeralpha"]
 
         alpha_index = (drawL - selectedLayer) % 3
 
         if alpha_index == 0:
-            layer_alpha = uiSettings["global"]["tiles_primarylayeralpha"]
+            layer_alpha = ui_settings["global"]["tiles_primarylayeralpha"]
         if alpha_index == 1: 
-            layer_alpha = uiSettings["global"]["tiles_secondarylayeralpha"]
+            layer_alpha = ui_settings["global"]["tiles_secondarylayeralpha"]
         if alpha_index == 2:
-            layer_alpha = uiSettings["global"]["tiles_thirdlayeralpha"]
+            layer_alpha = ui_settings["global"]["tiles_thirdlayeralpha"]
 
         if not self.tilelayers[drawL]:
             return
@@ -241,20 +241,20 @@ class Renderer:
 
         elif datcell == "tileHead":
             it = findtileimage(datdata[1])
-            cposx = posx - int((it["size"][0] * .5) + .5) * previewCellSize + previewCellSize
-            cposy = posy - int((it["size"][1] * .5) + .5) * previewCellSize + previewCellSize
-            siz = pg.rect.Rect([cposx, cposy, it["size"][0] * previewCellSize, it["size"][1] * previewCellSize])
-            if not uiSettings["TE"]["LEtiles"]:
+            cposx = posx - int((it["size"][0] * .5) + .5) * preview_cell_size + preview_cell_size
+            cposy = posy - int((it["size"][1] * .5) + .5) * preview_cell_size + preview_cell_size
+            siz = pg.rect.Rect([cposx, cposy, it["size"][0] * preview_cell_size, it["size"][1] * preview_cell_size])
+            if not ui_settings["TE"]["LEtiles"]:
                 pg.draw.rect(self.surf_tiles, it["color"], siz, 0)
             it["image"].set_alpha(layer_alpha)
             self.surf_tiles.blit(it["image"], [cposx, cposy], special_flags=pg.BLEND_ALPHA_SDL2)
             it["image"].set_alpha(255)
         elif datcell == "tileBody":
             tl = self.data["TE"]["tlMatrix"][xp][yp][drawL]
-            if self.GetTileHeadFromTilePart(tl) == "stray":
+            if self.get_tilehead_of_body(tl) == "stray":
                 self.geosurfaces[2].set_alpha(layer_alpha)
 
-                self.surf_tiles.blit(self.geosurfaces[2], [xp * previewCellSize, yp * previewCellSize], [[graphics["shows"]["0"][0] * previewCellSize, graphics["shows"]["0"][1] * previewCellSize], [previewCellSize, previewCellSize]], special_flags=pg.BLEND_PREMULTIPLIED)
+                self.surf_tiles.blit(self.geosurfaces[2], [xp * preview_cell_size, yp * preview_cell_size], [[graphics["shows"]["0"][0] * preview_cell_size, graphics["shows"]["0"][1] * preview_cell_size], [preview_cell_size, preview_cell_size]], special_flags=pg.BLEND_PREMULTIPLIED)
 
                 self.geosurfaces[2].set_alpha(255)
         # self.surf_tiles.fill(pg.Color(0, 0, 0, 0), [posx, posy, image1size, image1size])
@@ -273,10 +273,10 @@ class Renderer:
                     try:
                         if not area[xp + i[0]][yp + i[1]]:
                             continue
-                        self.surf_geo.blit(self.render_geo_pixel(xp + i[0], yp + i[1], layer), [(xp + i[0]) * previewCellSize, (yp + i[1]) * previewCellSize])
+                        self.surf_geo.blit(self.render_geo_pixel(xp + i[0], yp + i[1], layer), [(xp + i[0]) * preview_cell_size, (yp + i[1]) * preview_cell_size])
                     except IndexError:
                         continue
-                self.surf_geo.blit(self.render_geo_pixel(xp, yp, layer), [xp * previewCellSize, yp * previewCellSize])
+                self.surf_geo.blit(self.render_geo_pixel(xp, yp, layer), [xp * preview_cell_size, yp * preview_cell_size])
 
     def render_all(self, layer):
         self.lastlayer = layer
@@ -300,7 +300,7 @@ class Renderer:
                 return self.data["GE"][x][y][i][0]
             except IndexError:
                 return 0
-        cellsize2 = [previewCellSize, previewCellSize]
+        cellsize2 = [preview_cell_size, preview_cell_size]
         pixel = pg.Surface(cellsize2)
         pixel.fill(color)
 
@@ -326,13 +326,13 @@ class Renderer:
             if not self.color_geo:
                 if i != layer:
                     if i == 0:
-                        convrender.set_alpha(uiSettings["global"]["primarylayeralpha"])
+                        convrender.set_alpha(ui_settings["global"]["primarylayeralpha"])
                     if i == 1: 
-                        convrender.set_alpha(uiSettings["global"]["secondarylayeralpha"])
+                        convrender.set_alpha(ui_settings["global"]["secondarylayeralpha"])
                     if i == 2:
-                        convrender.set_alpha(uiSettings["global"]["thirdlayeralpha"])
+                        convrender.set_alpha(ui_settings["global"]["thirdlayeralpha"])
                 else:
-                    convrender.set_alpha(uiSettings["global"]["primarylayeralpha"])
+                    convrender.set_alpha(ui_settings["global"]["primarylayeralpha"])
             if i == 0 and self.color_geo:
                 convrender.set_alpha(255)
 
@@ -343,14 +343,14 @@ class Renderer:
             if cell == 7 and 4 not in over:
                 self.data["GE"][xp][yp][i][0] = 0
                 cell = self.data["GE"][xp][yp][i][0]
-            curtool = [graphics["shows"][str(cell)][0] * previewCellSize,
-                       graphics["shows"][str(cell)][1] * previewCellSize]
+            curtool = [graphics["shows"][str(cell)][0] * preview_cell_size,
+                       graphics["shows"][str(cell)][1] * preview_cell_size]
             
             if(cell not in [0, 7] and not (cell == 1 and 11 in over)):
                 pixel.blit(convrender, [0, 0], [curtool, cellsize2])
 
             if cell in [7]:
-                pixel.blit(convrender, [0, 0], [[graphics["shows2"]["SEMITR"][0] * previewCellSize, graphics["shows2"]["SEMITR"][1] * previewCellSize], cellsize2])
+                pixel.blit(convrender, [0, 0], [[graphics["shows2"]["SEMITR"][0] * preview_cell_size, graphics["shows2"]["SEMITR"][1] * preview_cell_size], cellsize2])
 
             if 4 in over and self.data["GE"][xp][yp][i][0] != 7:
                 self.data["GE"][xp][yp][i][1].remove(4)
@@ -360,12 +360,12 @@ class Renderer:
             for addsindx, adds in enumerate(over):
                 invalid = False
                 try:
-                    curtool = [graphics["shows2"][str(adds)][0] * previewCellSize,
-                            graphics["shows2"][str(adds)][1] * previewCellSize]
+                    curtool = [graphics["shows2"][str(adds)][0] * preview_cell_size,
+                            graphics["shows2"][str(adds)][1] * preview_cell_size]
                 except KeyError:
                     invalid = True
-                    curtool = [graphics["shows2"]["SEMITR"][0] * previewCellSize,
-                                 graphics["shows2"]["SEMITR"][1] * previewCellSize]
+                    curtool = [graphics["shows2"]["SEMITR"][0] * preview_cell_size,
+                                 graphics["shows2"]["SEMITR"][1] * preview_cell_size]
                 bufftiles = self.data["EX2"]["extraTiles"]
                 bufftiles = pg.Rect(bufftiles[0], bufftiles[1],
                                     self.levelwidth - bufftiles[0] - bufftiles[2],
@@ -397,7 +397,7 @@ class Renderer:
                             elif 11 in incorner(xp, yp + 1) and 11 in incorner(xp, yp - 1):
                                 pos = graphics["crackv"]
                         if pos != -1:
-                            curtool = [pos[0] * previewCellSize, pos[1] * previewCellSize]
+                            curtool = [pos[0] * preview_cell_size, pos[1] * preview_cell_size]
                     if adds == 4:  # shortcut entrance validation
                         # checklist
                         foundair = False
@@ -431,10 +431,10 @@ class Renderer:
                                     break
                         else:  # if no breaks
                             if tilecounter == 7 and foundwire and foundair and pos != -1:  # if we found the right one
-                                curtool = [pos[0] * previewCellSize, pos[1] * previewCellSize]
+                                curtool = [pos[0] * preview_cell_size, pos[1] * preview_cell_size]
                 if adds in [1, 2, 3, 11]:
                     if(adds == 11 and cell in [2, 3, 4, 5]):
-                        pixel.blit(convrender, [0, 0], [[graphics["shows2"]["10"][0] * previewCellSize, graphics["shows2"]["10"][1] * previewCellSize], cellsize2])
+                        pixel.blit(convrender, [0, 0], [[graphics["shows2"]["10"][0] * preview_cell_size, graphics["shows2"]["10"][1] * preview_cell_size], cellsize2])
                     else:
                         pixel.blit(convrender, [0, 0], [curtool, cellsize2])
                 else:
@@ -498,7 +498,7 @@ class Renderer:
             dist_to_layer = abs(-self.data["PR"]["props"][indx][0] - layer_depth)
             dist_factor = (35 - dist_to_layer) / 35
             surf.set_alpha(190 * dist_factor)
-            self.surf_props.blit(surf, [mostleft / spritesize * previewCellSize, mosttop / spritesize * previewCellSize])
+            self.surf_props.blit(surf, [mostleft / spritesize * preview_cell_size, mosttop / spritesize * preview_cell_size])
             if prop[4].get("points") is not None:
                 cgrey = [200, 200, 200, 255]
                 propcolor = toarr(self.findprop(prop[1])[0]["previewColor"], "color")  # wires
@@ -509,8 +509,8 @@ class Renderer:
                 for pIndex, point in enumerate(prop[4]["points"]):
                     px, py = toarr(point, "point")
                     pxn, pyn = toarr(prop[4]["points"][min(pIndex + 1, len(prop[4]["points"]) - 1)], "point")
-                    pg.draw.line(self.surf_props, cgrey, [px // previewToRenderedFactor, py // previewToRenderedFactor], [pxn // previewToRenderedFactor, pyn // previewToRenderedFactor])
-                    pg.draw.circle(self.surf_props, propcolor, [px // previewToRenderedFactor, py // previewToRenderedFactor], 4)
+                    pg.draw.line(self.surf_props, cgrey, [px // preview_to_render_fac, py // preview_to_render_fac], [pxn // preview_to_render_fac, pyn // preview_to_render_fac])
+                    pg.draw.circle(self.surf_props, propcolor, [px // preview_to_render_fac, py // preview_to_render_fac], 4)
 
 
     def rerendereffect(self):
@@ -525,34 +525,34 @@ class Renderer:
                 #surf.set_alpha(col.a)
                 #surf.fill(col)
                 #self.surf_effect.blit(surf, [xp * size, yp * size])
-                self.surf_effect.fill(col, [xp * previewCellSize, yp * previewCellSize, previewCellSize, previewCellSize])
+                self.surf_effect.fill(col, [xp * preview_cell_size, yp * preview_cell_size, preview_cell_size, preview_cell_size])
                 # pg.draw.rect(f, col, [xp * size, yp * size, size, size], 0)
 
     def rendereffectselective(self, indx, cells2refresh, mix=mixcol_empty):
         for coord in cells2refresh:
             cell = self.data["FE"]["effects"][indx]["mtrx"][coord[0]][coord[1]]
             col = mix.lerp(mixcol_fill, cell / 100)
-            self.surf_effect.fill(col, [coord[0] * previewCellSize, coord[1] * previewCellSize, previewCellSize, previewCellSize])
+            self.surf_effect.fill(col, [coord[0] * preview_cell_size, coord[1] * preview_cell_size, preview_cell_size, preview_cell_size])
 
     def rendergrid(self):
-        w, h = [self.levelwidth * previewCellSize, self.levelheight * previewCellSize]
+        w, h = [self.levelwidth * preview_cell_size, self.levelheight * preview_cell_size]
         self.grid_surface = pg.Surface([w, h]).convert_alpha()
         self.grid_surface.fill([0, 0, 0, 0])
         col = [255, 255, 255]
         col2 = [180, 180, 180]
-        for x in range(0, w, previewCellSize):
-            if x % (previewCellSize * 2) == 0:
+        for x in range(0, w, preview_cell_size):
+            if x % (preview_cell_size * 2) == 0:
                 pg.draw.line(self.grid_surface, col, [x, 0], [x, h])
             else:
                 pg.draw.line(self.grid_surface, col2, [x, 0], [x, h])
-        for y in range(0, h, previewCellSize):
-            if y % (previewCellSize * 2) == 0:
+        for y in range(0, h, preview_cell_size):
+            if y % (preview_cell_size * 2) == 0:
                 pg.draw.line(self.grid_surface, col, [0, y], [w, y])
             else:
                 pg.draw.line(self.grid_surface, col2, [0, y], [w, y])
         self.grid_surface.set_alpha(30)
 
-    def GetTileHeadFromTilePart(self, part):
+    def get_tilehead_of_body(self, part):
         if part["tp"] in ["default", "material"]:
             return None
         if part["tp"] == "tileHead":

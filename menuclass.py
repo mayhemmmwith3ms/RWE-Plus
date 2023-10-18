@@ -28,7 +28,7 @@ class Menu:
         self.data = renderer.data
         if settings["enable_undo"]:
             self.datalast = jsoncopy(renderer.data)
-        self.menuUiSettings = uiSettings[self.menu]
+        self.menu_ui_settings = ui_settings[self.menu]
         self.hotkeys = hotkeys[name]
         self.historybuffer = []
         self.uc = []
@@ -41,14 +41,14 @@ class Menu:
         self.mousp2 = True
 
         self.justChangedZoom = False
-        self.size = previewCellSize
+        self.size = preview_cell_size
         self.message = ""
         self.buttons: list[widgets.button] = []
         self.labels: list[widgets.lable] = []
 
         widgets.resetpresses()
 
-        for i in self.menuUiSettings["buttons"]:
+        for i in self.menu_ui_settings["buttons"]:
             try:
                 f = getattr(self, i[3])
             except AttributeError:
@@ -65,7 +65,7 @@ class Menu:
                 self.buttons.append(
                     widgets.button(self.surface, pg.rect.Rect(i[1]), i[2], i[0], onpress=f,
                         onrelease=f2, tooltip=self.returnkeytext(i[5]), icon=i[6]))
-        for i in self.menuUiSettings["labels"]:
+        for i in self.menu_ui_settings["labels"]:
             if len(i) == 3:
                 self.labels.append(widgets.lable(self.surface, self.returnkeytext(i[0]), i[1], i[2]))
             elif len(i) == 4:
@@ -352,7 +352,7 @@ class Menu:
     def blit(self, fontsize=None):
         if not self.touchesanything:
             self.setcursor()
-        if uiSettings["global"]["doublerect"]:
+        if ui_settings["global"]["doublerect"]:
             for i in self.buttons:
                 i.blitshadow()
         for i in self.labels:
@@ -453,8 +453,8 @@ class Menu:
         self.message = message
 
     def reload(self):
-        global uiSettings
-        uiSettings = json.load(open(path2ui + settings["ui_theme"], "r"))
+        global ui_settings
+        ui_settings = json.load(open(path2ui + settings["ui_theme"], "r"))
         self.__init__(self.surface, self.data, self.menu)
 
     def send(self, message):
@@ -570,9 +570,9 @@ class MenuWithField(Menu):
         self.tic = 0
         self.toc = 0
 
-        self.f = pg.Surface([self.levelwidth * previewCellSize, self.levelheight * previewCellSize])
+        self.f = pg.Surface([self.levelwidth * preview_cell_size, self.levelheight * preview_cell_size])
 
-        self.field = widgets.window(self.surface, self.menuUiSettings["d1"])
+        self.field = widgets.window(self.surface, self.menu_ui_settings["d1"])
         self.btiles = self.data["EX2"]["extraTiles"]
         self.fieldmap = self.field.field
 
@@ -591,8 +591,8 @@ class MenuWithField(Menu):
             self.rfa()
 
     def reload(self):
-        global uiSettings
-        uiSettings = json.load(open(path2ui + settings["ui_theme"], "r"))
+        global ui_settings
+        ui_settings = json.load(open(path2ui + settings["ui_theme"], "r"))
         self.__init__(self.surface, self.renderer)
 
     def movemiddle(self, bp):
@@ -640,8 +640,8 @@ class MenuWithField(Menu):
     def renderfield(self):
         self.fieldmap = pg.surface.Surface([self.levelwidth * self.size, self.levelheight * self.size])
         self.f = self.f.convert(self.fieldmap)
-        self.fieldmap.blit(pg.transform.scale(self.f, [self.f.get_width() / previewCellSize * self.size,
-                                                       self.f.get_height() / previewCellSize * self.size]), [0, 0])
+        self.fieldmap.blit(pg.transform.scale(self.f, [self.f.get_width() / preview_cell_size * self.size,
+                                                       self.f.get_height() / preview_cell_size * self.size]), [0, 0])
         self.fieldadd = pg.surface.Surface([self.levelwidth * self.size, self.levelheight * self.size])
         self.fieldadd.set_colorkey(white)
         self.fieldadd.fill(white)
@@ -652,7 +652,7 @@ class MenuWithField(Menu):
     def rfa(self):
         if self.layer != self.renderer.lastlayer:
             self.rerenderActiveEditors(self.layer)
-        self.f = pg.Surface([self.levelwidth * previewCellSize, self.levelheight * previewCellSize])
+        self.f = pg.Surface([self.levelwidth * preview_cell_size, self.levelheight * preview_cell_size])
         if self.drawgeo:
             # self.renderer.geo_full_render(self.layer)
             self.f.blit(self.renderer.surf_geo, [0, 0])
@@ -758,10 +758,10 @@ class MenuWithField(Menu):
             self.rerenderActiveEditors(self.layer)
             self.rfa()
 
-    def StartTimer(self):
+    def start_perftimer(self):
         self.tic = time.perf_counter()
 
-    def StopTimer(self):
+    def stop_perftimer(self):
         self.toc = time.perf_counter()
         print(f"Timer took {(self.toc - self.tic) * 1000:0.4} ms")
 
@@ -870,7 +870,7 @@ class MenuWithField(Menu):
 
     def resetzoom(self):
         pos = self.pos
-        self.size = previewCellSize
+        self.size = preview_cell_size
         self.offset -= pos - self.pos
         self.renderfield()
         self.justChangedZoom = True
@@ -933,7 +933,7 @@ class MenuWithField(Menu):
 
                 vec = pg.Vector2([tl, tr, br, bl][quadindx])
 
-                widgets.fastmts(self.surface, f"Order: {indx}", rect.centerx + self.size // 2, rect.centery + self.size // 2, white, uiSettings["global"]["fontsize"] // 2)
+                widgets.fastmts(self.surface, f"Order: {indx}", rect.centerx + self.size // 2, rect.centery + self.size // 2, white, ui_settings["global"]["fontsize"] // 2)
 
                 pg.draw.line(self.surface, camera_notheld, rect.center, vec, 1)
 
@@ -1047,8 +1047,8 @@ class MenuWithField(Menu):
         self.data["TE"]["tlMatrix"][x][y][self.layer] = {"tp": "default", "data": 0}
 
     def getcamerarect(self, cam):
-        pos = pg.Vector2(toarr(cam, "point")) // previewToRenderedFactor
-        p = (pos / previewCellSize) * self.size + self.field.rect.topleft + self.offset * self.size
+        pos = pg.Vector2(toarr(cam, "point")) // preview_to_render_fac
+        p = (pos / preview_cell_size) * self.size + self.field.rect.topleft + self.offset * self.size
         return pg.Rect([p, [camw * self.size, camh * self.size]])
 
     def findprop(self, name, cat=None):
@@ -1098,7 +1098,7 @@ class MenuWithField(Menu):
         return self.pos - self.offset
 
     def mouse2field_sized(self):
-        return self.mouse2field() * previewCellSize
+        return self.mouse2field() * preview_cell_size
 
     @property
     def pos(self):
@@ -1122,8 +1122,27 @@ class MenuWithField(Menu):
         height = bottom - top
         return pg.Rect(left, top, width, height)
 
-    def FieldCoordToDrawPos(self, pos, _offset = [0, 0]):
+    def field_to_draw_pos(self, pos, _offset = [0, 0]):
         return [((pos[0] + self.offset[0]) * self.size + self.field.rect.topleft[0] + _offset[0]), ((pos[1] + self.offset[1]) * self.size + self.field.rect.topleft[1] + _offset[1])]
+    
+    def get_tilehead_of_body(self, part):
+        if part["tp"] in ["default", "material"]:
+            return None
+        if part["tp"] == "tileHead":
+            return part
+        
+        headPos = [toarr(part["data"][0], "point"), part["data"][1] - 1]
+        headTile = self.data["TE"]["tlMatrix"][int(headPos[0][0] - 1)][int(headPos[0][1] - 1)][headPos[1]]
+
+        if headTile["tp"] == "tileHead":
+            return headTile
+        else:
+            return "stray"
+
+    def get_tilehead_pos_from_body(self, part):
+        if part["tp"] != "tileBody":
+            return None
+        return [toarr(part["data"][0], "point"), part["data"][1] - 1]
 
     @property
     def xoffset(self):
@@ -1139,7 +1158,7 @@ class MenuWithField(Menu):
     
     @property
     def fieldScale(self):
-        return self.size / previewCellSize
+        return self.size / preview_cell_size
 
     @property
     def custom_info(self):
