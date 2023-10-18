@@ -1,9 +1,9 @@
-import copy
+import copy  # noqa: F401
 import render
 import widgets
-import pyperclip
+import pyperclip  # noqa: F401
 from render import *
-from tkinter.filedialog import askopenfilename, asksaveasfilename
+from tkinter.filedialog import askopenfilename, asksaveasfilename  # noqa: F401
 import concurrent.futures
 import time
 from path_dict import PathDict
