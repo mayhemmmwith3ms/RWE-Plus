@@ -297,7 +297,6 @@ class TE(MenuWithField):
             cir = [self.buttonslist[self.toolindex].rect.x + 10, self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
         pg.draw.circle(self.surface, cursor, cir, self.buttonslist[self.toolindex].rect.h / 3)
         super().blit()
-        mpos = pg.mouse.get_pos()
         bp = self.getmouse
         if self.onfield and self.tileimage is not None:
             # cords = [math.floor(pg.mouse.get_pos()[0] / self.size) * self.size, math.floor(pg.mouse.get_pos()[1] / self.size) * self.size]
@@ -310,122 +309,122 @@ class TE(MenuWithField):
 
             self.movemiddle(bp)
 
-            if not settings["TE_legacy_RWE_placement_controls"]:
-                if not self.is_macro(self.tileimage):
-                    if self.tileimage["size"][0] != 1 or self.tileimage["size"][1] != 1:
-                        self.brushsize = 1
+            if not self.is_macro(self.tileimage):
+                if self.tileimage["size"][0] != 1 or self.tileimage["size"][1] != 1:
+                    self.brushsize = 1
 
-                    cposx = int(pos2.x) - int((self.tileimage["size"][0] * .5) + .5) * self.size + self.size
-                    cposy = int(pos2.y) - int((self.tileimage["size"][1] * .5) + .5) * self.size + self.size
+                cposx = int(pos2.x) - int((self.tileimage["size"][0] * .5) + .5) * self.size + self.size
+                cposy = int(pos2.y) - int((self.tileimage["size"][1] * .5) + .5) * self.size + self.size
 
-                    cposxo = int(posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
-                    cposyo = int(posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
+                cposxo = int(posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
+                cposyo = int(posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
 
-                    if settings["hold_key_rect_drag"] and not (bp[0] == 1 or bp[2] == 1) and not self.tool == 2:
-                        if self.findparampressed("alt_func"):
-                            self.tool = 1
-                        else:
-                            self.tool = 0
-
-                    if posoffset != self.mpos or self.lastfg != fg or self.lastfp != fp or self.justChangedZoom:
-                        self.cols = self.test_cols(cposxo, cposyo)
-                        self.mpos = posoffset
-                        self.lastfg = fg
-                        self.lastfp = fp
-                        self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / preview_cell_size) * 100}%")
-
-                        if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
-                            tl = self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]
-                            #try:
-                            if (tlh := self.get_tilehead_of_body(tl)) not in [None, "stray"]:
-                                tlLabel = tlh["data"][1]
-                            elif tlh is None and tl["tp"] == "material":
-                                tlLabel = tl["data"]
-                            elif tlh is None and tl["tp"] == "default":
-                                tlLabel = "default"
-                            elif tlh == "stray":
-                                tlLabel = "STRAY TILE FRAGMENT"
-                            #except:
-                            #    tlLabel = "ERROR"
-                            #    print(f"Error occurred determining tile display type at mpos {int(posoffset.x)}, {int(posoffset.y)}")
-                            self.labels[0].set_text("Tile: " + tlLabel + " | Tile Data: " + str(tl))            
-
-                    selectrect = [
-                        [cposx - bord, cposy - bord],
-                        [self.tileimage["image"].get_width() + bord * 2, self.tileimage["image"].get_height() + bord * 2]
-                        ]
-                    drawTilePreview = True
-                    if not (self.tool == 1 and (bp[0] or bp[2])):
-                        if self.cols and not bp[2] and self.tool == 0:
-                            rectCol = canplace
-                        elif self.tool == 1:
-                            rectCol = purple
-                        elif self.tool == 2:
-                            rectCol = blue
-                        else:
-                            rectCol = cannotplace
-
-                        if self.brush_active:
-                            if self.squarebrush or self.brushsize <= 1:
-                                rect = pg.Rect([pos2 - [(self.brushsize // 2) * self.size, (self.brushsize // 2) * self.size], [self.brushsize * self.size, self.brushsize * self.size]])
-                                pg.draw.rect(self.surface, rectCol, rect, 1)
-                            else:
-                               pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize, 1)
-                        else:
-                            pg.draw.rect(self.surface, rectCol, selectrect, 1)
-                    if bp[2]:
-                        drawTilePreview = False
-
-                    if drawTilePreview:
-                        self.tileimage["image"].set_colorkey([255, 255, 255])
-                        self.surface.blit(self.tileimage["image"], [cposx, cposy])
-                        self.printcols(cposxo, cposyo, self.tileimage)
-
-                    if self.justPlacedChainHolders:
-                        for chPos in self.justPlacedChainHolders:
-                            pg.draw.line(self.surface, red, self.field_to_draw_pos(chPos, _offset = [self.size, self.size]),
-                                                                [pos2.x + self.size // 2, pos2.y + self.size // 2])
-                    #try:
-                    #    if (tlType := self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]["tp"]) not in ["material", "default"]:
-                    #        if tlType == "tileHead":
-                    #            #chainEnd = toarr(self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]["data"][2], "point")
-                    #            chHeadPos = [[int(posoffset.x + 1), int(posoffset.y + 1)], self.layer]
-                    #        if tlType == "tileBody":
-                    #            chHeadPos = [toarr(self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]["data"][0], "point"),
-                    #                        self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]["data"][1] - 1]
-                    #        if self.data["TE"]["tlMatrix"][int(chHeadPos[0][0] - 1)][int(chHeadPos[0][1] - 1)][chHeadPos[1]]["data"].__len__() == 3:
-                    #            chainEnd = toarr(self.data["TE"]["tlMatrix"][int(chHeadPos[0][0] - 1)][int(chHeadPos[0][1] - 1)][chHeadPos[1]]["data"][2], "point")
-                    #            pg.draw.circle(self.surface, red, self.FieldCoordToDrawPos(chainEnd, [self.size // 2, self.size // 2]), self.size // 3, 1)
-                    #except IndexError:
-                    #    pass
-
-                    if (chainHolderHead := self.get_tilehead_of_body(self.data["TE"]["tlMatrix"][int(max(0, min(posoffset.x, self.levelwidth - 1)))][int(max(0, min(posoffset.y, self.levelheight - 1)))][self.layer])) not in [None, "stray"]:
-                        if chainHolderHead["data"][1] == "Chain Holder" and chainHolderHead["data"].__len__() == 3:
-                            chainEnd = toarr(chainHolderHead["data"][2], "point")
-                            pg.draw.circle(self.surface, red, self.field_to_draw_pos(chainEnd, [self.size // 2, self.size // 2]), self.size // 3, 1)
-                    try:
-                        if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
-                            hoveredTile = self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]
-                            if self.findparampressed("force_place") and hoveredTile["tp"] not in ["default", "material"]:
-                                if hoveredTile["tp"] == "tileBody" and (tlhPos := [toarr(hoveredTile["data"][0], "point"), hoveredTile["data"][1]]) is not None:
-                                    tlhDrawPos = tlhPos[0]
-                                else:
-                                    tlhDrawPos = [int(posoffset.x + 1), int(posoffset.y + 1)]
-                                pg.draw.circle(self.surface, blue, self.field_to_draw_pos(tlhDrawPos, [-self.size // 2, -self.size // 2]), self.size // 3, 1)
-                    except Exception:
-                        print("Error occurred determining tileHead position")
-                else:
-                    patternPrevCol = False
-                    if self.tileimage["tp"] == "pattern":
+                if settings["hold_key_rect_drag"] and not (bp[0] == 1 or bp[2] == 1) and not self.tool == 2:
+                    if self.findparampressed("alt_func"):
                         self.tool = 1
-                        if not (self.tool == 1 and (bp[0] or bp[2])):
-                            patternPrevCol = purple
-                    if(self.tileimage["tp"] == "path"):
-                        if not (self.tool == 0 and (bp[0] or bp[2])):
-                            patternPrevCol = purple
-                    if patternPrevCol:
-                        pg.draw.rect(self.surface, patternPrevCol, [pos2.x - bord, pos2.y - bord, self.size + bord * 2, self.size + bord * 2], 1)
+                    else:
+                        self.tool = 0
 
+                if posoffset != self.mpos or self.lastfg != fg or self.lastfp != fp or self.justChangedZoom:
+                    self.cols = self.test_cols(cposxo, cposyo)
+                    self.mpos = posoffset
+                    self.lastfg = fg
+                    self.lastfp = fp
+                    self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / preview_cell_size) * 100}%")
+
+                    if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
+                        tl = self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]
+                        #try:
+                        if (tlh := self.get_tilehead_of_body(tl)) not in [None, "stray"]:
+                            tlLabel = tlh["data"][1]
+                        elif tlh is None and tl["tp"] == "material":
+                            tlLabel = tl["data"]
+                        elif tlh is None and tl["tp"] == "default":
+                            tlLabel = "default"
+                        elif tlh == "stray":
+                            tlLabel = "STRAY TILE FRAGMENT"
+                        #except:
+                        #    tlLabel = "ERROR"
+                        #    print(f"Error occurred determining tile display type at mpos {int(posoffset.x)}, {int(posoffset.y)}")
+                        self.labels[0].set_text("Tile: " + tlLabel + " | Tile Data: " + str(tl))            
+
+                selectrect = [
+                    [cposx - bord, cposy - bord],
+                    [self.tileimage["image"].get_width() + bord * 2, self.tileimage["image"].get_height() + bord * 2]
+                    ]
+                drawTilePreview = True
+                if not (self.tool == 1 and (bp[0] or bp[2])):
+                    if self.cols and self.place_mode and self.tool == 0:
+                        rectCol = canplace
+                    elif self.rect_mode:
+                        rectCol = purple
+                    elif self.tool == 2:
+                        rectCol = blue
+                    else:
+                        rectCol = cannotplace
+
+                    if self.brush_active:
+                        if self.squarebrush or self.brushsize <= 1:
+                            rect = pg.Rect([pos2 - [(self.brushsize // 2) * self.size, (self.brushsize // 2) * self.size], [self.brushsize * self.size, self.brushsize * self.size]])
+                            pg.draw.rect(self.surface, rectCol, rect, 1)
+                        else:
+                            pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize, 1)
+                    elif not (self.rect_mode and (bp[0] or bp[2])):
+                        pg.draw.rect(self.surface, rectCol, selectrect, 1)
+                if not self.place_mode:
+                    drawTilePreview = False
+
+                if drawTilePreview:
+                    self.tileimage["image"].set_colorkey([255, 255, 255])
+                    self.surface.blit(self.tileimage["image"], [cposx, cposy])
+                    self.printcols(cposxo, cposyo, self.tileimage)
+
+                if self.justPlacedChainHolders:
+                    for chPos in self.justPlacedChainHolders:
+                        pg.draw.line(self.surface, red, self.field_to_draw_pos(chPos, _offset = [self.size, self.size]),
+                                                            [pos2.x + self.size // 2, pos2.y + self.size // 2])
+                #try:
+                #    if (tlType := self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]["tp"]) not in ["material", "default"]:
+                #        if tlType == "tileHead":
+                #            #chainEnd = toarr(self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]["data"][2], "point")
+                #            chHeadPos = [[int(posoffset.x + 1), int(posoffset.y + 1)], self.layer]
+                #        if tlType == "tileBody":
+                #            chHeadPos = [toarr(self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]["data"][0], "point"),
+                #                        self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]["data"][1] - 1]
+                #        if self.data["TE"]["tlMatrix"][int(chHeadPos[0][0] - 1)][int(chHeadPos[0][1] - 1)][chHeadPos[1]]["data"].__len__() == 3:
+                #            chainEnd = toarr(self.data["TE"]["tlMatrix"][int(chHeadPos[0][0] - 1)][int(chHeadPos[0][1] - 1)][chHeadPos[1]]["data"][2], "point")
+                #            pg.draw.circle(self.surface, red, self.FieldCoordToDrawPos(chainEnd, [self.size // 2, self.size // 2]), self.size // 3, 1)
+                #except IndexError:
+                #    pass
+
+                if (chainHolderHead := self.get_tilehead_of_body(self.data["TE"]["tlMatrix"][int(max(0, min(posoffset.x, self.levelwidth - 1)))][int(max(0, min(posoffset.y, self.levelheight - 1)))][self.layer])) not in [None, "stray"]:
+                    if chainHolderHead["data"][1] == "Chain Holder" and chainHolderHead["data"].__len__() == 3:
+                        chainEnd = toarr(chainHolderHead["data"][2], "point")
+                        pg.draw.circle(self.surface, red, self.field_to_draw_pos(chainEnd, [self.size // 2, self.size // 2]), self.size // 3, 1)
+                try:
+                    if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
+                        hoveredTile = self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]
+                        if self.findparampressed("force_place") and hoveredTile["tp"] not in ["default", "material"]:
+                            if hoveredTile["tp"] == "tileBody" and (tlhPos := [toarr(hoveredTile["data"][0], "point"), hoveredTile["data"][1]]) is not None:
+                                tlhDrawPos = tlhPos[0]
+                            else:
+                                tlhDrawPos = [int(posoffset.x + 1), int(posoffset.y + 1)]
+                            pg.draw.circle(self.surface, blue, self.field_to_draw_pos(tlhDrawPos, [-self.size // 2, -self.size // 2]), self.size // 3, 1)
+                except Exception:
+                    print("Error occurred determining tileHead position")
+            else:
+                patternPrevCol = False
+                if self.tileimage["tp"] == "pattern":
+                    self.tool = 1
+                    if not (self.tool == 1 and (bp[0] or bp[2])):
+                        patternPrevCol = purple
+                if(self.tileimage["tp"] == "path"):
+                    if not (self.tool == 0 and (bp[0] or bp[2])):
+                        patternPrevCol = purple
+                if patternPrevCol:
+                    pg.draw.rect(self.surface, patternPrevCol, [pos2.x - bord, pos2.y - bord, self.size + bord * 2, self.size + bord * 2], 1)
+
+            if not settings["TE_legacy_RWE_placement_controls"]:
                 if self.tool == 0:
                     if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
                         if self.justPlacedChainHolders:
@@ -469,200 +468,42 @@ class TE(MenuWithField):
                         self.end_rect_drag(False)
                         self.last_rmb = True
             else:
-                if not self.is_macro(self.tileimage):
-                    if not (self.tileimage["size"][0] == 1 and self.tileimage["size"][1] == 1):
-                        self.brushsize = 1
+                if self.tool == 0:
+                    if bp[0] == 1 and self.last_lmb and self.last_mmb and self.last_rmb:
+                        self.begin_drag(True)
+                        self.last_lmb = False
+                    elif bp[0] == 1 and not self.last_lmb and self.last_mmb and self.last_rmb:
+                        self.update_drag(True)
+                    elif bp[0] == 0 and not self.last_lmb and self.last_mmb and self.last_rmb:
+                        self.end_drag(True)
+                        self.last_lmb = True
 
-                    cposx = int(pos2.x) - int((self.tileimage["size"][0] * .5) + .5) * self.size + self.size
-                    cposy = int(pos2.y) - int((self.tileimage["size"][1] * .5) + .5) * self.size + self.size
+                    if bp[2] == 1 and self.last_rmb and self.last_mmb and self.last_lmb:
+                        self.begin_rect_drag(True)
+                        self.last_rmb = False
+                    elif bp[2] == 1 and not self.last_rmb and self.last_mmb and self.last_lmb:
+                        self.update_rect_drag(True)
+                    elif bp[2] == 0 and not self.last_rmb and self.last_mmb and self.last_lmb:
+                        self.end_rect_drag(True)
+                        self.last_rmb = True
+                else:
+                    if bp[0] == 1 and self.last_lmb and self.last_mmb and self.last_rmb:
+                        self.begin_drag(False)
+                        self.last_lmb = False
+                    elif bp[0] == 1 and not self.last_lmb and self.last_mmb and self.last_rmb:
+                        self.update_drag(False)
+                    elif bp[0] == 0 and not self.last_lmb and self.last_mmb and self.last_rmb:
+                        self.end_drag(False)
+                        self.last_lmb = True
 
-                    cposxo = int(posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
-                    cposyo = int(posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
-
-                    if posoffset != self.mpos or self.lastfg != fg:
-                        self.cols = self.test_cols(cposxo, cposyo)
-                        self.mpos = posoffset
-                        self.lastfg = fg
-                        self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)}, Work Layer: {self.layer + 1}")
-                        if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
-                            self.labels[0].set_text(
-                                "Tile: " + str(self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]))
-                    bord = 1#self.size // image1size + 1
-                    if self.cols and self.tool == 0:
-                        pg.draw.rect(self.surface, canplace, [[cposx - bord, cposy - bord],
-                                                            [self.tileimage["image"].get_width() + bord * 2,
-                                                            self.tileimage["image"].get_height() + bord * 2]], bord)
-                    elif self.tool == 2:
-                        pg.draw.rect(self.surface, blue, [[cposx - bord, cposy - bord],
-                                                                [self.tileimage["image"].get_width() + bord * 2,
-                                                                self.tileimage["image"].get_height() + bord * 2]], bord)
-                    else:
-                        pg.draw.rect(self.surface, cannotplace, [[cposx - bord, cposy - bord],
-                                                                [self.tileimage["image"].get_width() + bord * 2,
-                                                                self.tileimage["image"].get_height() + bord * 2]], bord)
-                    if self.tool == 0:
-                        self.tileimage["image"].set_colorkey([255, 255, 255])
-                        self.surface.blit(self.tileimage["image"], [cposx, cposy])
-                        self.printcols(cposxo, cposyo, self.tileimage)
-                if self.brush_active:
-                    if self.squarebrush:
-                        rect = pg.Rect([pos2, [self.brushsize * self.size, self.brushsize * self.size]])
-                        pg.draw.rect(self.surface, select, rect, 3)
-                    else:
-                        pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize, 5)
-                if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
-                    self.last_lmb = False
-                    self.emptyarea()
-                elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
-                    # if (0 <= posoffset[0] < self.levelwidth) and (0 <= posoffset[1] < self.levelheight):
-                    #     pass
-                    if not self.is_macro(self.tileimage) or self.tool == 0:
-                        if self.tool == 0:
-                            if self.cols:
-                                    self.place(cposxo, cposyo)
-                                    self.fieldadd.blit(self.tileimage["image"],
-                                                    [cposxo * self.size, cposyo * self.size])
-                        elif self.tool == 1:
-                            self.destroy(posoffset.x, posoffset.y)
-                            pg.draw.rect(self.fieldadd, red, [posoffset.x * self.size, posoffset.y * self.size, self.size, self.size])
-                elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
-                    self.detecthistory(["TE", "tlMatrix"], not fg)
-                    if fg:
-                        self.detecthistory(["GE"])
-                    self.fieldadd.fill(white)
-                    self.last_lmb = True
-                    self.renderer.tiles_render_area(self.area, self.layer)
-                    self.renderer.geo_render_area(self.area, self.layer)
-                    self.rfa()
-
-                if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
-                    self.last_rmb = False
-                    self.rectdata = [posoffset, pg.Vector2(0, 0), pos2]
-                    self.emptyarea()
-                elif bp[2] == 1 and not self.last_rmb and (self.last_lmb and self.last_mmb):
-                    self.rectdata[1] = posoffset - self.rectdata[0]
-
-                    righthalf = mpos[0] > self.rectdata[2].x + 10
-                    upperhalf = mpos[1] > self.rectdata[2].y + 10
-                    
-                    tl = [0, 0]
-                    br = [0, 0]
-
-                    if not righthalf:
-                        tl[0] = pos2.x
-                        br[0] = self.rectdata[2].x + self.size
-                    else:
-                        tl[0] = self.rectdata[2].x
-                        br[0] = pos2.x + self.size
-
-                    if upperhalf:
-                        tl[1] = pos2.y + self.size
-                        br[1] = self.rectdata[2].y
-                    else:
-                        tl[1] = self.rectdata[2].y + self.size
-                        br[1] = pos2.y
-
-                    rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
-                    tx = f"{int(rect.w / self.size)}, {int(rect.h / self.size)}"
-                    widgets.fastmts(self.surface, tx, *mpos, white)
-                    pg.draw.rect(self.surface, select, rect, 1)
-                elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
-                    # self.rectdata = [self.rectdata[0], posoffset]
-                    righthalf = mpos[0] > self.rectdata[2].x + 10
-                    upperhalf = mpos[1] > self.rectdata[2].y + 10
-                    
-                    tl = [0, 0]
-                    br = [0, 0]
-
-                    if not righthalf:
-                        tl[0] = posoffset.x
-                        br[0] = self.rectdata[0].x + 1
-                    else:
-                        tl[0] = self.rectdata[0].x
-                        br[0] = posoffset.x + 1
-
-                    if upperhalf:
-                        tl[1] = posoffset.y + 1
-                        br[1] = self.rectdata[0].y
-                    else:
-                        tl[1] = self.rectdata[0].y + 1
-                        br[1] = posoffset.y
-
-                    rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
-                    if not self.is_macro(self.tileimage) and self.tool != 2:
-                        for x in range(int(rect.w)):
-                            for y in range(int(rect.h)):
-                                if self.tool == 0:
-                                    self.place(x + rect.x, y + rect.y)
-                                elif self.tool == 1:
-                                    self.destroy(x + rect.x, y + rect.y)
-                    elif self.tool == 2:  # copy
-                        history = []
-                        for x in range(int(rect.w)):
-                            for y in range(int(rect.h)):
-                                xpos, ypos = x + rect.x, y + rect.y
-                                block = self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]
-                                if block["tp"] == "material" or block["tp"] == "tileHead":
-                                    history.append([x, y, block])
-                        pyperclip.copy(str(["TE", history]))
-                    elif self.tool == 0 and self.is_macro(self.tileimage):
-                        saved = self.tileimage
-                        savedtool = saved["name"]
-                        savedcat = saved["category"]
-                        save = self.currentcategory
-                        for y in range(int(rect.h)):
-                            for x in range(int(rect.w)):
-                                if x == 0 and y == 0:
-                                    self.set(self.blocks["cat"], self.blocks["NW"])
-                                elif x == rect.w - 1 and y == 0:
-                                    self.set(self.blocks["cat"], self.blocks["NE"])
-                                elif x == 0 and y == rect.h - 1:
-                                    self.set(self.blocks["cat"], self.blocks["SW"])
-                                elif x == rect.w - 1 and y == rect.h - 1:
-                                    self.set(self.blocks["cat"], self.blocks["SE"])
-
-                                elif x == 0:
-                                    self.set(self.blocks["cat"], self.blocks["W"])
-                                elif y == 0:
-                                    self.set(self.blocks["cat"], self.blocks["N"])
-                                elif x == rect.w - 1:
-                                    self.set(self.blocks["cat"], self.blocks["E"])
-                                elif y == rect.h - 1:
-                                    self.set(self.blocks["cat"], self.blocks["S"])
-                                else:
-                                    continue
-                                self.place(x + rect.x, y + rect.y)
-                        skip = False
-                        lastch = random.choice(blocks)
-                        for y in range(1, int(rect.h) - 1):
-                            if skip:
-                                skip = False
-                                continue
-                            ch = random.choice(blocks)
-                            while ch["upper"] != lastch["lower"] or ch["tiles"] == lastch["tiles"]:
-                                ch = random.choice(blocks)
-                            if y == self.rectdata[1].y - 2 and ch["tall"] == 2:
-                                while ch["upper"] != lastch["lower"] or ch["tall"] == 2 or ch["tiles"] == lastch["tiles"]:
-                                    ch = random.choice(blocks)
-                            lastch = ch.copy()
-                            if ch["tall"] == 2:
-                                skip = True
-                            for x in range(1, int(rect.w) - 1):
-                                n = 0
-                                if len(ch["tiles"]) > 1:
-                                    n = x % len(ch["tiles"]) - 1
-                                self.set(saved["patcat"], saved["prefix"] + ch["tiles"][n])
-                                self.place(x + rect.x, y + rect.y)
-                        self.set(savedcat, savedtool)
-                        self.currentcategory = save
-                        self.rebuttons()
-                    self.detecthistory(["TE", "tlMatrix"])
-                    if fg:
-                        self.detecthistory(["GE"])
-                    self.renderer.tiles_render_area(self.area, self.layer)
-                    self.renderer.geo_render_area(self.area, self.layer)
-                    self.rfa()
-                    self.last_rmb = True
+                    if bp[2] == 1 and self.last_rmb and self.last_mmb and self.last_lmb:
+                        self.begin_rect_drag(False)
+                        self.last_rmb = False
+                    elif bp[2] == 1 and not self.last_rmb and self.last_mmb and self.last_lmb:
+                        self.update_rect_drag(False)
+                    elif bp[2] == 0 and not self.last_rmb and self.last_mmb and self.last_lmb:
+                        self.end_rect_drag(False)
+                        self.last_rmb = True             
         else:
             if not self.matshow:
                 for index, button in enumerate(self.buttonslist[:-1]):
@@ -1204,6 +1045,14 @@ class TE(MenuWithField):
 
     def is_adjacent_cell(self, c1, c2):
         return (c1 - c2) in [[1, 0], [0, 1], [-1, 0], [0, -1]]
+
+    @property
+    def rect_mode(self):
+        return self.tool == 1 if not settings["TE_legacy_RWE_placement_controls"] else self.getmouse[2]
+
+    @property
+    def place_mode(self):
+        return not self.getmouse[2] if not settings["TE_legacy_RWE_placement_controls"] else self.tool == 0
 
     @property
     def brush_active(self):
