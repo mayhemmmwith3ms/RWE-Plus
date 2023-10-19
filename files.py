@@ -82,6 +82,7 @@ bignum = 9999999  # just a big number
 
 inputpromtname = "RWE+ input"
 
+GEOMETRY_ENTRANCE_NODES = (7, 6, 21, 19, 5, 4)
 
 fonts = {}
 

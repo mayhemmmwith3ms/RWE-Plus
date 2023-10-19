@@ -673,7 +673,12 @@ class GE(MenuWithField):
                 if graphics["codes"][self.selectedtool] == 1:
                     self.data["GE"][x][y][self.layer][0] = self.placetile + self.state
                 if graphics["codes"][self.selectedtool] == 0:
-                    if (abs(int(self.placetile))) + self.state not in self.data["GE"][x][y][self.layer][1]:
+                    if (abs(int(self.placetile))) + self.state not in self.data["GE"][x][y][self.layer][1]:                        
+                        if abs(int(self.placetile)) + self.state in GEOMETRY_ENTRANCE_NODES:
+                            for st in self.data["GE"][x][y][self.layer][1]:
+                                if st in GEOMETRY_ENTRANCE_NODES:
+                                    self.data["GE"][x][y][self.layer][1].remove(st)
+
                         self.data["GE"][x][y][self.layer][1].append((abs(int(self.placetile))) + self.state)
                     else:
                         self.data["GE"][x][y][self.layer][1].remove((abs(int(self.placetile))) + self.state)
