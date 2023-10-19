@@ -21,12 +21,14 @@ file2 = ""
 undobuffer = []
 redobuffer = []
 surf: Menu | MenuWithField = None
+loading = False
 
 def openlevel(level, window):
-    global run, file, file2, redobuffer, undobuffer, surf
+    global run, file, file2, redobuffer, undobuffer, surf, loading
     surf.savef()
     file = level
     if file is not None and os.path.exists(file):
+        loading = True
         launchload(file)
         undobuffer = []
         redobuffer = []
@@ -36,7 +38,8 @@ def openlevel(level, window):
         surf.renderer.render_all(0)
         surf = MN(window, surf.renderer)
         os.system("cls")
-    print("Open")
+    log_to_load_log(f"Successfully loaded level \"{os.path.basename(level)}\"!")
+    loading = False
 
 
 def keypress(window):
@@ -154,33 +157,39 @@ def asktoexit(file, file2):
         sys.exit(0)
 
 def launchload(level):
-    global surf, fullscreen, undobuffer, redobuffer, file, file2, run
+    global surf, fullscreen, undobuffer, redobuffer, file, file2, run, loading
+
+    log_to_load_log(f"Start load of level \"{os.path.basename(level)}\"!")
 
     if isinstance(level, str) and (splitfilepath := os.path.splitext(level))[1] not in [".wep", ".txt"]:
         level = splitfilepath[0] + ".wep"
         if not os.path.exists(level):
             level = splitfilepath[0] + ".txt"
 
-    recent = open(path + "recent.txt", "w")
-    recent.write(str(level))
-    recent.close()
-    if level == -1:
-        file = turntoproject(open(path + "default.txt", "r").read())
-        file["level"] = ""
-        file["path"] = ""
-        file["dir"] = ""
-    elif level == "":
-        return
-    elif level[-3:] == "txt":
-        file = turntoproject(open(level, "r").read())
-        file["level"] = os.path.basename(level)
-        file["path"] = level
-        file["dir"] = os.path.abspath(level)
-    else:
-        file = json.load(open(level, "r"))
-        file["level"] = os.path.basename(level)
-        file["path"] = level
-        file["dir"] = os.path.abspath(level)
+    with open(path + "recent.txt", "w") as recent:
+        recent.write(str(level))
+
+    try:
+        if level == -1:
+            file = turntoproject(open(path + "default.txt", "r").read())
+            file["level"] = ""
+            file["path"] = ""
+            file["dir"] = ""
+        elif level == "":
+            return
+        elif level[-3:] == "txt":
+            file = turntoproject(open(level, "r").read())
+            file["level"] = os.path.basename(level)
+            file["path"] = level
+            file["dir"] = os.path.abspath(level)
+        else:
+            file = json.load(open(level, "r"))
+            file["level"] = os.path.basename(level)
+            file["path"] = level
+            file["dir"] = os.path.abspath(level)
+    except Exception:
+        log_to_load_log(f"Failed to load level \"{os.path.basename(level)}\"! This may be caused by corrupted or invalid data!", error=True)
+        raise
     undobuffer = []
     redobuffer = []
 
@@ -211,8 +220,8 @@ def doevents(window):
 
 
 def launch(level):
-    global surf, fullscreen, undobuffer, redobuffer, file, file2, run
-
+    global surf, fullscreen, undobuffer, redobuffer, file, file2, run, loading
+    loading = True
     # loading image
     loadi = loadimage(f"{path}load.png")
     window = pg.display.set_mode(loadi.get_size(), flags=pg.NOFRAME)
@@ -220,13 +229,16 @@ def launch(level):
     pg.display.flip()
     pg.display.update()
 
+    loading = True
+
     with open(application_path + "\\loadLog.txt", "w") as load_log:
-        load_log.write("Start load!\n")
+        load_log.write("Start launch load!\n")
 
     loadtimetic = time.perf_counter()
     
     try:
         launchload(level)
+
         items = inittolist()
         propcolors = getcolors()
         props = getprops(items)
@@ -240,12 +252,22 @@ def launch(level):
 
         window = pg.display.set_mode([width, height], flags=pg.RESIZABLE | (pg.FULLSCREEN * fullscreen))
         pg.display.set_icon(loadimage(path + "icon.png"))
-        renderer = Renderer(file, items, props, propcolors)
-        renderer.render_all(0)
-        surf = MN(window, renderer)
+
+        try:
+            renderer = Renderer(file, items, props, propcolors)
+            renderer.render_all(0)
+            surf = MN(window, renderer)
+        except Exception:
+            log_to_load_log("Uncaught exception during editor setup! This may be caused by corrupted or invalid level data!", error=True)
+            raise
+
         os.system("cls")
         log_to_load_log(f"Loading completed in {(loadtimetoc - loadtimetic) * 1000:0.6} ms with {errorcount_get()} errors generated")
+        log_to_load_log(f"Successfully loaded level \"{os.path.basename(level)}\"!")
+        loading = False
     except Exception:
+        with open(application_path + "\\crashLog.txt", "w") as crash_log:
+            crash_log.write(f"[ERROR] Uncaught exception during load\n{traceback.format_exc()}")
         log_to_load_log(f"Uncaught exception during load\n{traceback.format_exc()}", error=True)
 
         root = tkinter.Tk()
@@ -254,6 +276,7 @@ def launch(level):
         showerror("OGSCULEDITOR+ Error", "An unhandled exception has occurred during loading\nCheck loadLog.txt for more info", parent=root)
         raise
     del loadi
+    loading = False
     try:
         request = requests.get("https://api.github.com/repos/methylredd/RWE-Plus/releases/latest", timeout=2)
         if request.status_code == 200:
@@ -320,12 +343,13 @@ def launch(level):
             pg.display.update()
     except Exception:
         with open(application_path + "\\crashLog.txt", "w") as crash_log:
-            crash_log.write(f"[ERROR] Uncaught exception during runtime\n{traceback.format_exc()}")
-
+            crash_log.write(f"[ERROR] Uncaught exception during {'loading' if loading else 'runtime'}\n{traceback.format_exc()}")
+            if loading:
+                log_to_load_log(f"Uncaught exception during load\n{traceback.format_exc()}", error=True)
             root = tkinter.Tk()
             root.wm_attributes("-topmost", 1)
             root.withdraw()
-            showerror("OGSCULEDITOR+ Error", "An unhandled exception has occurred during runtime\nCheck crashLog.txt for more info", parent=root)
+            showerror("OGSCULEDITOR+ Error", f"An unhandled exception has occurred during {'loading' if loading else 'runtime'}\nCheck {'loadLog.txt' if loading else 'crashLog.txt'} for more info", parent=root)
         raise
 
 
