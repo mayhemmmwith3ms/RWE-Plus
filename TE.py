@@ -301,6 +301,15 @@ class TE(MenuWithField):
         if self.onfield and self.tileimage is not None:
             # cords = [math.floor(pg.mouse.get_pos()[0] / self.size) * self.size, math.floor(pg.mouse.get_pos()[1] / self.size) * self.size]
             # self.surface.blit(self.tools, pos, [curtool, graphics["tilesize"]])
+            try_clipboard = False
+            try:
+                if pg.key.get_pressed()[pg.K_LCTRL]:
+                    clipboard = eval(pyperclip.paste())
+                    if clipboard[0] == "TE" and isinstance(clipboard[1], list):
+                        try_clipboard = True
+            except Exception:
+                pass
+
             pos2 = self.pos2
             posoffset = self.posoffset
             bord = (self.size // preview_cell_size + 1) // 2
@@ -353,6 +362,7 @@ class TE(MenuWithField):
                     [self.tileimage["image"].get_width() + bord * 2, self.tileimage["image"].get_height() + bord * 2]
                     ]
                 drawTilePreview = True
+
                 if not (self.tool == 1 and (bp[0] or bp[2])):
                     if self.cols and self.place_mode and self.tool == 0:
                         rectCol = canplace
@@ -363,16 +373,16 @@ class TE(MenuWithField):
                         drawTilePreview = False
                     else:
                         rectCol = cannotplace
-
+                    
                     if self.brush_active:
                         if self.squarebrush or self.brushsize <= 1:
                             rect = pg.Rect([pos2 - [(self.brushsize // 2) * self.size, (self.brushsize // 2) * self.size], [self.brushsize * self.size, self.brushsize * self.size]])
                             pg.draw.rect(self.surface, rectCol, rect, 1)
                         else:
                             pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize, 1)
-                    elif not (self.rect_mode and (bp[0] or bp[2])) and not (pg.key.get_pressed()[pg.K_LCTRL] and self.tool == 2):
+                    elif not (self.rect_mode and (bp[0] or bp[2])) and not try_clipboard:
                         pg.draw.rect(self.surface, rectCol, selectrect, 1)
-                if not self.place_mode:
+                if not self.place_mode or try_clipboard:
                     drawTilePreview = False
 
                 if drawTilePreview:
@@ -424,6 +434,21 @@ class TE(MenuWithField):
                         patternPrevCol = purple
                 if patternPrevCol:
                     pg.draw.rect(self.surface, patternPrevCol, [pos2.x - bord, pos2.y - bord, self.size + bord * 2, self.size + bord * 2], 1)
+
+            if try_clipboard:
+                try:
+                    clipboard = eval(pyperclip.paste())
+                    if clipboard[0] != "TE" or not isinstance(clipboard[1], list):
+                        return
+                    pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
+                    clipboard[1].sort(key=lambda x: x[0])
+                    sizex = clipboard[1][-1][0] + 1
+                    clipboard[1].sort(key=lambda y: y[1])
+                    sizey = clipboard[1][-1][1] + 1
+                    rect = pg.Rect([pos, pg.Vector2(sizex, sizey) * self.size])
+                    pg.draw.rect(self.surface, blue, rect, 1)
+                except Exception:
+                    pass
 
             if not settings["TE_legacy_RWE_placement_controls"]:
                 if self.tool == 0:
@@ -528,20 +553,6 @@ class TE(MenuWithField):
                         break
         for button in self.buttonslist:
             button.blittooltip()
-        if pg.key.get_pressed()[pg.K_LCTRL]:
-            try:
-                geodata = eval(pyperclip.paste())
-                if geodata[0] != "TE" or not isinstance(geodata[1], list):
-                    return
-                pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
-                geodata[1].sort(key=lambda x: x[0])
-                sizex = geodata[1][-1][0] + 1
-                geodata[1].sort(key=lambda y: y[1])
-                sizey = geodata[1][-1][1] + 1
-                rect = pg.Rect([pos, pg.Vector2(sizex, sizey) * self.size])
-                pg.draw.rect(self.surface, blue, rect, 1)
-            except Exception:
-                pass
     
     def brushpaint(self, pos: pg.Vector2, place = True):
         if self.squarebrush:
