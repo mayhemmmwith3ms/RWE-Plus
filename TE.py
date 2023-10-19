@@ -998,6 +998,7 @@ class TE(MenuWithField):
                         self.currentcategory = i
                         self.rebuttons()
                         self.set(cat, name)
+                        self.tool = 0
                         return
                 i += 1
         for catname, items in self.items.items():
