@@ -239,9 +239,6 @@ class GE(MenuWithField):
             self.s0()
             self.recaption()
         if self.onfield:
-            wltx = "Work Layer: " + str(self.layer + 1)
-            widgets.fastmts(self.surface, wltx, *(mpos + [10, -10]), white, 15)
-
             curtool = [graphics["tools"][self.selectedtool][0] * graphics["tilesize"][0],
                        graphics["tools"][self.selectedtool][1] * graphics["tilesize"][1]]
             #nst = self.tools.convert_alpha(self.surface)
@@ -252,8 +249,16 @@ class GE(MenuWithField):
             # self.surface.blit(self.tools, pos, [curtool, graphics["tilesize"]])
             pos = self.pos
             pos2 = self.pos2
-            pg.draw.rect(self.surface, cursor, [pos2, [self.size, self.size]], 1)
             posoffset = self.posoffset
+
+            try_clipboard = False
+            if pg.key.get_pressed()[pg.K_LCTRL]:
+                try:
+                    geodata = eval(pyperclip.paste())
+                    if geodata[0] == "GE" and isinstance(geodata[1], list):
+                        try_clipboard = True
+                except Exception:
+                    pass
 
             if self.selectedtool == "SL":
                 validSlope = self.get_slope_orientation(self.posoffset)
@@ -263,33 +268,51 @@ class GE(MenuWithField):
             self.toolsized.fill(red, special_flags=pg.BLEND_RGBA_MULT)
             self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / preview_cell_size) * 100}%")
             #print(self.placetile)
-            if self.selectedtool in graphics["codes"].keys():
-                if isinstance(self.placetile, int):
-                    if graphics["codes"][self.selectedtool] == 1:
-                        curtool = [graphics["tileplaceicon"][str(self.placetile + self.state)][0] * self.size,
-                                   graphics["tileplaceicon"][str(self.placetile + self.state)][1] * self.size]
-                        #print(self.placetile + self.state)
-                    else:
-                        curtool = [graphics["tileplaceicon"][str(self.placetile - self.state)][0] * self.size,
-                                   graphics["tileplaceicon"][str(self.placetile - self.state)][1] * self.size]
-                    # print([abs(self.field.rect.x - pos2[0]), abs(self.field.rect.y - pos2[1])])
-                    if self.selectedtool == "SL" and not validSlope:
-                        curtool = [graphics["tileplaceicon"]["UNDEFINEDSLOPE"][0] * self.size, graphics["tileplaceicon"]["UNDEFINEDSLOPE"][1] * self.size]
-                    self.surface.blit(self.toolsized, pos2, [curtool, cellsize2])
-            rect = [self.xoffset * self.size, self.yoffset * self.size, self.levelwidth * self.size,
-                    self.levelheight * self.size]
-            pg.draw.rect(self.field.field, border, rect, self.size // preview_cell_size + 1)
+            if not try_clipboard:
+                if self.selectedtool in graphics["codes"].keys():
+                    if isinstance(self.placetile, int):
+                        if graphics["codes"][self.selectedtool] == 1:
+                            curtool = [graphics["tileplaceicon"][str(self.placetile + self.state)][0] * self.size,
+                                    graphics["tileplaceicon"][str(self.placetile + self.state)][1] * self.size]
+                            #print(self.placetile + self.state)
+                        else:
+                            curtool = [graphics["tileplaceicon"][str(self.placetile - self.state)][0] * self.size,
+                                    graphics["tileplaceicon"][str(self.placetile - self.state)][1] * self.size]
+                        # print([abs(self.field.rect.x - pos2[0]), abs(self.field.rect.y - pos2[1])])
+                        if self.selectedtool == "SL" and not validSlope:
+                            curtool = [graphics["tileplaceicon"]["UNDEFINEDSLOPE"][0] * self.size, graphics["tileplaceicon"]["UNDEFINEDSLOPE"][1] * self.size]
+                        self.surface.blit(self.toolsized, pos2, [curtool, cellsize2])
+                rect = [self.xoffset * self.size, self.yoffset * self.size, self.levelwidth * self.size,
+                        self.levelheight * self.size]
+                pg.draw.rect(self.field.field, border, rect, self.size // preview_cell_size + 1)
+                pg.draw.rect(self.surface, cursor, [pos2, [self.size, self.size]], 1)
+
             if (0 <= posoffset.x < self.levelwidth) and (0 <= posoffset.y < self.levelheight):
                 tilename = ui_settings["GE"]["names"][
                     str(self.data["GE"][int(posoffset.x)][int(posoffset.y)][self.layer][0])]
                 self.labels[0].set_text(
                     f"Tile: {tilename} {self.data['GE'][int(posoffset.x)][int(posoffset.y)][self.layer]}")
 
+            wltx = "Work Layer: " + str(self.layer + 1)
+            widgets.fastmts(self.surface, wltx, *(mpos + [10, -10]), white, 15)
+
             bp = self.getmouse
 
             if self.brush_active and not self.rectDragActive:
                 pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize - 0.5, 1)
             
+            if try_clipboard:
+                try:
+                    geodata = eval(pyperclip.paste())
+                    if geodata[0] != "GE" or not isinstance(geodata[1], list):
+                        return
+                    pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
+                    rect = pg.Rect([pos, pg.Vector2(len(geodata[1]), len(geodata[1][0])) * self.size])
+
+                    pg.draw.rect(self.surface, blue, rect, 1)
+                except Exception:
+                    pass
+
             if settings["hold_key_rect_drag"]:
                 if not self.rectDragActive:
                     if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
@@ -354,17 +377,6 @@ class GE(MenuWithField):
                 pg.draw.rect(self.surface, mirror, [px, self.field.rect.y, 3, self.field.field.get_height()])
             else:
                 pg.draw.rect(self.surface, mirror, [self.field.rect.x, py, self.field.field.get_width(), 3])
-        if pg.key.get_pressed()[pg.K_LCTRL]:
-            try:
-                geodata = eval(pyperclip.paste())
-                if geodata[0] != "GE" or not isinstance(geodata[1], list):
-                    return
-                pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
-                rect = pg.Rect([pos, pg.Vector2(len(geodata[1]), len(geodata[1][0])) * self.size])
-
-                pg.draw.rect(self.surface, blue, rect, 1)
-            except Exception:
-                pass
 
     def get_slope_orientation(self, pos: pg.Vector2):
         x = int(pos.x)
