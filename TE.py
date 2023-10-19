@@ -610,7 +610,11 @@ class TE(MenuWithField):
                 pa = pg.Vector2(0, 0)
                 if self.field.rect.collidepoint(pg.mouse.get_pos()):
                     pa = self.pos
-                self.place(blockx - self.xoffset + int(pa.x), blocky - self.yoffset + int(pa.y))
+
+                cposxo = int(pa.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
+                cposyo = int(pa.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
+                
+                self.place(blockx - self.xoffset + cposxo, blocky - self.yoffset + cposyo)
             else:
                 self.selectcat(cat)
             self.detecthistory(["TE", "tlMatrix"])
