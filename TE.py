@@ -360,6 +360,7 @@ class TE(MenuWithField):
                         rectCol = purple
                     elif self.tool == 2:
                         rectCol = blue
+                        drawTilePreview = False
                     else:
                         rectCol = cannotplace
 
@@ -369,7 +370,7 @@ class TE(MenuWithField):
                             pg.draw.rect(self.surface, rectCol, rect, 1)
                         else:
                             pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize, 1)
-                    elif not (self.rect_mode and (bp[0] or bp[2])):
+                    elif not (self.rect_mode and (bp[0] or bp[2])) and not (pg.key.get_pressed()[pg.K_LCTRL] and self.tool == 2):
                         pg.draw.rect(self.surface, rectCol, selectrect, 1)
                 if not self.place_mode:
                     drawTilePreview = False
@@ -613,7 +614,7 @@ class TE(MenuWithField):
 
                 cposxo = int(pa.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
                 cposyo = int(pa.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
-                
+
                 self.place(blockx - self.xoffset + cposxo, blocky - self.yoffset + cposyo)
             else:
                 self.selectcat(cat)
