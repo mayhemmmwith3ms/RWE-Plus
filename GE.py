@@ -113,7 +113,6 @@ class GE(MenuWithField):
                 self.drawtile(self.posoffset, self.toolsized)
     
     def end_draw_drag(self):
-        self.start_perftimer()
         self.fieldadd.fill(white)
         paths = []
         count = 0
@@ -129,7 +128,6 @@ class GE(MenuWithField):
                 self.detecthistory(["GE"])
         self.render_geo_area()
         self.rfa()
-        self.stop_perftimer()
 
     def begin_rect_drag(self):
         self.rectdata = [self.posoffset, pg.Vector2(0, 0), self.pos2]

@@ -655,7 +655,7 @@ class MenuWithField(Menu):
 
     def renderfield(self):
         self.fieldmap = pg.surface.Surface([self.levelwidth * self.size, self.levelheight * self.size])
-        self.f = self.f.convert(self.fieldmap)
+
         self.fieldmap.blit(pg.transform.scale(self.f, [self.f.get_width() / preview_cell_size * self.size,
                                                        self.f.get_height() / preview_cell_size * self.size]), [0, 0])
         self.fieldadd = pg.surface.Surface([self.levelwidth * self.size, self.levelheight * self.size])
@@ -834,22 +834,22 @@ class MenuWithField(Menu):
     def render_geo_area(self):
         self.renderer.geo_render_area(self.area, self.layer)
         self.f.blit(self.renderer.surf_geo, [0, 0])
-        self.renderfield()
+        #self.renderfield()
 
     def render_geo_full(self):
         self.renderer.geo_full_render(self.layer)
         self.f.blit(self.renderer.surf_geo, [0, 0])
-        self.renderfield()
+        #self.renderfield()
 
     def render_tiles_area(self):
         self.renderer.tiles_render_area(self.area, self.layer)
         self.f.blit(self.renderer.tiles, [0, 0])
-        self.renderfield()
+        #self.renderfield()
 
     def render_tiles_full(self):
         self.renderer.tiles_full_render(self.layer)
         self.f.blit(self.renderer.surf_tiles, [0, 0])
-        self.renderfield()
+        #self.renderfield()
 
     def togglegeo(self):
         #self.drawgeo = not self.drawgeo
