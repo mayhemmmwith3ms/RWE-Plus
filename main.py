@@ -159,7 +159,8 @@ def asktoexit(file, file2):
 def launchload(level):
     global surf, fullscreen, undobuffer, redobuffer, file, file2, run, loading
 
-    log_to_load_log(f"Start load of level \"{os.path.basename(level)}\"!")
+    if isinstance(level, str):
+        log_to_load_log(f"Start load of level \"{os.path.basename(level)}\"!")
 
     if isinstance(level, str) and (splitfilepath := os.path.splitext(level))[1] not in [".wep", ".txt"]:
         level = splitfilepath[0] + ".wep"
@@ -263,7 +264,8 @@ def launch(level):
 
         os.system("cls")
         log_to_load_log(f"Loading completed in {(loadtimetoc - loadtimetic) * 1000:0.6} ms with {errorcount_get()} errors generated")
-        log_to_load_log(f"Successfully loaded level \"{os.path.basename(level)}\"!")
+        if isinstance(level, str):
+            log_to_load_log(f"Successfully loaded level \"{os.path.basename(level)}\"!")
         loading = False
     except Exception:
         with open(application_path + "\\crashLog.txt", "w") as crash_log:
