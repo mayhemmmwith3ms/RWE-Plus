@@ -129,11 +129,7 @@ class Renderer:
             self.surf_geo = pg.Surface(size)
             self.geolayers = [True, True, True]
             self.tilelayers = [True, True, True]
-            self.geosurfaces = [
-                renderedimage.convert_alpha(pg.Surface([preview_cell_size, preview_cell_size])),
-                renderedimage.convert_alpha(pg.Surface([preview_cell_size, preview_cell_size])),
-                renderedimage.convert_alpha(pg.Surface([preview_cell_size, preview_cell_size]))
-            ]
+            self.geosurfaces = [renderedimage.convert_alpha(pg.Surface([preview_cell_size, preview_cell_size])).convert(self.surf_geo)]*3
             self.geosurfaces[0].fill(ui_settings["GE"]["layerColors"][0], special_flags=pg.BLEND_MULT)
             self.geosurfaces[1].fill(ui_settings["GE"]["layerColors"][1], special_flags=pg.BLEND_MULT)
             self.geosurfaces[2].fill(ui_settings["GE"]["layerColors"][2], special_flags=pg.BLEND_MULT)
@@ -163,6 +159,15 @@ class Renderer:
         self.tiles_render_area(area, layer)
 
     def tiles_render_area(self, area, layer, allLayers = True):
+        level_tile_images:dict = dict()
+        for xp, x in enumerate(area):
+            for yp, y in enumerate(x):
+                if y:
+                    continue
+                for lr in self.data["TE"]["tlMatrix"][xp][yp]:
+                    if lr["tp"] == "tileHead" and not level_tile_images.__contains__(lr["data"][1]):
+                        level_tile_images[lr["data"][1]] = self.findtileimage(lr["data"][1])
+
         for xp, x in enumerate(area):
             for yp, y in enumerate(x):
                 if y:
@@ -174,27 +179,11 @@ class Renderer:
                     if y:
                         continue
                     if (not (drawLayer != layer)) or allLayers:
-                        self.render_tile_pixel(xp, yp, layer, (drawLayer + layer) % 3)
+                        self.render_tile_pixel(xp, yp, layer, (drawLayer + layer) % 3, level_tile_images)
 
-    def render_tile_pixel(self, xp, yp, selectedLayer, drawL):
+    def render_tile_pixel(self, xp, yp, selectedLayer, drawL, imgs):
         self.lastlayer = selectedLayer
         tiledata = self.data["TE"]["tlMatrix"]
-
-        def findtileimage(name):
-            it = None
-            for i in self.tiles.keys():
-                for i2 in self.tiles[i]:
-                    if i2["name"] == name:
-                        img = i2.copy()
-                        img["image"] = pg.transform.scale(img["image"], [img["image"].get_width() / 16 * preview_cell_size,
-                                                                         img["image"].get_height() / 16 * preview_cell_size])
-                        it = img
-                        break
-                if it is not None:
-                    break
-            if it is None:
-                it = notfoundtile
-            return it
 
         cell = tiledata[xp][yp][drawL]
         posx = xp * preview_cell_size
@@ -241,7 +230,7 @@ class Renderer:
                     self.surf_tiles.blit(notfound, [posx, posy], special_flags=pg.BLEND_PREMULTIPLIED)
 
         elif datcell == "tileHead":
-            it = findtileimage(datdata[1])
+            it = imgs[datdata[1]]
             cposx = posx - int((it["size"][0] * .5) + .5) * preview_cell_size + preview_cell_size
             cposy = posy - int((it["size"][1] * .5) + .5) * preview_cell_size + preview_cell_size
             siz = pg.rect.Rect([cposx, cposy, it["size"][0] * preview_cell_size, it["size"][1] * preview_cell_size])
@@ -259,6 +248,22 @@ class Renderer:
 
                 self.geosurfaces[2].set_alpha(255)
         # self.surf_tiles.fill(pg.Color(0, 0, 0, 0), [posx, posy, image1size, image1size])
+
+    def findtileimage(self, name):
+        it = None
+        for i in self.tiles.keys():
+            for i2 in self.tiles[i]:
+                if i2["name"] == name:
+                    img = i2.copy()
+                    img["image"] = pg.transform.scale(img["image"], [img["image"].get_width() / 16 * preview_cell_size,
+                                                                        img["image"].get_height() / 16 * preview_cell_size])
+                    it = img
+                    break
+            if it is not None:
+                break
+        if it is None:
+            it = notfoundtile
+        return it
 
     def geo_full_render(self, layer):
         self.surf_geo.fill(color2)
