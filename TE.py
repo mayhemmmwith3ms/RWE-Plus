@@ -112,9 +112,9 @@ class TE(MenuWithField):
             if self.is_macro(self.tileimage):
                 match self.tileimage["tp"]:
                     case "path":
-                        if (not self.currentPathDrag or self.posoffset != self.currentPathDrag[len(self.currentPathDrag) - 1]) and\
-                            (not self.currentPathDrag or self.is_adjacent_cell(pg.Vector2(self.posoffset.x, self.posoffset.y), self.currentPathDrag[len(self.currentPathDrag) - 1]))\
-                                and (not self.currentPathDrag or self.posoffset != self.currentPathDrag[len(self.currentPathDrag) - 2]):
+                        if (not self.currentPathDrag or self.posoffset != self.currentPathDrag[len(self.currentPathDrag) - 1]) \
+                            and (not self.currentPathDrag or self.is_adjacent_cell(pg.Vector2(self.posoffset.x, self.posoffset.y), self.currentPathDrag[len(self.currentPathDrag) - 1]))\
+                            and (not self.currentPathDrag or self.posoffset != self.currentPathDrag[len(self.currentPathDrag) - 2]):
                             self.currentPathDrag.append(pg.Vector2(self.posoffset.x, self.posoffset.y))
                             #pg.draw.rect(self.fieldadd, red, [self.posoffset.x * self.size, self.posoffset.y * self.size, self.size, self.size])
                             self.draw_path_indicator()
@@ -316,46 +316,54 @@ class TE(MenuWithField):
             fg = self.findparampressed("force_geometry")
             fp = self.findparampressed("force_place")
 
-            self.movemiddle(bp)
+            cposx = int(pos2.x)
+            cposy = int(pos2.y)
+
+            cposxo = int(posoffset.x)
+            cposyo = int(posoffset.y)
 
             if not self.is_macro(self.tileimage):
-                if self.tileimage["size"][0] != 1 or self.tileimage["size"][1] != 1:
-                    self.brushsize = 1
-
                 cposx = int(pos2.x) - int((self.tileimage["size"][0] * .5) + .5) * self.size + self.size
                 cposy = int(pos2.y) - int((self.tileimage["size"][1] * .5) + .5) * self.size + self.size
 
                 cposxo = int(posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
                 cposyo = int(posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
 
+            self.movemiddle(bp)
+
+            if posoffset != self.mpos or self.lastfg != fg or self.lastfp != fp or self.justChangedZoom:
+                if not self.is_macro(self.tileimage):
+                    self.cols = self.test_cols(cposxo, cposyo)
+                self.mpos = posoffset
+                self.lastfg = fg
+                self.lastfp = fp
+                self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / preview_cell_size) * 100}%")
+
+                if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
+                    tl = self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]
+                    #try:
+                    if (tlh := self.get_tilehead_of_body(tl)) not in [None, "stray"]:
+                        tlLabel = tlh["data"][1]
+                    elif tlh is None and tl["tp"] == "material":
+                        tlLabel = tl["data"]
+                    elif tlh is None and tl["tp"] == "default":
+                        tlLabel = "default"
+                    elif tlh == "stray":
+                        tlLabel = "STRAY TILE FRAGMENT"
+                    #except:
+                    #    tlLabel = "ERROR"
+                    #    print(f"Error occurred determining tile display type at mpos {int(posoffset.x)}, {int(posoffset.y)}")
+                    self.labels[0].set_text("Tile: " + tlLabel + " | Tile Data: " + str(tl))   
+
+            if not self.is_macro(self.tileimage):
+                if self.tileimage["size"][0] != 1 or self.tileimage["size"][1] != 1:
+                    self.brushsize = 1
+
                 if settings["hold_key_rect_drag"] and not (bp[0] == 1 or bp[2] == 1) and not self.tool == 2:
                     if self.findparampressed("alt_func"):
                         self.tool = 1
                     else:
-                        self.tool = 0
-
-                if posoffset != self.mpos or self.lastfg != fg or self.lastfp != fp or self.justChangedZoom:
-                    self.cols = self.test_cols(cposxo, cposyo)
-                    self.mpos = posoffset
-                    self.lastfg = fg
-                    self.lastfp = fp
-                    self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / preview_cell_size) * 100}%")
-
-                    if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
-                        tl = self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]
-                        #try:
-                        if (tlh := self.get_tilehead_of_body(tl)) not in [None, "stray"]:
-                            tlLabel = tlh["data"][1]
-                        elif tlh is None and tl["tp"] == "material":
-                            tlLabel = tl["data"]
-                        elif tlh is None and tl["tp"] == "default":
-                            tlLabel = "default"
-                        elif tlh == "stray":
-                            tlLabel = "STRAY TILE FRAGMENT"
-                        #except:
-                        #    tlLabel = "ERROR"
-                        #    print(f"Error occurred determining tile display type at mpos {int(posoffset.x)}, {int(posoffset.y)}")
-                        self.labels[0].set_text("Tile: " + tlLabel + " | Tile Data: " + str(tl))            
+                        self.tool = 0         
 
                 selectrect = [
                     [cposx - bord, cposy - bord],
@@ -430,6 +438,7 @@ class TE(MenuWithField):
                     if not (self.tool == 1 and (bp[0] or bp[2])):
                         patternPrevCol = purple
                 if(self.tileimage["tp"] == "path"):
+                    self.tool = 0
                     if not (self.tool == 0 and (bp[0] or bp[2])):
                         patternPrevCol = purple
                 if patternPrevCol:
