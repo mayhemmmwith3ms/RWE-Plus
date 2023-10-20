@@ -1069,8 +1069,14 @@ class TE(MenuWithField):
             nCat, nName = self.get_next_path_tile(self.tileimage, self.currentPathDrag, indx)
             for i in self.items[nCat]:
                 if i["name"] == nName:
-                    self.fieldadd.blit(i["image"],
+                    i_img_c:pg.Surface = i["image"].copy()
+                    i_img_c.set_colorkey(white)
+                    i_img_c = i_img_c.convert_alpha() #i hate pygame
+                    i_img_c.fill((254, 254, 254), special_flags=pg.BLEND_RGB_ADD)
+                    i_img_c.fill((150, 255, 255) if indx != len(self.currentPathDrag) - 1 else (254, 255, 255), special_flags=pg.BLEND_RGB_MULT)
+                    self.fieldadd.blit(i_img_c,
                         [tile.x * self.size, tile.y * self.size])
+                    break
 
     def is_macro(self, item):
         return ["pattern", "path"].__contains__(item["tp"])
