@@ -100,6 +100,9 @@ class TE(MenuWithField):
         if not self.is_macro(self.tileimage):
             cposxo = int(self.posoffset.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
             cposyo = int(self.posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
+        else:
+            cposxo = int(self.posoffset.x)
+            cposyo = int(self.posoffset.y)
         if place:
             if not self.is_macro(self.tileimage):
                 if self.brush_active:
@@ -113,18 +116,17 @@ class TE(MenuWithField):
                 match self.tileimage["tp"]:
                     case "path":
                         if (not self.currentPathDrag or self.posoffset != self.currentPathDrag[len(self.currentPathDrag) - 1]) \
-                            and (not self.currentPathDrag or self.is_adjacent_cell(pg.Vector2(self.posoffset.x, self.posoffset.y), self.currentPathDrag[len(self.currentPathDrag) - 1]))\
-                            and (not self.currentPathDrag or self.posoffset != self.currentPathDrag[len(self.currentPathDrag) - 2]):
+                        and (not self.currentPathDrag or self.is_adjacent_cell(pg.Vector2(self.posoffset.x, self.posoffset.y), self.currentPathDrag[len(self.currentPathDrag) - 1]))\
+                        and (not self.currentPathDrag or self.posoffset != self.currentPathDrag[len(self.currentPathDrag) - 2]):
                             self.currentPathDrag.append(pg.Vector2(self.posoffset.x, self.posoffset.y))
                             #pg.draw.rect(self.fieldadd, red, [self.posoffset.x * self.size, self.posoffset.y * self.size, self.size, self.size])
                             self.draw_path_indicator()
         else:
-            if not self.is_macro(self.tileimage):
-                if self.brush_active:
-                    self.brushpaint(pg.Vector2(cposxo, cposyo), False)
-                else:
-                    self.destroy(self.posoffset.x, self.posoffset.y)
-                    pg.draw.rect(self.fieldadd, red, [self.posoffset.x * self.size, self.posoffset.y * self.size, self.size, self.size])
+            if self.brush_active:
+                self.brushpaint(pg.Vector2(cposxo, cposyo), False)
+            else:
+                self.destroy(self.posoffset.x, self.posoffset.y)
+                pg.draw.rect(self.fieldadd, red, [self.posoffset.x * self.size, self.posoffset.y * self.size, self.size, self.size])
 
     def end_drag(self, place):
         if self.is_macro(self.tileimage):
@@ -274,6 +276,10 @@ class TE(MenuWithField):
             self.set(savedcat, savedtool)
             self.currentcategory = save
             self.rebuttons()
+        elif not place and self.is_macro(self.tileimage): #this should be rewritten at some point i cant be fucked rn
+            for x in range(int(rect.w)):
+                for y in range(int(rect.h)):
+                    self.destroy(x + rect.x, y + rect.y)
         self.detecthistory(["TE", "tlMatrix"])
         if self.findparampressed("force_geometry"):
             self.detecthistory(["GE"])
