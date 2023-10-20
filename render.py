@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from lingotojson import *
 import pygame as pg
+import time
 
 colors = ui_settings["global"]["colors"]  # NOQA
 
@@ -565,6 +566,13 @@ class Renderer:
             return headTile
         else:
             return "stray"
+
+    def start_perftimer(self):
+        self.tic = time.perf_counter()
+
+    def stop_perftimer(self):
+        self.toc = time.perf_counter()
+        print(f"Timer took {(self.toc - self.tic) * 1000:0.4} ms")
 
     @property
     def hiddenlayer(self):
