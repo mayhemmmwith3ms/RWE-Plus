@@ -129,7 +129,11 @@ class Renderer:
             self.surf_geo = pg.Surface(size)
             self.geolayers = [True, True, True]
             self.tilelayers = [True, True, True]
-            self.geosurfaces = [renderedimage.convert_alpha(pg.Surface([preview_cell_size, preview_cell_size])).convert(self.surf_geo)]*3
+            self.geosurfaces = [
+                renderedimage.convert_alpha(pg.Surface([preview_cell_size, preview_cell_size])),
+                renderedimage.convert_alpha(pg.Surface([preview_cell_size, preview_cell_size])),
+                renderedimage.convert_alpha(pg.Surface([preview_cell_size, preview_cell_size]))
+            ]
             self.geosurfaces[0].fill(ui_settings["GE"]["layerColors"][0], special_flags=pg.BLEND_MULT)
             self.geosurfaces[1].fill(ui_settings["GE"]["layerColors"][1], special_flags=pg.BLEND_MULT)
             self.geosurfaces[2].fill(ui_settings["GE"]["layerColors"][2], special_flags=pg.BLEND_MULT)
