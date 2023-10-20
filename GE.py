@@ -167,7 +167,7 @@ class GE(MenuWithField):
         elif self.fillshape2 in ["circle", "circle-hollow"]:
             pg.draw.ellipse(self.surface, select, rect, 5)
         elif self.fillshape2 == "line":
-            pg.draw.line(self.surface, select, self.rectdata[2], self.pos2, 5)
+            plotLine(self.rectdata[0], self.posoffset, self.previewline)
 
     def end_rect_drag(self):
         mpos = pg.Vector2(pg.mouse.get_pos())
@@ -469,6 +469,9 @@ class GE(MenuWithField):
                                 self.place(pg.Vector2(posx, posy), False)
                                 break
         print("Done filling")
+
+    def previewline(self, pos, _):
+        pg.draw.rect(self.surface, red, [self.field_to_draw_pos(pos), [self.size]*2])
 
     def linepoints(self, pointa: pg.Vector2, pointb: pg.Vector2):
         plotLine(pointa, pointb, self.place)

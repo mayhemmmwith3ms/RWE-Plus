@@ -140,6 +140,8 @@ def plotLineLow(pointa: pg.Vector2, pointb: pg.Vector2, callback):
             D = D + (2 * (dy - dx))
         else:
             D = D + 2 * dy
+    callback(pointa, False)
+    callback(pointb, False)
 
 
 def plotLineHigh(pointa: pg.Vector2, pointb: pg.Vector2, callback):
@@ -161,6 +163,8 @@ def plotLineHigh(pointa: pg.Vector2, pointb: pg.Vector2, callback):
             D = D + (2 * (dx - dy))
         else:
             D = D + 2 * dx
+    callback(pointa, False)
+    callback(pointb, False)
 
 
 def plotLine(pointa, pointb, callback):
