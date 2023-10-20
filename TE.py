@@ -120,7 +120,7 @@ class TE(MenuWithField):
                         and (not self.currentPathDrag or self.posoffset != self.currentPathDrag[len(self.currentPathDrag) - 2]):
                             self.currentPathDrag.append(pg.Vector2(self.posoffset.x, self.posoffset.y))
                             #pg.draw.rect(self.fieldadd, red, [self.posoffset.x * self.size, self.posoffset.y * self.size, self.size, self.size])
-                            self.draw_path_indicator()
+                            self.draw_path_preview()
         else:
             if self.brush_active:
                 self.brushpaint(pg.Vector2(cposxo, cposyo), False)
@@ -1062,7 +1062,7 @@ class TE(MenuWithField):
         self.set("special", macroInit["name"])
         self.currentPathDrag.clear()
 
-    def draw_path_indicator(self):
+    def draw_path_preview(self):
         self.fieldadd.fill(white)
         for indx, tile in enumerate(self.currentPathDrag):
             tile = pg.Vector2(tile)
