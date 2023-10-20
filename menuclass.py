@@ -654,7 +654,7 @@ class MenuWithField(Menu):
             self.field.field.blit(s, (self.offset) * self.size + pg.Vector2(0, top))
 
     def renderfield(self):
-        self.fieldmap = pg.surface.Surface([self.levelwidth * self.size, self.levelheight * self.size])
+        self.fieldmap = pg.surface.Surface([self.levelwidth * self.size, self.levelheight * self.size]).convert()
 
         self.fieldmap.blit(pg.transform.scale(self.f, [self.f.get_width() / preview_cell_size * self.size,
                                                        self.f.get_height() / preview_cell_size * self.size]), [0, 0])

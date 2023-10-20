@@ -241,7 +241,7 @@ class window:
         self.rect = copy.deepcopy(pg.rect.Rect(data["rect"]))
         self.rect2 = copy.deepcopy(pg.rect.Rect(data["rect"]))
         self.field = pg.surface.Surface(
-            [self.rect.width / 100 * surface.get_width(), self.rect.height / 100 * surface.get_height()])
+            [self.rect.width / 100 * surface.get_width(), self.rect.height / 100 * surface.get_height()]).convert()
         self.color = data["color"]
         self.border = data["border"]
         self.visible = True
@@ -259,7 +259,7 @@ class window:
 
     def resize(self):
         self.field = pg.surface.Surface(
-            [self.rect2.width / 100 * self.surface.get_width(), self.rect2.height / 100 * self.surface.get_height()])
+            [self.rect2.width / 100 * self.surface.get_width(), self.rect2.height / 100 * self.surface.get_height()]).convert()
         self.rect = pg.rect.Rect(
             self.rect2.x / 100 * self.surface.get_width(),
             self.rect2.y / 100 * self.surface.get_height(),
