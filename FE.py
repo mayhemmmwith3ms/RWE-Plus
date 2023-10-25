@@ -508,7 +508,8 @@ class FE(MenuWithField):
                     continue
                 val = yd
                 dist = 1.0 - (pg.Vector2(xp, yp).distance_to(pg.Vector2(x, y)) / self.brushsize)
-                if dist > 0 and dist < self.brushsize:
+                #print(dist)
+                if dist > 0 and dist < self.brushsize + 1:
 
                     val = min(max(val + strength * dist * st, 0), 100)
                     
@@ -535,7 +536,7 @@ class FE(MenuWithField):
         self.brushsize += 1
 
     def bsdown(self):
-        self.brushsize = max(self.brushsize - 1, 0)
+        self.brushsize = max(self.brushsize - 1, 1)
 
     def innewtab(self):
         self.innew = True
