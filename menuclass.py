@@ -97,7 +97,7 @@ class Menu:
             self.data["path"] = os.path.splitext(self.data["path"])[0] + ".wep"
             print(os.path.splitext(self.data["path"])[0] + ".wep")
         else:
-            savedest = self.save_file_dialog()
+            savedest = self.save_file_dialog(filetype=[("RWE+ Project", ".wep"), ("All Files", "*")])
             if savedest != "" and savedest is not None:
                 open(savedest, "w").write(json.dumps(self.data))
                 self.data["level"] = os.path.basename(savedest)
@@ -340,7 +340,7 @@ class Menu:
         return inputfile.replace("\n", "")
 
     def savef_txt(self):
-        savedest = self.save_file_dialog(extension=[".txt"])
+        savedest = self.save_file_dialog(extension=[".txt"], filetype=[("Official Editor Project", ".txt"), ("All Files", "*")])
         if savedest != "":
             turntolingo(self.data, open(savedest, "w"))
 
@@ -524,24 +524,24 @@ class Menu:
         # string = re.sub(pat, rep, text, flags=re.IGNORECASE)
         return string
     
-    def save_file_dialog(self, extension=[".wep"]):
+    def save_file_dialog(self, extension=[".wep"], filetype=[("RWE+ Project", ".wep"), ("Official Editor Project", ".txt"), ("All Files", "*")]):
         if not settings["native_file_browser"]:
             level = self.asksaveasfilename(defaultextension=extension)
         else:
             root = tkinter.Tk()
             root.wm_attributes("-topmost", 1)
             root.withdraw()
-            level = asksaveasfilename(defaultextension=extension, parent=root)
+            level = asksaveasfilename(defaultextension=extension, filetypes=filetype, parent=root)
         return level
     
-    def open_file_dialog(self, extension=[".txt", ".wep"]):
+    def open_file_dialog(self, extension=[".txt", ".wep"], filetype=[("RWE+ Project", ".wep"), ("Official Editor Project", ".txt"), ("All Files", "*")]):
         if not settings["native_file_browser"]:
             level = self.asksaveasfilename(defaultextension=extension)
         else:
             root = tkinter.Tk()
             root.wm_attributes("-topmost", 1)
             root.withdraw()
-            level = askopenfilename(defaultextension=extension, initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects", parent=root)
+            level = askopenfilename(defaultextension=extension, filetypes=filetype, initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects", parent=root)
         return level
 
 
