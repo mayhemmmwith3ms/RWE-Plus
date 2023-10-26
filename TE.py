@@ -897,6 +897,9 @@ class TE(MenuWithField):
     def brushm(self):
         self.brushsize = max(self.brushsize-1, 1)
 
+    def togglebrush(self):
+        self.brushsize = 3 if not self.brush_active else 1
+
     def place(self, x, y, render=False):
         if self.blockNextPlacement:
             return
