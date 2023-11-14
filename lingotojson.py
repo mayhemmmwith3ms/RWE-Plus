@@ -20,6 +20,20 @@ notfoundtile = {
 }
 load_error_count = 0
 
+def clean_lingo_struct(string:str, mark:str):
+    s = [m.start() for m in re.finditer(mark, string)]
+    print(s)
+    for i in s:
+        start = i + len(mark)
+        for c in range(start, len(string)):
+            if string[c] == " ":
+                string.replace(string[c], "")
+            if string[c] == "(":
+                break
+    string.replace(f"{mark}(", f"\"{mark}(")
+    return string
+    ...
+
 def tojson(string: str):
     closebracketscount = string.count("]")
     openbracketscount = string.count("[")
