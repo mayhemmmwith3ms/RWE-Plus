@@ -962,6 +962,77 @@ class TE(MenuWithField):
         #if fg:
         #    self.rfa()
 
+    def destroy(self, xp, yp):
+            x = int(xp)
+            y = int(yp)
+            if not self.canplaceit(x, y, x, y):
+                return
+            self.area[x][y] = False
+            def clearitem(mx, my, layer):
+                val = self.data["TE"]["tlMatrix"][mx][my][layer]
+                if val["data"] == 0:
+                    return
+                name = val["data"][1]
+                itm = None
+                for i in self.items.keys():
+                    for i2 in self.items[i]:
+                        if i2["name"] == name:
+                            itm = i2
+                            break
+                    if itm is not None:
+                        break
+                if itm is None:
+                    self.data["TE"]["tlMatrix"][mx][my][layer] = {"tp": "default", "data": 0}
+                    return
+                backx = mx - int((itm["size"][0] * .5) + .5) + 1
+                backy = my - int((itm["size"][1] * .5) + .5) + 1
+                #if backx + itm["size"][0] > len(self.data["TE"]["tlMatrix"])-1 or backy + itm["size"][1] > len(
+                #        self.data["TE"]["tlMatrix"][0])-1:
+                #    return
+                # startcell = self.data["TE"]["tlMatrix"][backx][backy][layer]
+                sp = itm["cols"][0]
+                sp2 = itm["cols"][1]
+                w, h = itm["size"]
+                pg.draw.rect(self.fieldadd, red, [backx * self.size,
+                                                backy * self.size,
+                                                w * self.size, h * self.size])
+                for x2 in range(w):
+                    for y2 in range(h):
+                        posx = backx + x2
+                        posy = backy + y2
+                        if posy >= self.levelheight or posx >= self.levelwidth:
+                            continue
+                        csp = sp[x2 * h + y2]
+                        self.area[posx][posy] = False
+                        if csp != -1:
+                            # pg.draw.rect(self.fieldadd, red, [posx * self.size, posy * self.size, self.size, self.size])
+                            self.data["TE"]["tlMatrix"][posx][posy][layer] = {"tp": "default", "data": 0}
+                        if sp2 != 0:
+                            try:
+                                csp = sp2[x2 * h + y2]
+                            except IndexError:
+                                csp = -1
+                            if csp != -1 and layer + 1 <= 2:
+                                self.data["TE"]["tlMatrix"][posx][posy][layer + 1] = {"tp": "default", "data": 0}
+
+            if not self.canplaceit(x, y, x, y):
+                return
+            tile = self.data["TE"]["tlMatrix"][x][y][self.layer]
+            if tile["tp"] != "default":
+                if not self.findparampressed("force_place"):
+                    match tile["tp"]:
+                        case "tileBody":
+                            posx, posy = toarr(tile["data"][0], "point")
+                            clearitem(posx - 1, posy - 1, tile["data"][1] - 1)
+                        case "tileHead":
+                            clearitem(x, y, self.layer)
+                        case "material":
+                            self.area[x][y] = False
+                            self.data["TE"]["tlMatrix"][x][y][self.layer] = {"tp": "default", "data": 0}
+                else:
+                    self.area[x][y] = False
+            self.data["TE"]["tlMatrix"][x][y][self.layer] = {"tp": "default", "data": 0}
+
     def sad(self):
         if "material" in self.tileimage["tags"]:
             self.data["TE"]["defaultMaterial"] = self.tileimage["name"]
