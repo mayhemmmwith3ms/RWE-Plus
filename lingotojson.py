@@ -123,6 +123,8 @@ def init_solve(files: list[str,]):
             i = i.replace("\n", "")
             if len(i) > 1:
                 if i[0] == "-":
+                    if i[1] == "-": #lines starting with -- are comments
+                        continue
                     try:
                         counter2 += 1
                         a[cat] = a2
