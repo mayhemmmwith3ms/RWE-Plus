@@ -235,11 +235,5 @@
         "-MN": "Menu hotkeys",
         "-globalkeys": "Global keys",
         "-edit": "Opens hotkeys.json to edit"
-    },
-    "TT": {
-        "-swichlayers": "Switch layers",
-        "-swichlayers_back": "Switch layers back",
-        "-rotate": "Rotate blocks",
-        "-findtile": "Searches for tile"
     }
 }

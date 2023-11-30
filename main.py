@@ -380,11 +380,6 @@ def loadmenu():
                 if file is not None and os.path.exists(file):
                     launch(file)
                     surf = load(window, renderer)
-            case "tutorial":
-                file = turntoproject(open(path2tutorial + "tutorial.txt", "r").read())
-                file["path"] = "tutorial"
-                renderer = Renderer(file, None, None, None, True)
-                surf = TT(window, renderer)
             case "load":
                 renderer = Renderer({"path": ""}, None, None, None, False)
                 surf = load(window, renderer)

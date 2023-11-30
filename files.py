@@ -38,7 +38,6 @@ def loadimage(filepath):
 allleters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,- =+_*()[]{}#@"
 
 path = resolvepath(application_path + "\\files\\")
-path2tutorial = resolvepath(path + "tutorial\\")
 path2ui = resolvepath(path + "ui\\")
 path2graphics = resolvepath(application_path + "\\drizzle\\Data\\Graphics\\")
 path2cast = resolvepath(application_path + "\\drizzle\\Data\\Cast\\")
