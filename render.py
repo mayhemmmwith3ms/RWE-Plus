@@ -342,7 +342,7 @@ class Renderer:
                     if i == 2:
                         convrender.set_alpha(ui_settings["global"]["thirdlayeralpha"])
                 else:
-                    convrender.set_alpha(ui_settings["global"]["primarylayeralpha"] + 30)
+                    convrender.set_alpha(ui_settings["global"]["primarylayeralpha"] + 50)
             if i == 0 and self.color_geo:
                 convrender.set_alpha(255)
 

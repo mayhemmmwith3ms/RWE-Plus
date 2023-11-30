@@ -14,7 +14,7 @@
 		"doublerect": true,
 		"doublerectoffsetx": -5,
 		"doublerectoffsety": 0,
-		"primarylayeralpha": 200,
+		"primarylayeralpha": 180,
 		"secondarylayeralpha": 90,
 		"thirdlayeralpha": 30, 
 		"tiles_primarylayeralpha": 255,
