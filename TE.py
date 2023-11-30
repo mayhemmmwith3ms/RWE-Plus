@@ -365,7 +365,7 @@ class TE(MenuWithField):
                 if self.tileimage["size"][0] != 1 or self.tileimage["size"][1] != 1:
                     self.brushsize = 1
 
-                if settings["hold_key_rect_drag"] and not (bp[0] == 1 or bp[2] == 1) and not self.tool == 2:
+                if settings["hold_key_rect_drag"] and not (self.last_lmb == 0 or self.last_rmb == 0) and not self.tool == 2: #this may cause issues
                     if self.findparampressed("alt_func"):
                         self.tool = 1
                     else:
