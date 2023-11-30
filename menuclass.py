@@ -100,13 +100,17 @@ class Menu:
             savedest = self.save_file_dialog(filetype=[("RWE+ Project", ".wep"), ("All Files", "*")])
             if savedest != "" and savedest is not None:
                 open(savedest, "w").write(json.dumps(self.data))
+                
+                if os.path.exists(os.path.splitext(self.data["path"])[0] + ".png"):
+                    lmap = pg.image.load(os.path.splitext(self.data["path"])[0] + ".png") # copy the lightmap image when saving as 
+                    pg.image.save(lmap, os.path.splitext(savedest)[0] + ".png")
+                    
                 self.data["level"] = os.path.basename(savedest)
                 self.data["path"] = savedest
                 self.data["dir"] = os.path.abspath(savedest)
 
-                recent = open(path + "recent.txt", "w")
-                recent.write(str(savedest))
-                recent.close()
+                with open(path + "recent.txt", "w") as recent:
+                    recent.write(str(savedest))
         print("Level saved!")
         self.recaption()
 
