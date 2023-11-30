@@ -18,6 +18,7 @@ notfoundtile = {
     "cat": [1, 1],
     "tags": [""]
 }
+defaultlevel = open(path + "default.txt", "r").readlines()
 load_error_count = 0
 
 def clean_lingo_struct(string:str, mark:str): # this is unused (for now)
@@ -34,52 +35,62 @@ def clean_lingo_struct(string:str, mark:str): # this is unused (for now)
     return string
     ...
 
-def tojson(string: str):
-    closebracketscount = string.count("]")
-    openbracketscount = string.count("[")
-    t = string
-    if closebracketscount > openbracketscount:
-        t = t[:-1]
-    t = t.replace("#Data:", "#data:")\
-        .replace("#Options:", "#options:")\
-        .replace("[#", "{#")\
-        .replace("point(", "\"point(")\
-        .replace("rect(", "\"rect(")\
-        .replace("color(", "\"color(")\
-        .replace(")\"", ")")\
-        .replace(")", ")\"")\
-        .replace("void", "\"void\"")
-    count = 0
-    m = list(t)
-    brcount = 0
-    for i in m:
-        if i == "{":
-            localcount = 0
-            v = count
-            while v < len(m):
-                if m[v] == "[" or m[v] == "{":
-                    localcount += 1
-                elif m[v] == "]" or m[v] == "}":
-                    localcount -= 1
-                    if localcount == 0:
-                        m[v] = "}"
-                        break
-                v += 1
-        count += 1
-        if i in ["{", "["]:
-            brcount += 1
-        elif i in ["}", "]"]:
-            brcount -= 1
-            if brcount == 0:
-                m = m[:count+1]
-                break
-    t = "".join(m)
-    t = t.replace("#", "\"").replace(":", "\":").replace("1\":st", "1':st").replace("2\":nd", "2':nd").replace("3\":rd", "3':rd")
-    # print(t)
-    if t.replace(" ", "") != "":
-        return json.loads(t)
-    else:
-        return {}
+def tojson(string:str, replacement:str = None):
+    try:
+        closebracketscount = string.count("]")
+        openbracketscount = string.count("[")
+        t = string
+        if closebracketscount > openbracketscount:
+            t = t[:-1]
+        t = t.replace("#Data:", "#data:")\
+            .replace("#Options:", "#options:")\
+            .replace("[#", "{#")\
+            .replace("point(", "\"point(")\
+            .replace("rect(", "\"rect(")\
+            .replace("color(", "\"color(")\
+            .replace(")\"", ")")\
+            .replace(")", ")\"")\
+            .replace("void", "\"void\"")
+        count = 0
+        m = list(t)
+        brcount = 0
+        for i in m:
+            if i == "{":
+                localcount = 0
+                v = count
+                while v < len(m):
+                    if m[v] == "[" or m[v] == "{":
+                        localcount += 1
+                    elif m[v] == "]" or m[v] == "}":
+                        localcount -= 1
+                        if localcount == 0:
+                            m[v] = "}"
+                            break
+                    v += 1
+            count += 1
+            if i in ["{", "["]:
+                brcount += 1
+            elif i in ["}", "]"]:
+                brcount -= 1
+                if brcount == 0:
+                    m = m[:count+1]
+                    break
+        t = "".join(m)
+        t = t.replace("#", "\"").replace(":", "\":").replace("1\":st", "1':st").replace("2\":nd", "2':nd").replace("3\":rd", "3':rd")
+        # print(t)
+        if t.replace(" ", "") != "":
+            if replacement is not None:
+                return {**tojson(replacement), **json.loads(t)}
+            return json.loads(t)
+        else:
+            if replacement is not None:
+                return tojson(replacement)
+            return {}
+    except Exception:
+        if replacement is None:
+            raise
+        log_to_load_log(f"Missing or bad data in editor \"{replacement[2:4]}\"! Inserting default data!")
+        return tojson(replacement)
 
 
 def turntoproject(string: str):
@@ -89,12 +100,12 @@ def turntoproject(string: str):
     proj["GE"] = eval(lines[0])  # geometry
     proj["TE"] = tojson(lines[1])  # tile editor and his settings
     proj["FE"] = tojson(lines[2])  # effect editor params
-    proj["LE"] = tojson(lines[3])  # light editor and presets
-    proj["EX"] = tojson(lines[4])  # map settings
-    proj["EX2"] = tojson(lines[5])  # light and level settings
-    proj["CM"] = tojson(lines[6])  # camera settigs
-    proj["WL"] = tojson(lines[7])  # water level
-    proj["PR"] = tojson(lines[8])  # props and settingsw
+    proj["LE"] = tojson(lines[3], defaultlevel[3])  # light editor and presets
+    proj["EX"] = tojson(lines[4], defaultlevel[4])  # map settings
+    proj["EX2"] = tojson(lines[5], defaultlevel[5])  # light and level settings
+    proj["CM"] = tojson(lines[6], defaultlevel[6])  # camera settigs
+    proj["WL"] = tojson(lines[7], defaultlevel[7])  # water level
+    proj["PR"] = tojson(lines[8], defaultlevel[8])  # props and settingsw
     return proj
 
 
