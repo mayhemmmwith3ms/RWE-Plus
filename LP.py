@@ -291,8 +291,8 @@ class LP(MenuWithField):
                 newp = []
                 for points in prop[4]["points"]:
                     p = toarr(points, "point")
-                    p[0] += x * preview_cell_size
-                    p[1] += y * preview_cell_size
+                    p[0] += x * render_cell_size #rope props whyyyy
+                    p[1] += y * render_cell_size
                     newp.append(makearr(p, "point"))
                 self.data["PR"]["props"][indx][4]["points"] = newp
             self.data["PR"]["props"][indx][3] = newq
