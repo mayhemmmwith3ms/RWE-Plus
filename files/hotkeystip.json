@@ -212,7 +212,8 @@
         "-changedown": "Change image dowm",
         "-inverse": "Toggle between painting and erasing shadows",
         "-undoshadow": "Undo shadow image",
-        "-redoshadow": "Redo shadow image"
+        "-redoshadow": "Redo shadow image",
+        "brush_type_scroll": "Hold this key and scroll using the mouse wheel to change brush shape"
     },
     "LP": {
         "-changeborder": "Toggles between a solid and open level border",

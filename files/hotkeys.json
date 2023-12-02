@@ -300,7 +300,8 @@
   		"K_a+": "-undoshadow",
   		"K_d+": "-redoshadow",
 
-    	"K_RETURN": "-save"
+    	"K_RETURN": "-save",
+		"K_LALT": "brush_type_scroll"
   	},
   	"LP": {
   		"unlock_keys": ["K_LEFT", "K_RIGHT", "K_UP", "K_DOWN"],

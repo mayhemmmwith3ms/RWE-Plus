@@ -231,6 +231,18 @@ class LE(MenuWithField):
         self.retile()
         self.updateTile()
 
+    def scroll_up(self):
+        if self.findparampressed("brush_type_scroll"):
+            self.changeup()
+            return False
+        return True
+
+    def scroll_down(self):
+        if self.findparampressed("brush_type_scroll"):
+            self.changedown()
+            return False
+        return True
+
     def rotate(self):
         self.tileimage = pg.transform.rotate(self.tileimage2, self.direction)
 
