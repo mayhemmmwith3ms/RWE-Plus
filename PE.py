@@ -510,7 +510,8 @@ class PE(MenuWithField):
                         item = self.props[cat][index]
                         if len(item["images"]) > 0:
                             w, h = item["images"][0].get_size()
-                            self.surface.blit(pg.transform.scale(item["images"][0], [w, h]), button.rect.topright)
+                            preview_pos = button.rect.topright if not ui_settings["global"]["previewleftside"] else button.rect.topleft + pg.Vector2(-w, 0)
+                            self.surface.blit(pg.transform.scale(item["images"][0], [w, h]), preview_pos)
                         break
 
         for button in self.buttonslist:
