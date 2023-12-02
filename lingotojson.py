@@ -257,9 +257,13 @@ def inittolist():
                 "tags": item["tags"]
             }
             solved_copy[cat].append(newitem)
-        log_to_load_log("Successfully loaded tile category \"" + cat + "\" with items:\n[")
-        log_to_load_log(''.join([f"{it['name']}\n" for it in solved_copy[cat]]), nl=False)
-        log_to_load_log("]")
+        if len(solved_copy[cat]) == 0:
+            log_to_load_log("Category \"" + cat + "\" was empty and will not be loaded!")
+            solved_copy.pop(cat)
+        else:
+            log_to_load_log("Successfully loaded tile category \"" + cat + "\" with items:\n[")
+            log_to_load_log(''.join([f"{it['name']}\n" for it in solved_copy[cat]]), nl=False)
+            log_to_load_log("]")
     matcat = "materials 0"
     matcatcount = 0
     solved_copy[matcat] = []
@@ -399,9 +403,13 @@ def getprops(tiles: dict):
             newitem["images"] = images
             newitem["color"] = list(colr)
             solved_copy[cat].append(newitem)
-        log_to_load_log("Successfully loaded prop category \"" + cat + "\" with items:\n[")
-        log_to_load_log(''.join([f"{it['nm']}\n" for it in solved_copy[cat]]), nl=False)
-        log_to_load_log("]")
+        if not solved_copy[cat]:
+            log_to_load_log("Category \"" + cat + "\" was empty and will not be loaded!")
+            solved_copy.pop(cat)
+        else:
+            log_to_load_log("Successfully loaded prop category \"" + cat + "\" with items:\n[")
+            log_to_load_log(''.join([f"{it['nm']}\n" for it in solved_copy[cat]]), nl=False)
+            log_to_load_log("]")
     # solved_copy["material"] = []
     # for cat in tiles:
     #     pass
