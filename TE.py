@@ -560,8 +560,8 @@ class TE(MenuWithField):
                         if self.is_macro(item):
                             break
                         w, h = item["size"]
-                        w *= self.size
-                        h *= self.size
+                        w *= preview_cell_size
+                        h *= preview_cell_size
                         margin = pg.Vector2(16, 16)
                         preview_pos = pg.Vector2(self.field.x + margin.x, self.field.y + margin.y) if not ui_settings["global"]["previewleftside"] else\
                         pg.Vector2(self.field.rect.x + self.field.rect.width - w - margin.x, self.field.rect.y + margin.y)
