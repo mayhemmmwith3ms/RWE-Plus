@@ -296,11 +296,12 @@ class TE(MenuWithField):
         for i, button in enumerate(self.buttonslist[:-1]):
             button.blit(sum(pg.display.get_window_size()) // 120)
         self.buttonslist[-1].blit(sum(pg.display.get_window_size()) // 100)
+        ciroff = 16 if self.buttonslist[self.toolindex].colorsquare != pg.Color(black) else 10
         try:
-            cir = [self.buttonslist[self.toolindex].rect.x + 10, self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
+            cir = [self.buttonslist[self.toolindex].rect.x + ciroff, self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
         except IndexError:
             self.toolindex = 0
-            cir = [self.buttonslist[self.toolindex].rect.x + 10, self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
+            cir = [self.buttonslist[self.toolindex].rect.x + ciroff, self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
         pg.draw.circle(self.surface, cursor, cir, self.buttonslist[self.toolindex].rect.h / 3)
         super().blit()
         bp = self.getmouse
@@ -611,10 +612,13 @@ class TE(MenuWithField):
 
             rect = pg.rect.Rect(self.menu_ui_settings["itempos"])
             rect = rect.move(0, rect.h * count)
-            col = self.items[item][0]["color"]
+            col = pg.Color([90, 90, 90])
+            if (count - 1) % 2 == 0:
+                mul = 0.93
+                col = pg.Color(int(col.r * mul),int(col.g * mul),int(col.b * mul))
             if count == self.toolindex:
                 col = darkgray
-            btn = widgets.button(self.surface, rect, col, item, onpress=self.selectcat)
+            btn = widgets.button(self.surface, rect, col, item, colsquare=self.items[item][0]["color"], onpress=self.selectcat)
             self.buttonslist.append(btn)
         if btn2 is not None:
             self.buttonslist.append(btn2)
@@ -678,16 +682,22 @@ class TE(MenuWithField):
             # rect = pg.rect.Rect([0, count * self.settings["itemsize"], self.field2.field.get_width(), self.settings["itemsize"]])
             # rect = pg.rect.Rect(0, 0, 100, 10)
             cat = pg.rect.Rect(self.menu_ui_settings["catpos"])
-            btn2 = widgets.button(self.surface, cat, ui_settings["global"]["color"], item["category"], onpress=self.changematshow,
+            btn2 = widgets.button(self.surface, cat, item["color"], item["category"], onpress=self.changematshow,
                 tooltip=self.returnkeytext("Select category(<[-changematshow]>)"))
 
             rect = pg.rect.Rect(self.menu_ui_settings["itempos"])
             rect = rect.move(0, rect.h * count)
+
+            col = gray
+            if (count - 1) % 2 == 0:
+                mul = 0.93
+                col = pg.Color(int(col.r * mul),int(col.g * mul),int(col.b * mul))
+
             if item["category"] == "special" or "material" in item["tags"]:
-                btn = widgets.button(self.surface, rect, item["color"], item["name"], onpress=self.getmaterial)
+                btn = widgets.button(self.surface, rect, col, item["name"], colsquare=item["color"], onpress=self.getmaterial)
             else:
                 tooltip = "Size: " + str(item["size"])
-                btn = widgets.button(self.surface, rect, item["color"], item["name"], onpress=self.getblock, tooltip=tooltip)
+                btn = widgets.button(self.surface, rect, col, item["name"], onpress=self.getblock, tooltip=tooltip)
             self.buttonslist.append(btn)
         if btn2 is not None:
             self.buttonslist.append(btn2)

@@ -83,7 +83,8 @@ class FE(MenuWithField):
         
         feCursor = ui_settings["global"]["colors"]["FECursor"]
 
-        cir = [self.buttonslist[self.currentindex].rect.x + 10,
+        ciroff = 16 if self.buttonslist[self.currentindex].colorsquare != pg.Color(black) else 10
+        cir = [self.buttonslist[self.currentindex].rect.x + ciroff,
             self.buttonslist[self.currentindex].rect.y + self.buttonslist[self.currentindex].rect.h / 2]
         pg.draw.circle(self.surface, cursor if self.innew else cursor2, cir, self.buttonslist[self.currentindex].rect.h / 3)  
         if len(self.buttonslist2) > 0:
@@ -177,7 +178,13 @@ class FE(MenuWithField):
 
             rect = pg.rect.Rect(self.menu_ui_settings["itempos"])
             rect = rect.move(0, rect.h * count)
-            btn = widgets.button(self.surface, rect, pg.Color(ui_settings["global"]["color2"]), item["nm"], onpress=self.addeffect)
+
+            col = pg.Color(ui_settings["global"]["color2"])
+            if (count - 1) % 2 == 0:
+                mul = 0.93
+                col = pg.Color(int(col.r * mul),int(col.g * mul),int(col.b * mul))
+
+            btn = widgets.button(self.surface, rect, col, item["nm"], onpress=self.addeffect)
             self.buttonslist.append(btn)
         if btn2 is not None:
             self.buttonslist.append(btn2)
@@ -195,7 +202,13 @@ class FE(MenuWithField):
                 count2 += 1
             if split2:
                 rect.width = rect.width / 2
-            btn = widgets.button(self.surface, rect, pg.Color(ui_settings["global"]["color2"]), item["nm"], onpress=self.selectmouseeffect)
+
+            col = pg.Color(ui_settings["global"]["color2"])
+            if (count - 1) % 2 == 0:
+                mul = 0.93
+                col = pg.Color(int(col.r * mul),int(col.g * mul),int(col.b * mul))
+
+            btn = widgets.button(self.surface, rect, col, item["nm"], onpress=self.selectmouseeffect)
             self.buttonslist2.append(btn)
         self.resize()
         self.chtext()
@@ -239,12 +252,15 @@ class FE(MenuWithField):
                 onpress=self.changematshow)
             rect = pg.rect.Rect(self.menu_ui_settings["itempos"])
             rect = rect.move(0, rect.h * count)
-            col = item["color"]
+            col = pg.Color([90, 90, 90])
+            if (count - 1) % 2 == 0:
+                mul = 0.93
+                col = pg.Color(int(col.r * mul),int(col.g * mul),int(col.b * mul))
             if col is None:
                 col = gray
             if count == self.currentcategory:
                 col = darkgray
-            btn = widgets.button(self.surface, rect, col, item["nm"], onpress=self.selectcat)
+            btn = widgets.button(self.surface, rect, col, item["nm"], colsquare=item["color"], onpress=self.selectcat)
             self.buttonslist.append(btn)
         if btn2 is not None:
             self.buttonslist.append(btn2)

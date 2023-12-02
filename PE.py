@@ -115,11 +115,17 @@ class PE(MenuWithField):
         itemcat = list(self.props.keys())[self.currentcategory]
         for count, item in enumerate(self.props[itemcat]):
             cat = pg.rect.Rect(self.menu_ui_settings["catpos"])
-            btn2 = widgets.button(self.surface, cat, ui_settings["global"]["color"], itemcat, onpress=self.changematshow,
+            btn2 = widgets.button(self.surface, cat, item["color"], itemcat, onpress=self.changematshow,
                 tooltip=self.returnkeytext("Select category(<[-changematshow]>)"))
             rect = pg.rect.Rect(self.menu_ui_settings["itempos"])
             rect = rect.move(0, rect.h * count)
-            btn = widgets.button(self.surface, rect, item["color"], item["nm"], onpress=self.setprop)
+
+            col = gray
+            if (count - 1) % 2 == 0:
+                mul = 0.93
+                col = pg.Color(int(col.r * mul),int(col.g * mul),int(col.b * mul))
+
+            btn = widgets.button(self.surface, rect, col, item["nm"], onpress=self.setprop)
             self.buttonslist.append(btn)
         if btn2 is not None:
             self.buttonslist.append(btn2)
@@ -146,14 +152,13 @@ class PE(MenuWithField):
             rect = pg.rect.Rect(self.menu_ui_settings["itempos"])
             rect = rect.move(0, rect.h * count)
             try:
-                col = self.props[item][0]["color"]
-                if col is None:
-                    col = gray
-                if count == self.currentcategory:
-                    col = darkgray
+                col = pg.Color([90, 90, 90])
+                if (count - 1) % 2 == 0:
+                    mul = 0.93
+                    col = pg.Color(int(col.r * mul),int(col.g * mul),int(col.b * mul))
             except IndexError:
                 col = gray
-            btn = widgets.button(self.surface, rect, col, item, onpress=self.selectcat)
+            btn = widgets.button(self.surface, rect, col, item, colsquare=self.props[item][0]["color"], onpress=self.selectcat)
             self.buttonslist.append(btn)
         if btn2 is not None:
             self.buttonslist.append(btn2)
@@ -245,7 +250,8 @@ class PE(MenuWithField):
         super().blit()
         self.labels[2].set_text(self.labels[2].originaltext + str(self.prop_settings) + f" | Zoom: {(self.size / preview_cell_size) * 100}%")
         self.labels[0].set_text(self.labels[0].originaltext + "\n".join(self.notes))
-        cir = [self.buttonslist[self.toolindex].rect.x + 10,
+        ciroff = 16 if self.buttonslist[self.toolindex].colorsquare != pg.Color(black) else 10
+        cir = [self.buttonslist[self.toolindex].rect.x + ciroff,
             self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
         pg.draw.circle(self.surface, cursor, cir, self.buttonslist[self.toolindex].rect.h / 3)
         mpos = pg.Vector2(pg.mouse.get_pos())

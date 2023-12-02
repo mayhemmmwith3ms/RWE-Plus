@@ -77,13 +77,14 @@ def resetpresses():
 
 
 class button:
-    def __init__(self, surface: pg.surface.Surface, rect: pg.rect.Rect, col, text: str, icon=None, onpress=None,
+    def __init__(self, surface: pg.surface.Surface, rect: pg.rect.Rect, col, text: str, icon=None, colsquare:pg.Color=pg.Color(black), onpress=None,
             onrelease=None, tooltip: str = ""):
         self.surface = surface
         self.rect = copy.deepcopy(rect)
         self.lastrect = copy.deepcopy(rect)
         self.col = pg.Color(col)
         self.col2 = pg.Color(abs(self.col.r - mul), abs(self.col.g - mul), abs(self.col.b - mul))
+        self.colorsquare = colsquare
         self.glow = 0
         self.fontsize = sum(pg.display.get_window_size()) // 74
         self.enabled = True
@@ -154,6 +155,9 @@ class button:
         paintcol = self.col.lerp(self.col2, self.glow)
 
         pg.draw.rect(self.surface, paintcol, self.rect, 0, ui_settings["global"]["roundbuttons"])
+        if self.colorsquare != pg.Color(black):
+            #pg.draw.rect(self.surface, pg.Color(int(self.colorsquare.r * 0.7), int(self.colorsquare.g * 0.7), int(self.colorsquare.b * 0.7)), [self.rect.x, self.rect.y, 6, self.rect.h])
+            pg.draw.rect(self.surface, self.colorsquare, [self.rect.x, self.rect.y, 6, self.rect.h])
         if self.icon is None:
             textblit(self.surface, self.textimage, self.rect.center[0], self.rect.center[1], True)
             # mts(self.surface, self.text, self.rect.center[0], self.rect.center[1], black, centered=True, fontsize=fontsize)
