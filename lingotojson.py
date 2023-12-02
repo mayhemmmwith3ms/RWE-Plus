@@ -239,7 +239,7 @@ def inittolist():
                 s = pg.Surface(img.get_size())
                 s.blit(img, [0, 0])
                 arr = pg.pixelarray.PixelArray(s.copy())
-                arr.replace(pg.Color(0, 0, 0), colr)
+                arr.replace(pg.Color(0, 0, 0), colr, 0.5)
                 img = arr.make_surface()
                 img.set_colorkey(pg.Color(255, 255, 255))
 
