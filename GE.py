@@ -294,7 +294,9 @@ class GE(MenuWithField):
                     f"Tile: {tilename} {self.data['GE'][int(posoffset.x)][int(posoffset.y)][self.layer]}")
 
             wltx = "Work Layer: " + str(self.layer + 1)
-            widgets.fastmts(self.surface, wltx, *(mpos + [10, -10]), white, 15)
+            widgets.fastmts(self.surface, wltx, *(mpos + [12, -10]), white, 15)
+            if self.bucketTool:
+                widgets.fastmts(self.surface, "FILL MODE ACTIVE", *(mpos + [12, 10]), white, 15)
 
             bp = self.getmouse
 
@@ -323,7 +325,7 @@ class GE(MenuWithField):
                     elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                         self.end_draw_drag()
                         self.last_lmb = True
-                else:
+                elif not self.bucketTool:
                     if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
                         self.begin_rect_drag()
                         self.last_lmb = False
@@ -453,9 +455,9 @@ class GE(MenuWithField):
         self.emptyarea()
         self.place(pos, False)
         lastarea = [[True for _ in range(self.levelheight)] for _ in range(self.levelwidth)]
-        print(filterblock)
+        #print(filterblock)
         while lastarea != self.area:
-            print(lastarea == self.area)
+            #print(lastarea == self.area)
             lastarea = copy.deepcopy(self.area)
             for xp, xd in enumerate(self.area):
                 for yp, cell in enumerate(xd):
@@ -778,10 +780,12 @@ class GE(MenuWithField):
         self.recaption()
 
     def tool_pencil(self):
+        self.bucketTool = False
         self.brushsize = 1
         self.recaption()
 
     def tool_brush(self):
+        self.bucketTool = False
         self.brushsize = 2
         self.recaption()
 
@@ -798,7 +802,7 @@ class GE(MenuWithField):
     @property
     def custom_info(self):
         try:
-            return f"{super().custom_info} | Placing: {self.selectedtool} | LMB tool: remind me to reimplement this, RMB tool: {self.fillshape2}"
+            return f"{super().custom_info} | Placing: {self.selectedtool} | LMB tool: {'Draw' if not self.bucketTool else 'Fill'}, RMB tool: {self.fillshape2}"
         except TypeError:
             return super().custom_info
         
