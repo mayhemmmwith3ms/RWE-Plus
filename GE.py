@@ -470,7 +470,6 @@ class GE(MenuWithField):
                                     self.data["GE"][posx][posy][self.layer][0] == filterblock:
                                 self.place(pg.Vector2(posx, posy), False)
                                 break
-        print("Done filling")
 
     def previewline(self, pos, _):
         pg.draw.rect(self.surface, red, [self.field_to_draw_pos(pos), [self.size]*2])
