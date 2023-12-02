@@ -122,7 +122,7 @@ class FE(MenuWithField):
                 if self.copymode:
                     rect = self.vec2rect(self.rectdata[2], pos2)
                     tx = f"{int(rect.w / self.size)}, {int(rect.h / self.size)}"
-                    widgets.fastmts(self.surface, tx, *mpos, white)
+                    widgets.fastmts(self.surface, tx, *(mpos + pg.Vector2(15, 4)), white)
                     pg.draw.rect(self.surface, blue, rect, 5)
             elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                 rect = self.vec2rect(self.rectdata[0], posoffset)

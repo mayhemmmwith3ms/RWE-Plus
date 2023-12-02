@@ -181,7 +181,7 @@ class TE(MenuWithField):
 
         rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
         tx = f"{int(rect.w / self.size)}, {int(rect.h / self.size)}"
-        widgets.fastmts(self.surface, tx, *mpos, white)
+        widgets.fastmts(self.surface, tx, *(mpos + pg.Vector2(15, 4)), white)
         pg.draw.rect(self.surface, rectColor, rect, 1)
 
     def end_rect_drag(self, place):

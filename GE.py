@@ -161,7 +161,7 @@ class GE(MenuWithField):
         rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
 
         tx = f"{abs(int(rect.w / self.size))}, {abs(int(rect.h / self.size))}"
-        widgets.fastmts(self.surface, tx, *mpos, white)
+        widgets.fastmts(self.surface, tx, *(mpos + pg.Vector2(15, 4)), white)
         if self.fillshape2 in ["rect", "rect-hollow"] or self.selectedtool in ["CP", "CT", "SL"]:
             pg.draw.rect(self.surface, select, rect, 1)
         elif self.fillshape2 in ["circle", "circle-hollow"]:
