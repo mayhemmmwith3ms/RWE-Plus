@@ -402,7 +402,7 @@ class TE(MenuWithField):
                 if drawTilePreview:
                     self.tileimage["image"].set_colorkey([255, 255, 255])
                     self.surface.blit(self.tileimage["image"], [cposx, cposy])
-                    self.printcols(cposxo, cposyo, self.tileimage)
+                    self.print_cols_at_coord(pg.Vector2(cposxo, cposyo), self.tileimage)
 
                 if self.justPlacedChainHolders:
                     for chPos in self.justPlacedChainHolders:
@@ -554,17 +554,21 @@ class TE(MenuWithField):
                         if item.get("preview"):
                             previewPos = button.rect.bottomright
                             if ui_settings["global"]["previewleftside"]:
-                                previewPos = [button.rect.bottomleft[0] - item["preview"].get_width(), button.rect.bottomleft[1]]
+                                previewPos = [button.rect.topleft[0] - item["preview"].get_width(), button.rect.topleft[1]]
                             self.surface.blit(item["preview"], previewPos)
                         if self.is_macro(item):
                             break
                         w, h = item["size"]
                         w *= self.size
                         h *= self.size
+                        margin = pg.Vector2(16, 16)
+                        preview_pos = pg.Vector2(self.field.x + margin.x, self.field.y + margin.y) if not ui_settings["global"]["previewleftside"] else\
+                        pg.Vector2(self.field.rect.x + self.field.rect.width - w - margin.x, self.field.rect.y + margin.y)
+                        pg.draw.rect(self.surface, black, [*preview_pos - margin / 2, w + margin.x, h + margin.y])
                         if not ui_settings["TE"]["LEtiles"]:
-                            pg.draw.rect(self.surface, item["color"], [self.field.rect.x, self.field.rect.y, w, h])
-                        self.surface.blit(pg.transform.scale(item["image"], [w, h]), [self.field.rect.x, self.field.rect.y])
-                        self.printcols(0, 0, item, True)
+                            pg.draw.rect(self.surface, item["color"], [*preview_pos, w, h])
+                        self.surface.blit(pg.transform.scale(item["image"], [w, h]), [preview_pos.x, preview_pos.y])
+                        self.printcols(preview_pos, preview_cell_size, item)
                         break
         for button in self.buttonslist:
             button.blittooltip()
@@ -829,55 +833,48 @@ class TE(MenuWithField):
 
         return True
         # self.data["TE"]
+    
+    def printcell(self, screen_pos:pg.Vector2, scale:float, tp:int, color:pg.Color):
+        match tp:
+            case 1:
+                pg.draw.rect(self.surface, color, [*screen_pos, scale + 1, scale + 1], 1)
+            case 0:
+                pg.draw.circle(self.surface, color, [screen_pos.x + scale / 2, screen_pos.y + scale / 2], scale / 2, 1)
+            case 2:
+                pg.draw.polygon(self.surface, color,
+                                [[*screen_pos], [screen_pos.x, screen_pos.y + scale], [screen_pos.x + scale, screen_pos.y + scale]], 1)
+            case 3:
+                pg.draw.polygon(self.surface, color,
+                                [[screen_pos.x, screen_pos.y + scale], [screen_pos.x + scale, screen_pos.y + scale], [screen_pos.x + scale, screen_pos.y]],
+                                1)
+            case 4:
+                pg.draw.polygon(self.surface, color,
+                                [[screen_pos.x, screen_pos.y], [screen_pos.x, screen_pos.y + scale], [screen_pos.x + scale, screen_pos.y]], 1)
+            case 5:
+                pg.draw.polygon(self.surface, color,
+                                [[screen_pos.x, screen_pos.y], [screen_pos.x + scale, screen_pos.y + scale], [screen_pos.x + scale, screen_pos.y]], 1)
+            case 6:
+                pg.draw.rect(self.surface, color,
+                                [*screen_pos, scale, scale/2], 1)
 
-    def printcols(self, x, y, tile, prev=False):
-        def printtile(sft, color):
-            if prev:
-                px = x2 * self.size + self.field.rect.x + sft
-                py = y2 * self.size + self.field.rect.y + sft
-            else:
-                px = (x + x2 + self.xoffset) * self.size + self.field.rect.x + sft
-                py = (y + y2 + self.yoffset) * self.size + self.field.rect.y + sft
-            match csp:
-                case 1:
-                    pg.draw.rect(self.surface, color, [px, py, self.size + 1, self.size + 1], 1)
-                case 0:
-                    pg.draw.circle(self.surface, color, [px + self.size / 2, py + self.size / 2], self.size / 2, 1)
-                case 2:
-                    pg.draw.polygon(self.surface, color,
-                                    [[px, py], [px, py + self.size], [px + self.size, py + self.size]], 1)
-                case 3:
-                    pg.draw.polygon(self.surface, color,
-                                    [[px, py + self.size], [px + self.size, py + self.size], [px + self.size, py]],
-                                    1)
-                case 4:
-                    pg.draw.polygon(self.surface, color,
-                                    [[px, py], [px, py + self.size], [px + self.size, py]], 1)
-                case 5:
-                    pg.draw.polygon(self.surface, color,
-                                    [[px, py], [px + self.size, py + self.size], [px + self.size, py]], 1)
+    def printcols(self, screen_pos:pg.Vector2, scale:float, tile):
+        w,h = tile["size"]
+        specsL1 = tile["cols"][0]
+        specsL2 = tile["cols"][1]
+        shift = scale // preview_cell_size + 1
+        
+        if specsL2 != 0 and specsL2 != "void":
+            for x2 in range(w):
+                for y2 in range(h):        
+                    self.printcell(screen_pos + pg.Vector2([shift]*2) + pg.Vector2(x2, y2) * scale, scale, specsL1[x2 * h + y2], layer2)
+            shift *= 2
 
-        w, h = tile["size"]
-        sp = tile["cols"][0]
-        sp2 = tile["cols"][1]
-        shift = self.size // preview_cell_size + 1
-        px = x + int((w * .5) + .5) - 1  # center coordinates
-        py = y + int((h * .5) + .5) - 1
-        if px >= self.levelwidth or py >= self.levelheight or px < 0 or py < 0:
-            return
         for x2 in range(w):
             for y2 in range(h):
-                csp = sp[x2 * h + y2]
-                if sp2 != 0 and sp2 != "void":
-                    try:
-                        csp = sp2[x2 * h + y2]
-                    except IndexError:
-                        csp = -1
-                    printtile(shift, layer2)
-                    csp = sp[x2 * h + y2]
-                    printtile(shift * 2, layer1)
-                else:
-                    printtile(shift, layer1)
+                self.printcell(screen_pos + pg.Vector2([shift]*2) + pg.Vector2(x2, y2) * scale, scale, specsL1[x2 * h + y2], layer1)
+    
+    def print_cols_at_coord(self, field_coord, tile):
+        self.printcols(self.field_to_draw_pos(field_coord), self.size, tile)
 
     def scroll_up(self):
         if self.findparampressed("brush_size_scroll"):
