@@ -397,7 +397,7 @@ def getprops(tiles: dict):
                                     pxl.replace(bl, curcol)
                                     ss = pxl.make_surface()
                                 ss.set_colorkey(wh)
-                                img.blit(ss, [0, hs - h])
+                                img.blit(ss, [w * varindx, hs - h])
 
                 if item.get("vars") is not None:
                     for iindex in range(item["vars"]):
