@@ -361,10 +361,14 @@ def getprops(tiles: dict):
                     w = round(ws / item["vars"])
                 if item.get("repeatL") is not None:
                     h = math.floor((hs / len(item["repeatL"])))
-                    if item.get("sz") is not None and len(item["repeatL"]) < 2:
+                    if item.get("sz") is not None:
                         sz = toarr(item["sz"], "point")
                         w = min(sz[0] * render_cell_size, ws)
                         h = min(sz[1] * render_cell_size, hs // len(item["repeatL"]))
+
+                    bpix = img.get_at([0, 0]).r == 0
+                    img = img.subsurface([0, 1 if bpix else 0, min(w * (item["vars"] if item.get("vars") is not None else 1), ws), min(h * len(item["repeatL"]), hs - (1 if bpix else 0))]) # this would be so much cleaner if random props weren't missing the black pixel
+                    ws, hs = img.get_size()
 
                     cons = 0.4
                     wh = pg.Color("#ffffff")
@@ -380,8 +384,9 @@ def getprops(tiles: dict):
 
                         for iindex in range(len(item["repeatL"])):
                             # print(img, item["nm"], varindx * w, hs - h, w, h)
-                            curcol = curcol.lerp(bl, cons)
-                            ss = img.subsurface(varindx * w, (len(item["repeatL"]) - 1 - iindex) * h + 1, w, h - 1).copy()
+                            curcol = curcol.lerp(bl, cons) # curse you MSC prop makers
+                            h2 = min(hs, (len(item["repeatL"]) - 1 - iindex) * h + h) - (len(item["repeatL"]) - 1 - iindex) * h
+                            ss = img.subsurface(varindx * w, (len(item["repeatL"]) - 1 - iindex) * h, w, h2).copy()
                             if item["colorTreatment"] == "standard":
                                 ss = ss.convert(pg.Surface([preview_cell_size, preview_cell_size]))
                                 depthTintWhite = min((len(item["repeatL"]) - 1 - iindex) * min(25, 255 // len(item["repeatL"])), 254)
