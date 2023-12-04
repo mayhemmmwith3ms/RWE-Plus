@@ -157,7 +157,8 @@ class button:
         pg.draw.rect(self.surface, paintcol, self.rect, 0, ui_settings["global"]["roundbuttons"])
         if self.colorsquare != pg.Color(black):
             #pg.draw.rect(self.surface, pg.Color(int(self.colorsquare.r * 0.7), int(self.colorsquare.g * 0.7), int(self.colorsquare.b * 0.7)), [self.rect.x, self.rect.y, 6, self.rect.h])
-            pg.draw.rect(self.surface, self.colorsquare, [self.rect.x, self.rect.y, 6, self.rect.h])
+            colsq = self.colorsquare if self.glow == 0 else pg.Color(int(self.colorsquare[0] * 0.8), int(self.colorsquare[1] * 0.8), int(self.colorsquare[2] * 0.8))
+            pg.draw.rect(self.surface, colsq, [self.rect.x, self.rect.y, 6, self.rect.h])
         if self.icon is None:
             textblit(self.surface, self.textimage, self.rect.center[0], self.rect.center[1], True)
             # mts(self.surface, self.text, self.rect.center[0], self.rect.center[1], black, centered=True, fontsize=fontsize)
