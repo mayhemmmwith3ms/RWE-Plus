@@ -8,6 +8,8 @@ class MN(MenuWithField):
         
         super().__init__(surface, "MN", renderer)
 
+        self.drawwater = True
+
         if renderer.color_geo:
             renderer.color_geo = False
             self.rerenderActiveEditors(renderer.lastlayer)

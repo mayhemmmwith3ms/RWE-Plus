@@ -69,6 +69,7 @@ class TE(MenuWithField):
             if len(self.catlist[-1]) >= self.menu_ui_settings["category_count"]:
                 self.catlist.append([])
         self.drawtiles = True
+        self.drawwater = True
         self.set("materials 0", "Standard")
         self.currentcategory = 0
         self.labels[2].set_text("Default material: " + self.data["TE"]["defaultMaterial"])

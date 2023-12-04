@@ -654,7 +654,7 @@ class MenuWithField(Menu):
             h = height - top + 1
             s = pg.Surface([width, h])
             s.fill(blue)
-            s.set_alpha(100)
+            s.set_alpha(50)
             self.field.field.blit(s, (self.offset) * self.size + pg.Vector2(0, top))
 
     def renderfield(self):
