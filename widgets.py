@@ -1,7 +1,7 @@
 import pygame as pg
 import copy
 from files import ui_settings, fs, path, map, allleters, loadimage
-from render import gray, darkgray
+from render import gray, darkgray  # noqa: F401
 
 pg.font.init()
 
