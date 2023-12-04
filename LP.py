@@ -210,16 +210,17 @@ class LP(MenuWithField):
         self.chparam("EX2", "light")
 
     def water(self):
-        self.tool = "env"
+        self.tool = "env" if self.tool != "env" else ""
         if self.data["WL"]["waterLevel"] < 0:
             self.data["WL"]["waterLevel"] = 0
         self.recaption()
 
     def sizing(self):
-        self.tool = "size"
+        self.tool = "size" if self.tool != "size" else ""
         self.recaption()
 
     def nowater(self):
+        self.tool = ""
         self.data["WL"]["waterLevel"] = -1
         self.updatehistory([["WL", "waterLevel"]])
 
@@ -387,7 +388,7 @@ class LP(MenuWithField):
 
     @property
     def custom_info(self):
-        return f"{super().custom_info} | Current tool: {self.tool} | Level size: {[self.levelwidth], self.levelheight} | Water level: {self.data['WL']['waterLevel']}"
+        return f"{super().custom_info} | Current tool: {self.tool if self.tool else 'none'} | Level size: {[self.levelwidth], self.levelheight} | Water level: {self.data['WL']['waterLevel']}"
 
     def onundo(self):
         self.border = [0, 0, self.levelwidth, self.levelheight]
