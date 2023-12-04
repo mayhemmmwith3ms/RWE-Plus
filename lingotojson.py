@@ -401,7 +401,7 @@ def getprops(tiles: dict):
 
                 if item.get("vars") is not None:
                     for iindex in range(item["vars"]):
-                        images.append(img.subsurface(iindex * w, 0, w, h))
+                        images.append(img.subsurface(iindex * w, hs - h, w, h))
                 else:
                     images.append(img.subsurface(0, hs - h, w, h))
 
