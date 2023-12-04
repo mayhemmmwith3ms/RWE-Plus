@@ -158,7 +158,6 @@
 		"unlock_keys": ["K_LEFT", "K_RIGHT", "K_UP", "K_DOWN", "K_i", "K_k", "K_j", "K_l", "K_w", "K_a", "K_s", "K_d"],
 
 		"K_m": "-togglesnap",
-		"K_d": "-deletecamera",
 		"K_DELETE": "-deletecamera",
 
 		"K_n": "-addcamera",
