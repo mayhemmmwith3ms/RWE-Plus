@@ -173,7 +173,7 @@
         "-findpropmenu": "Opens find prop menu",
         "-togglesnap": "Toggles prop grid snapping",
         "moreinfo": "Hold to change rotation to only rotate the cursor. Useful in very niche cases",
-        "changerelease": "Cycles through a rope prop's 'release' setting"
+        "-changerelease": "Cycles through a rope prop's 'release' setting"
     },
     "FE": {
         "-changematshow": "Shows list of categories",
