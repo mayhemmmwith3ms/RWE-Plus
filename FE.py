@@ -85,7 +85,7 @@ class FE(MenuWithField):
         
         feCursor = ui_settings["global"]["colors"]["FECursor"]
 
-        ciroff = 16 if self.buttonslist[self.currentindex].colorsquare != pg.Color(black) else 10
+        ciroff = 16 if self.buttonslist[self.currentindex].indicatorcol != pg.Color(black) else 10
         cir = [self.buttonslist[self.currentindex].rect.x + ciroff,
             self.buttonslist[self.currentindex].rect.y + self.buttonslist[self.currentindex].rect.h / 2]
         pg.draw.circle(self.surface, cursor if self.innew else cursor2, cir, self.buttonslist[self.currentindex].rect.h / 3)  

@@ -253,7 +253,7 @@ class PE(MenuWithField):
         super().blit()
         self.labels[2].set_text(self.labels[2].originaltext + str(self.prop_settings) + f" | Zoom: {(self.size / preview_cell_size) * 100}%")
         self.labels[0].set_text(self.labels[0].originaltext + "\n".join(self.notes))
-        ciroff = 16 if self.buttonslist[self.toolindex].colorsquare != pg.Color(black) else 10
+        ciroff = 16 if self.buttonslist[self.toolindex].indicatorcol != pg.Color(black) else 10
         cir = [self.buttonslist[self.toolindex].rect.x + ciroff,
             self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
         pg.draw.circle(self.surface, cursor, cir, self.buttonslist[self.toolindex].rect.h / 3)

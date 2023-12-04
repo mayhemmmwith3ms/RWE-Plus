@@ -298,7 +298,7 @@ class TE(MenuWithField):
         for i, button in enumerate(self.buttonslist[:-1]):
             button.blit(sum(pg.display.get_window_size()) // 120)
         self.buttonslist[-1].blit(sum(pg.display.get_window_size()) // 100)
-        ciroff = 16 if self.buttonslist[self.toolindex].colorsquare != pg.Color(black) else 10
+        ciroff = 16 if self.buttonslist[self.toolindex].indicatorcol != pg.Color(black) else 10
         try:
             cir = [self.buttonslist[self.toolindex].rect.x + ciroff, self.buttonslist[self.toolindex].rect.y + self.buttonslist[self.toolindex].rect.h / 2]
         except IndexError:
