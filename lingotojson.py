@@ -402,11 +402,13 @@ def getprops(tiles: dict):
                                 ss.set_colorkey(wh)
                                 img.blit(ss, [w * varindx, hs - h])
 
+                hz = hs - h if item["tp"] not in ["soft", "variedSoft"] else 0
+
                 if item.get("vars") is not None:
                     for iindex in range(item["vars"]):
-                        images.append(img.subsurface(iindex * w, hs - h, w, h))
+                        images.append(img.subsurface(iindex * w, hz, w, h))
                 else:
-                    images.append(img.subsurface(0, hs - h, w, h))
+                    images.append(img.subsurface(0, hz, w, h))
 
                 newitem = solved[cat][indx + 1]
                 newitem["images"] = images
