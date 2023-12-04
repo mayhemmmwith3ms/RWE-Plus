@@ -385,8 +385,11 @@ def getprops(tiles: dict):
 
                             for iindex in range(len(item["repeatL"])):
                                 # print(img, item["nm"], varindx * w, hs - h, w, h)
-                                curcol = curcol.lerp(bl, cons) # curse you MSC prop makers
-                                h2 = min(hs, (len(item["repeatL"]) - 1 - iindex) * h + h) - (len(item["repeatL"]) - 1 - iindex) * h
+                                if item["repeatL"][len(item["repeatL"]) - 1 - iindex] == 0:
+                                    continue
+
+                                curcol = curcol.lerp(bl, cons) 
+                                h2 = min(hs, (len(item["repeatL"]) - 1 - iindex) * h + h) - (len(item["repeatL"]) - 1 - iindex) * h # curse you MSC prop makers
                                 ss = img.subsurface(varindx * w, (len(item["repeatL"]) - 1 - iindex) * h, w, h2).copy()
                                 if item["colorTreatment"] == "standard":
                                     ss = ss.convert(pg.Surface([preview_cell_size, preview_cell_size]))
