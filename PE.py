@@ -489,6 +489,10 @@ class PE(MenuWithField):
             
             drawPreviewPos += pg.Vector2(self.selectedimage.get_size()) / 2
             
+            if self.snap:
+                pg.draw.line(self.surface, blue, pg.Vector2(self.get_snapped_pos(mpos).x, self.field.rect.top), pg.Vector2(self.get_snapped_pos(mpos).x, self.field.rect.bottom))
+                pg.draw.line(self.surface, blue, pg.Vector2(self.field.rect.left, self.get_snapped_pos(mpos).y), pg.Vector2(self.field.rect.right, self.get_snapped_pos(mpos).y))
+
             if drawPivotInfo:
                 pg.draw.line(self.surface, red, self.propPivotPoint, mpos)
                 pg.draw.line(self.surface, red, self.propPivotPoint, pg.Vector2(self.propPivotPoint) - pg.Vector2(16, 0))
