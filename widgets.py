@@ -77,14 +77,14 @@ def resetpresses():
 
 
 class button:
-    def __init__(self, surface: pg.surface.Surface, rect: pg.rect.Rect, col, text: str, icon=None, colsquare:pg.Color=pg.Color(black), onpress=None,
+    def __init__(self, surface: pg.surface.Surface, rect: pg.rect.Rect, col, text: str, icon=None, indicatorcol:pg.Color=pg.Color(black), onpress=None,
             onrelease=None, tooltip: str = ""):
         self.surface = surface
         self.rect = copy.deepcopy(rect)
         self.lastrect = copy.deepcopy(rect)
         self.col = pg.Color(col)
         self.col2 = pg.Color(abs(self.col.r - mul), abs(self.col.g - mul), abs(self.col.b - mul))
-        self.colorsquare = colsquare
+        self.indicatorcol = indicatorcol
         self.glow = 0
         self.fontsize = sum(pg.display.get_window_size()) // 74
         self.enabled = True
@@ -155,10 +155,10 @@ class button:
         paintcol = self.col.lerp(self.col2, self.glow)
 
         pg.draw.rect(self.surface, paintcol, self.rect, 0, ui_settings["global"]["roundbuttons"])
-        if self.colorsquare != pg.Color(black):
+        if self.indicatorcol != pg.Color(black):
             #pg.draw.rect(self.surface, pg.Color(int(self.colorsquare.r * 0.7), int(self.colorsquare.g * 0.7), int(self.colorsquare.b * 0.7)), [self.rect.x, self.rect.y, 6, self.rect.h])
-            colsq = self.colorsquare if self.glow == 0 else pg.Color(int(self.colorsquare[0] * 0.8), int(self.colorsquare[1] * 0.8), int(self.colorsquare[2] * 0.8))
-            pg.draw.rect(self.surface, colsq, [self.rect.x, self.rect.y, 6, self.rect.h])
+            icol = self.indicatorcol if self.glow == 0 else pg.Color(int(self.indicatorcol[0] * 0.8), int(self.indicatorcol[1] * 0.8), int(self.indicatorcol[2] * 0.8))
+            pg.draw.rect(self.surface, icol, [self.rect.x, self.rect.y, 6, self.rect.h])
         if self.icon is None:
             textblit(self.surface, self.textimage, self.rect.center[0], self.rect.center[1], True)
             # mts(self.surface, self.text, self.rect.center[0], self.rect.center[1], black, centered=True, fontsize=fontsize)

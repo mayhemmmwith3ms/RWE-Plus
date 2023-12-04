@@ -161,7 +161,7 @@ class PE(MenuWithField):
                     col = pg.Color(int(col.r * mul),int(col.g * mul),int(col.b * mul))
             except IndexError:
                 col = gray
-            btn = widgets.button(self.surface, rect, col, item, colsquare=self.props[item][0]["color"], onpress=self.selectcat)
+            btn = widgets.button(self.surface, rect, col, item, indicatorcol=self.props[item][0]["color"], onpress=self.selectcat)
             self.buttonslist.append(btn)
         if btn2 is not None:
             self.buttonslist.append(btn2)

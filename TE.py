@@ -620,7 +620,7 @@ class TE(MenuWithField):
                 col = pg.Color(int(col.r * mul),int(col.g * mul),int(col.b * mul))
             if count == self.toolindex:
                 col = darkgray
-            btn = widgets.button(self.surface, rect, col, item, colsquare=self.items[item][0]["color"], onpress=self.selectcat)
+            btn = widgets.button(self.surface, rect, col, item, indicatorcol=self.items[item][0]["color"], onpress=self.selectcat)
             self.buttonslist.append(btn)
         if btn2 is not None:
             self.buttonslist.append(btn2)
@@ -696,7 +696,7 @@ class TE(MenuWithField):
                 col = pg.Color(int(col.r * mul),int(col.g * mul),int(col.b * mul))
 
             if item["category"] == "special" or "material" in item["tags"]:
-                btn = widgets.button(self.surface, rect, col, item["name"], colsquare=item["color"], onpress=self.getmaterial)
+                btn = widgets.button(self.surface, rect, col, item["name"], indicatorcol=item["color"], onpress=self.getmaterial)
             else:
                 tooltip = "Size: " + str(item["size"])
                 btn = widgets.button(self.surface, rect, col, item["name"], onpress=self.getblock, tooltip=tooltip)

@@ -262,7 +262,7 @@ class FE(MenuWithField):
                 col = gray
             if count == self.currentcategory:
                 col = darkgray
-            btn = widgets.button(self.surface, rect, col, item["nm"], colsquare=item["color"], onpress=self.selectcat)
+            btn = widgets.button(self.surface, rect, col, item["nm"], indicatorcol=item["color"], onpress=self.selectcat)
             self.buttonslist.append(btn)
         if btn2 is not None:
             self.buttonslist.append(btn2)
