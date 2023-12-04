@@ -148,15 +148,15 @@
 			["RA", [0, 42, 4, 6], [100, 100, 100], "replacestate", "non", "Replace air(<[-replacestate]>).\nIf enabled, not replaces air blocks"],
 			["CT", [4, 42, 4, 6], [100, 100, 100], "s0", "cutlayer", "Cut layer(<[-cutlayer]>)", ["geometry.png", [3, 5]]],
 
-			["Pencil", [0, 50, 5, 6], [100, 100, 100], "tool_pencil", "non", "Change LMB to pencil", ["fillmethods.png", [5, 0]]],
-			["Brush", [5, 50, 5, 6], [100, 100, 100], "tool_brush", "non", "Change LMB to brush", ["fillmethods.png", [6, 0]]],
-			["Fill", [10, 50, 5, 6], [100, 100, 100], "tool_fill", "non", "Change LMB to fill", ["fillmethods.png", [0, 0]]],
+			["Pencil", [0, 50, 5, 6], [100, 100, 100], "tool_pencil", "non", "Change primary tool to pencil", ["fillmethods.png", [5, 0]]],
+			["Brush", [5, 50, 5, 6], [100, 100, 100], "tool_brush", "non", "Change primary tool to brush", ["fillmethods.png", [6, 0]]],
+			["Fill", [10, 50, 5, 6], [100, 100, 100], "tool_fill", "non", "Change primary tool to fill", ["fillmethods.png", [0, 0]]],
 
-			["Line", [0, 58, 5, 6], [100, 100, 100], "tool_line", "non", "Change RMB to line", ["fillmethods.png", [7, 0]]],
-			["Rect", [5, 58, 5, 6], [100, 100, 100], "tool_rect", "non", "Change RMB to rect", ["fillmethods.png", [1, 0]]],
-			["Rect-\nhollow", [10, 58, 5, 6], [100, 100, 100], "tool_rect_hollow", "non", "Change RMB to hollow rect", ["fillmethods.png", [2, 0]]],
-			["Circle", [5, 64, 5, 6], [100, 100, 100], "tool_circle", "non", "Change RMB to circle", ["fillmethods.png", [3, 0]]],
-			["Circle-\nhollow", [10, 64, 5, 6], [100, 100, 100], "tool_circle_hollow", "non", "Change RMB to hollow circle", ["fillmethods.png", [4, 0]]],
+			["Line", [0, 58, 5, 6], [100, 100, 100], "tool_line", "non", "Change secondary tool to line", ["fillmethods.png", [7, 0]]],
+			["Rect", [5, 58, 5, 6], [100, 100, 100], "tool_rect", "non", "Change secondary tool to rect", ["fillmethods.png", [1, 0]]],
+			["Rect-\nhollow", [10, 58, 5, 6], [100, 100, 100], "tool_rect_hollow", "non", "Change secondary tool to hollow rect", ["fillmethods.png", [2, 0]]],
+			["Circle", [5, 64, 5, 6], [100, 100, 100], "tool_circle", "non", "Change secondary tool to circle", ["fillmethods.png", [3, 0]]],
+			["Circle-\nhollow", [10, 64, 5, 6], [100, 100, 100], "tool_circle_hollow", "non", "Change secondary tool to hollow circle", ["fillmethods.png", [4, 0]]],
 			["TE", [95, 0, 5, 6], [100, 100, 100], "TE", "non", "Go to tile editor(<[/TE]>)"]
 		],
 		"d1":
@@ -169,7 +169,7 @@
 			["Tile: ", [0, 79], [255, 255, 255], 30],
 			["X: 0, Y: 0", [0, 97], [255, 255, 255], 25],
 			["Replace air: ", [0, 94], [255, 255, 255], 25],
-			["LMB - Place\nRMB - Fill\nMMB - Move", [18, 2], [255, 255, 255], 25]
+			["LMB - Place\nMMB - Move", [18, 2], [255, 255, 255], 25]
 		],
 		"names": {
 			"0": "Air",
@@ -202,8 +202,8 @@
 			["PS", [96, 14, 4, 4], [100, 100, 100], "pastedata", "non", "Paste(<[-pastedata]>)", ["geometry.png", [3, 6]]],
 			["?", [98, 0, 2, 2], [90, 90, 90], "watch_keys", "non", "Hotkeys"],
 			["...", [96, 18, 4, 4], [100, 100, 100], "findtile", "non", "Browse(<[-findtile]>)"],
-			["Pencil", [96, 23, 4, 4], [100, 100, 100], "pencil", "non", "Turn LMB to pencil(<[-pencil]>)", ["fillmethods.png", [5, 0]]],
-			["Brush", [96, 27, 4, 4], [100, 100, 100], "brush", "non", "Turn LMB to brush(<[-brush]>)", ["fillmethods.png", [6, 0]]],
+			["Pencil", [96, 23, 4, 4], [100, 100, 100], "pencil", "non", "Turn primary tool to pencil(<[-pencil]>)", ["fillmethods.png", [5, 0]]],
+			["Brush", [96, 27, 4, 4], [100, 100, 100], "brush", "non", "Turn primary tool to brush(<[-brush]>)", ["fillmethods.png", [6, 0]]],
 			["Mode", [96, 31, 4, 4], [100, 100, 100], "togglebrush", "non", "Changes between square and circle brush(<[-togglebrush]>)", ["fillmethods.png", [3, 0]]],
 			["GE", [0, 0, 5, 6], [100, 100, 100], "GE", "non", "Go to geometry editor"]
 			
@@ -219,7 +219,7 @@
 			["Tile: ", [2, 90], [255, 255, 255], 25],
 			["X: 0, Y: 0", [2, 93], [255, 255, 255], 25],
 			["Default material: ", [2, 87], [255, 255, 255], 25],
-			["LMB - Place tile\nRMB - Fill\nMMB - Move", [2, 20], [255, 255, 255], 25]
+			["LMB - Place tile\nRMB - Delete tile\nMMB - Move", [2, 20], [255, 255, 255], 25]
 		],
 		"itemsize": 2,
 		"menucolor": [120, 120, 120]
@@ -388,7 +388,7 @@
 			["Notes:\n", [2, 64], [255, 255, 255], 25],
 			["Warning: ", [2, 94], [255, 50, 50], 25],
 			["Prop settings: ", [2, 97], [255, 255, 255], 25],
-			["LMB - Place Prop\nRMB - Depth+, <[cursor_propdepth_inverse]>+RMB - Depth-\nMMB - Move\n<[propvariation_change]>+LMB - Variation-, <[propvariation_change]>+RMB - Variation+", [2, 2], [255, 255, 255], 25]
+			["LMB - Place prop\nRMB - Change prop depth, <[cursor_propdepth_inverse]>+RMB - Depth-\nMMB - Move\n<[propvariation_change]>+LMB - Variation-, <[propvariation_change]>+RMB - Variation+", [2, 2], [255, 255, 255], 25]
 		],
 		"menucolor": [120, 120, 120],
 

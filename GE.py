@@ -803,7 +803,7 @@ class GE(MenuWithField):
     @property
     def custom_info(self):
         try:
-            return f"{super().custom_info} | Placing: {self.selectedtool} | LMB tool: {'Draw' if not self.bucketTool else 'Fill'}, RMB tool: {self.fillshape2}"
+            return f"{super().custom_info} | Placing: {self.selectedtool} | Primary tool: {'Draw' if not self.bucketTool else 'Fill'}, Secondary tool: {self.fillshape2}"
         except TypeError:
             return super().custom_info
         
