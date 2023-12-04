@@ -27,13 +27,15 @@ class FE(MenuWithField):
 
         self.copymode = False
 
-        renderer.commsgeocolors = False
-        renderer.geo_full_render(renderer.lastlayer)
-
         super().__init__(surface, "FE", renderer)
         self.drawtiles = True
         #self.fieldadd.set_colorkey(None)
         self.fieldadd.set_alpha(180)
+
+        if renderer.color_geo:
+            renderer.color_geo = False
+            self.rerenderActiveEditors(renderer.lastlayer)
+
         self.makeparams()
         self.rfa()
         self.rebuttons()

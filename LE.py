@@ -39,8 +39,9 @@ class LE(MenuWithField):
 
         self.images = {True: [], False: []}
 
-        renderer.commsgeocolors = False
-        renderer.geo_full_render(renderer.lastlayer)
+        if renderer.color_geo:
+            renderer.color_geo = False
+            self.rerenderActiveEditors(renderer.lastlayer)
 
         for i in graphics["shadowimages"]:
             img = loadimage(path2cast + i)

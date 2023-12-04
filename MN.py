@@ -5,10 +5,13 @@ import random
 
 class MN(MenuWithField):
     def __init__(self, surface: pg.surface.Surface, renderer: Renderer):
-        renderer.color_geo = False
-        renderer.geo_full_render(renderer.lastlayer)
         
         super().__init__(surface, "MN", renderer)
+
+        if renderer.color_geo:
+            renderer.color_geo = False
+            self.rerenderActiveEditors(renderer.lastlayer)
+
         tips = set(open(path + "tips.txt", "r").readlines())
         self.tips = list(tips)
         self.last_lmb = True

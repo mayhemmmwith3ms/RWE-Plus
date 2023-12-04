@@ -62,9 +62,6 @@ class TE(MenuWithField):
         self.blockNextPlacement = False
         self.currentPathDrag = []
 
-        renderer.color_geo = False
-        renderer.geo_full_render(renderer.lastlayer)
-
         super().__init__(surface, "TE", renderer, False)
         self.catlist = [[]]
         for category in self.items.keys():
@@ -75,6 +72,11 @@ class TE(MenuWithField):
         self.set("materials 0", "Standard")
         self.currentcategory = 0
         self.labels[2].set_text("Default material: " + self.data["TE"]["defaultMaterial"])
+
+        if renderer.color_geo:
+            renderer.color_geo = False
+            self.rerenderActiveEditors(renderer.lastlayer)
+
         self.rfa()
         self.rebuttons()
         self.toolindex = self.currentcategory

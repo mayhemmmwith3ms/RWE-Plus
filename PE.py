@@ -73,10 +73,7 @@ class PE(MenuWithField):
         self.propPivotPoint = []
         self.lastPropPivotRot = 0
         self.hasPropPivotBaseRot = False
-        self.propPivotBaseRot = 0
-
-        renderer.commsgeocolors = False
-        renderer.geo_full_render(renderer.lastlayer)
+        self.propPivotBaseRot = 0            
 
         super().__init__(surface, "PE", renderer)
         self.drawtiles = True
@@ -90,6 +87,12 @@ class PE(MenuWithField):
         self.setprop(self.props[cat][0]["nm"], cat)
         self.resize()
         self.rebuttons()
+
+        if renderer.color_geo:
+            renderer.color_geo = False
+            self.rerenderActiveEditors(renderer.lastlayer)
+        renderer.props_full_render(renderer.lastlayer)
+
         self.rfa()
 
     def renderfield(self):

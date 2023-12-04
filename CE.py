@@ -18,8 +18,9 @@ class CE(MenuWithField):
         self.pressed = [False] * 4
         self.heldpointindex = 0
         
-        renderer.color_geo = False
-        renderer.geo_full_render(renderer.lastlayer)
+        if renderer.color_geo:
+            renderer.color_geo = False
+            self.rerenderActiveEditors(renderer.lastlayer)
 
         self.rfa()
         self.blit()

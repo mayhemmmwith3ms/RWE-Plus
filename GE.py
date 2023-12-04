@@ -30,12 +30,14 @@ class GE(MenuWithField):
 
         self.toolsized = None
 
-        renderer.color_geo = True
-        renderer.geo_full_render(renderer.lastlayer)
-
         super().__init__(surface, "GE", renderer)
         self.drawwater = True
         self.drawgrid = True
+
+        if not renderer.color_geo:
+            renderer.color_geo = True
+            self.rerenderActiveEditors(renderer.lastlayer)
+
         self.emptyarea()
         self.air()
         self.rs()

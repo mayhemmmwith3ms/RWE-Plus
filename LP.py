@@ -39,6 +39,11 @@ class LP(MenuWithField):
         self.shadowmode = False
         self.shadowfield = None
         self.drawwater = True
+
+        if renderer.color_geo:
+            renderer.color_geo = False
+            self.rerenderActiveEditors(renderer.lastlayer)
+
         self.gw = self.levelwidth
         self.gh = self.levelheight
         self.resize()
