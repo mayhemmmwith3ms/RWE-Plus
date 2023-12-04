@@ -410,7 +410,7 @@ def getprops(tiles: dict):
                 newitem["color"] = list(colr)
                 solved_copy[cat].append(newitem)
             except Exception:
-                log_to_load_log(f"Failed to load \"{item['nm']}\" for unknown reason! Skipping!", True)
+                log_to_load_log(f"Failed to load \"{item['nm']}\" for due to unhandled exception! Skipping!", True)
 
         if not solved_copy[cat]:
             log_to_load_log("Category \"" + cat + "\" was empty and will not be loaded!")
