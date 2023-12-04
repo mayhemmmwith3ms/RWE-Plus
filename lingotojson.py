@@ -352,62 +352,66 @@ def getprops(tiles: dict):
             if item.get("vars") is not None:
                 item["vars"] = max(item["vars"], 1)
 
-            ws, hs = img.get_size()
-            if item.get("pxlSize") is not None:
-                w, h = toarr(item["pxlSize"], "point")
-            else:
-                w, h = ws, hs
-                if item.get("vars") is not None:
-                    w = round(ws / item["vars"])
-                if item.get("repeatL") is not None:
-                    h = math.floor((hs / len(item["repeatL"])))
-                    if item.get("sz") is not None:
-                        sz = toarr(item["sz"], "point")
-                        w = min(sz[0] * render_cell_size, ws)
-                        h = min(sz[1] * render_cell_size, hs // len(item["repeatL"]))
-
-                    bpix = img.get_at([0, 0]).r == 0
-                    img = img.subsurface([0, 1 if bpix else 0, min(w * (item["vars"] if item.get("vars") is not None else 1), ws), min(h * len(item["repeatL"]), hs - (1 if bpix else 0))]) # this would be so much cleaner if random props weren't missing the black pixel
-                    ws, hs = img.get_size()
-
-                    cons = 0.4
-                    wh = pg.Color("#ffffff")
-                    gr = pg.Color("#dddddd")
-                    bl = pg.Color("#000000")
-
-                    vars = 1
+            try:
+                ws, hs = img.get_size()
+                if item.get("pxlSize") is not None:
+                    w, h = toarr(item["pxlSize"], "point")
+                else:
+                    w, h = ws, hs
                     if item.get("vars") is not None:
-                        vars = item["vars"]
+                        w = round(ws / item["vars"])
+                    if item.get("repeatL") is not None:
+                        h = math.floor((hs / len(item["repeatL"])))
+                        if item.get("sz") is not None:
+                            sz = toarr(item["sz"], "point")
+                            w = min(sz[0] * render_cell_size, ws)
+                            h = min(sz[1] * render_cell_size, hs // len(item["repeatL"]))
 
-                    for varindx in range(vars):
-                        curcol = gr
+                        bpix = img.get_at([0, 0]).r == 0
+                        img = img.subsurface([0, 1 if bpix else 0, min(w * (item["vars"] if item.get("vars") is not None else 1), ws), min(h * len(item["repeatL"]), hs - (1 if bpix else 0))]) # this would be so much cleaner if random props weren't missing the black pixel
+                        ws, hs = img.get_size()
 
-                        for iindex in range(len(item["repeatL"])):
-                            # print(img, item["nm"], varindx * w, hs - h, w, h)
-                            curcol = curcol.lerp(bl, cons) # curse you MSC prop makers
-                            h2 = min(hs, (len(item["repeatL"]) - 1 - iindex) * h + h) - (len(item["repeatL"]) - 1 - iindex) * h
-                            ss = img.subsurface(varindx * w, (len(item["repeatL"]) - 1 - iindex) * h, w, h2).copy()
-                            if item["colorTreatment"] == "standard":
-                                ss = ss.convert(pg.Surface([preview_cell_size, preview_cell_size]))
-                                depthTintWhite = min((len(item["repeatL"]) - 1 - iindex) * min(25, 255 // len(item["repeatL"])), 254)
-                                ss.fill(pg.Color(depthTintWhite, depthTintWhite, depthTintWhite), special_flags=pg.BLEND_RGB_ADD)
-                            if item["colorTreatment"] == "bevel":
-                                pxl = pg.PixelArray(ss)
-                                pxl.replace(bl, curcol)
-                                ss = pxl.make_surface()
-                            ss.set_colorkey(wh)
-                            img.blit(ss, [0, hs - h])
+                        cons = 0.4
+                        wh = pg.Color("#ffffff")
+                        gr = pg.Color("#dddddd")
+                        bl = pg.Color("#000000")
 
-            if item.get("vars") is not None:
-                for iindex in range(item["vars"]):
-                    images.append(img.subsurface(iindex * w, 0, w, h))
-            else:
-                images.append(img.subsurface(0, hs - h, w, h))
+                        vars = 1
+                        if item.get("vars") is not None:
+                            vars = item["vars"]
 
-            newitem = solved[cat][indx + 1]
-            newitem["images"] = images
-            newitem["color"] = list(colr)
-            solved_copy[cat].append(newitem)
+                        for varindx in range(vars):
+                            curcol = gr
+
+                            for iindex in range(len(item["repeatL"])):
+                                # print(img, item["nm"], varindx * w, hs - h, w, h)
+                                curcol = curcol.lerp(bl, cons) # curse you MSC prop makers
+                                h2 = min(hs, (len(item["repeatL"]) - 1 - iindex) * h + h) - (len(item["repeatL"]) - 1 - iindex) * h
+                                ss = img.subsurface(varindx * w, (len(item["repeatL"]) - 1 - iindex) * h, w, h2).copy()
+                                if item["colorTreatment"] == "standard":
+                                    ss = ss.convert(pg.Surface([preview_cell_size, preview_cell_size]))
+                                    depthTintWhite = min((len(item["repeatL"]) - 1 - iindex) * min(25, 255 // len(item["repeatL"])), 254)
+                                    ss.fill(pg.Color(depthTintWhite, depthTintWhite, depthTintWhite), special_flags=pg.BLEND_RGB_ADD)
+                                if item["colorTreatment"] == "bevel":
+                                    pxl = pg.PixelArray(ss)
+                                    pxl.replace(bl, curcol)
+                                    ss = pxl.make_surface()
+                                ss.set_colorkey(wh)
+                                img.blit(ss, [0, hs - h])
+
+                if item.get("vars") is not None:
+                    for iindex in range(item["vars"]):
+                        images.append(img.subsurface(iindex * w, 0, w, h))
+                else:
+                    images.append(img.subsurface(0, hs - h, w, h))
+
+                newitem = solved[cat][indx + 1]
+                newitem["images"] = images
+                newitem["color"] = list(colr)
+                solved_copy[cat].append(newitem)
+            except Exception:
+                log_to_load_log(f"Failed to load \"{item['nm']}\" for unknown reason! Skipping!", True)
+
         if not solved_copy[cat]:
             log_to_load_log("Category \"" + cat + "\" was empty and will not be loaded!")
             solved_copy.pop(cat)
