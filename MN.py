@@ -20,6 +20,7 @@ class MN(MenuWithField):
         self.tips.remove("\n")
         self.nexttip()
         self.resize()
+        self.rfa()
 
     def blit(self):
         super().blit()
