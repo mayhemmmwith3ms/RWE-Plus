@@ -31,6 +31,8 @@ class LE(MenuWithField):
         self.mode = True
         self.tileimage = None
         self.tileimage2 = None
+        self.preview = None
+        self.preview2 = None
 
         self.mouse_pivot_anchor = None
         self.last_cur_pos = None
@@ -38,6 +40,7 @@ class LE(MenuWithField):
         self.pressed = [False] * 4
 
         self.images = {True: [], False: []}
+        self.previewimages = {True: [], False: []}
 
         if renderer.color_geo:
             renderer.color_geo = False
@@ -47,6 +50,22 @@ class LE(MenuWithField):
             img = loadimage(path2cast + i)
             img.set_colorkey(white)
             self.images[True].append(img)
+
+            img = loadimage(path2cast + i)
+            arr = pg.pixelarray.PixelArray(img)
+            arr.replace(black, pg.Color(180, 180, 255))
+            img = arr.make_surface()
+            img.set_colorkey(white)
+            img.set_alpha(150)
+            self.previewimages[False].append(img)
+
+            img = loadimage(path2cast + i)
+            arr = pg.pixelarray.PixelArray(img)
+            arr.replace(black, pg.Color(0, 0, 120))
+            img = arr.make_surface()
+            img.set_colorkey(white)
+            img.set_alpha(150)
+            self.previewimages[True].append(img)
 
             img = loadimage(path2cast + i)
             arr = pg.pixelarray.PixelArray(img)
@@ -79,10 +98,11 @@ class LE(MenuWithField):
         if not pg.key.get_pressed()[pg.K_LSHIFT]:
             self.field3.field.set_alpha(60)
             self.field.field.blit(self.field3.field, fieldpos2)
-            self.field3.field.set_alpha(150)
+            self.field3.field.set_alpha(200)
         self.field.blit(False)
         super().blit(False)
         mouspos = pg.mouse.get_pos()
+
         if self.onfield:
             #  pos2 = [pos[0] * self.size + self.field.rect.x, pos[1] * self.size + self.field.rect.y]
             mouspos_onfield = [mouspos[0] - self.field.rect.x - fieldpos[0], mouspos[1] - self.field.rect.y - fieldpos[1]]
@@ -123,7 +143,7 @@ class LE(MenuWithField):
             elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
                 self.last_rmb = True
 
-            self.surface.blit(self.tileimage, held_draw_pos)
+            self.surface.blit(self.preview, held_draw_pos)
 
             pg.draw.rect(self.field2.field, black, [0, 0, 1, 1])
             pg.draw.rect(self.field2.field, black, [self.field2.field.get_width() - 1, self.field2.field.get_height() - 1, 1, 1])
@@ -143,6 +163,12 @@ class LE(MenuWithField):
                 self.save()
                 self.renderfield()
             self.movemiddle(bp)
+
+        lapreviewpos = self.field.rect.bottomright - pg.Vector2(240, 160)
+
+        pg.draw.circle(self.surface, red, lapreviewpos, 6 * 5, 1)
+        pg.draw.circle(self.surface, red, lapreviewpos, 6 * self.data[self.menu]["flatness"], 1)
+        pg.draw.circle(self.surface, red, lapreviewpos + pg.Vector2(0, (6 * self.data[self.menu]["flatness"]) - 1).rotate(self.data[self.menu]["lightAngle"]), 6)
 
     def if_set(self, pressed, indx):
         if pressed and not self.pressed[indx]:
@@ -217,6 +243,7 @@ class LE(MenuWithField):
 
     def retile(self):
         self.tileimage2 = self.images[self.mode][self.selectedimage].copy()
+        self.preview2 = self.previewimages[self.mode][self.selectedimage].copy()
         self.setwh()
         self.updateTile()
 
@@ -246,13 +273,16 @@ class LE(MenuWithField):
 
     def rotate(self):
         self.tileimage = pg.transform.rotate(self.tileimage2, self.direction)
+        self.preview = pg.transform.rotate(self.preview2, self.direction)
 
     def setwh(self):
         rect = [abs(self.imagerect[0]), abs(self.imagerect[1])]
         self.tileimage2 = pg.transform.scale(self.tileimage2, rect)
+        self.preview2 = pg.transform.scale(self.preview2, rect)
 
     def updateTile(self):
         self.tileimage = self.tileimage2.copy()
+        self.preview = self.preview2.copy()
         self.rotate()
 
     def inverse(self):
