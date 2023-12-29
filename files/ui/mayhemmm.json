@@ -55,14 +55,15 @@
 	{
 		"buttons": 
 		[
-			["Open", [0, 0, 50, 25], [100, 100, 100], "open", "non", "Open project(<[open]>)"],
-			["Open Recent", [0, 25, 50, 25], [100, 100, 100], "recent", "non", "Open the most recently opened level"],
-			["New", [0, 50, 50, 50], [100, 100, 100], "new", "non", "New project(<[new]>)"],
-			["Report", [50, 50, 50, 50], [70, 70, 70], "report", "non", "Report a bug"],
-			["Github", [50, 0, 50, 50], [70, 70, 70], "github", "non", "Go to RWE+ github"]
+			["Open", [14, 2, 10, 5], [100, 100, 100], "open", "non", "Open project(<[open]>)"],
+			["New", [2, 2, 10, 5], [100, 100, 100], "new", "non", "New project(<[new]>)"],
+			["Report", [88, 2, 10, 5], [190, 38, 38], "report", "non", "Report a bug"],
+			["Github", [76, 2, 10, 5], [90, 90, 90], "github", "non", "Go to RWE+ github"]
 		],
 		"labels": [
-		]
+		],
+
+		"recentpos": [5, 20, 40, 5]
 	},
 	"MN":
 	{

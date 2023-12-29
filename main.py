@@ -167,8 +167,7 @@ def launchload(level):
         if not os.path.exists(level):
             level = splitfilepath[0] + ".txt"
 
-    with open(path + "recent.txt", "w") as recent:
-        recent.write(str(level))
+    add_to_recent(level)
 
     try:
         if level == -1:
@@ -385,9 +384,9 @@ def loadmenu():
                 surf = load(window, renderer)
             case "recent":
                 file = None
-                if(os.path.exists(path + "recent.txt")):
-                    with open(path + "recent.txt") as recent_level:
-                        file = recent_level.read()
+                print(surf.msgdata)
+                if surf.msgdata is not None:
+                    file = surf.msgdata
                     
                 if file is not None and os.path.exists(file):
                     launch(file)

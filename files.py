@@ -223,6 +223,15 @@ def rect2ellipse(rect: pg.Rect, hollow, callback):
 def map(x, in_min, in_max, out_min, out_max):
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
+def add_to_recent(filename):
+    if filename not in [None, "", "\n"]:
+        with open(path + "recent.txt", "r+") as recent:
+            content = [x.replace("\n", "") for i, x in enumerate(recent.readlines()) if i < 8]
+            if filename in content:
+                content.remove(filename)
+            recent.seek(0, 0)
+            recent.write(f"{str(filename)}\n")
+            recent.write("\n".join(content))
 
 def report():
     webbrowser.open("https://github.com/methylredd/RWE-Plus/issues/new/choose")

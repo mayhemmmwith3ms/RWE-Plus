@@ -44,6 +44,7 @@ class Menu:
         self.justChangedZoom = False
         self.size = preview_cell_size
         self.message = ""
+        self.msgdata = None
         self.buttons: list[widgets.button] = []
         self.labels: list[widgets.lable] = []
 
@@ -109,8 +110,8 @@ class Menu:
                 self.data["path"] = savedest
                 self.data["dir"] = os.path.abspath(savedest)
 
-                with open(path + "recent.txt", "w") as recent:
-                    recent.write(str(savedest))
+                add_to_recent(savedest)
+        
         print("Level saved!")
         self.recaption()
 

@@ -2,13 +2,27 @@ from menuclass import *
 
 class load(Menu):
     def __init__(self, surface: pg.surface.Surface, renderer):
+        self.recentbuttons = []
         super().__init__(surface, renderer, "LD")
+        self.setup_recent_list()
+        self.resize()
 
     def send(self, message):
         self.message = message
 
     def blit(self):
         super().blit(30)
+        for btn in self.recentbuttons:
+            btn.blitshadow()
+        for btn in self.recentbuttons:
+            btn.blit(sum(pg.display.get_window_size()) // 120)
+        #pg.draw.circle(self.surface, red, [0,0], 64, 1)
+        #print(self.recentbuttons.__len__())
+
+    def resize(self):
+        super().resize()
+        for i in self.recentbuttons:
+            i.resize()
 
     def open(self):
         self.message = "open"
@@ -22,9 +36,21 @@ class load(Menu):
     def github(self):
         github()
 
-    def recent(self):
-        self.message = "recent"
+    def setup_recent_list(self):
+        btnrect = pg.rect.Rect(self.menu_ui_settings["recentpos"])
+        title:widgets.button = widgets.button(self.surface, btnrect, gray, "Recent Projects")
+        self.recentbuttons.append(title)
+        
+        with open(path + "recent.txt") as recent_level:
+            for index, i in enumerate(recent_level.readlines()):
+                i = i.replace("\n", "")
+                btnrect = btnrect.move(0, btnrect.h + 1)
+                btn:widgets.button = widgets.button(self.surface, btnrect, gray, i, onpress=self.pressrecent)
+                self.recentbuttons.append(btn)
 
+    def pressrecent(self, text):
+        self.message = "recent"
+        self.msgdata = text
 
     @property
     def custom_info(self):
