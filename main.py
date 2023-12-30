@@ -21,6 +21,7 @@ file2 = ""
 undobuffer = []
 redobuffer = []
 surf: Menu | MenuWithField = None
+renderer:Renderer = None
 loading = False
 
 def openlevel(level, window):
@@ -220,32 +221,15 @@ def doevents(window):
 
 
 def launch(level):
-    global surf, fullscreen, undobuffer, redobuffer, file, file2, run, loading
+    global surf, fullscreen, undobuffer, redobuffer, file, file2, run, loading, renderer
     loading = True
     # loading image
-    loadi = loadimage(f"{path}load.png")
-    window = pg.display.set_mode(loadi.get_size(), flags=pg.NOFRAME)
-    window.blit(loadi, [0, 0])
-    pg.display.flip()
-    pg.display.update()
-
     loading = True
-
-    with open(application_path + "\\loadLog.txt", "w") as load_log:
-        load_log.write("Start launch load!\n")
-
-    loadtimetic = time.perf_counter()
     
     try:
         launchload(level)
 
-        items = inittolist()
-        propcolors = getcolors()
-        props = getprops(items)
         file2 = jsoncopy(file)
-
-
-        loadtimetoc = time.perf_counter()
 
         width = ui_settings["global"]["width"]
         height = ui_settings["global"]["height"]
@@ -253,22 +237,17 @@ def launch(level):
         window = pg.display.set_mode([width, height], flags=pg.RESIZABLE | (pg.FULLSCREEN * fullscreen))
         pg.display.set_icon(loadimage(path + "icon.png"))
 
-        try:
-            renderer = Renderer(file, items, props, propcolors)
-            renderer.render_all(0)
-            surf = MN(window, renderer)
-        except Exception:
-            log_to_load_log("Uncaught exception during editor setup! This may be caused by corrupted or invalid level data!", error=True)
-            raise
+        renderer = Renderer(file, renderer.tiles, renderer.props, renderer.propcolors, True)
+
+        surf = MN(window, renderer)
 
         os.system("cls")
-        log_to_load_log(f"Loading completed in {(loadtimetoc - loadtimetic) * 1000:0.6} ms with {errorcount_get()} errors generated")
         if isinstance(level, str):
             log_to_load_log(f"Successfully loaded level \"{os.path.basename(level)}\"!")
         loading = False
     except Exception:
         with open(application_path + "\\crashLog.txt", "w") as crash_log:
-            crash_log.write(f"[ERROR] Uncaught exception during load\n{traceback.format_exc()}")
+            crash_log.write(f"[ERROR] Uncaught exception during level load\n{traceback.format_exc()}")
         log_to_load_log(f"Uncaught exception during load\n{traceback.format_exc()}", error=True)
 
         root = tkinter.Tk()
@@ -276,7 +255,6 @@ def launch(level):
         root.withdraw()
         showerror("OGSCULEDITOR+ Error", "An unhandled exception has occurred during loading\nCheck loadLog.txt for more info", parent=root)
         raise
-    del loadi
     loading = False
     try:
         request = requests.get("https://api.github.com/repos/methylredd/RWE-Plus/releases/latest", timeout=2)
@@ -355,12 +333,11 @@ def launch(level):
 
 
 def loadmenu():
-    global surf
+    global surf, renderer
     run = True
     width = 1280
     height = 720
     window = pg.display.set_mode([width, height], flags=pg.RESIZABLE)
-    renderer = Renderer({"path": ""}, None, None, None, False)
     surf = load(window, renderer)
     pg.display.set_icon(loadimage(path + "icon.png"))
     while run:
@@ -407,6 +384,42 @@ def loadmenu():
     pg.quit()
     exit(0)
 
+def preload():
+    global renderer
+
+    loadtimetic = time.perf_counter()
+
+    with open(application_path + "\\loadLog.txt", "w") as load_log:
+        load_log.write("Start launch load!\n")
+
+    try:
+        loadi = loadimage(f"{path}load.png")
+        window = pg.display.set_mode(loadi.get_size(), flags=pg.NOFRAME)
+        window.blit(loadi, [0, 0])
+        pg.display.flip()
+        pg.display.update()
+
+        renderer = Renderer({"path": ""}, None, None, None, False)
+        items = inittolist()
+        propcolors = getcolors()
+        props = getprops(items)
+        renderer = Renderer(file, items, props, propcolors, False)    
+
+        del loadi
+    except Exception:
+        with open(application_path + "\\crashLog.txt", "w") as crash_log:
+            crash_log.write(f"[ERROR] Uncaught exception during level load\n{traceback.format_exc()}")
+        log_to_load_log(f"Uncaught exception during load\n{traceback.format_exc()}", error=True)
+
+        root = tkinter.Tk()
+        root.wm_attributes("-topmost", 1)
+        root.withdraw()
+        showerror("OGSCULEDITOR+ Error", "An unhandled exception has occurred during loading\nCheck loadLog.txt for more info", parent=root)
+        raise
+
+    loadtimetoc = time.perf_counter()   
+    log_to_load_log(f"Init loading completed in {(loadtimetoc - loadtimetic) * 1000:0.6} ms with {errorcount_get()} errors generated")
+    ...
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="RWE+ console", description="Maybe a better, than official LE.")
@@ -442,4 +455,5 @@ if __name__ == "__main__":
                 surf.savef()
             raise
     else:
+        preload()
         loadmenu()
