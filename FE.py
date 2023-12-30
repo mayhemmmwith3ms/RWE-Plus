@@ -34,7 +34,7 @@ class FE(MenuWithField):
 
         if renderer.color_geo:
             renderer.color_geo = False
-            self.rerenderActiveEditors(renderer.lastlayer)
+        self.rerenderActiveEditors(renderer.lastlayer)
 
         self.makeparams()
         self.rfa()

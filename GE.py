@@ -36,7 +36,7 @@ class GE(MenuWithField):
 
         if not renderer.color_geo:
             renderer.color_geo = True
-            self.rerenderActiveEditors(renderer.lastlayer)
+        self.rerenderActiveEditors(renderer.lastlayer)
 
         self.emptyarea()
         self.air()

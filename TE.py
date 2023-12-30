@@ -76,7 +76,7 @@ class TE(MenuWithField):
 
         if renderer.color_geo:
             renderer.color_geo = False
-            self.rerenderActiveEditors(renderer.lastlayer)
+        self.rerenderActiveEditors(renderer.lastlayer)
 
         self.rfa()
         self.rebuttons()

@@ -42,7 +42,7 @@ class LP(MenuWithField):
 
         if renderer.color_geo:
             renderer.color_geo = False
-            self.rerenderActiveEditors(renderer.lastlayer)
+        self.rerenderActiveEditors(renderer.lastlayer)
 
         self.gw = self.levelwidth
         self.gh = self.levelheight

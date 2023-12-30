@@ -12,7 +12,7 @@ class MN(MenuWithField):
 
         if renderer.color_geo:
             renderer.color_geo = False
-            self.rerenderActiveEditors(renderer.lastlayer)
+        self.rerenderActiveEditors(renderer.lastlayer)
 
         tips = set(open(path + "tips.txt", "r").readlines())
         self.tips = list(tips)

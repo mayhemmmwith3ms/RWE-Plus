@@ -879,6 +879,7 @@ class MenuWithField(Menu):
 
     def toggleprops(self):
         self.drawprops = not self.drawprops
+        self.renderer.props_full_render(self.renderer.lastlayer)
         self.rfa()
 
     def togglegrid(self):

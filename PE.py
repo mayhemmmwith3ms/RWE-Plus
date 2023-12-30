@@ -90,7 +90,7 @@ class PE(MenuWithField):
 
         if renderer.color_geo:
             renderer.color_geo = False
-            self.rerenderActiveEditors(renderer.lastlayer)
+        self.rerenderActiveEditors(renderer.lastlayer)
         renderer.props_full_render(renderer.lastlayer)
 
         self.rfa()

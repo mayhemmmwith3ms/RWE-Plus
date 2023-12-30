@@ -44,7 +44,7 @@ class LE(MenuWithField):
 
         if renderer.color_geo:
             renderer.color_geo = False
-            self.rerenderActiveEditors(renderer.lastlayer)
+        self.rerenderActiveEditors(renderer.lastlayer)
 
         for i in graphics["shadowimages"]:
             img = loadimage(path2cast + i)
