@@ -81,6 +81,7 @@ def keypress(window):
             print("New")
             surf.savef()
             run = False
+            loadmenu()
         case "open":
             openlevel(surf.open_file_dialog(), window)
 
