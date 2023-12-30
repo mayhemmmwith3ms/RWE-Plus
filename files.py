@@ -224,12 +224,13 @@ def map(x, in_min, in_max, out_min, out_max):
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
 def add_to_recent(filename):
-    if filename not in [None, "", "\n"]:
+    if filename not in [None, "", "\n", -1]:
         with open(path + "recent.txt", "r+") as recent:
-            content = [x.replace("\n", "") for i, x in enumerate(recent.readlines()) if i < 8]
+            content = [x.replace("\n", "") for i, x in enumerate(recent.readlines()[:8])]
             if filename in content:
                 content.remove(filename)
-            recent.seek(0, 0)
+                
+        with open(path + "recent.txt", "w") as recent:
             recent.write(f"{str(filename)}\n")
             recent.write("\n".join(content))
 
