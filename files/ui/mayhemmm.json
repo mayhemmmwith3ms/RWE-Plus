@@ -303,9 +303,9 @@
 			["Paste", [1, 14, 4, 4], [100, 100, 100], "pastedata", "non", "Paste camera(<[-pastedata]>)", ["geometry.png", [3, 6]]],
 			["Edit", [1, 19, 4, 4], [100, 100, 100], "edit", "non", "Enable edit mode(<[-edit]>)"],
 			["Move", [1, 23, 4, 4], [100, 100, 100], "move", "non", "Enable move mode(<[-move]>)"],
-			["Mode", [1, 23, 4, 4], [100, 100, 100], "togglemode", "non", "toggle between move and edit modes(<[-togglemode]>)"],
-			["^", [1, 27, 4, 4], [100, 100, 100], "camup", "non", "Moves selected camera up(<[-camup]>)", ["arrows.png", [1, 0]]],
-			["V", [1, 31, 4, 4], [100, 100, 100], "camdown", "non", "Moves selected camera down(<[-camdown]>)", ["arrows.png", [2, 0]]],
+			["Mode", [1, 27, 4, 4], [100, 100, 100], "togglemode", "non", "toggle between move and edit modes(<[-togglemode]>)"],
+			["^", [1, 31, 4, 4], [100, 100, 100], "camup", "non", "Moves selected camera up(<[-camup]>)", ["arrows.png", [1, 0]]],
+			["V", [1, 35, 4, 4], [100, 100, 100], "camdown", "non", "Moves selected camera down(<[-camdown]>)", ["arrows.png", [2, 0]]],
 			["?", [98, 0, 2, 2], [90, 90, 90], "watch_keys", "non", "Hotkeys", ["editors.png", [6, 1]]]
 			
 		],

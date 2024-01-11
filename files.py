@@ -61,7 +61,7 @@ tooltiles = loadimage(path + graphics["tooltiles"])
 toolmenu = loadimage(path + graphics["toolmenu"])
 
 
-tag = "2.11.0"
+tag = "2.11.1"
 
 ofstop = 15
 ofsleft = 15
@@ -229,7 +229,7 @@ def add_to_recent(filename):
             content = [x.replace("\n", "") for i, x in enumerate(recent.readlines()[:8])]
             if filename in content:
                 content.remove(filename)
-                
+
         with open(path + "recent.txt", "w") as recent:
             recent.write(f"{str(filename)}\n")
             recent.write("\n".join(content))

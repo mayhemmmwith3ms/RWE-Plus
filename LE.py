@@ -218,7 +218,7 @@ class LE(MenuWithField):
         self.field3.field = pg.transform.scale(self.field2.field,
                                                [(self.levelwidth + ofsleft) * self.size,
                                                 (self.levelheight + ofstop) * self.size])
-        self.field3.field.set_alpha(150)
+        self.field3.field.set_alpha(200)
         self.field3.field.set_colorkey(white)
 
     def renderfield(self):
