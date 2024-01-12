@@ -24,7 +24,7 @@
 		"RainStone": [0, 0, 255],
 		"Bricks": [206, 148, 99],
 		"BigMetal": [255, 0, 0],
-		"Tiny Signs": [14, 14, 14],
+		"Tiny Signs": [206, 148, 180],
 		"Scaffolding": [57, 57, 41],
 		"Dense Pipes": [8, 8, 255],
 		"SuperStructure": [165, 181, 255],
