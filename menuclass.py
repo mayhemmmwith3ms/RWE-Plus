@@ -4,6 +4,7 @@ import widgets
 import pyperclip  # noqa: F401
 from render import *
 import tkinter
+from tkinter.messagebox import askyesno
 from tkinter.filedialog import askopenfilename, asksaveasfilename  # noqa: F401
 import concurrent.futures
 import time
@@ -93,27 +94,67 @@ class Menu:
         pg.display.set_caption(f"OGSCULEDITOR+: {self.menu} | v{tag} | {self.custom_info}")
 
     def savef(self, saveas=False):
-        if self.data["path"] != "" and not saveas:
-            open(os.path.splitext(self.data["path"])[0] + ".wep", "w").write(json.dumps(self.data))
-            self.data["path"] = os.path.splitext(self.data["path"])[0] + ".wep"
-            print(os.path.splitext(self.data["path"])[0] + ".wep")
+        if self.data["path"] and not saveas:
+            save_to_path = os.path.splitext(self.data["path"])[0] + ".txt"
+
+            if os.path.splitext(self.data["path"])[1] == ".wep":
+                root = tkinter.Tk()
+                root.wm_attributes("-topmost", 1)
+                root.withdraw()
+                c = askyesno("Legacy Project Warning", "Saving to .wep files has been removed to reduce file clutter\nThis action will override any data in this level's corresponding .txt file (or will create one if it does not already exist) with the currently loaded level, and will automatically switch the editor to the aforementioned .txt file. The data in the .wep file will not be lost.\n\nDo you still want to continue?")
+
+                if not c:
+                    return
+                
+                add_to_recent(save_to_path)
+                remove_wep_from_recent(save_to_path)
+
+            with open(save_to_path, "w") as save_to:
+                turntolingo(self.data, save_to)
+
+            self.data["path"] = save_to_path
+            print(f"Saved level \"{save_to_path}\"")
         else:
-            savedest = self.save_file_dialog(filetype=[("RWE+ Project", ".wep"), ("All Files", "*")])
-            if savedest != "" and savedest is not None:
-                open(savedest, "w").write(json.dumps(self.data))
+            save_to_path = self.save_file_dialog(filetype=[("Official Editor Project", ".txt"), ("All Files", "*")])
+
+            if save_to_path:
+                with open(save_to_path, "w") as save_to:
+                    turntolingo(self.data, save_to)
                 
                 if os.path.exists(os.path.splitext(self.data["path"])[0] + ".png"):
                     lmap = pg.image.load(os.path.splitext(self.data["path"])[0] + ".png") # copy the lightmap image when saving as 
-                    pg.image.save(lmap, os.path.splitext(savedest)[0] + ".png")
-                    
-                self.data["level"] = os.path.basename(savedest)
-                self.data["path"] = savedest
-                self.data["dir"] = os.path.abspath(savedest)
+                    pg.image.save(lmap, os.path.splitext(save_to_path)[0] + ".png")
 
-                add_to_recent(savedest)
+                self.data["level"] = os.path.basename(save_to_path)
+                self.data["path"] = save_to_path
+                self.data["dir"] = os.path.abspath(save_to_path)
+
+                add_to_recent(save_to_path)
         
-        print("Level saved!")
         self.recaption()
+
+    #def savef(self, saveas=False):
+    #    if self.data["path"] != "" and not saveas:
+    #        open(os.path.splitext(self.data["path"])[0] + ".wep", "w").write(json.dumps(self.data))
+    #        self.data["path"] = os.path.splitext(self.data["path"])[0] + ".wep"
+    #        print(os.path.splitext(self.data["path"])[0] + ".wep")
+    #    else:
+    #        savedest = self.save_file_dialog(filetype=[("RWE+ Project", ".wep"), ("All Files", "*")])
+    #        if savedest != "" and savedest is not None:
+    #            open(savedest, "w").write(json.dumps(self.data))
+
+    #            if os.path.exists(os.path.splitext(self.data["path"])[0] + ".png"):
+    #                lmap = pg.image.load(os.path.splitext(self.data["path"])[0] + ".png") # copy the lightmap image when saving as 
+    #                pg.image.save(lmap, os.path.splitext(savedest)[0] + ".png")
+    #                
+    #            self.data["level"] = os.path.basename(savedest)
+    #            self.data["path"] = savedest
+    #            self.data["dir"] = os.path.abspath(savedest)
+                
+    #            add_to_recent(savedest)
+
+    #    print("Level saved!")
+    #    self.recaption()
 
     def addfolder(self, folder):
         global filepath
@@ -344,11 +385,6 @@ class Menu:
         widgets.keybol = True
         return inputfile.replace("\n", "")
 
-    def savef_txt(self):
-        savedest = self.save_file_dialog(extension=[".txt"], filetype=[("Official Editor Project", ".txt"), ("All Files", "*")])
-        if savedest != "":
-            turntolingo(self.data, open(savedest, "w"))
-
     def blit(self, fontsize=None):
         if not self.touchesanything:
             self.setcursor()
@@ -539,7 +575,7 @@ class Menu:
             level = asksaveasfilename(defaultextension=extension, filetypes=filetype, parent=root)
         return level
     
-    def open_file_dialog(self, extension=[".txt", ".wep"], filetype=[("RWE+ Project", ".wep"), ("Official Editor Project", ".txt"), ("All Files", "*")]):
+    def open_file_dialog(self, extension=[".txt", ".wep"], filetype=[("Official Editor Project", ".txt"), ("Legacy RWE+ Project", ".wep"), ("All Files", "*")]):
         if not settings["native_file_browser"]:
             level = self.asksaveasfilename(defaultextension=extension)
         else:

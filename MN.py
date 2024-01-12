@@ -61,9 +61,6 @@ class MN(MenuWithField):
     def save(self):
         self.savef()
 
-    def saveastxt(self):
-        self.savef_txt()
-
     def saveas(self):
         self.saveasf()
 

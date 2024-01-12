@@ -234,6 +234,18 @@ def add_to_recent(filename):
             recent.write(f"{str(filename)}\n")
             recent.write("\n".join(content))
 
+def remove_wep_from_recent(filename):
+    if filename not in [None, "", "\n", -1]:
+        with open(path + "recent.txt", "r+") as recent:
+            content = [x.replace("\n", "") for i, x in enumerate(recent.readlines()[:8])]
+            wep_filename = os.path.splitext(filename)[0] + ".wep"
+            if wep_filename in content:
+                content.remove(wep_filename)
+
+        with open(path + "recent.txt", "w") as recent:
+            recent.write("\n".join(content))
+    ...
+
 def report():
     webbrowser.open("https://github.com/methylredd/RWE-Plus/issues/new/choose")
 

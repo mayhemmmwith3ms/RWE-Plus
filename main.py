@@ -294,9 +294,6 @@ def launch(level):
                     case "saveas":
                         surf.saveasf()
                         file2 = jsoncopy(file)
-                    case "savetxt":
-                        surf.savef_txt()
-                        file2 = jsoncopy(file)
                     case _:
                         if surf.message in menulist:
                             surf = getattr(sys.modules[__name__], surf.message)(window, renderer)
