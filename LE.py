@@ -1,4 +1,5 @@
 from menuclass import *
+from tkinter.messagebox import askyesno
 
 class LE(MenuWithField):
 
@@ -227,16 +228,27 @@ class LE(MenuWithField):
 
     def save(self):
         if self.data["path"] == "":
-            level = self.save_file_dialog()
-            try:
-                self.data["level"] = os.path.basename(level)
-                self.data["path"] = level
-                self.data["dir"] = os.path.abspath(level)
-                self.message = "save"
-                lev = os.path.splitext(self.data["path"])[0] + ".png"
-                pg.image.save(self.field2.field, lev)
-            except TypeError:
+            root = tkinter.Tk()
+            root.wm_attributes("-topmost", 1)
+            root.withdraw()
+            c = askyesno("Light Editor", "The level must be saved before editing the lightmap.\n\nWould you like to save the level now?")
+
+            if not c:
                 self.message = "MN"
+                return
+            
+            level = self.save_file_dialog()
+
+            if not level:
+                self.message = "MN"
+                return
+
+            self.data["level"] = os.path.basename(level)
+            self.data["path"] = level
+            self.data["dir"] = os.path.abspath(level)
+            self.message = "save"
+            lev = os.path.splitext(self.data["path"])[0] + ".png"
+            pg.image.save(self.field2.field, lev)
         else:
             lev = os.path.splitext(self.data["path"])[0] + ".png"
             pg.image.save(self.field2.field, lev)
