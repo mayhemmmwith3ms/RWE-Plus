@@ -170,7 +170,7 @@
 			["Tile: ", [0, 79], [255, 255, 255], 30],
 			["X: 0, Y: 0", [0, 97], [255, 255, 255], 25],
 			["Replace air: ", [0, 94], [255, 255, 255], 25],
-			["LMB - Place\nMMB - Move", [18, 2], [255, 255, 255], 25]
+			["LMB - Place\nMMB - Move\nSHIFT - Hold + LMB - alternate tool", [18, 2], [255, 255, 255], 25]
 		],
 		"names": {
 			"0": "Air",
@@ -220,7 +220,7 @@
 			["Tile: ", [2, 90], [255, 255, 255], 25],
 			["X: 0, Y: 0", [2, 93], [255, 255, 255], 25],
 			["Default material: ", [2, 87], [255, 255, 255], 25],
-			["LMB - Place tile\nRMB - Delete tile\nMMB - Move", [2, 20], [255, 255, 255], 25]
+			["LMB - Place tile\nRMB - Delete tile\nMMB - Move\nSHIFT - Hold + LMB - alternate tool", [2, 20], [255, 255, 255], 25]
 		],
 		"itemsize": 2,
 		"menucolor": [120, 120, 120]
