@@ -59,6 +59,11 @@
 				["Layers", ["All", "1", "2", "3", "1:st and 2:nd", "2:nd and 3:rd"], "All"]
 			], "preview":"daddycoruption"}
 		]},
+		{"nm": "Erosion 2", "color": [115, 60, 18], "efs": [
+			{"nm": "Slag", "options": [
+				["Layers", ["All", "1", "2", "3", "1:st and 2:nd", "2:nd and 3:rd"], "All"]
+			]}
+		]},
 		{"nm": "Artificial", "color": [110, 184, 204], "efs": [
 			{"nm": "Wires", "crossScreen": 1, "options": [["Layers", ["All", "1", "2", "3", "1:st and 2:nd", "2:nd and 3:rd"], "All"], ["Fatness", ["1px", "2px", "3px", "random"], "2px"]], "preview":"wires"},
 			{"nm": "Chains", "crossScreen": 1, "options": [["Layers", ["All", "1", "2", "3", "1:st and 2:nd", "2:nd and 3:rd"], "All"], ["Size", ["Small", "FAT"], "Small"]], "preview":"chains"}
