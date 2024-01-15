@@ -159,7 +159,7 @@ def init_solve(files: list[str,]):
                         counter = 0
                         findcategory = False
                     except json.JSONDecodeError:
-                        log_to_load_log(f"Failed to convert init CATEGORY line \"{i}\" (line number: {ln}) in file \"{file}\"! Skipping line and all subsequent tiles!", True)
+                        log_to_load_log(f"Failed to convert init CATEGORY line \"{i}\" (line number: {ln}) in file \"{file}\"! Skipping line and all subsequent items!", True)
                         findcategory = True
                         continue
                 elif not findcategory:
@@ -479,7 +479,7 @@ def getprops(tiles: dict):
                             errorimg = pg.transform.scale(notfound, size)
                             errorimg.set_colorkey(pg.Color(255, 255, 255))
                             returnimage.blit(errorimg, [0, 0])
-                            log_to_load_log(f"Failed to slice graphics of prop \"{item['nm']}\"! This may cause issues when rendering!", True)
+                            log_to_load_log(f"Failed to slice graphics of tile as prop \"{item['nm']}\"! This may be caused by a size mismatch between a tile's init and its image!", True)
                 #returnimage = pg.transform.scale(returnimage, pg.Vector2(returnimage.get_size()) / renderedCellSize * spritesize)
                 returnimage.set_colorkey(pg.Color(255, 255, 255))
                 returnimage = returnimage.convert_alpha(pg.Surface([preview_cell_size, preview_cell_size]))
