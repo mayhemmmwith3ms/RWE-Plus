@@ -65,6 +65,15 @@ renderedimage = pg.transform.scale(tooltiles, [
             (tooltiles.get_width() / graphics["tilesize"][0]) * preview_cell_size,
             (tooltiles.get_height() / graphics["tilesize"][1]) * preview_cell_size])
 
+def gExtra_slice_from_type(type):
+    return [graphics["shows2"][f"{type}"][0] * preview_cell_size, graphics["shows2"][f"{type}"][1] * preview_cell_size]
+
+def gCell_slice_from_type(type):
+    return [graphics["shows"][f"{type}"][0] * preview_cell_size, graphics["shows"][f"{type}"][1] * preview_cell_size]
+
+def gTool_slice_from_typeandstate(type_and_state):
+    return [graphics["tileplaceicon"][str(type_and_state)][0] * preview_cell_size, graphics["tileplaceicon"][str(type_and_state)][1] * preview_cell_size]
+
 def quadsize(quad):
     mostleft = bignum
     mostright = 0
@@ -249,7 +258,7 @@ class Renderer:
             if self.get_tilehead_of_body(tl) == "stray":
                 self.geosurfaces[2].set_alpha(layer_alpha)
 
-                self.surf_tiles.blit(self.geosurfaces[2], [xp * preview_cell_size, yp * preview_cell_size], [[graphics["shows"]["0"][0] * preview_cell_size, graphics["shows"]["0"][1] * preview_cell_size], [preview_cell_size, preview_cell_size]], special_flags=pg.BLEND_PREMULTIPLIED)
+                self.surf_tiles.blit(self.geosurfaces[2], [xp * preview_cell_size, yp * preview_cell_size], [gCell_slice_from_type(0), [preview_cell_size, preview_cell_size]], special_flags=pg.BLEND_PREMULTIPLIED)
 
                 self.geosurfaces[2].set_alpha(255)
         # self.surf_tiles.fill(pg.Color(0, 0, 0, 0), [posx, posy, image1size, image1size])
@@ -354,14 +363,13 @@ class Renderer:
             if cell == 7 and 4 not in over:
                 self.data["GE"][xp][yp][i][0] = 0
                 cell = self.data["GE"][xp][yp][i][0]
-            curtool = [graphics["shows"][str(cell)][0] * preview_cell_size,
-                       graphics["shows"][str(cell)][1] * preview_cell_size]
+            curtool = gCell_slice_from_type(cell)
             
             if(cell not in [0, 7] and not (cell == 1 and 11 in over)):
                 pixel.blit(convrender, [0, 0], [curtool, cellsize2])
 
             if cell in [7]:
-                pixel.blit(convrender, [0, 0], [[graphics["shows2"]["SEMITR"][0] * preview_cell_size, graphics["shows2"]["SEMITR"][1] * preview_cell_size], cellsize2])
+                pixel.blit(convrender, [0, 0], [gExtra_slice_from_type("SEMITR"), cellsize2])
 
             if 4 in over and self.data["GE"][xp][yp][i][0] != 7:
                 self.data["GE"][xp][yp][i][1].remove(4)
@@ -371,12 +379,10 @@ class Renderer:
             for addsindx, adds in enumerate(over):
                 invalid = False
                 try:
-                    curtool = [graphics["shows2"][str(adds)][0] * preview_cell_size,
-                            graphics["shows2"][str(adds)][1] * preview_cell_size]
+                    curtool = gExtra_slice_from_type(adds)
                 except KeyError:
                     invalid = True
-                    curtool = [graphics["shows2"]["SEMITR"][0] * preview_cell_size,
-                                 graphics["shows2"]["SEMITR"][1] * preview_cell_size]
+                    curtool = gExtra_slice_from_type("SEMITR")
                 bufftiles = self.data["EX2"]["extraTiles"]
                 bufftiles = pg.Rect(bufftiles[0], bufftiles[1],
                                     self.levelwidth - bufftiles[0] - bufftiles[2],
@@ -445,7 +451,7 @@ class Renderer:
                                 curtool = [pos[0] * preview_cell_size, pos[1] * preview_cell_size]
                 if adds in [1, 2, 3, 11]:
                     if(adds == 11 and cell in [2, 3, 4, 5]):
-                        pixel.blit(convrender, [0, 0], [[graphics["shows2"]["10"][0] * preview_cell_size, graphics["shows2"]["10"][1] * preview_cell_size], cellsize2])
+                        pixel.blit(convrender, [0, 0], gExtra_slice_from_type("SEMITR"))
                     else:
                         pixel.blit(convrender, [0, 0], [curtool, cellsize2])
                 else:
@@ -562,7 +568,7 @@ class Renderer:
             else:
                 pg.draw.line(self.grid_surface, col2, [0, y], [w, y])
         self.grid_surface.set_alpha(30)
-
+    
     def get_tilehead_of_body(self, part):
         if part["tp"] in ["default", "material"]:
             return None

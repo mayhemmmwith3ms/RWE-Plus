@@ -274,15 +274,13 @@ class GE(MenuWithField):
                 if self.selectedtool in graphics["codes"].keys():
                     if isinstance(self.placetile, int):
                         if graphics["codes"][self.selectedtool] == 1:
-                            curtool = [graphics["tileplaceicon"][str(self.placetile + self.state)][0] * self.size,
-                                    graphics["tileplaceicon"][str(self.placetile + self.state)][1] * self.size]
+                            curtool = self.get_tool_preview_slice(self.placetile + self.state)
                             #print(self.placetile + self.state)
                         else:
-                            curtool = [graphics["tileplaceicon"][str(self.placetile - self.state)][0] * self.size,
-                                    graphics["tileplaceicon"][str(self.placetile - self.state)][1] * self.size]
+                            curtool = self.get_tool_preview_slice(self.placetile - self.state)
                         # print([abs(self.field.rect.x - pos2[0]), abs(self.field.rect.y - pos2[1])])
                         if self.selectedtool == "SL" and not validSlope:
-                            curtool = [graphics["tileplaceicon"]["UNDEFINEDSLOPE"][0] * self.size, graphics["tileplaceicon"]["UNDEFINEDSLOPE"][1] * self.size]
+                            curtool = self.get_tool_preview_slice("UNDEFINEDSLOPE")
                         self.surface.blit(self.toolsized, pos2, [curtool, cellsize2])
                 rect = [self.xoffset * self.size, self.yoffset * self.size, self.levelwidth * self.size,
                         self.levelheight * self.size]
@@ -299,6 +297,8 @@ class GE(MenuWithField):
             widgets.fastmts(self.surface, wltx, *(mpos + [12, -10]), white, 15)
             if self.bucketTool:
                 widgets.fastmts(self.surface, "FILL MODE ACTIVE", *(mpos + [12, 10]), white, 15)
+            if self.selectedtool == "CP":
+                widgets.fastmts(self.surface, "COPY MODE ACTIVE", *(mpos + [12, -28]), white, 15)
 
             bp = self.getmouse
 
@@ -307,13 +307,7 @@ class GE(MenuWithField):
             
             if try_clipboard:
                 try:
-                    geodata = eval(pyperclip.paste())
-                    if geodata[0] != "GE" or not isinstance(geodata[1], list):
-                        return
-                    pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
-                    rect = pg.Rect([pos, pg.Vector2(len(geodata[1]), len(geodata[1][0])) * self.size])
-
-                    pg.draw.rect(self.surface, blue, rect, 1)
+                    self.draw_clipboard_preview()
                 except Exception:
                     pass
 
@@ -382,6 +376,34 @@ class GE(MenuWithField):
             else:
                 pg.draw.rect(self.surface, mirror, [self.field.rect.x, py, self.field.field.get_width(), 3])
 
+    def draw_clipboard_preview(self):
+        self.start_perftimer()
+        pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
+        geodata = eval(pyperclip.paste())
+        if geodata[0] != "GE" or not isinstance(geodata[1], list):
+            return
+        
+        bluetoolsurf = self.toolsized
+
+        bluetoolsurf.set_alpha(130)
+        bluetoolsurf.fill(pg.Color(254, 254, 254), special_flags=pg.BLEND_RGB_ADD)
+        bluetoolsurf.fill(blue, special_flags=pg.BLEND_RGBA_MULT)
+        
+        for x, xc in enumerate(geodata[1]):
+            for y, yc in enumerate(xc):
+                rect1 = [z * (self.size / preview_cell_size) for z in gCell_slice_from_type(yc[0])]
+                rect2 = [self.size]*2
+                self.surface.blit(bluetoolsurf, pos + [x * self.size, y * self.size], [rect1, rect2])
+
+        for x, xc in enumerate(geodata[1]):
+            for y, yc in enumerate(xc):
+                for st in yc[1]:
+                    rect1 = [z * (self.size / preview_cell_size) for z in gExtra_slice_from_type(st)]
+                    rect2 = [self.size]*2
+                    self.surface.blit(bluetoolsurf, pos + [x * self.size, y * self.size], [rect1, rect2])
+
+        self.stop_perftimer()
+
     def get_slope_orientation(self, pos: pg.Vector2):
         x = int(pos.x)
         y = int(pos.y)
@@ -424,13 +446,13 @@ class GE(MenuWithField):
             self.place(pos, False)
 
     def drawtile(self, posoffset, toolsized):
-        cellsize2 = [self.size, self.size]
-        if isinstance(self.placetile, int):
-            curtool = [
-                graphics["tileplaceicon"][str(self.placetile + self.state)][0] * self.size,
-                graphics["tileplaceicon"][str(self.placetile + self.state)][1] * self.size]
+        self.drawtile_from_slice(posoffset, toolsized, self.get_tool_preview_slice(self.placetile - self.state))
+
+    def drawtile_from_slice(self, posoffset, toolsized, slice):
+        csz = [self.size]*2
+        if isinstance(self.placetile, int): 
             rect = [posoffset[0] * self.size, posoffset[1] * self.size]
-            self.fieldadd.blit(toolsized, rect, [curtool, cellsize2])
+            self.fieldadd.blit(toolsized, rect, [slice, csz])
             if self.mirrorp:
                 px = int(posoffset.x)
                 py = int(posoffset.y)
@@ -441,7 +463,7 @@ class GE(MenuWithField):
                 self.area[px][py] = False
                 px *= self.size
                 py *= self.size
-                self.fieldadd.blit(self.toolrender, [px, py], [curtool, cellsize2])
+                self.fieldadd.blit(self.toolrender, [px, py], [slice, csz])
 
     def brushpaint(self, pos: pg.Vector2, toolsized):
         for xp, xd in enumerate(self.data["GE"]):
@@ -759,6 +781,9 @@ class GE(MenuWithField):
         if self.selectedtool == "IN":
             return 0
         return slope
+
+    def get_tool_preview_slice(self, type):
+        return [x * (self.size / preview_cell_size) for x in gTool_slice_from_typeandstate(type)]
 
     def tool_rect(self):
         self.fillshape2 = "rect"
