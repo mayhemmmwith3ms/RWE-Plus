@@ -427,27 +427,19 @@ def getprops(tiles: dict):
     # solved_copy["material"] = []
     # for cat in tiles:
     #     pass
-    count = 0
-    count2 = 0
-    title = ""
-    itemlist = []
     for cat, items in tiles.items():
+        print(items[0]["category"])
         if not items:
             log_to_load_log(f"Category \"{cat}\" was found empty while trying to load tiles into props!", True)
             continue
         #else:
         #    log_to_load_log(f"{cat}: {[j['name'] for _, j in enumerate(items)]}")
-
+        title = ""
+        itemlist = []
         if "material" in items[0]["tags"]:
             continue
+        title = f"{items[0]['category']} + as prop"
         for indx, tile in enumerate(items[0:]):
-            if count <= 0:
-                count = ui_settings["PE"]["elements_as_tiles_count"]
-                if title != "":
-                    solved_copy[title] = itemlist
-                    itemlist = []
-                count2 += 1
-                title = f"tiles as prop {count2}"
             if tile["tp"] == "voxelStruct" and "notProp" not in tile["tags"]:
                 # returnimage = pg.Surface(pg.Vector2(tile["image"].get_width(), tile["image"].get_height()) + pg.Vector2(spritesize, spritesize) * tile["bfTiles"] * 2)
                 # returnimage.fill(pg.Color(255, 255, 255))
@@ -499,8 +491,8 @@ def getprops(tiles: dict):
                     "layerExceptions": [],
                     "notes": ["Tile as prop"]
                 })
-                count -= 1
-    solved_copy[title] = itemlist
+        if itemlist:
+            solved_copy[title] = itemlist
     return solved_copy
 
 
