@@ -95,8 +95,8 @@ class PE(MenuWithField):
 
         self.rfa()
 
-        if "selectedProp" in self.data["persistent"]["PR"]:
-            self.setprop(self.data["persistent"]["PR"]["selectedProp"])
+        if "selectedProp" in self.persistent_data:
+            self.setprop(self.persistent_data["selectedProp"])
 
     def renderfield(self):
         super().renderfield()

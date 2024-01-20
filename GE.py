@@ -37,11 +37,10 @@ class GE(MenuWithField):
         self.air()
 
         if "selectedTool" in self.data["persistent"]["GE"]:
-            self.selectedtool = self.data["persistent"]["GE"]["selectedTool"]
+            self.selectedtool = self.persistent_data["selectedTool"]
 
-        if "bucketTool" in self.data["persistent"]["GE"]:
-            self.bucketTool = self.data["persistent"]["GE"]["bucketTool"]
-        print(self.data["persistent"]["GE"])
+        if "bucketTool" in self.persistent_data:
+            self.bucketTool = self.persistent_data["bucketTool"]
 
         if not renderer.color_geo:
             renderer.color_geo = True

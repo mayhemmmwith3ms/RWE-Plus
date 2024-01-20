@@ -78,8 +78,8 @@ class LE(MenuWithField):
 
             self.images[False].append(img)
 
-        if "selectedImage" in self.data["persistent"]["LE"]:
-            self.selectedimage = self.data["persistent"]["LE"]["selectedImage"]
+        if "selectedImage" in self.persistent_data:
+            self.selectedimage = self.persistent_data["selectedImage"]
 
         self.rs()
         self.retile()

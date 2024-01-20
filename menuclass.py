@@ -1138,6 +1138,13 @@ class MenuWithField(Menu):
         if part["tp"] != "tileBody":
             return None
         return [toarr(part["data"][0], "point"), part["data"][1] - 1]
+    
+    @property
+    def persistent_data(self):
+        if self.menu in self.data["persistent"]:
+            return self.data["persistent"][self.menu]
+        else:
+            return None
 
     @property
     def xoffset(self):

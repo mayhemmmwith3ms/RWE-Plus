@@ -84,8 +84,8 @@ class TE(MenuWithField):
         self.blit()
         self.resize()
 
-        if "selectedTile" in self.data["persistent"]["TE"]:
-            self.set_tile_from_name(self.data["persistent"]["TE"]["selectedTile"])
+        if "selectedTile" in self.persistent_data:
+            self.set_tile_from_name(self.persistent_data["selectedTile"])
 
     def brush(self):
         self.brushsize = 2
