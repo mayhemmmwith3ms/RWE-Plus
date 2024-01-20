@@ -80,10 +80,12 @@ class TE(MenuWithField):
 
         self.rfa()
         self.rebuttons()
-        self.toolindex = self.currentcategory
         self.cats()
         self.blit()
         self.resize()
+
+        if "selectedTile" in self.data["persistent"]["TE"]:
+            self.set_tile_from_name(self.data["persistent"]["TE"]["selectedTile"])
 
     def brush(self):
         self.brushsize = 2
@@ -1086,28 +1088,28 @@ class TE(MenuWithField):
                 pos[0] -= 1
                 pos[1] -= 1
                 tile = self.data["TE"]["tlMatrix"][pos[0]][pos[1]][tile["data"][1] - 1]
+                name = tile["data"][1]
+            case "tileHead":
+                name = tile["data"][1]
 
-        if tile["tp"] == "tileHead":
-            i = 0
-            for catname, items in self.items.items():
-                for item in items:
-                    if item["name"] == tile["data"][1]:
-                        cat = catname
-                        name = tile["data"][1]
-                        self.currentcategory = i
-                        self.rebuttons()
-                        self.set(cat, name)
-                        self.tool = 0
-                        return
-                i += 1
+        if not self.set_tile_from_name(name):
+            print("couldn't find tile")
+    
+    def set_tile_from_name(self, name):              
+        z = self.get_tile_cat_from_name(name)
+        if z is not None:
+            self.currentcategory = z[1]
+            self.rebuttons()
+            self.set(z[0], name)
+            return True
+        return False
+
+    def get_tile_cat_from_name(self, name):
         for catname, items in self.items.items():
             for item in items:
                 if item["name"] == name:
-                    self.currentcategory = list(self.items.keys()).index(item["category"])
-                    self.rebuttons()
-                    self.getmaterial(name)
-                    return
-        print("couldn't find tile")
+                    return [catname, list(self.items.keys()).index(item["category"])]
+        return None
 
     def get_next_path_tile(self, init, path, indx):
         tile = path[indx]
@@ -1167,6 +1169,9 @@ class TE(MenuWithField):
 
     def is_adjacent_cell(self, c1, c2):
         return (c1 - c2) in [[1, 0], [0, 1], [-1, 0], [0, -1]]
+    
+    def on_switch_editor(self):
+        self.data["persistent"]["TE"]["selectedTile"] = self.tileimage["name"]
 
     @property
     def rect_mode(self):

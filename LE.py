@@ -77,6 +77,10 @@ class LE(MenuWithField):
             img.set_colorkey(black)
 
             self.images[False].append(img)
+
+        if "selectedImage" in self.data["persistent"]["LE"]:
+            self.selectedimage = self.data["persistent"]["LE"]["selectedImage"]
+
         self.rs()
         self.retile()
         self.blit()
@@ -356,6 +360,9 @@ class LE(MenuWithField):
     def darkmod(self):
         if not self.mode:
             self.inverse()
+
+    def on_switch_editor(self):
+        self.data["persistent"]["LE"]["selectedImage"] = self.selectedimage
 
     @property
     def speed_mul(self):

@@ -95,6 +95,9 @@ class PE(MenuWithField):
 
         self.rfa()
 
+        if "selectedProp" in self.data["persistent"]["PR"]:
+            self.setprop(self.data["persistent"]["PR"]["selectedProp"])
+
     def renderfield(self):
         super().renderfield()
         self.updateproptransform()
@@ -943,6 +946,9 @@ class PE(MenuWithField):
 
     def stretchx_down(self):
         self.stretch(0, -settings["PE_prop_scale_speed"])
+
+    def on_switch_editor(self):
+        self.data["persistent"]["PR"]["selectedProp"] = self.selectedprop["nm"]
 
     @property
     def custom_info(self):

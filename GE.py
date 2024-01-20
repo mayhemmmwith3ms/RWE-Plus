@@ -34,12 +34,20 @@ class GE(MenuWithField):
         self.drawwater = True
         self.drawgrid = True
 
+        self.air()
+
+        if "selectedTool" in self.data["persistent"]["GE"]:
+            self.selectedtool = self.data["persistent"]["GE"]["selectedTool"]
+
+        if "bucketTool" in self.data["persistent"]["GE"]:
+            self.bucketTool = self.data["persistent"]["GE"]["bucketTool"]
+        print(self.data["persistent"]["GE"])
+
         if not renderer.color_geo:
             renderer.color_geo = True
         self.rerenderActiveEditors(renderer.lastlayer)
 
         self.emptyarea()
-        self.air()
         self.rs()
         self.replacestate()
         self.blit()
@@ -834,6 +842,10 @@ class GE(MenuWithField):
 
     def brushm(self):
         self.brushsize = max(self.brushsize-1, 1)
+
+    def on_switch_editor(self):
+        self.data["persistent"]["GE"]["selectedTool"] = self.selectedtool
+        self.data["persistent"]["GE"]["bucketTool"] = self.bucketTool
 
     @property
     def custom_info(self):

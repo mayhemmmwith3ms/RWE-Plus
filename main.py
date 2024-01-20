@@ -296,6 +296,7 @@ def launch(level):
                         file2 = jsoncopy(file)
                     case _:
                         if surf.message in menulist:
+                            surf.on_switch_editor()
                             surf = getattr(sys.modules[__name__], surf.message)(window, renderer)
                         else:
                             surf.send(surf.message)

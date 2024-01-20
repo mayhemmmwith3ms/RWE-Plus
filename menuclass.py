@@ -585,6 +585,8 @@ class Menu:
             level = askopenfilename(defaultextension=extension, filetypes=filetype, initialdir=os.path.dirname(os.path.abspath(__file__)) + "\LevelEditorProjects", parent=root)
         return level
 
+    def on_switch_editor(self):
+        pass
 
     @property
     def custom_info(self):

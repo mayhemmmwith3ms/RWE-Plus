@@ -18,6 +18,13 @@ notfoundtile = {
     "cat": [1, 1],
     "tags": [""]
 }
+persistentdata = {
+    "GE": {},
+    "TE": {},
+    "LE": {},
+    "FE": {},
+    "PR": {}
+}
 defaultlevel = open(path + "default.txt", "r").readlines()
 load_error_count = 0
 
@@ -106,6 +113,7 @@ def turntoproject(string: str):
     proj["CM"] = tojson(lines[6], defaultlevel[6])  # camera settigs
     proj["WL"] = tojson(lines[7], defaultlevel[7])  # water level
     proj["PR"] = tojson(lines[8], defaultlevel[8])  # props and settingsw
+    proj["persistent"] = persistentdata
     return proj
 
 
