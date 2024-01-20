@@ -5,6 +5,8 @@ from lingotojson import *
 import pygame as pg
 import time
 
+LAYER_COLOR_EXTRA = [1, 2, 3, 11]
+
 colors = ui_settings["global"]["colors"]  # NOQA
 
 color = pg.Color(ui_settings["global"]["color"])
@@ -449,7 +451,7 @@ class Renderer:
                         else:  # if no breaks
                             if tilecounter == 7 and foundwire and foundair and pos != -1:  # if we found the right one
                                 curtool = [pos[0] * preview_cell_size, pos[1] * preview_cell_size]
-                if adds in [1, 2, 3, 11]:
+                if adds in LAYER_COLOR_EXTRA:
                     if(adds == 11 and cell in [2, 3, 4, 5]):
                         pixel.blit(convrender, [0, 0], gExtra_slice_from_type("SEMITR"))
                     else:

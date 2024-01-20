@@ -389,18 +389,28 @@ class GE(MenuWithField):
         bluetoolsurf.fill(pg.Color(254, 254, 254), special_flags=pg.BLEND_RGB_ADD)
         bluetoolsurf.fill(blue, special_flags=pg.BLEND_RGBA_MULT)
         
+        rect2 = [self.size]*2
+
         for x, xc in enumerate(geodata[1]):
             for y, yc in enumerate(xc):
                 rect1 = [z * (self.size / preview_cell_size) for z in gCell_slice_from_type(yc[0])]
-                rect2 = [self.size]*2
                 self.surface.blit(bluetoolsurf, pos + [x * self.size, y * self.size], [rect1, rect2])
+
+                for st in yc[1]:
+                    if st in LAYER_COLOR_EXTRA:
+                        rect1 = [z * (self.size / preview_cell_size) for z in gExtra_slice_from_type(st)]
+                        self.surface.blit(bluetoolsurf, pos + [x * self.size, y * self.size], [rect1, rect2]) 
+
+        bluetoolsurf.fill(pg.Color(254, 254, 254), special_flags=pg.BLEND_RGB_ADD)
+        bluetoolsurf.fill(white, special_flags=pg.BLEND_RGBA_MULT)
 
         for x, xc in enumerate(geodata[1]):
             for y, yc in enumerate(xc):
                 for st in yc[1]:
-                    rect1 = [z * (self.size / preview_cell_size) for z in gExtra_slice_from_type(st)]
-                    rect2 = [self.size]*2
-                    self.surface.blit(bluetoolsurf, pos + [x * self.size, y * self.size], [rect1, rect2])
+                    if st not in LAYER_COLOR_EXTRA:
+                        rect1 = [z * (self.size / preview_cell_size) for z in gExtra_slice_from_type(st)]
+                        rect2 = [self.size]*2
+                        self.surface.blit(bluetoolsurf, pos + [x * self.size, y * self.size], [rect1, rect2])
 
         self.stop_perftimer()
 
