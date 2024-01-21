@@ -242,8 +242,8 @@ class GE(MenuWithField):
                         self.place(vec + rect.topleft, False)
         if self.selectedtool == "CT":
             rect = self.vec2rect(self.rectdata[0], self.posoffset)
-            for x in range(int(rect.w)):
-                for y in range(int(rect.h)):
+            for x in range(int(rect.w + 1)):
+                for y in range(int(rect.h + 1)):
                     vec = pg.Vector2(x, y)
                     self.place(vec + rect.topleft, False)
         self.detecthistory(["GE"])
@@ -320,8 +320,8 @@ class GE(MenuWithField):
             widgets.fastmts(self.surface, wltx, *(mpos + [12, -10]), white, 15)
             if self.bucketTool:
                 widgets.fastmts(self.surface, "FILL MODE ACTIVE", *(mpos + [12, 10]), white, 15)
-            if self.selectedtool == "CP":
-                widgets.fastmts(self.surface, f"COPY MODE ACTIVE ({'LAYERS: ALL' if self.copyalllayers else 'LAYERS: CURRENT'})", *(mpos + [12, -28]), white, 15)
+            if self.selectedtool in ["CP", "CT"]:
+                widgets.fastmts(self.surface, f"{'COPY' if self.selectedtool == 'CP' else 'CUT'} MODE ACTIVE ({'LAYERS: ALL' if self.copyalllayers else 'LAYERS: CURRENT'})", *(mpos + [12, -28]), white, 15)
 
             bp = self.getmouse
 
