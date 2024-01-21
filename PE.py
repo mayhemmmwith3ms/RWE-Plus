@@ -25,6 +25,11 @@ values = {
 }
 
 
+class PECursorData():
+    def __init__(self):
+        self.rotation = 0
+        self.scale = pg.Vector2() # unfortunately not an actual multiplicative scale number
+
 class PE(MenuWithField):
     def __init__(self, surface: pg.surface.Surface, renderer):
         self.menu = "PE"
@@ -45,7 +50,7 @@ class PE(MenuWithField):
 
         self.normheight = 0
 
-        self.cursorRotation = 0
+        self.cursor:PECursorData = PECursorData()
 
         self.selectedprop = self.props[list(self.props.keys())[self.currentcategory]][0]
         self.selectedimage: pg.Surface = self.selectedprop["images"][0]
@@ -97,6 +102,11 @@ class PE(MenuWithField):
 
         if "selectedProp" in self.persistent_data:
             self.setprop(self.persistent_data["selectedProp"])
+
+        if "cursorData" in self.persistent_data:
+            self.cursor.rotation = self.persistent_data["cursorData"][0]
+            self.cursor.scale = pg.Vector2(self.persistent_data["cursorData"][1])
+            self.match_cursor()
 
     def renderfield(self):
         super().renderfield()
@@ -241,6 +251,7 @@ class PE(MenuWithField):
             self.renderfield()
 
     def blit(self):
+        print(self.cursor.scale)
         if len(self.buttonslist) > 1:
             pg.draw.rect(self.surface, ui_settings["TE"]["menucolor"], pg.rect.Rect(self.buttonslist[0].xy, [self.buttonslist[0].rect.w, len(self.buttonslist[:-1]) * self.buttonslist[0].rect.h + 1]))
             for button in self.buttonslist:
@@ -361,7 +372,7 @@ class PE(MenuWithField):
                                 vec = [round(vec.x, 4), round(vec.y, 4)]
                                 quads2[i] = vec
                             self.quads = quads2
-                            self.cursorRotation = -(pg.Vector2(self.quads[2]) - pg.Vector2(self.quads[3])).angle_to(pg.Vector2(1, 0))
+                            self.cursor.rotation = -(pg.Vector2(self.quads[2]) - pg.Vector2(self.quads[3])).angle_to(pg.Vector2(1, 0))
                             self.prop_settings = name[4]["settings"]
                             self.updateproptransform()
                     elif self.selectedprop["tp"] == "long":
@@ -505,7 +516,7 @@ class PE(MenuWithField):
                     cursorCol = purple
                 else:
                     cursorCol = yellow
-                cRotVec = pg.Vector2(0, 1).rotate(self.cursorRotation)
+                cRotVec = pg.Vector2(0, 1).rotate(self.cursor.rotation)
                 pg.draw.line(self.surface, cursorCol, drawPreviewPos + cRotVec * 8, drawPreviewPos + cRotVec * 16)
                 pg.draw.line(self.surface, cursorCol, drawPreviewPos - cRotVec * 8, drawPreviewPos - cRotVec * 16)
                 cRotVec = cRotVec.rotate(90)
@@ -683,15 +694,17 @@ class PE(MenuWithField):
         self.add_warning()
         self.reset_settings()
         self.applysettings()
-        self.transform_reset()
+        #self.transform_reset()
+        self.match_cursor()
         self.applytags()
         self.rebuttons()
 
     def togglesnap(self):
         self.snap = not self.snap
 
-    def rotate(self, a):
-        self.cursorRotation += a
+    def rotate(self, a, ucursor = True):
+        if ucursor:
+            self.cursor.rotation += a
         if (not self.findparampressed("moreinfo")) or not settings["PE_advanced_cursor"]:
             for indx, quad in enumerate(self.quads):
                 rot = rotatepoint(quad, a)
@@ -707,7 +720,7 @@ class PE(MenuWithField):
         #    self.quads[indx] -= (quad - vec) * 2
         #self.updateproptransform()
 
-        ax = pg.Vector2(0, 1).rotate(self.cursorRotation)
+        ax = pg.Vector2(0, 1).rotate(self.cursor.rotation)
         long = 0
 
         for i, q in enumerate(self.quads):
@@ -725,7 +738,7 @@ class PE(MenuWithField):
         #    self.quads[indx] -= (quad - vec) * 2
         #self.updateproptransform()
 
-        ax = pg.Vector2(1, 0).rotate(self.cursorRotation)
+        ax = pg.Vector2(1, 0).rotate(self.cursor.rotation)
         long = 0
 
         for i, q in enumerate(self.quads):
@@ -742,7 +755,7 @@ class PE(MenuWithField):
         for tag in tags:
             match tag:
                 case "randomRotat":
-                    self.rotate(rnd.randint(0, 360))
+                    self.set_rotation(rnd.randint(0, 360))
                 case "randomFlipX":
                     self.flipx() if rnd.choice([True, False]) else False
                 case "randomFlipY":
@@ -819,6 +832,10 @@ class PE(MenuWithField):
             var = self.prop_settings["variation"] - 1
         self.selectedimage: pg.Surface = self.selectedprop["images"][var]
 
+    def transform_resetk(self):
+        self.reset_cursor()
+        self.match_cursor()
+
     def transform_reset(self):
         self.loadimage()
 
@@ -829,7 +846,6 @@ class PE(MenuWithField):
         self.quads = [[-wd, -hd], [wd, -hd], [wd, hd], [-wd, hd]]
         self.normheight = pg.Vector2(self.quads[0]).distance_to(pg.Vector2(self.quads[3]))
         self.quadsnor = self.quads.copy()
-        self.cursorRotation = 0
         self.updateproptransform()
 
     def findpropmenu(self):
@@ -897,31 +913,39 @@ class PE(MenuWithField):
             self.rotate(-settings["PE_prop_rotate_speed"])
 
     def rotate0(self):
-        self.transform_reset()
+        self.set_rotation(0)
 
     def rotate90(self):
-        self.transform_reset()
-        self.rotate(90)
+        self.set_rotation(90)
 
     def rotate180(self):
-        self.transform_reset()
-        self.rotate(180)
+        self.set_rotation(180)
 
     def rotate270(self):
-        self.transform_reset()
-        self.rotate(270)
+        self.set_rotation(270)
+
+    def set_rotation(self, rot):
+        self.cursor.rotation = rot
+        self.match_cursor()
 
     def getDistAlongAxis(self, vector, axis):
         return math.sin(axis.angle_to(vector) * 0.0174533) * vector.magnitude()
 
-    def stretch(self, axis, pos):
+    def stretch(self, axis, pos, ucursor = True):
         if axis == 0:
             stretchVector = pg.Vector2(pos, 0)
         else:
             stretchVector = pg.Vector2(0, pos)
 
-        absStretchVector = pg.Vector2(abs(stretchVector.x), abs(stretchVector.y)).rotate(self.cursorRotation + 90)
-        stretchVector = stretchVector.rotate(self.cursorRotation)
+        absStretchVector = pg.Vector2(abs(stretchVector.x), abs(stretchVector.y))
+
+        #sz = toarr(self.selectedprop["sz"], "point")
+        #self.cursor.scale += pg.Vector2(stretchVector.x / (sz[0] * preview_cell_size), stretchVector.y / (sz[1] * preview_cell_size))
+        if ucursor:
+            self.cursor.scale += stretchVector
+
+        absStretchVector = absStretchVector.rotate(self.cursor.rotation + 90)
+        stretchVector = stretchVector.rotate(self.cursor.rotation)
         long = 0
 
         for i, q in enumerate(self.quads):
@@ -934,7 +958,10 @@ class PE(MenuWithField):
             qVec = pg.Vector2(q)
             distanceAlongAxis = self.getDistAlongAxis(qVec, absStretchVector)
             self.quads[i] -= stretchVector * (distanceAlongAxis / long)
+
+        
         self.updateproptransform()
+
     def stretchy_up(self):
         self.stretch(1, settings["PE_prop_scale_speed"])
 
@@ -948,7 +975,18 @@ class PE(MenuWithField):
         self.stretch(0, -settings["PE_prop_scale_speed"])
 
     def on_switch_editor(self):
-        self.data["persistent"]["PR"]["selectedProp"] = self.selectedprop["nm"]
+        self.persistent_data["selectedProp"] = self.selectedprop["nm"]
+        self.persistent_data["cursorData"] = [self.cursor.rotation, self.cursor.scale]
+
+    def match_cursor(self):
+        self.transform_reset()
+        self.rotate(self.cursor.rotation, False)
+        self.stretch(0, self.cursor.scale.x, False)
+        self.stretch(1, self.cursor.scale.y, False)
+
+    def reset_cursor(self):
+        self.cursor.rotation = 0
+        self.cursor.scale = pg.Vector2()
 
     @property
     def custom_info(self):

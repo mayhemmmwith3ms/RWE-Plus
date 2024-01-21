@@ -96,11 +96,11 @@ def quadsize(quad):
     wh = round(mostbottom - mosttop)
     return ww, wh, [mostleft, mosttop, mostright, mostbottom]
 
-
 def quadtransform(quads, image: pg.Surface):
     ww, wh, mosts = quadsize(quads)
-
+    
     colkey = image.get_colorkey()
+    image = image.convert_alpha()
     view = pg.surfarray.array3d(image)
     view = view.transpose([1, 0, 2])
 

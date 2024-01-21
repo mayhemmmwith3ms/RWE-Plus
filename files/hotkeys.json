@@ -224,7 +224,7 @@
 		"K_z": "mouserotate",
 		"K_c": "-changerelease",
 
-		"K_r": "-transform_reset",
+		"K_r": "-transform_resetk",
 
 		"K_e": "-rotate_right",
 		"K_q": "-rotate_left",

@@ -23,7 +23,7 @@ persistentdata = {
     "TE": {},
     "LE": {},
     "FE": {},
-    "PR": {}
+    "PE": {}
 }
 defaultlevel = open(path + "default.txt", "r").readlines()
 load_error_count = 0
