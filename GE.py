@@ -114,7 +114,7 @@ class GE(MenuWithField):
     def update_draw_drag(self):
         if self.selectedtool == "MV":
             self.offset = self.rectdata[1] - (self.rectdata[0] - self.pos)
-        elif self.selectedtool == "CT":
+        elif self.selectedtool in ["CT", "CP"]:
             pass
         elif self.brush_active:
             self.brushpaint(self.posoffset, self.toolsized)
@@ -184,14 +184,24 @@ class GE(MenuWithField):
         mpos = pg.Vector2(pg.mouse.get_pos())
 
         if self.selectedtool == "CP" or self.selectedtool == "CT":
-            rect = self.vec2rect(self.rectdata[0], self.posoffset)
-            rect.w += 1 #i'm sure theres a better solution to this :slugmod:
-            rect.h += 1
-            data1 = self.data["GE"][rect.x:rect.x + rect.w]
-            data1 = [i[rect.y:rect.y + rect.h] for i in data1]
-            data1 = ["GE", [[y[self.layer] for y in x] for x in data1]]
-            pyperclip.copy(str(data1))
-            print("Copied!")
+            if self.copyalllayers:
+                rect = self.vec2rect(self.rectdata[0], self.posoffset)
+                rect.w += 1 #i'm sure theres a better solution to this :slugmod:
+                rect.h += 1
+                data1 = self.data["GE"][rect.x:rect.x + rect.w]
+                data1 = [i[rect.y:rect.y + rect.h] for i in data1]
+                data1 = ["GE2", data1]
+                pyperclip.copy(str(data1))
+                print("Copied!")
+            else:
+                rect = self.vec2rect(self.rectdata[0], self.posoffset)
+                rect.w += 1 #i'm sure theres a better solution to this :slugmod:
+                rect.h += 1
+                data1 = self.data["GE"][rect.x:rect.x + rect.w]
+                data1 = [i[rect.y:rect.y + rect.h] for i in data1]
+                data1 = ["GE", [[y[self.layer] for y in x] for x in data1]]
+                pyperclip.copy(str(data1))
+                print("Copied!")
         elif self.selectedtool == "SL":
             rect = self.vec2rect(self.rectdata[0], self.posoffset)
             for x in range(int(rect.w)):
@@ -268,7 +278,7 @@ class GE(MenuWithField):
                     if self.clipboardcache is None:
                         self.clipboardcache = eval(pyperclip.paste())
                     geodata = self.clipboardcache
-                    if geodata[0] == "GE" and isinstance(geodata[1], list):
+                    if geodata[0] in ["GE", "GE2"] and isinstance(geodata[1], list):
                         try_clipboard = True
                 except Exception:
                     pass
@@ -319,7 +329,7 @@ class GE(MenuWithField):
                 pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize - 0.5, 1)
             
             if try_clipboard:
-                self.draw_clipboard_preview(self.layer)
+                self.draw_clipboard_preview()
 
             if settings["hold_key_rect_drag"]:
                 if not self.rectDragActive:
@@ -386,22 +396,18 @@ class GE(MenuWithField):
             else:
                 pg.draw.rect(self.surface, mirror, [self.field.rect.x, py, self.field.field.get_width(), 3])
 
-    def draw_clipboard_preview(self, layer:int):
-        pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
-        geodata = self.clipboardcache
-        geodata = self.clipboardcache
-        if geodata is None or geodata[0] != "GE" or not isinstance(geodata[1], list):
-            return
-        bluetoolsurf = self.toolsized
-        col = blue.lerp(white, float(layer) * 0.2)
+    def draw_geo_thing(self, data, pos, color, alpha = 130):
 
-        bluetoolsurf.set_alpha(130)
+
+        bluetoolsurf = self.toolsized
+
+        bluetoolsurf.set_alpha(alpha)
         bluetoolsurf.fill(pg.Color(254, 254, 254), special_flags=pg.BLEND_RGB_ADD)
-        bluetoolsurf.fill(col, special_flags=pg.BLEND_RGBA_MULT)
+        bluetoolsurf.fill(color, special_flags=pg.BLEND_RGBA_MULT)
         
         rect2 = [self.size]*2
 
-        for x, xc in enumerate(geodata[1]):
+        for x, xc in enumerate(data):
             for y, yc in enumerate(xc):
                 rect1 = [z * (self.size / preview_cell_size) for z in gCell_slice_from_type(yc[0])]
                 self.surface.blit(bluetoolsurf, pos + [x * self.size, y * self.size], [rect1, rect2])
@@ -414,13 +420,34 @@ class GE(MenuWithField):
         bluetoolsurf.fill(pg.Color(254, 254, 254), special_flags=pg.BLEND_RGB_ADD)
         bluetoolsurf.fill(white, special_flags=pg.BLEND_RGBA_MULT)
 
-        for x, xc in enumerate(geodata[1]):
+        for x, xc in enumerate(data):
             for y, yc in enumerate(xc):
                 for st in yc[1]:
                     if st not in LAYER_COLOR_EXTRA:
                         rect1 = [z * (self.size / preview_cell_size) for z in gExtra_slice_from_type(st)]
                         rect2 = [self.size]*2
                         self.surface.blit(bluetoolsurf, pos + [x * self.size, y * self.size], [rect1, rect2])
+
+    def draw_clipboard_preview(self):
+        geodata = self.clipboardcache
+        if geodata is None or not isinstance(geodata[1], list):
+            return
+            
+        pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
+        c = [black, green, red]
+        col = blue.lerp(c[self.layer], 0.5)
+
+        if geodata[0] == "GE":
+            self.draw_geo_thing(geodata[1], pos, col)
+        elif geodata[0] == "GE2":
+            dat = geodata[1]
+            dat2 = []
+            for i in range(3):
+                dat2.append([[y[i] for y in x] for x in dat]) 
+
+            for i, ly in enumerate(dat2):
+                col = blue.lerp(c[i], 0.5)
+                self.draw_geo_thing(ly, pos, col, 130 if i == 0 else 80)
 
     def get_slope_orientation(self, pos: pg.Vector2):
         x = int(pos.x)
@@ -527,19 +554,34 @@ class GE(MenuWithField):
         try:
             self.emptyarea()
             geodata = eval(pyperclip.paste())
-            if geodata[0] != "GE" or not isinstance(geodata[1], list):
+            if not isinstance(geodata[1], list):
                 return
-            for xi, x in enumerate(geodata[1]):
-                for yi, y in enumerate(x):
-                    pa = pg.Vector2(0, 0)
-                    if self.field.rect.collidepoint(pg.mouse.get_pos()):
-                        pa = self.pos
-                    xpos = -self.xoffset + xi + int(pa.x)
-                    ypos = -self.yoffset + yi + int(pa.y)
-                    if (self.replaceair and y[0] == 0) or not self.canplaceit(xpos, ypos, xpos, ypos):
-                        continue
-                    self.data["GE"][xpos][ypos][self.layer] = y
-                    self.area[xpos][ypos] = False
+            
+            if geodata[0] == "GE":
+                for xi, x in enumerate(geodata[1]):
+                    for yi, y in enumerate(x):
+                        pa = pg.Vector2(0, 0)
+                        if self.field.rect.collidepoint(pg.mouse.get_pos()):
+                            pa = self.pos
+                        xpos = -self.xoffset + xi + int(pa.x)
+                        ypos = -self.yoffset + yi + int(pa.y)
+                        if (self.replaceair and y[0] == 0) or not self.canplaceit(xpos, ypos, xpos, ypos):
+                            continue
+                        self.data["GE"][xpos][ypos][self.layer] = y
+                        self.area[xpos][ypos] = False
+            elif geodata[0] == "GE2":
+                for xi, x in enumerate(geodata[1]):
+                    for yi, y in enumerate(x):
+                        for zi, z in enumerate(y):
+                            pa = pg.Vector2(0, 0)
+                            if self.field.rect.collidepoint(pg.mouse.get_pos()):
+                                pa = self.pos
+                            xpos = -self.xoffset + xi + int(pa.x)
+                            ypos = -self.yoffset + yi + int(pa.y)
+                            if (self.replaceair and y[0] == 0) or not self.canplaceit(xpos, ypos, xpos, ypos):
+                                continue
+                            self.data["GE"][xpos][ypos][zi] = z
+                            self.area[xpos][ypos] = False
             self.detecthistory(["GE"])
             self.renderer.geo_render_area(self.area, self.layer)
             self.rfa()
@@ -842,6 +884,9 @@ class GE(MenuWithField):
 
     def brushm(self):
         self.brushsize = max(self.brushsize-1, 1)
+
+    def switchcopylayers(self):
+        self.copyalllayers = not self.copyalllayers
 
     def on_switch_editor(self):
         self.data["persistent"]["GE"]["selectedTool"] = self.selectedtool
