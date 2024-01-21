@@ -96,8 +96,8 @@
 
     	"K_c+": "-copylayer",
     	"K_v+": "-pastegeo",
-    	"K_r+": "-replacestate",
-		"K_e+": "-switchcopylayers",
+    	"K_e+": "-replacestate",
+		"K_r+": "-switchcopylayers",
 
     	"K_SPACE": "-rotate",
 
@@ -141,6 +141,7 @@
     	"K_TAB": "-cleartool",
     	"K_SPACE": "-changetools",
     	"K_e+": "-sad",
+		"K_r+": "-switchcopylayers",
     	"K_q": "-copytile",
     	"K_f+": "-findtile",
     	"K_LSHIFT": "alt_func",

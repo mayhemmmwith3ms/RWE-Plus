@@ -57,6 +57,8 @@ class TE(MenuWithField):
         self.lastfg = False
         self.lastfp = False
         self.brushsize = 1
+        self.clipboardcache = None
+        self.copyalllayers = False
 
         self.justPlacedChainHolders = []
         self.blockNextPlacement = False
@@ -223,12 +225,21 @@ class TE(MenuWithField):
                         self.destroy(x + rect.x, y + rect.y)
         elif self.tool == 2:  # copy
             history = []
-            for x in range(int(rect.w)):
-                for y in range(int(rect.h)):
-                    xpos, ypos = x + rect.x, y + rect.y
-                    block = self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]
-                    if block["tp"] == "material" or block["tp"] == "tileHead":
-                        history.append([x, y, block])
+            if self.copyalllayers:
+                for x in range(int(rect.w)):
+                    for y in range(int(rect.h)):
+                        for z in range(3):
+                            xpos, ypos = x + rect.x, y + rect.y
+                            block = self.data["TE"]["tlMatrix"][xpos][ypos][z]
+                            if block["tp"] == "material" or block["tp"] == "tileHead":
+                                history.append([x, y, z, block])
+            else:
+                for x in range(int(rect.w)):
+                    for y in range(int(rect.h)):
+                        xpos, ypos = x + rect.x, y + rect.y
+                        block = self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]
+                        if block["tp"] == "material" or block["tp"] == "tileHead":
+                            history.append([x, y, self.layer, block])
             pyperclip.copy(str(["TE", history]))
         elif place and self.is_macro(self.tileimage):
             saved = self.tileimage
@@ -316,9 +327,12 @@ class TE(MenuWithField):
             try_clipboard = False
             try:
                 if pg.key.get_pressed()[pg.K_LCTRL]:
-                    clipboard = eval(pyperclip.paste())
-                    if clipboard[0] == "TE" and isinstance(clipboard[1], list):
+                    if self.clipboardcache is None:
+                        self.clipboardcache = eval(pyperclip.paste())
+                    if self.clipboardcache[0] == "TE" and isinstance(self.clipboardcache[1], list):
                         try_clipboard = True
+                else:
+                    self.clipboardcache = None
             except Exception:
                 pass
 
@@ -457,19 +471,10 @@ class TE(MenuWithField):
                     pg.draw.rect(self.surface, patternPrevCol, [pos2.x - bord, pos2.y - bord, self.size + bord * 2, self.size + bord * 2], 1)
 
             if try_clipboard:
-                try:
-                    clipboard = eval(pyperclip.paste())
-                    if clipboard[0] != "TE" or not isinstance(clipboard[1], list):
+                    clipboard = self.clipboardcache
+                    if clipboard[0] not in ["TE", "TE2"] or not isinstance(clipboard[1], list):
                         return
-                    pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
-                    clipboard[1].sort(key=lambda x: x[0])
-                    sizex = clipboard[1][-1][0] + 1
-                    clipboard[1].sort(key=lambda y: y[1])
-                    sizey = clipboard[1][-1][1] + 1
-                    rect = pg.Rect([pos, pg.Vector2(sizex, sizey) * self.size])
-                    pg.draw.rect(self.surface, blue, rect, 1)
-                except Exception:
-                    pass
+                    self.draw_clipboard_preview()
 
             if not settings["TE_legacy_RWE_placement_controls"]:
                 if self.tool == 0:
@@ -579,6 +584,55 @@ class TE(MenuWithField):
         for button in self.buttonslist:
             button.blittooltip()
     
+    def draw_tile_list(self, data, pos, alpha, previewcol = None):
+        tiles = dict()
+        for i in data:
+            tlname = i[2]["data"][1] if i[2]["tp"] == "tileHead" else i[2]["data"]
+            if tlname in tiles:
+                continue
+
+            cat = self.findcat(tlname)
+
+            for j in self.items[cat]:
+                if j["name"] == tlname:
+                    tiles[tlname] = j
+                #if next(((x[2]["data"][1] if x[2]["tp"] == "tileHead" else x[2]["data"]) == j["name"]) for x in data):
+                #    tiles[j["name"]] = j
+                    
+        for dat in data:
+            tx, ty, tile = dat
+            tlname = tile["data"][1] if tile["tp"] == "tileHead" else tile["data"]
+            tl = tiles[tlname]
+
+            if tile["tp"] == "tileHead":
+                tx = int(tx) - int((tl["size"][0] * .5) + .5) + 1
+                ty = int(ty) - int((tl["size"][1] * .5) + .5) + 1
+            i_img_c:pg.Surface = tl["image"].copy()
+            i_img_c.set_colorkey(white)
+            i_img_c.set_alpha(alpha)
+            i_img_c = i_img_c.convert_alpha() #i hate pygame
+            if previewcol is not None:
+                i_img_c.fill((254, 254, 254), special_flags=pg.BLEND_RGB_ADD)
+                i_img_c.fill(previewcol, special_flags=pg.BLEND_RGB_MULT)
+            szx, szy = tl["size"]
+            szx *= self.size
+            szy *= self.size
+            self.surface.blit(pg.transform.scale(i_img_c, [szx, szy]),
+                [pos.x + tx * self.size, pos.y + ty * self.size])
+
+    def draw_clipboard_preview(self):
+        clip = self.clipboardcache
+        if clip[0] != "TE" or not isinstance(clip[1], list) or len(pyperclip.paste()) <= 2:
+            return
+        pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
+        dat = [[],[],[]]
+        for tl in clip[1]:
+            dat[tl[2]].append([tl[0], tl[1], tl[3]])
+        for i in range(2, -1, -1):
+            fac = float(3.0 - i) / 3
+            self.draw_tile_list(dat[i], pos, fac * 180, pg.Color(254, 254, 254).lerp((50, 50, 255), fac))
+        
+
     def brushpaint(self, pos: pg.Vector2, place = True):
         if self.squarebrush:
             for xp in range(self.brushsize):
@@ -636,8 +690,9 @@ class TE(MenuWithField):
                 print("Error pasting data!")
                 return
             self.emptyarea()
+            lcache = self.layer
             for block in geodata[1]:
-                blockx, blocky, data = block
+                blockx, blocky, blockl, data = block
                 if data["tp"] == "material":
                     name = data["data"]
                 else:
@@ -654,14 +709,17 @@ class TE(MenuWithField):
                 cposxo = int(pa.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
                 cposyo = int(pa.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
 
+                self.layer = blockl
                 self.place(blockx - self.xoffset + cposxo, blocky - self.yoffset + cposyo)
             else:
                 self.selectcat(cat)
+                self.layer = lcache
             self.detecthistory(["TE", "tlMatrix"])
             self.renderer.tiles_render_area(self.area, self.layer)
             self.rfa()
         except Exception:
             print("Error pasting data!")
+            self.layer = lcache
 
     def findcat(self, itemname):
         for name, listdata in self.items.items():
@@ -1110,6 +1168,9 @@ class TE(MenuWithField):
                 if item["name"] == name:
                     return [catname, list(self.items.keys()).index(item["category"])]
         return None
+
+    def switchcopylayers(self):
+        self.copyalllayers = not self.copyalllayers
 
     def get_next_path_tile(self, init, path, indx):
         tile = path[indx]
