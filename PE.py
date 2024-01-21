@@ -574,13 +574,17 @@ class PE(MenuWithField):
 
     def depth_up(self):
         maxdepth = self.layer * 10 + 10
-        self.depth = (self.depth + 1) % maxdepth
+        mindepth = self.layer * 10
+        self.depth += 1
+        if self.depth > maxdepth - 1:
+            self.depth = mindepth
         self.add_warning()
 
     def depth_down(self):
         maxdepth = self.layer * 10 + 10
+        mindepth = self.layer * 10
         self.depth -= 1
-        if self.depth < 0:
+        if self.depth < mindepth:
             self.depth = maxdepth - 1
         self.add_warning()
 
