@@ -108,6 +108,9 @@ class PE(MenuWithField):
             self.cursor.scale = pg.Vector2(self.persistent_data["cursorData"][1])
             self.match_cursor()
 
+        if "depth" in self.persistent_data:
+            self.depth = self.persistent_data["depth"]
+
     def renderfield(self):
         super().renderfield()
         self.updateproptransform()
@@ -251,7 +254,6 @@ class PE(MenuWithField):
             self.renderfield()
 
     def blit(self):
-        print(self.cursor.scale)
         if len(self.buttonslist) > 1:
             pg.draw.rect(self.surface, ui_settings["TE"]["menucolor"], pg.rect.Rect(self.buttonslist[0].xy, [self.buttonslist[0].rect.w, len(self.buttonslist[:-1]) * self.buttonslist[0].rect.h + 1]))
             for button in self.buttonslist:
@@ -977,6 +979,7 @@ class PE(MenuWithField):
     def on_switch_editor(self):
         self.persistent_data["selectedProp"] = self.selectedprop["nm"]
         self.persistent_data["cursorData"] = [self.cursor.rotation, self.cursor.scale]
+        self.persistent_data["depth"] = self.depth
 
     def match_cursor(self):
         self.transform_reset()
