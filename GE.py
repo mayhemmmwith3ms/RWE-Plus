@@ -27,6 +27,8 @@ class GE(MenuWithField):
         self.bucketTool = False
         self.fillshape2 = "rect"  # rect, rect-hollow, circle, circle-hollow, line
         self.brushsize = 1
+        self.copyalllayers = False
+        self.clipboardcache = None
 
         self.toolsized = None
 
@@ -263,11 +265,15 @@ class GE(MenuWithField):
             try_clipboard = False
             if pg.key.get_pressed()[pg.K_LCTRL]:
                 try:
-                    geodata = eval(pyperclip.paste())
+                    if self.clipboardcache is None:
+                        self.clipboardcache = eval(pyperclip.paste())
+                    geodata = self.clipboardcache
                     if geodata[0] == "GE" and isinstance(geodata[1], list):
                         try_clipboard = True
                 except Exception:
                     pass
+            else:
+                self.clipboardcache = None
 
             if self.selectedtool == "SL":
                 validSlope = self.get_slope_orientation(self.posoffset)
@@ -305,7 +311,7 @@ class GE(MenuWithField):
             if self.bucketTool:
                 widgets.fastmts(self.surface, "FILL MODE ACTIVE", *(mpos + [12, 10]), white, 15)
             if self.selectedtool == "CP":
-                widgets.fastmts(self.surface, "COPY MODE ACTIVE", *(mpos + [12, -28]), white, 15)
+                widgets.fastmts(self.surface, f"COPY MODE ACTIVE ({'LAYERS: ALL' if self.copyalllayers else 'LAYERS: CURRENT'})", *(mpos + [12, -28]), white, 15)
 
             bp = self.getmouse
 
@@ -313,10 +319,7 @@ class GE(MenuWithField):
                 pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize - 0.5, 1)
             
             if try_clipboard:
-                try:
-                    self.draw_clipboard_preview()
-                except Exception:
-                    pass
+                self.draw_clipboard_preview()
 
             if settings["hold_key_rect_drag"]:
                 if not self.rectDragActive:
@@ -384,12 +387,11 @@ class GE(MenuWithField):
                 pg.draw.rect(self.surface, mirror, [self.field.rect.x, py, self.field.field.get_width(), 3])
 
     def draw_clipboard_preview(self):
-        self.start_perftimer()
         pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
-        geodata = eval(pyperclip.paste())
-        if geodata[0] != "GE" or not isinstance(geodata[1], list):
+        geodata = self.clipboardcache
+        geodata = self.clipboardcache
+        if geodata is None or geodata[0] != "GE" or not isinstance(geodata[1], list):
             return
-        
         bluetoolsurf = self.toolsized
 
         bluetoolsurf.set_alpha(130)
@@ -418,8 +420,6 @@ class GE(MenuWithField):
                         rect1 = [z * (self.size / preview_cell_size) for z in gExtra_slice_from_type(st)]
                         rect2 = [self.size]*2
                         self.surface.blit(bluetoolsurf, pos + [x * self.size, y * self.size], [rect1, rect2])
-
-        self.stop_perftimer()
 
     def get_slope_orientation(self, pos: pg.Vector2):
         x = int(pos.x)
