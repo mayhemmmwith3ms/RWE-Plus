@@ -67,6 +67,14 @@ renderedimage = pg.transform.scale(tooltiles, [
             (tooltiles.get_width() / graphics["tilesize"][0]) * preview_cell_size,
             (tooltiles.get_height() / graphics["tilesize"][1]) * preview_cell_size])
 
+def lerp(val1:float, val2:float, amt:float):
+    return val1 + float(val2 - val1) * amt
+
+def color_mul(color:pg.Color, amt:float):
+    return pg.Color(min(max(int(color.r * amt), 0), 255),\
+                    min(max(int(color.g * amt), 0), 255),\
+                    min(max(int(color.b * amt), 0), 255))
+
 def gExtra_slice_from_type(type):
     return [graphics["shows2"][f"{type}"][0] * preview_cell_size, graphics["shows2"][f"{type}"][1] * preview_cell_size]
 

@@ -319,7 +319,7 @@ class GE(MenuWithField):
                 pg.draw.circle(self.surface, select, pos2+pg.Vector2(self.size/2), self.size * self.brushsize - 0.5, 1)
             
             if try_clipboard:
-                self.draw_clipboard_preview()
+                self.draw_clipboard_preview(self.layer)
 
             if settings["hold_key_rect_drag"]:
                 if not self.rectDragActive:
@@ -386,17 +386,18 @@ class GE(MenuWithField):
             else:
                 pg.draw.rect(self.surface, mirror, [self.field.rect.x, py, self.field.field.get_width(), 3])
 
-    def draw_clipboard_preview(self):
+    def draw_clipboard_preview(self, layer:int):
         pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
         geodata = self.clipboardcache
         geodata = self.clipboardcache
         if geodata is None or geodata[0] != "GE" or not isinstance(geodata[1], list):
             return
         bluetoolsurf = self.toolsized
+        col = blue.lerp(white, float(layer) * 0.2)
 
         bluetoolsurf.set_alpha(130)
         bluetoolsurf.fill(pg.Color(254, 254, 254), special_flags=pg.BLEND_RGB_ADD)
-        bluetoolsurf.fill(blue, special_flags=pg.BLEND_RGBA_MULT)
+        bluetoolsurf.fill(col, special_flags=pg.BLEND_RGBA_MULT)
         
         rect2 = [self.size]*2
 
