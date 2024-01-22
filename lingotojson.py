@@ -167,7 +167,7 @@ def init_solve(files: list[str,]):
                         counter = 0
                         findcategory = False
                     except json.JSONDecodeError:
-                        log_to_load_log(f"Failed to convert init CATEGORY line \"{i}\" (line number: {ln}) in file \"{file}\"! Skipping line and all subsequent items!", True)
+                        log_to_load_log(f"Failed to convert init CATEGORY line \"{i}\" (line number: {ln}) in file \"{os.path.relpath(file, application_path)}\"! Skipping line and all subsequent items!", True)
                         findcategory = True
                         continue
                 elif not findcategory:
@@ -179,7 +179,7 @@ def init_solve(files: list[str,]):
                         a2.append(item)
                         counter += 1
                     except json.JSONDecodeError:
-                        log_to_load_log(f"Failed to convert init ITEM line \"{i}\" (line number: {ln}) in file \"{file}\"! Skipping line!", True)
+                        log_to_load_log(f"Failed to convert init ITEM line \"{i}\" (line number: {ln}) in file \"{os.path.relpath(file, application_path)}\"! Skipping line!", True)
                         continue
         a[cat] = a2
     return a
