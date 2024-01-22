@@ -642,6 +642,7 @@ class TE(MenuWithField):
         clip = self.clipboardcache
         if clip.data["TE"] is None or len(pyperclip.paste()) <= 2:
             return
+
         pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
         dat = [[],[],[]]
         for li, ly in enumerate(clip.data["TE"]):
@@ -649,7 +650,17 @@ class TE(MenuWithField):
                 dat[li].append([tl[0], tl[1], tl[2]])
         for i in range(3):
             layer = 2 - ((i - self.layer) % 3)
-            fac = float(i + 1) / 3
+            fac = 0
+            if clip.modes[1]:
+                fac = float(i + 1) / 3
+            else:
+                fac = 1
+
+            if clip.data["GE"] is not None:
+                col = gray.lerp(darkergray, fac)
+                dat2 = clip.data["GE"]
+                draw_geo_list(self.surface, tooltiles, self.size, dat2[layer], pos, col, 180 * fac, drawair=False)
+
             self.draw_tile_list(dat[layer], pos, fac * 180, pg.Color(254, 254, 254).lerp((50, 50, 255), fac))
         
 

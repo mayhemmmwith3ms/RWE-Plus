@@ -84,7 +84,7 @@ def gCell_slice_from_type(type):
 def gTool_slice_from_typeandstate(type_and_state):
     return [graphics["tileplaceicon"][str(type_and_state)][0] * preview_cell_size, graphics["tileplaceicon"][str(type_and_state)][1] * preview_cell_size]
 
-def draw_geo_list(surface, geotools, size, data, pos, color, alpha = 130):
+def draw_geo_list(surface, geotools, size, data, pos, color, alpha = 130, drawair = True):
     scaled_tool_image = pg.transform.scale(geotools,
                                     pg.Vector2(geotools.get_size()) / preview_cell_size * size).convert_alpha(surface)
 
@@ -96,6 +96,9 @@ def draw_geo_list(surface, geotools, size, data, pos, color, alpha = 130):
 
     for x, xc in enumerate(data):
         for y, yc in enumerate(xc):
+            if (not drawair) and yc[0] == 0:
+                continue
+
             rect1 = [z * (size / preview_cell_size) for z in gCell_slice_from_type(yc[0])]
             surface.blit(scaled_tool_image, pos + [x * size, y * size], [rect1, rect2])
 
