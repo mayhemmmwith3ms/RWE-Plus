@@ -97,9 +97,11 @@
         "-tool_pencil": "Changes LMB to pencil",
         "-tool_brush": "Changes LMB to brush",
         "alt_func": "Hold to activate alt mouse mode (rectangle select)",
-        "brush_size_scroll": "Hold this key and scroll using the mouse wheel to change brush size"
+        "brush_size_scroll": "Hold this key and scroll using the mouse wheel to change brush size",
+        "-switchcopylayers": "Toggles between copying the current layer and copying all layers"
     },
     "TE": {
+
         "force_geometry": "Hold to place a tile's geometry specs along with the tile",
         "force_place": "Hold to place a tile without its geometry specs",
         "-copytool": "Copy Tool",
@@ -120,7 +122,9 @@
         "-brush": "Enables Brush",
         "-pencil": "Enables pencil",
         "-togglebrush": "Toggles betwen pencil and brush",
-        "brush_size_scroll": "Hold this key and scroll using the mouse wheel to change brush size"
+        "brush_size_scroll": "Hold this key and scroll using the mouse wheel to change brush size",
+        "-switchcopylayers": "Toggles between copying the current layer and copying all layers",
+        "-switchcopygeo": "Toggle the function to copy the level's geometry alongside tiles"
     },
     "CE": {
         "-addright": "Rotates nearest edge of nearest camera clockwise",
@@ -165,7 +169,7 @@
         "copy_mode": "Copies props",
         "mouserotate": "Hold to rotate held prop around a pivot point using the mouse",
         "propvariation_change": "While pressed, press mouse buttons to change variation",
-        "-transform_reset": "Resets transform of props",
+        "-transform_resetk": "Resets transform of props",
         "-rotate_right": "Rotates prop to right",
         "-rotate_left": "Rotates prop to left",
         "rotate_speedup": "Increases speed of prop rotation while held",
@@ -213,7 +217,8 @@
         "-inverse": "Toggle between painting and erasing shadows",
         "-undoshadow": "Undo shadow image",
         "-redoshadow": "Redo shadow image",
-        "brush_type_scroll": "Hold this key and scroll using the mouse wheel to change brush shape"
+        "brush_type_scroll": "Hold this key and scroll using the mouse wheel to change brush shape",
+        "speedup": "Hold this key to increase the speed of rotating and scaling the shadow image"
     },
     "LP": {
         "-changeborder": "Toggles between a solid and open level border",
