@@ -107,6 +107,7 @@ def draw_geo_list(surface, geotools, size, data, pos, color, alpha = 130, drawai
                     rect1 = [z * (size / preview_cell_size) for z in gExtra_slice_from_type(st)]
                     surface.blit(scaled_tool_image, pos + [x * size, y * size], [rect1, rect2]) 
 
+    scaled_tool_image.fill(pg.Color(254, 254, 254), special_flags=pg.BLEND_RGB_ADD)
     scaled_tool_image.fill(white, special_flags=pg.BLEND_RGBA_MULT)
 
     for x, xc in enumerate(data):
