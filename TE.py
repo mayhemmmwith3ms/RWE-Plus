@@ -60,6 +60,7 @@ class TE(MenuWithField):
         self.brushsize = 1
         self.clipboardcache:cpyh.FieldGridCopyData = None
         self.copyalllayers = False
+        self.copygeo = False
 
         self.justPlacedChainHolders = []
         self.blockNextPlacement = False
@@ -228,7 +229,7 @@ class TE(MenuWithField):
             ctiles = [[], [], []]
             c_dat = cpyh.FieldGridCopyData(None, None)
 
-            if True:
+            if self.copygeo:
                 grid = self.data["GE"][rect.x:rect.x + rect.w]
                 grid = [i[rect.y:rect.y + rect.h] for i in grid]
 
@@ -375,6 +376,11 @@ class TE(MenuWithField):
                 cposyo = int(posoffset.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
 
             self.movemiddle(bp)
+
+            if self.tool == 2:
+                widgets.fastmts(self.surface, "COPY MODE ACTIVE", *(pg.Vector2(pg.mouse.get_pos()) + [12, -28]), white, 15)
+                widgets.fastmts(self.surface, f"LAYERS: {'ALL' if self.copyalllayers else 'CURRENT'}", *(pg.Vector2(pg.mouse.get_pos()) + [12, -10]), white, 15)
+                widgets.fastmts(self.surface, f"COPY GEOMETRY: {'TRUE' if self.copygeo else 'FALSE'}", *(pg.Vector2(pg.mouse.get_pos()) + [12, 8]), white, 15)              
 
             if posoffset != self.mpos or self.lastfg != fg or self.lastfp != fp or self.justChangedZoom:
                 if not self.is_macro(self.tileimage):
@@ -648,8 +654,8 @@ class TE(MenuWithField):
         for li, ly in enumerate(clip.data["TE"]):
             for tl in ly:
                 dat[li].append([tl[0], tl[1], tl[2]])
-        for i in range(3):
-            layer = 2 - ((i - self.layer) % 3)
+        for i in range(len(clip.data["TE"])):
+            layer = 2 - ((i - self.layer) % 3) if clip.modes[1] else 0
             fac = 0
             if clip.modes[1]:
                 fac = float(i + 1) / 3
@@ -1230,6 +1236,9 @@ class TE(MenuWithField):
 
     def switchcopylayers(self):
         self.copyalllayers = not self.copyalllayers
+
+    def switchcopygeo(self):
+        self.copygeo = not self.copygeo
 
     def get_next_path_tile(self, init, path, indx):
         tile = path[indx]

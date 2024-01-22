@@ -142,6 +142,7 @@
     	"K_SPACE": "-changetools",
     	"K_e+": "-sad",
 		"K_r+": "-switchcopylayers",
+		"K_g+": "-switchcopygeo",
     	"K_q": "-copytile",
     	"K_f+": "-findtile",
     	"K_LSHIFT": "alt_func",
