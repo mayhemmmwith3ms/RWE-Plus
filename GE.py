@@ -392,7 +392,7 @@ class GE(MenuWithField):
             else:
                 pg.draw.rect(self.surface, mirror, [self.field.rect.x, py, self.field.field.get_width(), 3])
 
-    def draw_geo_thing(self, data, pos, color, alpha = 130):
+    def draw_geo_list(self, data, pos, color, alpha = 130):
 
 
         bluetoolsurf = self.toolsized
@@ -434,7 +434,7 @@ class GE(MenuWithField):
         col = blue.lerp(c[self.layer], 0.5)
 
         if not geodata.modes[0]:
-            self.draw_geo_thing(geodata.data["GE"][0], pos, col)
+            self.draw_geo_list(geodata.data["GE"][0], pos, col)
         else:
             dat = geodata.data["GE"]
             #dat2 = []
@@ -443,7 +443,7 @@ class GE(MenuWithField):
 
             for i, ly in enumerate(dat):
                 col = blue.lerp(c[i], 0.5)
-                self.draw_geo_thing(ly, pos, col, 130 if i == 0 else 80)
+                self.draw_geo_list(ly, pos, col, 130 if i == 0 else 80)
 
     def get_slope_orientation(self, pos: pg.Vector2):
         x = int(pos.x)
