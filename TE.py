@@ -236,7 +236,6 @@ class TE(MenuWithField):
                             block = self.data["TE"]["tlMatrix"][xpos][ypos][z]
                             if block["tp"] == "material" or block["tp"] == "tileHead":
                                 ctiles[z].append([x, y, block])
-                                print(ctiles)
                                 c_dat = cpyh.FieldGridCopyData(tiledata=ctiles)
             else:
                 for x in range(int(rect.w)):
@@ -249,7 +248,6 @@ class TE(MenuWithField):
                             c_dat = cpyh.FieldGridCopyData(tiledata=[ctiles[self.layer]])
 
             pyperclip.copy(str(c_dat))
-            print(c_dat)
         elif place and self.is_macro(self.tileimage):
             saved = self.tileimage
             savedtool = saved["name"]
@@ -639,7 +637,6 @@ class TE(MenuWithField):
                 dat[li].append([tl[0], tl[1], tl[2]])
         for i in range(3):
             layer = 2 - ((i - self.layer) % 3)
-            print(layer)
             fac = float(i + 1) / 3
             self.draw_tile_list(dat[layer], pos, fac * 180, pg.Color(254, 254, 254).lerp((50, 50, 255), fac))
         
