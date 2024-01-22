@@ -237,7 +237,8 @@
 
     	"K_SPACE@@": "cursor_propdepth_inverse",
     	"K_f+": "-findpropmenu",
-		"K_LSHIFT": "moreinfo"
+		"K_LSHIFT": "moreinfo",
+		"K_LALT": "scroll_control"
   	},
 	"FE": {
 		"unlock_keys": ["K_LEFT", "K_RIGHT", "K_UP", "K_DOWN"],

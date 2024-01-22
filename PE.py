@@ -995,6 +995,18 @@ class PE(MenuWithField):
         self.cursor.rotation = 0
         self.cursor.scale = pg.Vector2()
 
+    def scroll_up(self):
+        if self.findparampressed("scroll_control"):
+            self.depth_up()
+            return False
+        return True
+    
+    def scroll_down(self):
+        if self.findparampressed("scroll_control"):
+            self.depth_down()
+            return False
+        return True
+
     @property
     def custom_info(self):
         try:
