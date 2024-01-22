@@ -226,7 +226,19 @@ class TE(MenuWithField):
                         self.destroy(x + rect.x, y + rect.y)
         elif self.tool == 2:  # copy
             ctiles = [[], [], []]
-            c_dat = None
+            c_dat = cpyh.FieldGridCopyData(None, None)
+
+            if True:
+                grid = self.data["GE"][rect.x:rect.x + rect.w]
+                grid = [i[rect.y:rect.y + rect.h] for i in grid]
+
+                if self.copyalllayers:
+                    grid = [[[y[z] for y in x] for x in grid] for z in range(3)]
+                    c_dat.data["GE"] = grid
+                else:
+                    grid = [[y[self.layer] for y in x] for x in grid]
+                    c_dat.data["GE"] = [grid]
+
             if self.copyalllayers:
                 for x in range(int(rect.w)):
                     for y in range(int(rect.h)):
@@ -236,7 +248,7 @@ class TE(MenuWithField):
                             block = self.data["TE"]["tlMatrix"][xpos][ypos][z]
                             if block["tp"] == "material" or block["tp"] == "tileHead":
                                 ctiles[z].append([x, y, block])
-                                c_dat = cpyh.FieldGridCopyData(tiledata=ctiles)
+                                c_dat.data["TE"] = ctiles
             else:
                 for x in range(int(rect.w)):
                     for y in range(int(rect.h)):
@@ -245,7 +257,7 @@ class TE(MenuWithField):
                         block = self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]
                         if block["tp"] == "material" or block["tp"] == "tileHead":
                             ctiles[self.layer].append([x, y, block])
-                            c_dat = cpyh.FieldGridCopyData(tiledata=[ctiles[self.layer]])
+                            c_dat.data["TE"] = [ctiles[self.layer]]
 
             pyperclip.copy(str(c_dat))
         elif place and self.is_macro(self.tileimage):
@@ -697,6 +709,36 @@ class TE(MenuWithField):
             print("Error pasting data!")
             return
         self.emptyarea()
+
+        if geodata.data["GE"] is not None:
+            if not geodata.modes[0]:
+                for xi, x in enumerate(geodata.data["GE"][0]):
+                    for yi, y in enumerate(x):
+                        pa = pg.Vector2(0, 0)
+                        if self.field.rect.collidepoint(pg.mouse.get_pos()):
+                            pa = self.pos
+                        xpos = -self.xoffset + xi + int(pa.x)
+                        ypos = -self.yoffset + yi + int(pa.y)
+                        #if (self.replaceair and y[0] == 0) or not self.canplaceit(xpos, ypos, xpos, ypos):
+                        #    continue
+                        self.data["GE"][xpos][ypos][self.layer] = y
+                        self.area[xpos][ypos] = False
+            else:
+                for zi, z in enumerate(geodata.data["GE"]):
+                    for xi, x in enumerate(z):
+                        for yi, y in enumerate(x):
+                                pa = pg.Vector2(0, 0)
+                                if self.field.rect.collidepoint(pg.mouse.get_pos()):
+                                    pa = self.pos
+                                xpos = -self.xoffset + xi + int(pa.x)
+                                ypos = -self.yoffset + yi + int(pa.y)
+                                #if (self.replaceair and y[0] == 0) or not self.canplaceit(xpos, ypos, xpos, ypos):
+                                #    continue
+                                self.data["GE"][xpos][ypos][zi] = y
+                                self.area[xpos][ypos] = False
+            self.detecthistory(["GE"])
+            self.renderer.geo_render_area(self.area, self.layer)
+
         lcache = self.layer
         for li, ly in enumerate(geodata.data["TE"]):
             for ti, tl in enumerate(ly):

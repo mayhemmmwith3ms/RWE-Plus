@@ -196,7 +196,6 @@ class GE(MenuWithField):
             else:
                 grid = [[y[self.layer] for y in x] for x in grid]
                 c_dat = cpyh.FieldGridCopyData([grid])
-            print(c_dat)
             pyperclip.copy(str(c_dat))
             print("Copied!")
         elif self.selectedtool == "SL":
