@@ -1,4 +1,5 @@
 from menuclass import *
+import clipb_help as cpyh
 
 
 class GE(MenuWithField):
@@ -28,7 +29,7 @@ class GE(MenuWithField):
         self.fillshape2 = "rect"  # rect, rect-hollow, circle, circle-hollow, line
         self.brushsize = 1
         self.copyalllayers = False
-        self.clipboardcache = None
+        self.clipboardcache:cpyh.FieldGridCopyData = None
 
         self.toolsized = None
 
@@ -184,24 +185,20 @@ class GE(MenuWithField):
         mpos = pg.Vector2(pg.mouse.get_pos())
 
         if self.selectedtool == "CP" or self.selectedtool == "CT":
+            rect = self.vec2rect(self.rectdata[0], self.posoffset)
+            grid = self.data["GE"][rect.x:rect.x + rect.w + 1]
+            grid = [i[rect.y:rect.y + rect.h + 1] for i in grid]
+            c_dat = None
+
             if self.copyalllayers:
-                rect = self.vec2rect(self.rectdata[0], self.posoffset)
-                rect.w += 1 #i'm sure theres a better solution to this :slugmod:
-                rect.h += 1
-                data1 = self.data["GE"][rect.x:rect.x + rect.w]
-                data1 = [i[rect.y:rect.y + rect.h] for i in data1]
-                data1 = ["GE2", data1]
-                pyperclip.copy(str(data1))
-                print("Copied!")
+                grid = [[[y[z] for y in x] for x in grid] for z in range(3)]
+                c_dat = cpyh.FieldGridCopyData(grid)
             else:
-                rect = self.vec2rect(self.rectdata[0], self.posoffset)
-                rect.w += 1 #i'm sure theres a better solution to this :slugmod:
-                rect.h += 1
-                data1 = self.data["GE"][rect.x:rect.x + rect.w]
-                data1 = [i[rect.y:rect.y + rect.h] for i in data1]
-                data1 = ["GE", [[y[self.layer] for y in x] for x in data1]]
-                pyperclip.copy(str(data1))
-                print("Copied!")
+                grid = [[y[self.layer] for y in x] for x in grid]
+                c_dat = cpyh.FieldGridCopyData([grid])
+            print(c_dat)
+            pyperclip.copy(str(c_dat))
+            print("Copied!")
         elif self.selectedtool == "SL":
             rect = self.vec2rect(self.rectdata[0], self.posoffset)
             for x in range(int(rect.w)):
@@ -276,9 +273,9 @@ class GE(MenuWithField):
             if pg.key.get_pressed()[pg.K_LCTRL]:
                 try:
                     if self.clipboardcache is None:
-                        self.clipboardcache = eval(pyperclip.paste())
+                        self.clipboardcache = cpyh.FieldGridCopyData.from_clipboard_string(pyperclip.paste())
                     geodata = self.clipboardcache
-                    if geodata[0] in ["GE", "GE2"] and isinstance(geodata[1], list):
+                    if geodata.data["GE"] is not None:
                         try_clipboard = True
                 except Exception:
                     pass
@@ -430,22 +427,22 @@ class GE(MenuWithField):
 
     def draw_clipboard_preview(self):
         geodata = self.clipboardcache
-        if geodata is None or not isinstance(geodata[1], list):
+        if geodata.data["GE"] is None:
             return
             
         pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
         c = [black, green, red]
         col = blue.lerp(c[self.layer], 0.5)
 
-        if geodata[0] == "GE":
-            self.draw_geo_thing(geodata[1], pos, col)
-        elif geodata[0] == "GE2":
-            dat = geodata[1]
-            dat2 = []
-            for i in range(3):
-                dat2.append([[y[i] for y in x] for x in dat]) 
+        if not geodata.modes[0]:
+            self.draw_geo_thing(geodata.data["GE"][0], pos, col)
+        else:
+            dat = geodata.data["GE"]
+            #dat2 = []
+            #for i in range(3):
+            #    dat2.append([[y[i] for y in x] for x in dat]) 
 
-            for i, ly in enumerate(dat2):
+            for i, ly in enumerate(dat):
                 col = blue.lerp(c[i], 0.5)
                 self.draw_geo_thing(ly, pos, col, 130 if i == 0 else 80)
 
@@ -551,28 +548,27 @@ class GE(MenuWithField):
         self.labels[2].set_text(self.labels[2].originaltext + str(self.replaceair))
 
     def pastegeo(self):
-        try:
-            self.emptyarea()
-            geodata = eval(pyperclip.paste())
-            if not isinstance(geodata[1], list):
-                return
-            
-            if geodata[0] == "GE":
-                for xi, x in enumerate(geodata[1]):
+        self.emptyarea()
+        geodata = cpyh.FieldGridCopyData.from_clipboard_string(pyperclip.paste())
+        if geodata.data["GE"] is None:
+            return
+        
+        if not geodata.modes[0]:
+            for xi, x in enumerate(geodata.data["GE"][0]):
+                for yi, y in enumerate(x):
+                    pa = pg.Vector2(0, 0)
+                    if self.field.rect.collidepoint(pg.mouse.get_pos()):
+                        pa = self.pos
+                    xpos = -self.xoffset + xi + int(pa.x)
+                    ypos = -self.yoffset + yi + int(pa.y)
+                    if (self.replaceair and y[0] == 0) or not self.canplaceit(xpos, ypos, xpos, ypos):
+                        continue
+                    self.data["GE"][xpos][ypos][self.layer] = y
+                    self.area[xpos][ypos] = False
+        else:
+            for zi, z in enumerate(geodata.data["GE"]):
+                for xi, x in enumerate(z):
                     for yi, y in enumerate(x):
-                        pa = pg.Vector2(0, 0)
-                        if self.field.rect.collidepoint(pg.mouse.get_pos()):
-                            pa = self.pos
-                        xpos = -self.xoffset + xi + int(pa.x)
-                        ypos = -self.yoffset + yi + int(pa.y)
-                        if (self.replaceair and y[0] == 0) or not self.canplaceit(xpos, ypos, xpos, ypos):
-                            continue
-                        self.data["GE"][xpos][ypos][self.layer] = y
-                        self.area[xpos][ypos] = False
-            elif geodata[0] == "GE2":
-                for xi, x in enumerate(geodata[1]):
-                    for yi, y in enumerate(x):
-                        for zi, z in enumerate(y):
                             pa = pg.Vector2(0, 0)
                             if self.field.rect.collidepoint(pg.mouse.get_pos()):
                                 pa = self.pos
@@ -580,13 +576,11 @@ class GE(MenuWithField):
                             ypos = -self.yoffset + yi + int(pa.y)
                             if (self.replaceair and y[0] == 0) or not self.canplaceit(xpos, ypos, xpos, ypos):
                                 continue
-                            self.data["GE"][xpos][ypos][zi] = z
+                            self.data["GE"][xpos][ypos][zi] = y
                             self.area[xpos][ypos] = False
-            self.detecthistory(["GE"])
-            self.renderer.geo_render_area(self.area, self.layer)
-            self.rfa()
-        except Exception:
-            print("Error pasting data!")
+        self.detecthistory(["GE"])
+        self.renderer.geo_render_area(self.area, self.layer)
+        self.rfa()
 
     def s0(self):
         self.state = 0

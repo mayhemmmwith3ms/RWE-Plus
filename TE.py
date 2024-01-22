@@ -1,6 +1,7 @@
 from menuclass import *
 from lingotojson import *
 import random
+import clipb_help as cpyh
 
 blocks = [
     {"tiles": ["A"], "upper": "dense", "lower": "dense", "tall":1, "freq":5},
@@ -57,7 +58,7 @@ class TE(MenuWithField):
         self.lastfg = False
         self.lastfp = False
         self.brushsize = 1
-        self.clipboardcache = None
+        self.clipboardcache:cpyh.FieldGridCopyData = None
         self.copyalllayers = False
 
         self.justPlacedChainHolders = []
@@ -224,23 +225,31 @@ class TE(MenuWithField):
                     else:
                         self.destroy(x + rect.x, y + rect.y)
         elif self.tool == 2:  # copy
-            history = []
+            ctiles = [[], [], []]
+            c_dat = None
             if self.copyalllayers:
                 for x in range(int(rect.w)):
                     for y in range(int(rect.h)):
+                        xpos, ypos = x + rect.x, y + rect.y
+
                         for z in range(3):
-                            xpos, ypos = x + rect.x, y + rect.y
                             block = self.data["TE"]["tlMatrix"][xpos][ypos][z]
                             if block["tp"] == "material" or block["tp"] == "tileHead":
-                                history.append([x, y, z, block])
+                                ctiles[z].append([x, y, block])
+                                print(ctiles)
+                                c_dat = cpyh.FieldGridCopyData(tiledata=ctiles)
             else:
                 for x in range(int(rect.w)):
                     for y in range(int(rect.h)):
                         xpos, ypos = x + rect.x, y + rect.y
+
                         block = self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]
                         if block["tp"] == "material" or block["tp"] == "tileHead":
-                            history.append([x, y, self.layer, block])
-            pyperclip.copy(str(["TE", history]))
+                            ctiles[self.layer].append([x, y, block])
+                            c_dat = cpyh.FieldGridCopyData(tiledata=[ctiles[self.layer]])
+
+            pyperclip.copy(str(c_dat))
+            print(c_dat)
         elif place and self.is_macro(self.tileimage):
             saved = self.tileimage
             savedtool = saved["name"]
@@ -328,8 +337,8 @@ class TE(MenuWithField):
             try:
                 if pg.key.get_pressed()[pg.K_LCTRL]:
                     if self.clipboardcache is None:
-                        self.clipboardcache = eval(pyperclip.paste())
-                    if self.clipboardcache[0] == "TE" and isinstance(self.clipboardcache[1], list):
+                        self.clipboardcache = cpyh.FieldGridCopyData.from_clipboard_string(pyperclip.paste())
+                    if self.clipboardcache.data["TE"] is not None:
                         try_clipboard = True
                 else:
                     self.clipboardcache = None
@@ -472,7 +481,7 @@ class TE(MenuWithField):
 
             if try_clipboard:
                     clipboard = self.clipboardcache
-                    if clipboard[0] not in ["TE", "TE2"] or not isinstance(clipboard[1], list):
+                    if clipboard.data["TE"] is None:
                         return
                     self.draw_clipboard_preview()
 
@@ -598,7 +607,6 @@ class TE(MenuWithField):
                     tiles[tlname] = j
                 #if next(((x[2]["data"][1] if x[2]["tp"] == "tileHead" else x[2]["data"]) == j["name"]) for x in data):
                 #    tiles[j["name"]] = j
-                    
         for dat in data:
             tx, ty, tile = dat
             tlname = tile["data"][1] if tile["tp"] == "tileHead" else tile["data"]
@@ -622,15 +630,18 @@ class TE(MenuWithField):
 
     def draw_clipboard_preview(self):
         clip = self.clipboardcache
-        if clip[0] != "TE" or not isinstance(clip[1], list) or len(pyperclip.paste()) <= 2:
+        if clip.data["TE"] is None or len(pyperclip.paste()) <= 2:
             return
         pos = self.field.rect.topleft + (self.pos * self.size if self.onfield else pg.Vector2(0, 0))
         dat = [[],[],[]]
-        for tl in clip[1]:
-            dat[tl[2]].append([tl[0], tl[1], tl[3]])
-        for i in range(2, -1, -1):
-            fac = float(3.0 - i) / 3
-            self.draw_tile_list(dat[i], pos, fac * 180, pg.Color(254, 254, 254).lerp((50, 50, 255), fac))
+        for li, ly in enumerate(clip.data["TE"]):
+            for tl in ly:
+                dat[li].append([tl[0], tl[1], tl[2]])
+        for i in range(3):
+            layer = 2 - ((i - self.layer) % 3)
+            print(layer)
+            fac = float(i + 1) / 3
+            self.draw_tile_list(dat[layer], pos, fac * 180, pg.Color(254, 254, 254).lerp((50, 50, 255), fac))
         
 
     def brushpaint(self, pos: pg.Vector2, place = True):
@@ -684,15 +695,15 @@ class TE(MenuWithField):
         self.resize()
 
     def pastedata(self):
-        try:
-            geodata = eval(pyperclip.paste())
-            if geodata[0] != "TE" or not isinstance(geodata[1], list) or len(pyperclip.paste()) <= 2:
-                print("Error pasting data!")
-                return
-            self.emptyarea()
-            lcache = self.layer
-            for block in geodata[1]:
-                blockx, blocky, blockl, data = block
+        geodata:cpyh.FieldGridCopyData = cpyh.FieldGridCopyData.from_clipboard_string(pyperclip.paste())
+        if geodata.data["TE"] is None or len(pyperclip.paste()) <= 2:
+            print("Error pasting data!")
+            return
+        self.emptyarea()
+        lcache = self.layer
+        for li, ly in enumerate(geodata.data["TE"]):
+            for ti, tl in enumerate(ly):
+                blockx, blocky, data = tl
                 if data["tp"] == "material":
                     name = data["data"]
                 else:
@@ -709,17 +720,15 @@ class TE(MenuWithField):
                 cposxo = int(pa.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
                 cposyo = int(pa.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
 
-                self.layer = blockl
+                self.layer = li
                 self.place(blockx - self.xoffset + cposxo, blocky - self.yoffset + cposyo)
-            else:
-                self.selectcat(cat)
-                self.layer = lcache
-            self.detecthistory(["TE", "tlMatrix"])
-            self.renderer.tiles_render_area(self.area, self.layer)
-            self.rfa()
-        except Exception:
-            print("Error pasting data!")
+        else:
+            self.selectcat(cat)
             self.layer = lcache
+        self.detecthistory(["TE", "tlMatrix"])
+        self.renderer.tiles_render_area(self.area, self.layer)
+        self.rfa()
+
 
     def findcat(self, itemname):
         for name, listdata in self.items.items():
