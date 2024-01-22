@@ -392,38 +392,6 @@ class GE(MenuWithField):
             else:
                 pg.draw.rect(self.surface, mirror, [self.field.rect.x, py, self.field.field.get_width(), 3])
 
-    def draw_geo_list(self, data, pos, color, alpha = 130):
-
-
-        bluetoolsurf = self.toolsized
-
-        bluetoolsurf.set_alpha(alpha)
-        bluetoolsurf.fill(pg.Color(254, 254, 254), special_flags=pg.BLEND_RGB_ADD)
-        bluetoolsurf.fill(color, special_flags=pg.BLEND_RGBA_MULT)
-        
-        rect2 = [self.size]*2
-
-        for x, xc in enumerate(data):
-            for y, yc in enumerate(xc):
-                rect1 = [z * (self.size / preview_cell_size) for z in gCell_slice_from_type(yc[0])]
-                self.surface.blit(bluetoolsurf, pos + [x * self.size, y * self.size], [rect1, rect2])
-
-                for st in yc[1]:
-                    if st in LAYER_COLOR_EXTRA:
-                        rect1 = [z * (self.size / preview_cell_size) for z in gExtra_slice_from_type(st)]
-                        self.surface.blit(bluetoolsurf, pos + [x * self.size, y * self.size], [rect1, rect2]) 
-
-        bluetoolsurf.fill(pg.Color(254, 254, 254), special_flags=pg.BLEND_RGB_ADD)
-        bluetoolsurf.fill(white, special_flags=pg.BLEND_RGBA_MULT)
-
-        for x, xc in enumerate(data):
-            for y, yc in enumerate(xc):
-                for st in yc[1]:
-                    if st not in LAYER_COLOR_EXTRA:
-                        rect1 = [z * (self.size / preview_cell_size) for z in gExtra_slice_from_type(st)]
-                        rect2 = [self.size]*2
-                        self.surface.blit(bluetoolsurf, pos + [x * self.size, y * self.size], [rect1, rect2])
-
     def draw_clipboard_preview(self):
         geodata = self.clipboardcache
         if geodata.data["GE"] is None:
@@ -434,16 +402,13 @@ class GE(MenuWithField):
         col = blue.lerp(c[self.layer], 0.5)
 
         if not geodata.modes[0]:
-            self.draw_geo_list(geodata.data["GE"][0], pos, col)
+            draw_geo_list(self.surface, self.toolrender, self.size, geodata.data["GE"][0], pos, col)
         else:
             dat = geodata.data["GE"]
-            #dat2 = []
-            #for i in range(3):
-            #    dat2.append([[y[i] for y in x] for x in dat]) 
 
             for i, ly in enumerate(dat):
                 col = blue.lerp(c[i], 0.5)
-                self.draw_geo_list(ly, pos, col, 130 if i == 0 else 80)
+                draw_geo_list(self.surface, self.toolrender, self.size, ly, pos, col, 130 if i == 0 else 80)
 
     def get_slope_orientation(self, pos: pg.Vector2):
         x = int(pos.x)

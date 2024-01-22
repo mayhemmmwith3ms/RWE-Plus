@@ -84,6 +84,36 @@ def gCell_slice_from_type(type):
 def gTool_slice_from_typeandstate(type_and_state):
     return [graphics["tileplaceicon"][str(type_and_state)][0] * preview_cell_size, graphics["tileplaceicon"][str(type_and_state)][1] * preview_cell_size]
 
+def draw_geo_list(surface, geotools, size, data, pos, color, alpha = 130):
+    scaled_tool_image = pg.transform.scale(geotools,
+                                    pg.Vector2(geotools.get_size()) / preview_cell_size * size).convert_alpha(surface)
+
+    scaled_tool_image.set_alpha(alpha)
+    scaled_tool_image.fill(pg.Color(254, 254, 254), special_flags=pg.BLEND_RGB_ADD)
+    scaled_tool_image.fill(color, special_flags=pg.BLEND_RGBA_MULT)
+    
+    rect2 = [size]*2
+
+    for x, xc in enumerate(data):
+        for y, yc in enumerate(xc):
+            rect1 = [z * (size / preview_cell_size) for z in gCell_slice_from_type(yc[0])]
+            surface.blit(scaled_tool_image, pos + [x * size, y * size], [rect1, rect2])
+
+            for st in yc[1]:
+                if st in LAYER_COLOR_EXTRA:
+                    rect1 = [z * (size / preview_cell_size) for z in gExtra_slice_from_type(st)]
+                    surface.blit(scaled_tool_image, pos + [x * size, y * size], [rect1, rect2]) 
+
+    scaled_tool_image.fill(white, special_flags=pg.BLEND_RGBA_MULT)
+
+    for x, xc in enumerate(data):
+        for y, yc in enumerate(xc):
+            for st in yc[1]:
+                if st not in LAYER_COLOR_EXTRA:
+                    rect1 = [z * (size / preview_cell_size) for z in gExtra_slice_from_type(st)]
+                    rect2 = [size]*2
+                    surface.blit(scaled_tool_image, pos + [x * size, y * size], [rect1, rect2])
+
 def quadsize(quad):
     mostleft = bignum
     mostright = 0
