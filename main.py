@@ -177,6 +177,7 @@ def launchload(level):
             file["level"] = ""
             file["path"] = ""
             file["dir"] = ""
+            file["persistent"] = persistentdata
         elif level == "":
             return
         elif level[-3:] == "txt":
@@ -184,11 +185,13 @@ def launchload(level):
             file["level"] = os.path.basename(level)
             file["path"] = level
             file["dir"] = os.path.abspath(level)
+            file["persistent"] = persistentdata
         else:
             file = json.load(open(level, "r"))
             file["level"] = os.path.basename(level)
             file["path"] = level
             file["dir"] = os.path.abspath(level)
+            file["persistent"] = persistentdata
     except Exception:
         log_to_load_log(f"Failed to load level \"{os.path.basename(level)}\"! This may be caused by corrupted or invalid data!", error=True)
         raise
