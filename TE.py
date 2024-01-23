@@ -778,7 +778,8 @@ class TE(MenuWithField):
                 cposxo = int(pa.x) - int((self.tileimage["size"][0] * .5) + .5) + 1
                 cposyo = int(pa.y) - int((self.tileimage["size"][1] * .5) + .5) + 1
 
-                self.layer = li
+                if geodata.modes[1]:
+                    self.layer = li
                 self.place(blockx - self.xoffset + cposxo, blocky - self.yoffset + cposyo)
         else:
             self.selectcat(cat)
