@@ -736,8 +736,8 @@ class TE(MenuWithField):
                             pa = self.pos
                         xpos = -self.xoffset + xi + int(pa.x)
                         ypos = -self.yoffset + yi + int(pa.y)
-                        #if (self.replaceair and y[0] == 0) or not self.canplaceit(xpos, ypos, xpos, ypos):
-                        #    continue
+                        if not self.canplaceit(xpos, ypos, xpos, ypos):
+                            continue
                         self.data["GE"][xpos][ypos][self.layer] = y
                         self.area[xpos][ypos] = False
             else:
@@ -751,6 +751,8 @@ class TE(MenuWithField):
                                 ypos = -self.yoffset + yi + int(pa.y)
                                 #if (self.replaceair and y[0] == 0) or not self.canplaceit(xpos, ypos, xpos, ypos):
                                 #    continue
+                                if not self.canplaceit(xpos, ypos, xpos, ypos):
+                                    continue
                                 self.data["GE"][xpos][ypos][zi] = y
                                 self.area[xpos][ypos] = False
             self.detecthistory(["GE"])
