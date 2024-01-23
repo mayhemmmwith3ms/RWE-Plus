@@ -982,7 +982,7 @@ class PE(MenuWithField):
 
     def on_switch_editor(self):
         self.persistent_data["selectedProp"] = self.selectedprop["nm"]
-        self.persistent_data["cursorData"] = [self.cursor.rotation, self.cursor.scale]
+        self.persistent_data["cursorData"] = [self.cursor.rotation, [self.cursor.scale.x, self.cursor.scale.y]]
         self.persistent_data["depth"] = self.depth
 
     def match_cursor(self):
