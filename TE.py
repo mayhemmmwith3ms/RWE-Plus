@@ -722,7 +722,7 @@ class TE(MenuWithField):
 
     def pastedata(self):
         geodata:cpyh.FieldGridCopyData = cpyh.FieldGridCopyData.from_clipboard_string(pyperclip.paste())
-        if geodata.data["TE"] is None or len(pyperclip.paste()) <= 2:
+        if geodata is None or geodata.data["TE"] is None or len(pyperclip.paste()) <= 2:
             print("Error pasting data!")
             return
         self.emptyarea()

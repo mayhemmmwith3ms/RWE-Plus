@@ -514,7 +514,7 @@ class GE(MenuWithField):
     def pastegeo(self):
         self.emptyarea()
         geodata = cpyh.FieldGridCopyData.from_clipboard_string(pyperclip.paste())
-        if geodata.data["GE"] is None:
+        if geodata is None or geodata.data["GE"] is None:
             return
         
         if not geodata.modes[0]:
