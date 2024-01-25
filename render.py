@@ -82,7 +82,13 @@ def gCell_slice_from_type(type):
     return [graphics["shows"][f"{type}"][0] * preview_cell_size, graphics["shows"][f"{type}"][1] * preview_cell_size]
 
 def gTool_slice_from_typeandstate(type_and_state):
-    return [graphics["tileplaceicon"][str(type_and_state)][0] * preview_cell_size, graphics["tileplaceicon"][str(type_and_state)][1] * preview_cell_size]
+    c = []
+    if str(type_and_state) in graphics["tileplaceicon"]:
+        c = graphics["tileplaceicon"][str(type_and_state)]
+    else:
+        c = graphics["tileplaceicon"]["0"]
+        
+    return [c[0] * preview_cell_size, c[1] * preview_cell_size]
 
 def draw_geo_list(surface, geotools, size, data, pos, color, alpha = 130, drawair = True):
     scaled_tool_image = pg.transform.scale(geotools,
