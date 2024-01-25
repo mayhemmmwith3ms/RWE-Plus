@@ -288,6 +288,8 @@ class FE(MenuWithField):
 
     def makeparams(self):
         self.params = []
+        if len(self.data["FE"]["effects"]) > 0:
+            self.paramindex = min(len(self.data["FE"]["effects"][self.selectedeffect]["options"]) - 1, self.paramindex)
         self.chtext()
         if len(self.data["FE"]["effects"]) == 0:
             return
@@ -442,7 +444,7 @@ class FE(MenuWithField):
         self.fieldadd.set_alpha(180)
         self.rf3()
         self.recaption()
-        self.makeparams()
+        #self.makeparams()
 
     def rf3(self):
         if len(self.data["FE"]["effects"]) > 0:
