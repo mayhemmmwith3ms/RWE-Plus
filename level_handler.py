@@ -22,7 +22,7 @@ import ujson as json
 import widgets
 import menus as mns
 
-keys = [pg.K_LCTRL, pg.K_LALT, pg.K_LSHIFT]
+modifier_keys = [pg.K_LCTRL, pg.K_LALT, pg.K_LSHIFT]
 
 def load_level(filepath) -> dict():
     if isinstance(filepath, str):
@@ -153,7 +153,7 @@ class LevelManager:
                 if file is not None and os.path.exists(file):
                     self.focus_level(file)
 
-    def doevents(self, window):
+    def doevents(self):
         for event in pg.event.get():
             match event.type:
                 case pg.DROPFILE:
@@ -164,12 +164,12 @@ class LevelManager:
                 case pg.WINDOWRESIZED:
                     self.menu.resize()
                 case pg.KEYDOWN:
-                    if event.key not in keys:
+                    if event.key not in modifier_keys:
                         if widgets.keybol:
                             widgets.keybol = False
                             self.keypress()
                 case pg.KEYUP:
-                    if event.key not in keys:
+                    if event.key not in modifier_keys:
                         if not widgets.keybol:
                             widgets.keybol = True
                 case pg.MOUSEBUTTONDOWN:
@@ -192,7 +192,7 @@ class LevelManager:
                     case pg.DROPFILE:
                         if event.file is not None and os.path.exists(event.file):
                             self.focus_level(event.file)
-            self.doevents(self.window)
+            self.doevents()
             match self.menu.message:
                 case "new":
                     self.focus_level(-1)
@@ -248,7 +248,7 @@ class LevelManager:
         while run:
             if not self.active_level:
                 run = False
-            self.doevents(self.window)
+            self.doevents()
             run = self.active_level.update()
 
 
