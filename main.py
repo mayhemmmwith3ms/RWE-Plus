@@ -10,6 +10,7 @@ import argparse
 from path_dict import PathDict
 from lingotojson import *
 from files import ui_settings, hotkeys, path, application_path
+import level_handler as lv
 
 widgets.keybol = True
 run = True
@@ -21,7 +22,7 @@ file2 = ""
 undobuffer = []
 redobuffer = []
 surf: Menu | MenuWithField = None
-renderer:Renderer = None
+lv_manager:lv.LevelManager = None
 loading = False
 
 def openlevel(level, window):
@@ -158,47 +159,6 @@ def asktoexit(file, file2):
     else:
         sys.exit(0)
 
-def launchload(level):
-    global surf, fullscreen, undobuffer, redobuffer, file, file2, run, loading
-
-    if isinstance(level, str):
-        log_to_load_log(f"Start load of level \"{os.path.basename(level)}\"!")
-
-    if isinstance(level, str) and (splitfilepath := os.path.splitext(level))[1] not in [".wep", ".txt"]:
-        level = splitfilepath[0] + ".wep"
-        if not os.path.exists(level):
-            level = splitfilepath[0] + ".txt"
-
-    add_to_recent(level)
-
-    try:
-        if level == -1:
-            file = turntoproject(open(path + "default.txt", "r").read())
-            file["level"] = ""
-            file["path"] = ""
-            file["dir"] = ""
-            file["persistent"] = persistentdata
-        elif level == "":
-            return
-        elif level[-3:] == "txt":
-            file = turntoproject(open(level, "r").read())
-            file["level"] = os.path.basename(level)
-            file["path"] = level
-            file["dir"] = os.path.abspath(level)
-            file["persistent"] = persistentdata
-        else:
-            file = json.load(open(level, "r"))
-            file["level"] = os.path.basename(level)
-            file["path"] = level
-            file["dir"] = os.path.abspath(level)
-            file["persistent"] = persistentdata
-    except Exception:
-        log_to_load_log(f"Failed to load level \"{os.path.basename(level)}\"! This may be caused by corrupted or invalid data!", error=True)
-        raise
-    undobuffer = []
-    redobuffer = []
-
-
 def doevents(window):
     for event in pg.event.get():
         match event.type:
@@ -225,7 +185,7 @@ def doevents(window):
 
 
 def launch(level):
-    global surf, fullscreen, undobuffer, redobuffer, file, file2, run, loading, renderer
+    global surf, fullscreen, undobuffer, redobuffer, file, file2, run, loading, lv_manager
     loading = True
     # loading image
     loading = True
@@ -241,7 +201,7 @@ def launch(level):
         window = pg.display.set_mode([width, height], flags=pg.RESIZABLE | (pg.FULLSCREEN * fullscreen))
         pg.display.set_icon(loadimage(path + "icon.png"))
 
-        renderer = Renderer(file, renderer.tiles, renderer.props, renderer.propcolors, True)
+        renderer = Renderer(file, lv_manager.renderer.tiles, lv_manager.renderer.props, lv_manager.renderer.propcolors, True)
 
         surf = MN(window, renderer)
 
@@ -387,41 +347,23 @@ def loadmenu():
     exit(0)
 
 def preload():
-    global renderer
-
-    loadtimetic = time.perf_counter()
+    global lv_manager
 
     with open(application_path + "\\loadLog.txt", "w") as load_log:
         load_log.write("Start launch load!\n")
 
-    try:
-        loadi = loadimage(f"{path}load.png")
-        window = pg.display.set_mode(loadi.get_size(), flags=pg.NOFRAME)
-        window.blit(loadi, [0, 0])
-        pg.display.flip()
-        pg.display.update()
+    loadi = loadimage(f"{path}load.png")
+    window = pg.display.set_mode(loadi.get_size(), flags=pg.NOFRAME)
+    window.blit(loadi, [0, 0])
+    pg.display.flip()
+    pg.display.update()
 
-        renderer = Renderer({"path": ""}, None, None, None, False)
-        items = inittolist()
-        propcolors = getcolors()
-        props = getprops(items)
-        renderer = Renderer(file, items, props, propcolors, False)    
+    lv_manager = lv.LevelManager()
 
-        del loadi
-    except Exception:
-        with open(application_path + "\\crashLog.txt", "w") as crash_log:
-            crash_log.write(f"[ERROR] Uncaught exception during level load\n{traceback.format_exc()}")
-        log_to_load_log(f"Uncaught exception during load\n{traceback.format_exc()}", error=True)
+    lv_manager.init_renderer()
 
-        root = tkinter.Tk()
-        root.wm_attributes("-topmost", 1)
-        root.withdraw()
-        showerror("OGSCULEDITOR+ Error", "An unhandled exception has occurred during loading\nCheck loadLog.txt for more info", parent=root)
-        raise
+    del loadi
 
-    loadtimetoc = time.perf_counter()   
-    log_to_load_log(f"Init loading completed in {(loadtimetoc - loadtimetic) * 1000:0.6} ms with {errorcount_get()} errors generated")
-    ...
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="RWE+ console", description="Maybe a better, than official LE.")
@@ -458,4 +400,4 @@ if __name__ == "__main__":
             raise
     else:
         preload()
-        loadmenu()
+        lv_manager.start_LD()
