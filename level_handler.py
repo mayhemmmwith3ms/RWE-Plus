@@ -24,6 +24,32 @@ import menus as mns
 
 modifier_keys = [pg.K_LCTRL, pg.K_LALT, pg.K_LSHIFT]
 
+EXIT_COMMAND_SHELVE = 0
+EXIT_COMMAND_SWITCH = 1
+
+def keypress(menu):
+    pressed = ""
+    ctrl = pg.key.get_pressed()[pg.K_LCTRL]
+    # shift = pg.key.get_pressed()[pg.K_LSHIFT]
+    for i in files.hotkeys["global"].keys():
+        key = i.replace("@", "").replace("+", "")
+        if i == "unlock_keys":
+            continue
+        if int(i.find("+") != -1) - int(ctrl) == 0:
+            if pg.key.get_pressed()[getattr(pg, key)]:
+                pressed = files.hotkeys["global"][i]
+    for i in files.hotkeys[menu.menu].keys():
+        key = i.replace("@", "").replace("+", "")
+        if i == "unlock_keys":
+            continue
+        if int(i.find("+") != -1) - int(ctrl) == 0:
+            if pg.key.get_pressed()[getattr(pg, key)]:
+                pressed = files.hotkeys[menu.menu][i]
+                menu.send(pressed)
+    if len(pressed) > 0 and pressed[0] == "/" and menu.menu != "LD":
+        menu.message = pressed[1:]
+    return pressed
+
 def load_level(filepath) -> dict():
     if isinstance(filepath, str):
         lj.log_to_load_log(f"Start load of level \"{os.path.basename(filepath)}\"!")
@@ -86,6 +112,7 @@ class LevelManager:
         self.active_level:LevelInstance = None
         self.menu:Menu | MenuWithField = None # only used for LD basically
         self.window = None
+        self.switch_level = None
 
     def init_renderer(self):
         load_tic = time.perf_counter()
@@ -110,74 +137,6 @@ class LevelManager:
         load_toc = time.perf_counter()   
         lj.log_to_load_log(f"Init loading completed in {(load_tic - load_toc) * 1000:0.6} ms with {lj.errorcount_get()} errors generated")
 
-    def keypress(self):
-        pressed = ""
-        ctrl = pg.key.get_pressed()[pg.K_LCTRL]
-        # shift = pg.key.get_pressed()[pg.K_LSHIFT]
-        for i in files.hotkeys["global"].keys():
-            key = i.replace("@", "").replace("+", "")
-            if i == "unlock_keys":
-                continue
-            if int(i.find("+") != -1) - int(ctrl) == 0:
-                if pg.key.get_pressed()[getattr(pg, key)]:
-                    pressed = files.hotkeys["global"][i]
-        for i in files.hotkeys[self.menu.menu].keys():
-            key = i.replace("@", "").replace("+", "")
-            if i == "unlock_keys":
-                continue
-            if int(i.find("+") != -1) - int(ctrl) == 0:
-                if pg.key.get_pressed()[getattr(pg, key)]:
-                    pressed = files.hotkeys[self.menu.menu][i]
-                    self.menu.send(pressed)
-        if len(pressed) > 0 and pressed[0] == "/" and self.menu.menu != "LD":
-            self.menu.message = pressed[1:]
-        match pressed.lower():
-            case "undo":
-                pass
-            case "redo":
-                pass
-            case "quit":
-                if self.active_level:   
-                    asktoexit(self.active_level.data, self.active_level.old_data)
-            case "reload":
-                self.menu.reload()
-            case "save":
-                if self.active_level:
-                    self.menu.savef()
-                    self.active_level.old_data = files.jsoncopy(self.active_level.data)
-            case "new":
-                print("New")
-                self.menu.savef()
-            case "open":
-                file = self.menu.open_file_dialog()
-                if file is not None and os.path.exists(file):
-                    self.focus_level(file)
-
-    def doevents(self):
-        for event in pg.event.get():
-            match event.type:
-                case pg.DROPFILE:
-                    self.focus_level(event.file)
-                case pg.QUIT:
-                    if self.active_level:   
-                        asktoexit(self.active_level.data, self.active_level.old_data)
-                case pg.WINDOWRESIZED:
-                    self.menu.resize()
-                case pg.KEYDOWN:
-                    if event.key not in modifier_keys:
-                        if widgets.keybol:
-                            widgets.keybol = False
-                            self.keypress()
-                case pg.KEYUP:
-                    if event.key not in modifier_keys:
-                        if not widgets.keybol:
-                            widgets.keybol = True
-                case pg.MOUSEBUTTONDOWN:
-                    if event.button == 4:
-                        self.menu.send("SU")
-                    elif event.button == 5:
-                        self.menu.send("SD")
-
     def start_LD(self):    
         run = True
         width = 1280
@@ -187,12 +146,35 @@ class LevelManager:
         self.menu = LD.load(self.window, self.renderer)
 
         while run:
+            pressedkey = ""
             for event in pg.event.get():
                 match event.type:
                     case pg.DROPFILE:
-                        if event.file is not None and os.path.exists(event.file):
-                            self.focus_level(event.file)
-            self.doevents()
+                        self.focus_level(event.file)
+                    case pg.QUIT:
+                        asktoexit(None, None)
+                    case pg.WINDOWRESIZED:
+                        self.menu.resize()
+                    case pg.KEYDOWN:
+                        if event.key not in modifier_keys:
+                            if widgets.keybol:
+                                widgets.keybol = False
+                                pressedkey = keypress(self.menu)
+                    case pg.KEYUP:
+                        if event.key not in modifier_keys:
+                            if not widgets.keybol:
+                                widgets.keybol = True
+            match pressedkey.lower():
+                case "quit":
+                    asktoexit(None, None)
+                case "reload":
+                    self.menu.reload()
+                case "new":
+                    self.focus_level(-1)
+                case "open":
+                    file = self.menu.open_file_dialog()
+                    if file is not None and os.path.exists(file):
+                        self.focus_level(file)
             match self.menu.message:
                 case "new":
                     self.focus_level(-1)
@@ -200,8 +182,6 @@ class LevelManager:
                     file = self.menu.open_file_dialog()
                     if file is not None and os.path.exists(file):
                         self.focus_level(file)
-                case "load":
-                    pass
                 case "recent":
                     file = None
                     print(self.menu.msgdata)
@@ -219,38 +199,47 @@ class LevelManager:
             pg.display.flip()
             pg.display.update()
 
-        self.menu.message = ""
-        if not pg.key.get_pressed()[pg.K_LCTRL]:
-            for i in self.menu.uc:
-                if pg.key.get_pressed()[i]:
-                    self.keypress(self.window)
-        self.window.fill(pg.color.Color(files.ui_settings["global"]["color"]))
-        self.menu.blit()
-        self.menu.justChangedZoom = False
-        pg.display.flip()
-        pg.display.update()
+            if self.active_level:
+                s = True
+                while s:
+                    self.run_level()
+                    self.shelve_level()
 
-    def add_level(self, filepath):
+                    if self.switch_level:
+                        self.focus_level(self.switch_level)
+
+                    if not self.active_level:
+                        s = False
+
+    def get_level(self, filepath):
         # only add a new instance if a level is not already loaded from that filepath
         if not [x for x in self.levels if x.filepath == filepath][:1]:
             newlv = LevelInstance(self, filepath)
             self.levels.append(newlv)
             return newlv
-        return [x for x in self.levels if x.filepath == filepath][:1]
+        return [x for x in self.levels if x.filepath == filepath][0]
 
     def focus_level(self, filepath):
-        self.active_level = self.add_level(filepath)
-        self.run_level()
+        if self.active_level and not self.active_level.data["dir"]:
+            self.levels.remove(self.active_level)
+            del(self.active_level)
+        self.active_level = self.get_level(filepath)
 
     def run_level(self):
         run = True
-
         while run:
             if not self.active_level:
                 run = False
-            self.doevents()
             run = self.active_level.update()
 
+    def shelve_level(self):
+        if not self.active_level.data["dir"]:
+            self.levels.remove(self.active_level)
+            del(self.active_level)
+        self.active_level = None
+
+    def queue_switch_level(self, filepath):
+        self.switch_level = filepath
 
 class LevelInstance:
     def __init__(self, parent:LevelManager, filepath:str):
@@ -295,9 +284,54 @@ class LevelInstance:
             raise
 
     def update(self) -> bool:
-        self.parent.menu = self.menu
+        #print(len(self.parent.levels))
         width = files.ui_settings["global"]["width"]
         height = files.ui_settings["global"]["height"]
+        pressedkey = ""
+        for event in pg.event.get():
+            match event.type:
+                case pg.DROPFILE:
+                    self.parent.queue_switch_level(event.file)
+                    return False
+                case pg.QUIT:
+                    asktoexit(None, None)
+                case pg.WINDOWRESIZED:
+                    self.menu.resize()
+                case pg.KEYDOWN:
+                    if event.key not in modifier_keys:
+                        if widgets.keybol:
+                            widgets.keybol = False
+                            pressedkey = keypress(self.menu)
+                case pg.KEYUP:
+                    if event.key not in modifier_keys:
+                        if not widgets.keybol:
+                            widgets.keybol = True
+                case pg.MOUSEBUTTONDOWN:
+                    if event.button == 4:
+                        self.menu.send("SU")
+                    elif event.button == 5:
+                        self.menu.send("SD")
+        match pressedkey.lower():
+            case "undo":
+                pass
+            case "redo":
+                pass
+            case "quit":  
+                    asktoexit(self.data, self.old_data)
+            case "reload":
+                self.menu.reload()
+            case "save":
+                self.menu.savef()
+                self.old_data = files.jsoncopy(self.data)
+            case "new":
+                print("New")
+                self.menu.savef()
+                return False
+            case "open":
+                file = self.menu.open_file_dialog()
+                if file is not None and os.path.exists(file):
+                    self.parent.queue_switch_level(file)
+                    return False
         if self.menu.message:
             print(self.menu.message)
             match self.menu.message:
@@ -330,7 +364,7 @@ class LevelInstance:
         if not pg.key.get_pressed()[pg.K_LCTRL]:
             for i in self.menu.uc:
                 if pg.key.get_pressed()[i]:
-                    self.parent.keypress(self.window)
+                    keypress(self.window)
         if files.ui_settings[self.menu.menu].get("menucolor") is not None:
             self.window.fill(pg.color.Color(files.ui_settings[self.menu.menu]["menucolor"]))
         else:
