@@ -112,7 +112,7 @@ class LevelManager:
         self.active_level:LevelInstance = None
         self.menu:Menu | MenuWithField = None # only used for LD basically
         self.window = None
-        self.switch_level = None
+        self.switch_level = ""
 
     def init_renderer(self):
         load_tic = time.perf_counter()
@@ -202,7 +202,12 @@ class LevelManager:
             if self.active_level:
                 s = True
                 while s:
-                    self.run_level()
+                    try:
+                        self.run_level()
+                    except Exception:
+                        self.levels.remove(self.active_level)
+                        self.switch_level = ""
+
                     self.shelve_level()
 
                     if self.switch_level:
@@ -235,7 +240,6 @@ class LevelManager:
     def shelve_level(self):
         if not self.active_level.data["dir"]:
             self.levels.remove(self.active_level)
-            del(self.active_level)
         self.active_level = None
 
     def queue_switch_level(self, filepath):
@@ -332,6 +336,16 @@ class LevelInstance:
                 if file is not None and os.path.exists(file):
                     self.parent.queue_switch_level(file)
                     return False
+            case "nextl":
+                print("asasda")
+                for i, j in enumerate(self.parent.levels):
+                    if j.filepath == self.filepath:
+                        k = i + 1
+                        if k >= len(self.parent.levels):
+                            k = 0
+                        print(k)
+                        self.parent.queue_switch_level(self.parent.levels[k].filepath)
+                        return False
         if self.menu.message:
             print(self.menu.message)
             match self.menu.message:
