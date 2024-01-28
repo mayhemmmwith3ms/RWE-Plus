@@ -136,4 +136,4 @@ if __name__ == "__main__":
             raise
     else:
         preload()
-        lv_manager.start_LD()
+        lv_manager.launch()

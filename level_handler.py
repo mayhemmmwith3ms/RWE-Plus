@@ -142,7 +142,7 @@ class LevelManager:
         load_toc = time.perf_counter()   
         lj.log_to_load_log(f"Init loading completed in {(load_toc - load_tic) * 1000:0.6} ms with {lj.errorcount_get()} errors generated")
 
-    def start_LD(self):   
+    def launch(self):   
         try:
             run = True
 
@@ -356,7 +356,7 @@ class LevelInstance:
                 case "redo":
                     pass
                 case "%":
-                    self.menu = HK(self.window, self.renderer, self.menu.menu)
+                    self.menu = HK(self.window, self.renderer, self.menu.mname)
                 case "quit":
                     asktoexit(self.data, self.old_data)
                 case "fc":
@@ -381,8 +381,8 @@ class LevelInstance:
             for i in self.menu.uc:
                 if pg.key.get_pressed()[i]:
                     keypress(self.window)
-        if files.ui_settings[self.menu.menu].get("menucolor") is not None:
-            self.window.fill(pg.color.Color(files.ui_settings[self.menu.menu]["menucolor"]))
+        if files.ui_settings[self.menu.mname].get("menucolor") is not None:
+            self.window.fill(pg.color.Color(files.ui_settings[self.menu.mname]["menucolor"]))
         else:
             self.window.fill(pg.color.Color(files.ui_settings["global"]["color"]))
         self.menu.blit()

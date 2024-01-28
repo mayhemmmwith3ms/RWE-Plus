@@ -25,18 +25,18 @@ def rotatepoint(point, angle):
 class Menu:
     def __init__(self, surface: pg.surface.Surface, renderer, name):
         self.surface = surface
-        self.menu = name
+        self.mname = name
         self.renderer = renderer
         self.data = renderer.data
         if settings["enable_undo"]:
             self.datalast = jsoncopy(renderer.data)
-        self.menu_ui_settings = ui_settings[self.menu]
+        self.menu_ui_settings = ui_settings[self.mname]
         self.hotkeys = hotkeys[name]
         self.historybuffer = []
         self.uc = []
 
         self.recaption()
-        print("Entered " + self.menu)
+        print("Entered " + self.mname)
 
         self.last_lmb = False
         self.last_mmb = True
@@ -91,7 +91,7 @@ class Menu:
         self.message = "%"
 
     def recaption(self):
-        pg.display.set_caption(f"OGSCULEDITOR+: {self.menu} | v{tag} | {self.custom_info}")
+        pg.display.set_caption(f"OGSCULEDITOR+: {self.mname} | v{tag} | {self.custom_info}")
 
     def savef(self, saveas=False):
         if self.data["path"] and not saveas:
@@ -491,7 +491,7 @@ class Menu:
     def reload(self):
         global ui_settings
         ui_settings = json.load(open(path2ui + settings["ui_theme"], "r"))
-        self.__init__(self.surface, self.data, self.menu)
+        self.__init__(self.surface, self.data, self.mname)
 
     def send(self, message):
         if message[0] == "-":
