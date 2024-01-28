@@ -143,90 +143,94 @@ class LevelManager:
         load_toc = time.perf_counter()   
         lj.log_to_load_log(f"Init loading completed in {(load_toc - load_tic) * 1000:0.6} ms with {lj.errorcount_get()} errors generated")
 
-    def start_LD(self):    
-        run = True
+    def start_LD(self):   
+        try:
+            run = True
 
-        width = files.ui_settings["global"]["width"]
-        height = files.ui_settings["global"]["height"]
+            width = files.ui_settings["global"]["width"]
+            height = files.ui_settings["global"]["height"]
 
-        self.window = pg.display.set_mode([width, height], flags=pg.RESIZABLE | (pg.FULLSCREEN * 0))
-        pg.display.set_icon(files.loadimage(files.path + "icon.png"))
+            self.window = pg.display.set_mode([width, height], flags=pg.RESIZABLE | (pg.FULLSCREEN * 0))
+            pg.display.set_icon(files.loadimage(files.path + "icon.png"))
 
-        self.menu = LD.load(self.window, self.renderer)
+            self.menu = LD.load(self.window, self.renderer)
 
-        while run:
-            pressedkey = ""
-            for event in pg.event.get():
-                match event.type:
-                    case pg.DROPFILE:
-                        self.focus_level(event.file)
-                    case pg.QUIT:
+            while run:
+                pressedkey = ""
+                for event in pg.event.get():
+                    match event.type:
+                        case pg.DROPFILE:
+                            self.focus_level(event.file)
+                        case pg.QUIT:
+                            asktoexit(None, None)
+                        case pg.WINDOWRESIZED:
+                            self.menu.resize()
+                        case pg.KEYDOWN:
+                            if event.key not in modifier_keys:
+                                if widgets.keybol:
+                                    widgets.keybol = False
+                                    pressedkey = keypress(self.menu)
+                        case pg.KEYUP:
+                            if event.key not in modifier_keys:
+                                if not widgets.keybol:
+                                    widgets.keybol = True
+                match pressedkey.lower():
+                    case "quit":
                         asktoexit(None, None)
-                    case pg.WINDOWRESIZED:
-                        self.menu.resize()
-                    case pg.KEYDOWN:
-                        if event.key not in modifier_keys:
-                            if widgets.keybol:
-                                widgets.keybol = False
-                                pressedkey = keypress(self.menu)
-                    case pg.KEYUP:
-                        if event.key not in modifier_keys:
-                            if not widgets.keybol:
-                                widgets.keybol = True
-            match pressedkey.lower():
-                case "quit":
-                    asktoexit(None, None)
-                case "reload":
-                    self.menu.reload()
-                case "new":
-                    self.focus_level(-1)
-                case "open":
-                    file = self.menu.open_file_dialog()
-                    if file is not None and os.path.exists(file):
-                        self.focus_level(file)
-            match self.menu.message:
-                case "new":
-                    self.focus_level(-1)
-                case "open":
-                    file = self.menu.open_file_dialog()
-                    if file is not None and os.path.exists(file):
-                        self.focus_level(file)
-                case "recent":
-                    file = None
-                    print(self.menu.msgdata)
-                    if self.menu.msgdata is not None:
-                        file = self.menu.msgdata
-                        
-                    if file is not None and os.path.exists(file):
-                        self.focus_level(file)
-                    else:
-                        print("Most recent file either does not exist or was moved/deleted. Open a level normally to create one.")
-            self.menu.message = ""
-            self.window.fill(pg.color.Color(files.ui_settings["global"]["color"]))
-            self.menu.blit()
-            self.menu.justChangedZoom = False
-            pg.display.flip()
-            pg.display.update()
+                    case "reload":
+                        self.menu.reload()
+                    case "new":
+                        self.focus_level(-1)
+                    case "open":
+                        file = self.menu.open_file_dialog()
+                        if file is not None and os.path.exists(file):
+                            self.focus_level(file)
+                match self.menu.message:
+                    case "new":
+                        self.focus_level(-1)
+                    case "open":
+                        file = self.menu.open_file_dialog()
+                        if file is not None and os.path.exists(file):
+                            self.focus_level(file)
+                    case "recent":
+                        file = None
+                        print(self.menu.msgdata)
+                        if self.menu.msgdata is not None:
+                            file = self.menu.msgdata
+                            
+                        if file is not None and os.path.exists(file):
+                            self.focus_level(file)
+                        else:
+                            print("Most recent file either does not exist or was moved/deleted. Open a level normally to create one.")
+                self.menu.message = ""
+                self.window.fill(pg.color.Color(files.ui_settings["global"]["color"]))
+                self.menu.blit()
+                self.menu.justChangedZoom = False
+                pg.display.flip()
+                pg.display.update()
+                if self.active_level:
+                    s = True
+                    while s:
+                        try:
+                            self.run_level()
+                        except Exception:
+                            self.levels.remove(self.active_level)
+                            self.switch_level = ""
 
-            if self.active_level:
-                s = True
-                while s:
-                    try:
-                        self.run_level()
-                    except Exception:
-                        self.levels.remove(self.active_level)
-                        self.switch_level = ""
+                            lj.log_to_crash_log(f"Unhandled exception during runtime of level instance \"{self.active_level.level_name}\"\n{traceback.format_exc()}")
+                            error_popup(f"Unhandled exception has occured during runtime of level instance \"{self.active_level.level_name}\"\nCheck crashLog.txt for more info")
 
-                        lj.log_to_crash_log(f"Unhandled exception during runtime of level instance \"{self.active_level.level_name}\"\n{traceback.format_exc()}")
-                        error_popup(f"Unhandled exception has occured during runtime of level instance \"{self.active_level.level_name}\"\nCheck crashLog.txt for more info")
+                        self.shelve_level()
 
-                    self.shelve_level()
+                        if self.switch_level:
+                            self.focus_level(self.switch_level)
 
-                    if self.switch_level:
-                        self.focus_level(self.switch_level)
-
-                    if not self.active_level:
-                        s = False
+                        if not self.active_level:
+                            s = False
+        except Exception:
+            lj.log_to_crash_log(f"Fatal exception during editor runtime\n{traceback.format_exc()}")
+            error_popup("Fatal exception has occured during editor runtime\nCheck crashLog.txt for more info")
+            raise
 
     def get_level(self, filepath):
         # only add a new instance if a level is not already loaded from that filepath
