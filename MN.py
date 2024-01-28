@@ -21,7 +21,7 @@ class MN(MenuWithField):
         self.last_rmb = True
         self.tips.remove("\n")
         self.testui = w2.TextAndImageButton([10, 10, 10, 10], self.surface, "Ogscule!", "Hey!", tooltiles, ui_settings["global"]["color2"], self.cb, fontsize=30, fontcolor=red, imagecolor=black)
-        self.testslider = w2.HorizontalSlider([12, 20, 20, 10], self.surface, self.gcb, self.scb, 0, 15, 0)
+        self.testslider = w2.HorizontalSlider([12, 20, 20, 10], self.surface, self.gcb, self.scb, 0, 15, 3)
         self.slvalue = 10
         self.nexttip()
         self.resize()

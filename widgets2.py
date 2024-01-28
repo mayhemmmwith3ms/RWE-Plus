@@ -243,6 +243,9 @@ class HorizontalSlider(UIElement):
 
         out_val = max(min(out_val, self.maxvalue), self.minvalue)
 
+        if self.step:
+            out_val = round(out_val / self.step) * self.step
+
         handlecol = self.handlecolor
 
         if self.mouse_hover or self.mousehold:
