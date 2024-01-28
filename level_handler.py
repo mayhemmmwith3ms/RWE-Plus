@@ -241,7 +241,7 @@ class LevelManager:
         return [x for x in self.levels if x.filepath == filepath][0]
 
     def focus_level(self, filepath):
-        if self.active_level and not self.active_level.data["dir"]:
+        if self.active_level and not self.active_level.is_saved:
             self.levels.remove(self.active_level)
             del(self.active_level)
         self.active_level = self.get_level(filepath)
@@ -254,7 +254,7 @@ class LevelManager:
             run = self.active_level.update()
 
     def shelve_level(self):
-        if not self.active_level.data["dir"]:
+        if not self.active_level.is_saved:
             self.levels.remove(self.active_level)
         self.active_level = None
 
@@ -335,26 +335,22 @@ class LevelInstance:
                 self.menu.savef()
                 self.old_data = files.jsoncopy(self.data)
             case "new":
-                print("New")
-                self.menu.savef()
-                return False
+                if not self.is_saved:
+                    root = tk.Tk()
+                    root.wm_attributes("-topmost", 1)
+                    root.withdraw()
+                    r = askyesnocancel("Unsaved Level", "Exiting this level instance without saving will cause any progress to be lost.\n\nWould you like to save the level before exiting?", parent=root)
+                    if r is not None:
+                        if r:
+                            self.menu.savef()
+                        print("New")
+                        return False
             case "open":
                 file = self.menu.open_file_dialog()
                 if file is not None and os.path.exists(file):
                     self.parent.queue_switch_level(file)
                     return False
-            case "nextl":
-                print("asasda")
-                for i, j in enumerate(self.parent.levels):
-                    if j.filepath == self.filepath:
-                        k = i + 1
-                        if k >= len(self.parent.levels):
-                            k = 0
-                        print(k)
-                        self.parent.queue_switch_level(self.parent.levels[k].filepath)
-                        return False
         if self.menu.message:
-            print(self.menu.message)
             match self.menu.message:
                 case "undo":
                     pass
@@ -398,3 +394,7 @@ class LevelInstance:
     @property
     def level_name(self):
         return os.path.split(self.filepath)[1]
+    
+    @property
+    def is_saved(self):
+        return self.data["dir"] != ""

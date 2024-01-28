@@ -75,7 +75,7 @@ class load(Menu):
 
         for i, j in enumerate(man.levels):
             btnrect = btnrect.move(0, btnrect.h + 1)
-            btn:widgets.button = widgets.button(self.surface, btnrect, gray, j.filepath, onpress=self.pressinstance)
+            btn:widgets.button = widgets.button(self.surface, btnrect, gray, str(j.filepath), onpress=self.pressinstance)
             self.instancebuttons.append(btn)
 
     def pressrecent(self, text):
