@@ -1,7 +1,6 @@
-import menuclass as menus
+
 from menus import Menu, MenuWithField
 
-import render
 from render import Renderer
 
 import lingotojson as lj
