@@ -262,3 +262,19 @@ class HorizontalSlider(UIElement):
             fastmts(self.surface, f"{float(out_val):0.4}", *pg.mouse.get_pos(), white)
 
         self.set_cb(self, out_val)
+
+class HorizontalSliderWithLabel(UIElement):
+    def __init__(self, rect, surface, get_callback, set_callback, min, max, step, labeltext, labelsize, labelcolor=None, bodycolor=None, handlecolor=None):
+        super().__init__(rect, surface)
+        self.labeltext = labeltext
+        self.bodycolor = pg.Color(bodycolor if bodycolor is not None else darkgray)
+
+        srect = [rect[0], rect[1] + 4, rect[2], rect[3] - 4]
+        self.children.append(HorizontalSlider(srect, surface, get_callback, set_callback, min, max, step, bodycolor, handlecolor))
+        lrect = [rect[0], rect[1], rect[2], rect[3] - 2]
+        self.children.append(TextLabel(lrect, surface, labeltext, labelsize, labelcolor))
+
+    def blit(self):
+        self.children[1].set_text(f"{self.labeltext}: {self.children[0].get_cb(self.children[0])}") # bad probably
+
+        pg.draw.rect(self.surface, color_mul(self.bodycolor, 1.3), self.rect)
