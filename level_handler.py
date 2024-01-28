@@ -133,11 +133,11 @@ class LevelManager:
 
             self.renderer = Renderer(None, init_list, props, prop_colors, False)
         except Exception:
-            lj.log_to_crash_log(f"Uncaught exception during level load\n{traceback.format_exc()}")
+            lj.log_to_crash_log(f"Uncaught exception during init load\n{traceback.format_exc()}")
 
-            lj.log_to_load_log(f"Uncaught exception during load\n{traceback.format_exc()}", error=True)
+            lj.log_to_load_log(f"Uncaught exception during init load\n{traceback.format_exc()}", error=True)
 
-            error_popup("An unhandled exception has occurred during loading\nCheck loadLog.txt for more info")
+            error_popup("An unhandled exception has occurred during init loading\nCheck loadLog.txt for more info")
             raise
 
         load_toc = time.perf_counter()   
