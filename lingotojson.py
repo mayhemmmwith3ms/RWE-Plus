@@ -2,6 +2,7 @@ import re
 import subprocess
 from files import *
 import math
+import datetime
 
 notfound = loadimage(path + "notfound.png")
 notfound.set_colorkey(pg.Color(255, 255, 255))
@@ -525,6 +526,10 @@ def log_to_load_log(message, error=False, nl=True):
     print(message)
     if error:
         load_error_count += 1
+
+def log_to_crash_log(message):
+    with open(application_path + "\\crashLog.txt", "a") as crash_log:
+        crash_log.write(f"[ERROR | {datetime.datetime.now().strftime('%H:%M:%S')}]: {message}\n")
 
 def errorcount_get():
     return load_error_count

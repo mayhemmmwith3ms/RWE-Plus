@@ -27,6 +27,12 @@ modifier_keys = [pg.K_LCTRL, pg.K_LALT, pg.K_LSHIFT]
 EXIT_COMMAND_SHELVE = 0
 EXIT_COMMAND_SWITCH = 1
 
+def error_popup(desc):
+    root = tk.Tk()
+    root.wm_attributes("-topmost", 1)
+    root.withdraw()
+    showerror("OGSCULEDITOR+ Error", desc, parent=root)
+
 def keypress(menu):
     pressed = ""
     ctrl = pg.key.get_pressed()[pg.K_LCTRL]
@@ -127,15 +133,12 @@ class LevelManager:
 
             self.renderer = Renderer(None, init_list, props, prop_colors, False)
         except Exception:
-            with open(files.application_path + "\\crashLog.txt", "w") as crash_log:
-                crash_log.write(f"[ERROR] Uncaught exception during level load\n{traceback.format_exc()}")
+            lj.log_to_crash_log(f"Uncaught exception during level load\n{traceback.format_exc()}")
 
             lj.log_to_load_log(f"Uncaught exception during load\n{traceback.format_exc()}", error=True)
 
-            root = tk.Tk()
-            root.wm_attributes("-topmost", 1)
-            root.withdraw()
-            lj.showerror("OGSCULEDITOR+ Error", "An unhandled exception has occurred during loading\nCheck loadLog.txt for more info", parent=root)
+            error_popup("An unhandled exception has occurred during loading\nCheck loadLog.txt for more info")
+            raise
 
         load_toc = time.perf_counter()   
         lj.log_to_load_log(f"Init loading completed in {(load_toc - load_tic) * 1000:0.6} ms with {lj.errorcount_get()} errors generated")
@@ -148,7 +151,7 @@ class LevelManager:
 
         self.window = pg.display.set_mode([width, height], flags=pg.RESIZABLE | (pg.FULLSCREEN * 0))
         pg.display.set_icon(files.loadimage(files.path + "icon.png"))
-        
+
         self.menu = LD.load(self.window, self.renderer)
 
         while run:
@@ -214,6 +217,9 @@ class LevelManager:
                         self.levels.remove(self.active_level)
                         self.switch_level = ""
 
+                        lj.log_to_crash_log(f"Unhandled exception during runtime of level instance \"{self.active_level.level_name}\"\n{traceback.format_exc()}")
+                        error_popup(f"Unhandled exception has occured during runtime of level instance \"{self.active_level.level_name}\"\nCheck crashLog.txt for more info")
+
                     self.shelve_level()
 
                     if self.switch_level:
@@ -277,14 +283,11 @@ class LevelInstance:
             if isinstance(filepath, str):
                 lj.log_to_load_log(f"Successfully loaded level \"{os.path.basename(filepath)}\"!")
         except Exception:
-            with open(files.application_path + "\\crashLog.txt", "w") as crash_log:
-                crash_log.write(f"[ERROR] Uncaught exception during level load\n{traceback.format_exc()}")
+            lj.log_to_crash_log(f"Uncaught exception during level load\n{traceback.format_exc()}")
+
             lj.log_to_load_log(f"Uncaught exception during load\n{traceback.format_exc()}", error=True)
 
-            root = tk.Tk()
-            root.wm_attributes("-topmost", 1)
-            root.withdraw()
-            showerror("OGSCULEDITOR+ Error", "An unhandled exception has occurred during loading\nCheck loadLog.txt for more info", parent=root)
+            error_popup("An unhandled exception has occurred during loading\nCheck loadLog.txt for more info")
             raise
 
     def update(self) -> bool:
@@ -387,3 +390,7 @@ class LevelInstance:
         pg.display.flip()
         pg.display.update()
         return True
+    
+    @property
+    def level_name(self):
+        return os.path.split(self.filepath)[1]

@@ -8,6 +8,7 @@ from path_dict import PathDict
 from lingotojson import *
 from files import ui_settings, path, application_path
 import level_handler as lv
+import datetime
 
 widgets.keybol = True
 run = True
@@ -80,6 +81,9 @@ def preload():
 
     with open(application_path + "\\loadLog.txt", "w") as load_log:
         load_log.write("Start launch load!\n")
+
+    with open(application_path + "\\crashLog.txt", "w") as crash_log:
+        crash_log.write(f"[START LOG | {datetime.datetime.now().strftime('%H:%M:%S')}]\n")
 
     pg.display.set_icon(loadimage(path + "icon.png"))
     loadi = loadimage(f"{path}load.png")
