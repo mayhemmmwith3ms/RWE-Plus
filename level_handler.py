@@ -135,7 +135,7 @@ class LevelManager:
             lj.showerror("OGSCULEDITOR+ Error", "An unhandled exception has occurred during loading\nCheck loadLog.txt for more info", parent=root)
 
         load_toc = time.perf_counter()   
-        lj.log_to_load_log(f"Init loading completed in {(load_tic - load_toc) * 1000:0.6} ms with {lj.errorcount_get()} errors generated")
+        lj.log_to_load_log(f"Init loading completed in {(load_toc - load_tic) * 1000:0.6} ms with {lj.errorcount_get()} errors generated")
 
     def start_LD(self):    
         run = True
