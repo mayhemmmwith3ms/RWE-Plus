@@ -772,7 +772,7 @@ class MenuWithField(Menu):
         super().blit()
 
     def recaption(self):
-        pg.display.set_caption(f"{self.data['path']} | OGSCULEDITOR+: {self.menu} | v{tag} | {self.custom_info}")
+        pg.display.set_caption(f"{self.data['path']} | OGSCULEDITOR+: {self.mname} | v{tag} | {self.custom_info}")
 
     def swichcameras(self):
         self.drawcameras = (self.drawcameras + 1) % 3
