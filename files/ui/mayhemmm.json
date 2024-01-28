@@ -349,7 +349,7 @@
 		},
 
 		"sliders": [
-			["Tile seed", [0, 50], 13, [0, 400, 1], ["EX2", "tileSeed"]]
+			["Tile seed", [1, 50], 13, [0, 400, 1], ["EX2", "tileSeed"]]
 		]
 
 	},

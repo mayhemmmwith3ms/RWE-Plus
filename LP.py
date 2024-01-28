@@ -1,4 +1,5 @@
 from menuclass import *
+import widgets2 as w2
 
 cursorlist = {
     "btopbleft": pg.SYSTEM_CURSOR_SIZENWSE,
@@ -23,15 +24,13 @@ cursorlist = {
 
 class LP(MenuWithField):
     def __init__(self, surface: pg.surface.Surface, renderer: Renderer):
-        self.sliders = []
         self.tool = ""  # env, size
+        self.seedslider = None
         super().__init__(surface, "LP", renderer)
-        for i in self.menu_ui_settings["sliders"]:
-            self.sliders.append(widgets.slider(
-                self.surface,
-                i[0], i[1], i[2],
-                i[3][0], i[3][1], self.data[i[4][0]][i[4][1]], i[3][2]))
 
+        slst = self.menu_ui_settings["sliders"]
+        self.seedslider = w2.HorizontalSliderWithLabel([*slst[0][1], 12, 6], self.surface, self.seedgetcb, self.seedsetcb, 0, 400, 1, "Tile Seed", 30, handlecolor=red)
+        
         self.lastdata = 0
         self.moveoffset = pg.Vector2(0, 0)
         self.heldpoint = ""
@@ -48,12 +47,17 @@ class LP(MenuWithField):
         self.gh = self.levelheight
         self.resize()
 
+    def seedgetcb(self, _):
+        return self.data["EX2"]["tileSeed"]
+
+    def seedsetcb(self, _, x):
+        self.data["EX2"]["tileSeed"] = x
+
     def blit(self):
         super().blit()
         #self.field.blit()
         Menu.blit(self)
-        for i in self.sliders:
-            i.blit()
+        self.seedslider.update()
         self.labels[0].set_text(
             self.labels[0].originaltext % (
             str(self.data["EX"]["defaultTerrain"] == 1), str(self.data["EX2"]["light"] == 1)))
@@ -61,8 +65,6 @@ class LP(MenuWithField):
             self.labels[1].originaltext % (str(self.btiles), str([self.levelwidth, self.levelheight])))
         self.labels[2].set_text(
             self.labels[2].originaltext % (self.data["WL"]["waterLevel"], str(self.data["WL"]["waterInFront"]==1)))
-        for n, i in enumerate(self.sliders):
-            self.data[self.menu_ui_settings["sliders"][n][4][0]][self.menu_ui_settings["sliders"][n][4][1]] = round(i.value)
 
         if self.onfield:
             bp = self.getmouse
@@ -189,8 +191,8 @@ class LP(MenuWithField):
 
     def resize(self):
         super().resize()
-        for i in self.sliders:
-            i.resize()
+        if self.seedslider:
+            self.seedslider.resize()
 
     def chparam(self, cat, name):
         self.data[cat][name] = 1 - self.data[cat][name]
