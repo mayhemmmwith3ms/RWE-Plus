@@ -63,7 +63,8 @@
 		"labels": [
 		],
 
-		"recentpos": [5, 20, 60, 5]
+		"recentpos": [5, 20, 50, 3],
+		"instancespos": [60, 20, 30, 3]
 	},
 	"MN":
 	{

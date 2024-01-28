@@ -106,6 +106,8 @@ def asktoexit(file, file2):
         sys.exit(0)
 
 class LevelManager:
+    instance = None
+
     def __init__(self):
         self.renderer:Renderer = None
         self.levels:list = []
@@ -113,6 +115,7 @@ class LevelManager:
         self.menu:Menu | MenuWithField = None # only used for LD basically
         self.window = None
         self.switch_level = ""
+        LevelManager.instance = self
 
     def init_renderer(self):
         load_tic = time.perf_counter()
@@ -139,10 +142,13 @@ class LevelManager:
 
     def start_LD(self):    
         run = True
-        width = 1280
-        height = 720
-        self.window = pg.display.set_mode([width, height], flags=pg.RESIZABLE)
+
+        width = files.ui_settings["global"]["width"]
+        height = files.ui_settings["global"]["height"]
+
+        self.window = pg.display.set_mode([width, height], flags=pg.RESIZABLE | (pg.FULLSCREEN * 0))
         pg.display.set_icon(files.loadimage(files.path + "icon.png"))
+        
         self.menu = LD.load(self.window, self.renderer)
 
         while run:
@@ -262,12 +268,6 @@ class LevelInstance:
             self.data = load_level(filepath)
 
             self.old_data = files.jsoncopy(self.data)
-
-            width = files.ui_settings["global"]["width"]
-            height = files.ui_settings["global"]["height"]
-
-            self.window = pg.display.set_mode([width, height], flags=pg.RESIZABLE | (pg.FULLSCREEN * 0))
-            pg.display.set_icon(files.loadimage(files.path + "icon.png"))
 
             self.renderer = Renderer(self.data, self.renderer.tiles, self.renderer.props, self.renderer.propcolors, True)
 

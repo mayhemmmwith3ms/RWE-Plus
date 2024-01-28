@@ -39,7 +39,7 @@
     	"K_F1": "/-togglelayervisible",
     	"K_F2": "/-toggletileslayervisible",
 		"K_t+": "/-resetzoom",
-		"K_w+": "nextl"
+		"K_w+": "new"
   	},
   	"LD": {
   		"unlock_keys": [],

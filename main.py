@@ -1,15 +1,12 @@
 import subprocess
 import traceback
 
-import requests
 from menus import *
-from tkinter.messagebox import askyesnocancel, askyesno, showerror
-from tkinter.filedialog import askopenfilename  # noqa: F401
-import tkinter
+from tkinter.messagebox import askyesno
 import argparse
 from path_dict import PathDict
 from lingotojson import *
-from files import ui_settings, hotkeys, path, application_path
+from files import ui_settings, path, application_path
 import level_handler as lv
 
 widgets.keybol = True
@@ -84,6 +81,7 @@ def preload():
     with open(application_path + "\\loadLog.txt", "w") as load_log:
         load_log.write("Start launch load!\n")
 
+    pg.display.set_icon(loadimage(path + "icon.png"))
     loadi = loadimage(f"{path}load.png")
     window = pg.display.set_mode(loadi.get_size(), flags=pg.NOFRAME)
     window.blit(loadi, [0, 0])
