@@ -254,7 +254,7 @@ class LevelManager:
             run = self.active_level.update()
 
     def shelve_level(self):
-        if not self.active_level.is_saved:
+        if not self.active_level.is_saved and self.active_level in self.levels:
             self.levels.remove(self.active_level)
         self.active_level = None
 
@@ -335,16 +335,16 @@ class LevelInstance:
                 self.menu.savef()
                 self.old_data = files.jsoncopy(self.data)
             case "new":
+                r = True
                 if not self.is_saved:
                     root = tk.Tk()
                     root.wm_attributes("-topmost", 1)
                     root.withdraw()
                     r = askyesnocancel("Unsaved Level", "Exiting this level instance without saving will cause any progress to be lost.\n\nWould you like to save the level before exiting?", parent=root)
-                    if r is not None:
-                        if r:
-                            self.menu.savef()
-                        print("New")
-                        return False
+                if r is not None:
+                    if r:
+                        self.menu.savef()
+                    return False
             case "open":
                 file = self.menu.open_file_dialog()
                 if file is not None and os.path.exists(file):
@@ -393,7 +393,7 @@ class LevelInstance:
     
     @property
     def level_name(self):
-        return os.path.split(self.filepath)[1]
+        return os.path.split(self.filepath)[1] if isinstance(self.filepath, str) else "UNSAVED_LEVEL"
     
     @property
     def is_saved(self):
