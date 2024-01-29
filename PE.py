@@ -32,7 +32,7 @@ class PECursorData():
 
 class PE(MenuWithField):
     def __init__(self, surface: pg.surface.Surface, renderer):
-        self.menu = "PE"
+        self.mname = "PE"
 
         self.props = renderer.props
         self.propcolors = renderer.propcolors

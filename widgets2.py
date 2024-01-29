@@ -12,6 +12,9 @@ mul = ui_settings["global"]["colormul"]
 black = [0, 0, 0]
 white = [255, 255, 255]
 
+def changerectmargin(rect, x, y):
+    return [rect[0] - x, rect[1] - y, rect[2] + x * 2, rect[3] + y * 2]
+
 def fastmts(window, text: str, x: int, y: int, col=None, fontsize=ui_settings["global"]["fontsize"], centered=False):
     if col is None:
         col = black
@@ -88,7 +91,7 @@ class UIElement:
         
         self.mouse_down = pg.mouse.get_pressed(3)[0]
 
-        if self.mouse_down and not self.last_mouse_down:
+        if self. mouse_hover and self.mouse_down and not self.last_mouse_down:
             self.on_click()
 
         self.last_mouse_down = self.mouse_down
@@ -102,7 +105,14 @@ class UIElement:
         ...
 
     def on_click(self):
-        ...
+        ...        
+
+    def move(self, newpos):
+        oldrect = self.lastrect.copy()
+        self.lastrect.update(newpos.x, newpos.y, self.lastrect.width, self.lastrect.height)
+        for ch in self.children:
+            ch.lastrect.update((self.lastrect.left - oldrect.left) + newpos.x, (self.lastrect.top - oldrect.top) + newpos.y, self.lastrect.width, self.lastrect.height)
+        self.resize()
 
     @property
     def mouse_hover(self):
@@ -278,3 +288,53 @@ class HorizontalSliderWithLabel(UIElement):
         self.children[1].set_text(f"{self.labeltext}: {self.children[0].get_cb(self.children[0])}") # bad probably
 
         pg.draw.rect(self.surface, color_mul(self.bodycolor, 1.3), self.rect)
+
+class LevelInstanceSelectButton(UIElement):
+    def __init__(self, rect:pg.Rect, surface, bodycolor, instance, killcallback):
+        super().__init__(rect, surface)
+        self.level_instance = instance
+        self.bodycolor = bodycolor
+        self.kill_cb = killcallback
+
+        mrect = rect.move(0, 2)
+        mrect[3] -= 2
+
+        trect = rect.move(rect[2] - 2, 0)
+        trect[2] = 2
+        trect[3] = 2
+
+        nrect = trect.move(-(rect[2] - 2), 0)
+        nrect[2] = rect[2] - 2
+
+        self.children.append(GenericButton(mrect, self.surface, "", self.level_instance.level_name, gray, self.open))
+        self.children.append(GenericButton(trect, self.surface, "X", "Close level", color_mul(gray, 0.8), self.kill, fontsize=15))
+        self.children.append(ImageLabel(pg.Rect(changerectmargin(mrect, -1, -1)), self.surface, pg.Surface([1, 1])))
+        self.children.append(TextLabel(nrect, self.surface, self.level_instance.level_name, 20))
+
+    def make_preview(self):
+        surf = pg.Surface([len(self.level_instance.data["GE"]), len(self.level_instance.data["GE"][0])])
+
+        surf.fill(white)
+
+        p = pg.Surface([1, 1])
+
+        p.fill(black)
+
+        dat = self.level_instance.data["GE"]
+
+        for z in range(2, -1, -1):
+            p.set_alpha(lerp(200, 40, z / 3))
+            for xi, x in enumerate(dat):
+                for yi, y in enumerate(x):
+                    if y[z][0] != 0:
+                        surf.blit(p, [xi, yi])
+
+        self.children[2].image = surf
+
+    def open(self, _):
+        self.level_instance.parent.focus_level(self.level_instance.filepath)
+
+    def kill(self, _):
+        self.level_instance.parent.levels.remove(self.level_instance)
+        self.level_instance = None
+        self.kill_cb(self)

@@ -1,5 +1,6 @@
 from menuclass import *
 import level_handler as lv
+import widgets2 as w2
 
 class load(Menu):
     def __init__(self, surface: pg.surface.Surface, renderer):
@@ -22,9 +23,7 @@ class load(Menu):
             btn.blit(sum(pg.display.get_window_size()) // 160)
 
         for btn in self.instancebuttons:
-            btn.blitshadow()
-        for btn in self.instancebuttons:
-            btn.blit(sum(pg.display.get_window_size()) // 160)
+            btn.update()
         
         if not self.ll == len(lv.LevelManager.instance.levels):
             self.instancebuttons = []
@@ -70,12 +69,13 @@ class load(Menu):
         man = lv.LevelManager.instance
 
         btnrect = pg.rect.Rect(self.menu_ui_settings["instancespos"])
-        title:widgets.button = widgets.button(self.surface, btnrect, gray, "Levels")
-        self.recentbuttons.append(title)
+        #title:widgets.button = widgets.button(self.surface, btnrect, gray, "Levels")
+        #self.recentbuttons.append(title)
 
         for i, j in enumerate(man.levels):
-            btnrect = btnrect.move(0, btnrect.h + 1)
-            btn:widgets.button = widgets.button(self.surface, btnrect, gray, str(j.filepath), onpress=self.pressinstance)
+            btnrect2 = btnrect.move((btnrect.width + 1)* (i % 3), (btnrect.height + 1) * (i // 3))
+            btn = w2.LevelInstanceSelectButton(btnrect2, self.surface, darkgray, j, self.killinstance)
+            btn.make_preview()
             self.instancebuttons.append(btn)
 
     def pressrecent(self, text):
@@ -84,6 +84,10 @@ class load(Menu):
 
     def pressinstance(self, text):
         lv.LevelManager.instance.focus_level(text)
+
+    def killinstance(self, x):
+        self.instancebuttons.remove(x)
+        self.setup_instance_list()
 
     @property
     def custom_info(self):

@@ -33,7 +33,7 @@ blocks = [
 class TE(MenuWithField):
 
     def __init__(self, surface: pg.surface.Surface, renderer: render.Renderer):
-        self.menu = "TE"
+        self.mname = "TE"
         self.tool = 0 # 0 - place, 1 - destroy, 2 - copy
 
         self.matshow = False

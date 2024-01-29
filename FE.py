@@ -5,7 +5,7 @@ import random
 
 class FE(MenuWithField):
     def __init__(self, surface: pg.surface.Surface, renderer):
-        self.menu = "FE"
+        self.mname = "FE"
 
         self.currentcategory = 0
         self.currentindex = 0

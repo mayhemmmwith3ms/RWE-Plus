@@ -3,7 +3,7 @@ from menuclass import *
 
 class HK(Menu):
     def __init__(self, surface: pg.surface.Surface, renderer, openmenu="MN"):
-        self.menu = "HK"
+        self.mname = "HK"
         self.m = openmenu
         self.keys = json.load(open(path + "hotkeystip.json"))
         self.scroll = 0

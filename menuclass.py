@@ -616,7 +616,7 @@ class MenuWithField(Menu):
         self.props = renderer.props
         self.propcolors = renderer.propcolors
 
-        self.menu = name
+        self.mname = name
 
         self.drawgeo = True
         self.drawcameras = 0
@@ -1141,8 +1141,8 @@ class MenuWithField(Menu):
     
     @property
     def persistent_data(self):
-        if self.menu in self.data["persistent"]:
-            return self.data["persistent"][self.menu]
+        if self.mname in self.data["persistent"]:
+            return self.data["persistent"][self.mname]
         else:
             return None
 

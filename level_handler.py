@@ -43,15 +43,15 @@ def keypress(menu):
         if int(i.find("+") != -1) - int(ctrl) == 0:
             if pg.key.get_pressed()[getattr(pg, key)]:
                 pressed = files.hotkeys["global"][i]
-    for i in files.hotkeys[menu.menu].keys():
+    for i in files.hotkeys[menu.mname].keys():
         key = i.replace("@", "").replace("+", "")
         if i == "unlock_keys":
             continue
         if int(i.find("+") != -1) - int(ctrl) == 0:
             if pg.key.get_pressed()[getattr(pg, key)]:
-                pressed = files.hotkeys[menu.menu][i]
+                pressed = files.hotkeys[menu.mname][i]
                 menu.send(pressed)
-    if len(pressed) > 0 and pressed[0] == "/" and menu.menu != "LD":
+    if len(pressed) > 0 and pressed[0] == "/" and menu.mname != "LD":
         menu.message = pressed[1:]
     return pressed
 

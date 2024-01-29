@@ -4,7 +4,7 @@ from tkinter.messagebox import askyesno
 class LE(MenuWithField):
 
     def __init__(self, surface: pg.surface.Surface, renderer):
-        self.menu = "LE"
+        self.mname = "LE"
         super().__init__(surface, "LE", renderer)
         self.field2 = widgets.window(self.surface, self.menu_ui_settings["d1"])
         self.field3 = self.field2.copy()
@@ -96,8 +96,8 @@ class LE(MenuWithField):
         yos = self.yoffset * self.size
 
         fieldpos = [xos - (ofsleft * self.size), yos - (ofstop * self.size)]
-        fieldpos2 = [fieldpos[0] + math.sin(math.radians(self.data[self.menu]["lightAngle"])) * self.data[self.menu]["flatness"] * (self.size),
-                     fieldpos[1] - math.cos(math.radians(self.data[self.menu]["lightAngle"])) * self.data[self.menu]["flatness"] * (self.size)]
+        fieldpos2 = [fieldpos[0] + math.sin(math.radians(self.data[self.mname]["lightAngle"])) * self.data[self.mname]["flatness"] * (self.size),
+                     fieldpos[1] - math.cos(math.radians(self.data[self.mname]["lightAngle"])) * self.data[self.mname]["flatness"] * (self.size)]
 
         self.field.field.blit(self.field3.field, fieldpos)
         if not pg.key.get_pressed()[pg.K_LSHIFT]:
@@ -172,8 +172,8 @@ class LE(MenuWithField):
         lapreviewpos = self.field.rect.bottomright - pg.Vector2(240, 160)
 
         pg.draw.circle(self.surface, red, lapreviewpos, 6 * 5, 1)
-        pg.draw.circle(self.surface, red, lapreviewpos, 6 * self.data[self.menu]["flatness"], 1)
-        pg.draw.circle(self.surface, red, lapreviewpos + pg.Vector2(0, (6 * self.data[self.menu]["flatness"]) - 1).rotate(self.data[self.menu]["lightAngle"]), 6)
+        pg.draw.circle(self.surface, red, lapreviewpos, 6 * self.data[self.mname]["flatness"], 1)
+        pg.draw.circle(self.surface, red, lapreviewpos + pg.Vector2(0, (6 * self.data[self.mname]["flatness"]) - 1).rotate(self.data[self.mname]["lightAngle"]), 6)
 
     def if_set(self, pressed, indx):
         if pressed and not self.pressed[indx]:
@@ -182,7 +182,7 @@ class LE(MenuWithField):
             pass
         elif not pressed and self.pressed[indx]:
             self.pressed[indx] = False
-            self.updatehistory([[self.menu]])
+            self.updatehistory([[self.mname]])
 
     def updateshadowhistory(self):
         if self.oldshadow != self.field2.field:
@@ -342,16 +342,16 @@ class LE(MenuWithField):
         self.retile()
 
     def fp(self):
-        self.data[self.menu]["flatness"] = min(self.data[self.menu]["flatness"] + 1, 10)
+        self.data[self.mname]["flatness"] = min(self.data[self.mname]["flatness"] + 1, 10)
 
     def fm(self):
-        self.data[self.menu]["flatness"] = max(self.data[self.menu]["flatness"] - 1, 1)
+        self.data[self.mname]["flatness"] = max(self.data[self.mname]["flatness"] - 1, 1)
 
     def lp(self):
-        self.data[self.menu]["lightAngle"] = self.data[self.menu]["lightAngle"] + 1
+        self.data[self.mname]["lightAngle"] = self.data[self.mname]["lightAngle"] + 1
 
     def lm(self):
-        self.data[self.menu]["lightAngle"] = self.data[self.menu]["lightAngle"] - 1
+        self.data[self.mname]["lightAngle"] = self.data[self.mname]["lightAngle"] - 1
 
     def lightmod(self):
         if self.mode:

@@ -6,7 +6,7 @@ error = settings["snap_error"] # snap error
 
 class CE(MenuWithField):
     def __init__(self, surface: pg.surface.Surface, renderer: render.Renderer):
-        self.menu = "CE"
+        self.mname = "CE"
         self.mode = "move"  # move, edit
         super().__init__(surface, "CE", renderer, renderall=False)
 
