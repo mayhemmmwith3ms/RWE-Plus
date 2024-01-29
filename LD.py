@@ -36,6 +36,7 @@ class load(Menu):
 
     def resize(self):
         super().resize()
+        self.setup_recent_list()
         for i in self.recentbuttons:
             i.resize()
         for i in self.instancebuttons:
@@ -71,6 +72,13 @@ class load(Menu):
         btnrect = pg.rect.Rect(self.menu_ui_settings["instancespos"])
         #title:widgets.button = widgets.button(self.surface, btnrect, gray, "Levels")
         #self.recentbuttons.append(title)
+
+        tr = [btnrect[0], btnrect[1], 38, 3]
+
+        title = w2.GenericButton(tr, self.surface, "Active Levels", "", gray, fontsize=sum(pg.display.get_window_size()) // 160)
+        self.instancebuttons.append(title)
+
+        btnrect = btnrect.move(0, 4)
 
         for i, j in enumerate(man.levels):
             btnrect2 = btnrect.move((btnrect.width + 1)* (i % 3), (btnrect.height + 1) * (i // 3))
