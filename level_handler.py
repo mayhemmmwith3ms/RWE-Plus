@@ -226,6 +226,8 @@ class LevelManager:
 
                         if not self.active_level:
                             s = False
+                    
+                    self.menu.resize()
         except Exception:
             lj.log_to_crash_log(f"Fatal exception during editor runtime\n{traceback.format_exc()}")
             error_popup("Fatal exception has occured during editor runtime\nCheck crashLog.txt for more info")
@@ -244,6 +246,7 @@ class LevelManager:
             self.levels.remove(self.active_level)
             del(self.active_level)
         self.active_level = self.get_level(filepath)
+        self.active_level.menu.resize()
 
     def run_level(self):
         run = True
