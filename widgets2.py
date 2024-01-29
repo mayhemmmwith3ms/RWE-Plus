@@ -184,7 +184,8 @@ class GenericButton(UIElement):
             fastmts(self.surface, self.hovertext, *pg.mouse.get_pos(), white)
 
     def on_click(self):
-        self.mdown_callback(self)
+        if self.mdown_callback:
+            self.mdown_callback(self)
 
 class TextAndImageButton(UIElement):
     def __init__(self, rect, surface, text, hovertext, image, bodycolor, mdown_callback=None, fontsize=30, fontcolor=None, imagecolor=None):
@@ -217,7 +218,8 @@ class TextAndImageButton(UIElement):
             fastmts(self.surface, self.hovertext, *pg.mouse.get_pos(), white)
 
     def on_click(self):
-        self.mdown_callback(self)
+        if self.mdown_callback:
+            self.mdown_callback(self)
 
 class HorizontalSlider(UIElement):
     def __init__(self, rect, surface, get_callback, set_callback, min, max, step, bodycolor=None, handlecolor=None):
