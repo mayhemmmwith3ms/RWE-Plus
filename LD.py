@@ -77,7 +77,7 @@ class load(Menu):
 
         tr = [btnrect[0], btnrect[1], 38, 3]
 
-        title = w2.GenericButton(tr, self.surface, "Active Levels", "", gray, fontsize=sum(pg.display.get_window_size()) // 160)
+        title = w2.GenericButton(tr, self.surface, "Active Levels", "", gray, fontsize=20)
         self.instancebuttons.append(title)
 
         btnrect = btnrect.move(0, 4)

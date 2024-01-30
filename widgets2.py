@@ -15,6 +15,9 @@ white = [255, 255, 255]
 def changerectmargin(rect, x, y):
     return [rect[0] - x, rect[1] - y, rect[2] + x * 2, rect[3] + y * 2]
 
+def scaled_font_size(sz:int) -> int:
+    return int(sz * (sum(pg.display.get_window_size()) / 3200))
+
 def fastmts(window, text: str, x: int, y: int, col=None, fontsize=ui_settings["global"]["fontsize"], centered=False):
     if col is None:
         col = black
@@ -146,7 +149,7 @@ class TextLabel(UIElement):
         self.text = text
         self.fontsize = self.fontsize if fontsize is None else fontsize
         self.fontcolor = self.fontcolor if fontcolor is None else fontcolor
-        self.text_surface = mts(self.text, self.fontcolor, self.fontsize)
+        self.text_surface = mts(self.text, self.fontcolor, scaled_font_size(self.fontsize))
 
 class ImageLabel(UIElement):
     def __init__(self, rect, surface, image:pg.Surface, imagecolor=None):
