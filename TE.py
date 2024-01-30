@@ -500,87 +500,88 @@ class TE(MenuWithField):
                     if clipboard.data["TE"] is None:
                         return
                     self.draw_clipboard_preview()
+            print(self.suppresslmb)
+            if not self.suppresslmb:
+                if not settings["TE_legacy_RWE_placement_controls"]:
+                    if self.tool == 0:
+                        if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
+                            if self.justPlacedChainHolders:
+                                for chPos in self.justPlacedChainHolders:
+                                    self.data["TE"]["tlMatrix"][chPos[0]][chPos[1]][chPos[2]]["data"].append(makearr([cposxo, cposyo], "point"))
+                                    #self.data["TE"]["tlMatrix"][chPos[0]][chPos[1]][chPos[2]]["data"][0] = makearr([15, 22], "point") #dont fucking ask me why this works
+                                self.justPlacedChainHolders.clear()
+                            else:
+                                self.begin_drag(True)
+                                self.last_lmb = False
+                        elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                            self.update_drag(True)
+                        elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                            self.end_drag(True)
+                            self.last_lmb = True
 
-            if not settings["TE_legacy_RWE_placement_controls"]:
-                if self.tool == 0:
-                    if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
-                        if self.justPlacedChainHolders:
-                            for chPos in self.justPlacedChainHolders:
-                                self.data["TE"]["tlMatrix"][chPos[0]][chPos[1]][chPos[2]]["data"].append(makearr([cposxo, cposyo], "point"))
-                                #self.data["TE"]["tlMatrix"][chPos[0]][chPos[1]][chPos[2]]["data"][0] = makearr([15, 22], "point") #dont fucking ask me why this works
-                            self.justPlacedChainHolders.clear()
-                        else:
+                        if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
+                            self.begin_drag(False)
+                            self.last_rmb = False
+                        elif bp[2] == 1 and not self.last_rmb and (self.last_lmb and self.last_mmb):
+                            self.update_drag(False)
+                        elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
+                            self.end_drag(False)
+                            self.last_rmb = True
+                    else:
+                        if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
+                            self.begin_rect_drag(True)
+                            self.last_lmb = False
+                        elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                            self.update_rect_drag(True)
+                        elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                            self.end_rect_drag(True)
+                            self.last_lmb = True
+
+                        if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
+                            self.begin_rect_drag(False)
+                            self.last_rmb = False
+                        elif bp[2] == 1 and not self.last_rmb and (self.last_lmb and self.last_mmb):
+                            self.update_rect_drag(False)
+                        elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
+                            self.end_rect_drag(False)
+                            self.last_rmb = True
+                else:
+                    if self.tool == 0:
+                        if bp[0] == 1 and self.last_lmb and self.last_mmb and self.last_rmb:
                             self.begin_drag(True)
                             self.last_lmb = False
-                    elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
-                        self.update_drag(True)
-                    elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
-                        self.end_drag(True)
-                        self.last_lmb = True
+                        elif bp[0] == 1 and not self.last_lmb and self.last_mmb and self.last_rmb:
+                            self.update_drag(True)
+                        elif bp[0] == 0 and not self.last_lmb and self.last_mmb and self.last_rmb:
+                            self.end_drag(True)
+                            self.last_lmb = True
 
-                    if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
-                        self.begin_drag(False)
-                        self.last_rmb = False
-                    elif bp[2] == 1 and not self.last_rmb and (self.last_lmb and self.last_mmb):
-                        self.update_drag(False)
-                    elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
-                        self.end_drag(False)
-                        self.last_rmb = True
-                else:
-                    if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
-                        self.begin_rect_drag(True)
-                        self.last_lmb = False
-                    elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
-                        self.update_rect_drag(True)
-                    elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
-                        self.end_rect_drag(True)
-                        self.last_lmb = True
+                        if bp[2] == 1 and self.last_rmb and self.last_mmb and self.last_lmb:
+                            self.begin_rect_drag(True)
+                            self.last_rmb = False
+                        elif bp[2] == 1 and not self.last_rmb and self.last_mmb and self.last_lmb:
+                            self.update_rect_drag(True)
+                        elif bp[2] == 0 and not self.last_rmb and self.last_mmb and self.last_lmb:
+                            self.end_rect_drag(True)
+                            self.last_rmb = True
+                    else:
+                        if bp[0] == 1 and self.last_lmb and self.last_mmb and self.last_rmb:
+                            self.begin_drag(False)
+                            self.last_lmb = False
+                        elif bp[0] == 1 and not self.last_lmb and self.last_mmb and self.last_rmb:
+                            self.update_drag(False)
+                        elif bp[0] == 0 and not self.last_lmb and self.last_mmb and self.last_rmb:
+                            self.end_drag(False)
+                            self.last_lmb = True
 
-                    if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
-                        self.begin_rect_drag(False)
-                        self.last_rmb = False
-                    elif bp[2] == 1 and not self.last_rmb and (self.last_lmb and self.last_mmb):
-                        self.update_rect_drag(False)
-                    elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
-                        self.end_rect_drag(False)
-                        self.last_rmb = True
-            else:
-                if self.tool == 0:
-                    if bp[0] == 1 and self.last_lmb and self.last_mmb and self.last_rmb:
-                        self.begin_drag(True)
-                        self.last_lmb = False
-                    elif bp[0] == 1 and not self.last_lmb and self.last_mmb and self.last_rmb:
-                        self.update_drag(True)
-                    elif bp[0] == 0 and not self.last_lmb and self.last_mmb and self.last_rmb:
-                        self.end_drag(True)
-                        self.last_lmb = True
-
-                    if bp[2] == 1 and self.last_rmb and self.last_mmb and self.last_lmb:
-                        self.begin_rect_drag(True)
-                        self.last_rmb = False
-                    elif bp[2] == 1 and not self.last_rmb and self.last_mmb and self.last_lmb:
-                        self.update_rect_drag(True)
-                    elif bp[2] == 0 and not self.last_rmb and self.last_mmb and self.last_lmb:
-                        self.end_rect_drag(True)
-                        self.last_rmb = True
-                else:
-                    if bp[0] == 1 and self.last_lmb and self.last_mmb and self.last_rmb:
-                        self.begin_drag(False)
-                        self.last_lmb = False
-                    elif bp[0] == 1 and not self.last_lmb and self.last_mmb and self.last_rmb:
-                        self.update_drag(False)
-                    elif bp[0] == 0 and not self.last_lmb and self.last_mmb and self.last_rmb:
-                        self.end_drag(False)
-                        self.last_lmb = True
-
-                    if bp[2] == 1 and self.last_rmb and self.last_mmb and self.last_lmb:
-                        self.begin_rect_drag(False)
-                        self.last_rmb = False
-                    elif bp[2] == 1 and not self.last_rmb and self.last_mmb and self.last_lmb:
-                        self.update_rect_drag(False)
-                    elif bp[2] == 0 and not self.last_rmb and self.last_mmb and self.last_lmb:
-                        self.end_rect_drag(False)
-                        self.last_rmb = True             
+                        if bp[2] == 1 and self.last_rmb and self.last_mmb and self.last_lmb:
+                            self.begin_rect_drag(False)
+                            self.last_rmb = False
+                        elif bp[2] == 1 and not self.last_rmb and self.last_mmb and self.last_lmb:
+                            self.update_rect_drag(False)
+                        elif bp[2] == 0 and not self.last_rmb and self.last_mmb and self.last_lmb:
+                            self.end_rect_drag(False)
+                            self.last_rmb = True             
         else:
             if not self.matshow:
                 for index, button in enumerate(self.buttonslist[:-1]):

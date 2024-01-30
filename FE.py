@@ -112,47 +112,49 @@ class FE(MenuWithField):
                 self.mpos = posoffset
                 self.mmove = True
             updatedCells = []
-            if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
-                self.last_lmb = False
-                self.mmove = True
-                self.rectdata = [posoffset, pg.Vector2(0, 0), pos2]
-            elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
-                self.rectdata[1] = posoffset - self.rectdata[0]
-                if (0 <= posoffset.x < self.levelwidth) and (0 <= posoffset.y < self.levelheight) and self.mmove:
-                    if not self.copymode:
-                        updatedCells = self.paint(posoffset.x, posoffset.y, 1)
-                    self.mmove = False
-                if self.copymode:
-                    rect = self.vec2rect(self.rectdata[2], pos2)
-                    tx = f"{int(rect.w / self.size)}, {int(rect.h / self.size)}"
-                    widgets.fastmts(self.surface, tx, *(mpos + pg.Vector2(15, 4)), white)
-                    pg.draw.rect(self.surface, blue, rect, 5)
-            elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
-                rect = self.vec2rect(self.rectdata[0], posoffset)
-                if self.copymode:
-                    data1 = self.data["FE"]["effects"][self.selectedeffect]["mtrx"][rect.x:rect.w + rect.x]
-                    data1 = [i[rect.y:rect.w + rect.y] for i in data1]
-                    pyperclip.copy(str(["FE", data1]))
-                    print("Copied!")
-                self.updatehistory([["FE", "effects", self.selectedeffect, "mtrx"]])
-                #self.detecthistory(["FE", "effects", self.selectedeffect, "mtrx"])
-                self.last_lmb = True
-                self.renderfield()
-                self.renderer.rendereffectselective(self.selectedeffect, updatedCells)
 
-            if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
-                self.last_rmb = False
-                self.mmove = True
-            elif bp[2] == 1 and not self.last_rmb and (self.last_lmb and self.last_mmb):
-                if (0 <= posoffset[0] < self.levelwidth) and (0 <= posoffset[1] < self.levelheight) and self.mmove:
-                    if not self.copymode:
-                        updatedCells = self.paint(posoffset[0], posoffset[1], -1)
+            if not self.suppresslmb:
+                if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
+                    self.last_lmb = False
+                    self.mmove = True
+                    self.rectdata = [posoffset, pg.Vector2(0, 0), pos2]
+                elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                    self.rectdata[1] = posoffset - self.rectdata[0]
+                    if (0 <= posoffset.x < self.levelwidth) and (0 <= posoffset.y < self.levelheight) and self.mmove:
+                        if not self.copymode:
+                            updatedCells = self.paint(posoffset.x, posoffset.y, 1)
                         self.mmove = False
-            elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
-                self.updatehistory([["FE", "effects", self.selectedeffect, "mtrx"]])
-                self.last_rmb = True
-                self.renderfield()
-                self.renderer.rendereffectselective(self.selectedeffect, updatedCells)
+                    if self.copymode:
+                        rect = self.vec2rect(self.rectdata[2], pos2)
+                        tx = f"{int(rect.w / self.size)}, {int(rect.h / self.size)}"
+                        widgets.fastmts(self.surface, tx, *(mpos + pg.Vector2(15, 4)), white)
+                        pg.draw.rect(self.surface, blue, rect, 5)
+                elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                    rect = self.vec2rect(self.rectdata[0], posoffset)
+                    if self.copymode:
+                        data1 = self.data["FE"]["effects"][self.selectedeffect]["mtrx"][rect.x:rect.w + rect.x]
+                        data1 = [i[rect.y:rect.w + rect.y] for i in data1]
+                        pyperclip.copy(str(["FE", data1]))
+                        print("Copied!")
+                    self.updatehistory([["FE", "effects", self.selectedeffect, "mtrx"]])
+                    #self.detecthistory(["FE", "effects", self.selectedeffect, "mtrx"])
+                    self.last_lmb = True
+                    self.renderfield()
+                    self.renderer.rendereffectselective(self.selectedeffect, updatedCells)
+
+                if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
+                    self.last_rmb = False
+                    self.mmove = True
+                elif bp[2] == 1 and not self.last_rmb and (self.last_lmb and self.last_mmb):
+                    if (0 <= posoffset[0] < self.levelwidth) and (0 <= posoffset[1] < self.levelheight) and self.mmove:
+                        if not self.copymode:
+                            updatedCells = self.paint(posoffset[0], posoffset[1], -1)
+                            self.mmove = False
+                elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
+                    self.updatehistory([["FE", "effects", self.selectedeffect, "mtrx"]])
+                    self.last_rmb = True
+                    self.renderfield()
+                    self.renderer.rendereffectselective(self.selectedeffect, updatedCells)
 
             self.movemiddle(bp)
         for i in self.buttonslist:

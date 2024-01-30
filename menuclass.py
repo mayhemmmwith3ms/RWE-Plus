@@ -631,6 +631,8 @@ class MenuWithField(Menu):
 
         self.f = pg.Surface([self.levelwidth * preview_cell_size, self.levelheight * preview_cell_size])
 
+        self.suppresslmb = False
+
         self.field = widgets.window(self.surface, self.menu_ui_settings["d1"])
         self.btiles = self.data["EX2"]["extraTiles"]
         self.fieldmap = self.field.field
@@ -768,6 +770,9 @@ class MenuWithField(Menu):
                          #[self.field.rect.right, pos2[1]])
             #pg.draw.line(self.surface, cursor2, [pos2[0], self.field.rect.top],
                          #[pos2[0], self.field.rect.bottom])
+
+        if not self.getmouse[0]:
+            self.suppresslmb = False
 
         super().blit()
 

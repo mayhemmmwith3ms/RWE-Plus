@@ -344,119 +344,120 @@ class PE(MenuWithField):
 
             drawlong = False
 
-            if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
-                self.last_lmb = False
-                if not self.block_next_placement:
-                    if self.findparampressed("propvariation_change"):
-                        self.change_variation_up()
-                        self.settingsupdate()
-                    elif self.delmode:
-                        self.modpress = True
-                        if len(self.data["PR"]["props"]) > 0:
-                            *_, near = self.find_nearest(*posoffset)
-                            self.data["PR"]["props"].pop(near)
-                            self.renderer.props_full_render(self.layer)
-                            self.rfa()
-                            self.updatehistory([["PR", "props"]])
-                    elif self.copymode:
-                        self.modpress = True
-                        if len(self.data["PR"]["props"]) > 0:
-                            name, _, near = self.find_nearest(*posoffset)
-                            self.setprop(name[1])
-                            self.depth = -name[0]
-                            quad = []
-                            for q in name[3]:
-                                quad.append(pg.Vector2(toarr(q, "point")))
-                            quads2 = quad.copy()
-                            qv = sum(quad, start=pg.Vector2(0, 0)) / 4
-                            for i, q in enumerate(quad):
-                                vec = pg.Vector2(q) - qv
-                                vec = [round(vec.x, 4), round(vec.y, 4)]
-                                quads2[i] = vec
-                            self.quads = quads2
-                            self.cursor.rotation = -(pg.Vector2(self.quads[2]) - pg.Vector2(self.quads[3])).angle_to(pg.Vector2(1, 0))
-                            self.prop_settings = name[4]["settings"]
-                            self.updateproptransform()
-                    elif self.selectedprop["tp"] == "long":
-                        self.rectdata[0] = posonfield.copy()
-                        self.rectdata[1] = mpos.copy()
+            if not self.suppresslmb:
+                if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
+                    self.last_lmb = False
+                    if not self.block_next_placement:
+                        if self.findparampressed("propvariation_change"):
+                            self.change_variation_up()
+                            self.settingsupdate()
+                        elif self.delmode:
+                            self.modpress = True
+                            if len(self.data["PR"]["props"]) > 0:
+                                *_, near = self.find_nearest(*posoffset)
+                                self.data["PR"]["props"].pop(near)
+                                self.renderer.props_full_render(self.layer)
+                                self.rfa()
+                                self.updatehistory([["PR", "props"]])
+                        elif self.copymode:
+                            self.modpress = True
+                            if len(self.data["PR"]["props"]) > 0:
+                                name, _, near = self.find_nearest(*posoffset)
+                                self.setprop(name[1])
+                                self.depth = -name[0]
+                                quad = []
+                                for q in name[3]:
+                                    quad.append(pg.Vector2(toarr(q, "point")))
+                                quads2 = quad.copy()
+                                qv = sum(quad, start=pg.Vector2(0, 0)) / 4
+                                for i, q in enumerate(quad):
+                                    vec = pg.Vector2(q) - qv
+                                    vec = [round(vec.x, 4), round(vec.y, 4)]
+                                    quads2[i] = vec
+                                self.quads = quads2
+                                self.cursor.rotation = -(pg.Vector2(self.quads[2]) - pg.Vector2(self.quads[3])).angle_to(pg.Vector2(1, 0))
+                                self.prop_settings = name[4]["settings"]
+                                self.updateproptransform()
+                        elif self.selectedprop["tp"] == "long":
+                            self.rectdata[0] = posonfield.copy()
+                            self.rectdata[1] = mpos.copy()
+                            self.transform_reset()
+                        else:
+                            self.place()
+                elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                    if self.selectedprop["tp"] == "long" and self.renderprop and not self.block_next_placement:
                         self.transform_reset()
+                        p1 = self.rectdata[0]
+                        p2 = posonfield
+                        vec = p2 - p1
+                        if vec.length() != 0:
+                            vecNormal = vec.normalize()
+                        else:
+                            vecNormal = pg.Vector2(0, 0)
+                        vecPerpendicularNormal = vecNormal.rotate(90)
+                        q = []
+                        #print(self.selectedimage.get_size())
+                        pWidth = (self.selectedimage.get_height() / 2) / self.fieldScale
+                        q.append(posonfield + vecPerpendicularNormal * pWidth)
+                        q.append(self.rectdata[0] + vecPerpendicularNormal * pWidth)
+                        q.append(self.rectdata[0] - vecPerpendicularNormal * pWidth)
+                        q.append(posonfield - vecPerpendicularNormal * pWidth)
+                        #angle = math.degrees(math.atan2(vec.y, vec.x))
+                        #distance = p1.distance_to(p2)
+                        #newquads = self.quadsnor.copy()
+                        #newquads[1][0] = distance + newquads[0][0]
+                        #newquads[2][0] = distance + newquads[0][0]
+                        #q = []
+                        #point = pg.Vector2(newquads[0])
+                        #for quad in newquads:
+                        #    newq = pg.Vector2(quad).rotate(angle)
+                        #    if quad[0] < point.x:
+                        #        point.x = quad[0]
+                        #    if quad[1] < point.y:
+                        #        point.y = quad[1]
+                        #    q.append(newq)
+                        self.quads = q
+                        avgX = []
+                        avgY = []
+                        for quad in self.quads:
+                            avgX.append(quad[0])
+                            avgY.append(quad[1])
+                        avgX = sum(avgX) // len(avgX)
+                        avgY = sum(avgY) // len(avgY)
+                        i, *_, ww, wh = quadtransform(q, self.selectedimage)
+                        self.rectdata[2] = pg.Vector2(i.get_size())
+                        i = pg.transform.scale(i, [ww / spritesize * self.size, wh / spritesize * self.size])
+                        i.set_colorkey(white)
+
+                        if self.snap:
+                            dpos = self.get_snapped_pos(mpos) - pg.Vector2(self.size / 4)
+                        else:
+                            dpos = mpos
+
+                        #dpos = (((pg.Vector2(avgX, avgY) + pg.Vector2(self.field.rect.topleft)) * self.size) + pg.Vector2(self.xoffset, self.yoffset)) // spritesize
+                        self.surface.blit(i, (self.rectdata[1] + dpos) / 2 - pg.Vector2(i.get_size()) / 2)
+
+                        drawlong = True
+
+                elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                    self.last_lmb = True
+                    if self.selectedprop["tp"] == "long" and self.renderprop and not self.modpress and not self.block_next_placement:
+                        self.place((self.rectdata[0] + posonfield) / 2)
+                        self.transform_reset()
+                    self.modpress = False
+                    self.block_next_placement = False
+
+                if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
+                    self.last_rmb = False
+                    if self.findparampressed("propvariation_change"):
+                        self.change_variation_down()
+                        self.settingsupdate()
+                    elif self.findparampressed("cursor_propdepth_inverse"):
+                        self.depth_down()
                     else:
-                        self.place()
-            elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
-                if self.selectedprop["tp"] == "long" and self.renderprop and not self.block_next_placement:
-                    self.transform_reset()
-                    p1 = self.rectdata[0]
-                    p2 = posonfield
-                    vec = p2 - p1
-                    if vec.length() != 0:
-                        vecNormal = vec.normalize()
-                    else:
-                        vecNormal = pg.Vector2(0, 0)
-                    vecPerpendicularNormal = vecNormal.rotate(90)
-                    q = []
-                    #print(self.selectedimage.get_size())
-                    pWidth = (self.selectedimage.get_height() / 2) / self.fieldScale
-                    q.append(posonfield + vecPerpendicularNormal * pWidth)
-                    q.append(self.rectdata[0] + vecPerpendicularNormal * pWidth)
-                    q.append(self.rectdata[0] - vecPerpendicularNormal * pWidth)
-                    q.append(posonfield - vecPerpendicularNormal * pWidth)
-                    #angle = math.degrees(math.atan2(vec.y, vec.x))
-                    #distance = p1.distance_to(p2)
-                    #newquads = self.quadsnor.copy()
-                    #newquads[1][0] = distance + newquads[0][0]
-                    #newquads[2][0] = distance + newquads[0][0]
-                    #q = []
-                    #point = pg.Vector2(newquads[0])
-                    #for quad in newquads:
-                    #    newq = pg.Vector2(quad).rotate(angle)
-                    #    if quad[0] < point.x:
-                    #        point.x = quad[0]
-                    #    if quad[1] < point.y:
-                    #        point.y = quad[1]
-                    #    q.append(newq)
-                    self.quads = q
-                    avgX = []
-                    avgY = []
-                    for quad in self.quads:
-                        avgX.append(quad[0])
-                        avgY.append(quad[1])
-                    avgX = sum(avgX) // len(avgX)
-                    avgY = sum(avgY) // len(avgY)
-                    i, *_, ww, wh = quadtransform(q, self.selectedimage)
-                    self.rectdata[2] = pg.Vector2(i.get_size())
-                    i = pg.transform.scale(i, [ww / spritesize * self.size, wh / spritesize * self.size])
-                    i.set_colorkey(white)
-
-                    if self.snap:
-                        dpos = self.get_snapped_pos(mpos) - pg.Vector2(self.size / 4)
-                    else:
-                        dpos = mpos
-
-                    #dpos = (((pg.Vector2(avgX, avgY) + pg.Vector2(self.field.rect.topleft)) * self.size) + pg.Vector2(self.xoffset, self.yoffset)) // spritesize
-                    self.surface.blit(i, (self.rectdata[1] + dpos) / 2 - pg.Vector2(i.get_size()) / 2)
-
-                    drawlong = True
-
-            elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
-                self.last_lmb = True
-                if self.selectedprop["tp"] == "long" and self.renderprop and not self.modpress and not self.block_next_placement:
-                    self.place((self.rectdata[0] + posonfield) / 2)
-                    self.transform_reset()
-                self.modpress = False
-                self.block_next_placement = False
-
-            if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
-                self.last_rmb = False
-                if self.findparampressed("propvariation_change"):
-                    self.change_variation_down()
-                    self.settingsupdate()
-                elif self.findparampressed("cursor_propdepth_inverse"):
-                    self.depth_down()
-                else:
-                    self.depth_up()
-            elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
-                self.last_rmb = True
+                        self.depth_up()
+                elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
+                    self.last_rmb = True
 
             drawPreviewPos = mpos - pg.Vector2(self.selectedimage.get_size()) / 2
             if not any(self.helds):

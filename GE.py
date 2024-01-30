@@ -327,8 +327,30 @@ class GE(MenuWithField):
             if try_clipboard:
                 self.draw_clipboard_preview()
 
-            if settings["hold_key_rect_drag"]:
-                if not self.rectDragActive:
+            if not self.suppresslmb:
+                if settings["hold_key_rect_drag"]:
+                    if not self.rectDragActive:
+                        if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
+                            self.begin_draw_drag()
+                            self.last_lmb = False
+                        elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                            self.update_draw_drag()
+                        elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                            self.end_draw_drag()
+                            self.last_lmb = True
+                    elif not self.bucketTool:
+                        if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
+                            self.begin_rect_drag()
+                            self.last_lmb = False
+                        elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                            self.update_rect_drag()
+                        elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                            self.end_rect_drag()
+                            self.last_lmb = True
+
+                    if bp[0] != 1:
+                        self.rectDragActive = self.findparampressed("alt_func")
+                else:
                     if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
                         self.begin_draw_drag()
                         self.last_lmb = False
@@ -337,36 +359,15 @@ class GE(MenuWithField):
                     elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                         self.end_draw_drag()
                         self.last_lmb = True
-                elif not self.bucketTool:
-                    if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
+
+                    if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
                         self.begin_rect_drag()
-                        self.last_lmb = False
-                    elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                        self.last_rmb = False
+                    elif bp[2] == 1 and not self.last_rmb and (self.last_lmb and self.last_mmb):
                         self.update_rect_drag()
-                    elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                    elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
                         self.end_rect_drag()
-                        self.last_lmb = True
-
-                if bp[0] != 1:
-                    self.rectDragActive = self.findparampressed("alt_func")
-            else:
-                if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
-                    self.begin_draw_drag()
-                    self.last_lmb = False
-                elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
-                    self.update_draw_drag()
-                elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
-                    self.end_draw_drag()
-                    self.last_lmb = True
-
-                if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
-                    self.begin_rect_drag()
-                    self.last_rmb = False
-                elif bp[2] == 1 and not self.last_rmb and (self.last_lmb and self.last_mmb):
-                    self.update_rect_drag()
-                elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
-                    self.end_rect_drag()
-                    self.last_rmb = True
+                        self.last_rmb = True
 
             self.movemiddle(bp)
 

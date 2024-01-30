@@ -71,34 +71,35 @@ class CE(MenuWithField):
                 val = makearr(val, "point")
                 self.data["CM"]["cameras"][self.heldindex] = val
 
-            if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
-                self.last_lmb = False
-                if self.mode == "move":
-                    if not self.held:
-                        self.pickupcamera()
+            if not self.suppresslmb:
+                if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
+                    self.last_lmb = False
+                    if self.mode == "move":
+                        if not self.held:
+                            self.pickupcamera()
+                        else:
+                            self.placecamera()
                     else:
-                        self.placecamera()
-                else:
-                    self.setcursor(pg.SYSTEM_CURSOR_SIZEALL)
-            elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
-                if self.mode == "edit" and self.held:
-                    quadindx = self.getquad(self.heldindex)
-                    rect = self.getcamerarect(self.data["CM"]["cameras"][self.heldindex])
-                    qlist = [rect.topleft, rect.topright, rect.bottomright, rect.bottomleft]
-                    mouse = pg.Vector2(pg.mouse.get_pos()) - qlist[quadindx]
-                    r, o = mouse.rotate(90).as_polar()
-                    if settings["CE_unlock_angle"]:
-                        self.data["CM"]["quads"][self.heldindex][quadindx] = \
-                            [o, round(r / 100 / self.size * preview_cell_size, 4)]
-                    else:
-                        self.data["CM"]["quads"][self.heldindex][quadindx] = \
-                            [o, round(min(r / 100 / self.size * preview_cell_size, 1), 4)]
+                        self.setcursor(pg.SYSTEM_CURSOR_SIZEALL)
+                elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                    if self.mode == "edit" and self.held:
+                        quadindx = self.getquad(self.heldindex)
+                        rect = self.getcamerarect(self.data["CM"]["cameras"][self.heldindex])
+                        qlist = [rect.topleft, rect.topright, rect.bottomright, rect.bottomleft]
+                        mouse = pg.Vector2(pg.mouse.get_pos()) - qlist[quadindx]
+                        r, o = mouse.rotate(90).as_polar()
+                        if settings["CE_unlock_angle"]:
+                            self.data["CM"]["quads"][self.heldindex][quadindx] = \
+                                [o, round(r / 100 / self.size * preview_cell_size, 4)]
+                        else:
+                            self.data["CM"]["quads"][self.heldindex][quadindx] = \
+                                [o, round(min(r / 100 / self.size * preview_cell_size, 1), 4)]
 
-            elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
-                self.setcursor()
-                self.detecthistory(["CM", "quads", self.heldindex])
-                self.last_lmb = True
-                self.rfa()
+                elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                    self.setcursor()
+                    self.detecthistory(["CM", "quads", self.heldindex])
+                    self.last_lmb = True
+                    self.rfa()
 
             self.movemiddle(bp)
             #print(self.offset)

@@ -135,38 +135,40 @@ class LE(MenuWithField):
 
             bp = self.getmouse
 
-            if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
-                self.last_rmb = False
-                self.mouse_pivot_anchor = mouspos
-                self.last_cur_pos = mouspos
-            elif bp[2] == 1 and not self.last_rmb and (self.last_lmb and self.last_mmb):
-                self.direction = (pg.Vector2(self.mouse_pivot_anchor) - pg.Vector2(mouspos)).angle_to(pg.Vector2(1, 0)) + 90
-                self.rotate()
-                held_draw_pos = self.mouse_pivot_anchor
-                held_draw_pos = [held_draw_pos[0] - self.tileimage.get_width() / 2, held_draw_pos[1] - self.tileimage.get_height() / 2]
-                self.last_cur_pos = mouspos
-            elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
-                self.last_rmb = True
+            if not self.suppresslmb:
+                if bp[2] == 1 and self.last_rmb and (self.last_lmb and self.last_mmb):
+                    self.last_rmb = False
+                    self.mouse_pivot_anchor = mouspos
+                    self.last_cur_pos = mouspos
+                elif bp[2] == 1 and not self.last_rmb and (self.last_lmb and self.last_mmb):
+                    self.direction = (pg.Vector2(self.mouse_pivot_anchor) - pg.Vector2(mouspos)).angle_to(pg.Vector2(1, 0)) + 90
+                    self.rotate()
+                    held_draw_pos = self.mouse_pivot_anchor
+                    held_draw_pos = [held_draw_pos[0] - self.tileimage.get_width() / 2, held_draw_pos[1] - self.tileimage.get_height() / 2]
+                    self.last_cur_pos = mouspos
+                elif bp[2] == 0 and not self.last_rmb and (self.last_lmb and self.last_mmb):
+                    self.last_rmb = True
 
             self.surface.blit(self.preview, held_draw_pos)
 
             pg.draw.rect(self.field2.field, black, [0, 0, 1, 1])
             pg.draw.rect(self.field2.field, black, [self.field2.field.get_width() - 1, self.field2.field.get_height() - 1, 1, 1])
 
-            if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
-                self.last_lmb = False
-                self.n = 1
-            elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb) and self.n == 1:
-                sizepr = self.map_to_field(self.tileimage.get_width(), self.tileimage.get_height())
-                self.field3.field.blit(self.tileimage, curpos_on_field)
-                self.fieldadd.blit(self.field3.field, fieldpos)
-                self.field2.field.blit(pg.transform.scale(self.tileimage, sizepr), curpos_on_field2)
-            elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
-                self.fieldadd.fill(white)
-                self.last_lmb = True
-                self.updateshadowhistory()
-                self.save()
-                self.renderfield()
+            if not self.suppresslmb:
+                if bp[0] == 1 and self.last_lmb and (self.last_rmb and self.last_mmb):
+                    self.last_lmb = False
+                    self.n = 1
+                elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb) and self.n == 1:
+                    sizepr = self.map_to_field(self.tileimage.get_width(), self.tileimage.get_height())
+                    self.field3.field.blit(self.tileimage, curpos_on_field)
+                    self.fieldadd.blit(self.field3.field, fieldpos)
+                    self.field2.field.blit(pg.transform.scale(self.tileimage, sizepr), curpos_on_field2)
+                elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
+                    self.fieldadd.fill(white)
+                    self.last_lmb = True
+                    self.updateshadowhistory()
+                    self.save()
+                    self.renderfield()
             self.movemiddle(bp)
 
         lapreviewpos = self.field.rect.bottomright - pg.Vector2(240, 160)

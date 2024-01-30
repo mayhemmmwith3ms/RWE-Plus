@@ -202,11 +202,7 @@ class LevelManager:
                         else:
                             print("Most recent file either does not exist or was moved/deleted. Open a level normally to create one.")
                 self.menu.message = ""
-                self.window.fill(pg.color.Color(files.ui_settings["global"]["color"]))
-                self.menu.blit()
-                self.menu.justChangedZoom = False
-                pg.display.flip()
-                pg.display.update()
+
                 if self.active_level:
                     s = True
                     while s:
@@ -228,6 +224,12 @@ class LevelManager:
                             s = False
                     
                     self.menu.resize()
+
+                self.window.fill(pg.color.Color(files.ui_settings["global"]["color"]))
+                self.menu.blit()
+                self.menu.justChangedZoom = False
+                pg.display.flip()
+                pg.display.update()
         except Exception:
             lj.log_to_crash_log(f"Fatal exception during editor runtime\n{traceback.format_exc()}")
             error_popup("Fatal exception has occured during editor runtime\nCheck crashLog.txt for more info")
@@ -250,9 +252,14 @@ class LevelManager:
 
     def run_level(self):
         run = True
+        m = pg.mouse.get_pressed()[0]
         while run:
             if not self.active_level:
                 run = False
+            if m == 1 and pg.mouse.get_pressed()[0] == 1:
+                self.active_level.menu.suppresslmb = True
+            else:
+                m = 0
             run = self.active_level.update()
 
     def shelve_level(self):
