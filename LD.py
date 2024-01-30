@@ -1,6 +1,7 @@
 from menuclass import *
 import level_handler as lv
 import widgets2 as w2
+from tkinter.messagebox import askyesnocancel
 
 class load(Menu):
     def __init__(self, surface: pg.surface.Surface, renderer):
@@ -93,9 +94,19 @@ class load(Menu):
     def pressinstance(self, text):
         lv.LevelManager.instance.focus_level(text)
 
-    def killinstance(self, x):
-        self.instancebuttons.remove(x)
-        self.setup_instance_list()
+    def killinstance(self, x:w2.LevelInstanceSelectButton):
+        ex = False
+        if not x.level_instance.data == x.level_instance.old_data:
+            ex = askyesnocancel("Unsaved Level", f"Level \"{x.level_instance.level_name}\" has unsaved changes.\nClosing the level will cause these changes to be lost.\n\nWould you like to save the level?")
+
+        if ex is not None:
+            if ex:
+                x.level_instance.menu.savef()
+
+            lv.LevelManager.instance.levels.remove(x.level_instance)
+            x.level_instance = None
+            self.instancebuttons.remove(x)
+            self.setup_instance_list()
 
     @property
     def custom_info(self):

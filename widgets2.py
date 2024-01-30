@@ -337,6 +337,4 @@ class LevelInstanceSelectButton(UIElement):
         self.level_instance.parent.focus_level(self.level_instance.filepath)
 
     def kill(self, _):
-        self.level_instance.parent.levels.remove(self.level_instance)
-        self.level_instance = None
         self.kill_cb(self)

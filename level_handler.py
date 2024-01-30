@@ -344,7 +344,7 @@ class LevelInstance:
                 self.menu.savef()
                 self.old_data = files.jsoncopy(self.data)
             case "new":
-                r = True
+                r = False
                 if not self.is_saved:
                     root = tk.Tk()
                     root.wm_attributes("-topmost", 1)
@@ -353,7 +353,7 @@ class LevelInstance:
                 if r is not None:
                     if r:
                         self.menu.savef()
-                    return False
+                return False
             case "open":
                 file = self.menu.open_file_dialog()
                 if file is not None and os.path.exists(file):
