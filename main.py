@@ -80,10 +80,10 @@ def preload():
     global lv_manager
 
     with open(application_path + "\\loadLog.txt", "w") as load_log:
-        load_log.write("Start launch load!\n")
+        load_log.write(f"[START LOG | {datetime.datetime.now().strftime('%H:%M:%S')} | v{tag}]\n")
 
     with open(application_path + "\\crashLog.txt", "w") as crash_log:
-        crash_log.write(f"[START LOG | {datetime.datetime.now().strftime('%H:%M:%S')}]\n")
+        crash_log.write(f"[START LOG | {datetime.datetime.now().strftime('%H:%M:%S')} | v{tag}]\n")
 
     pg.display.set_icon(loadimage(path + "icon.png"))
     loadi = loadimage(f"{path}load.png")
