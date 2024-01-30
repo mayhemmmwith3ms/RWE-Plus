@@ -56,6 +56,7 @@ class load(Menu):
         github()
 
     def setup_recent_list(self):
+        self.recentbuttons = []
         btnrect = pg.rect.Rect(self.menu_ui_settings["recentpos"])
         title:widgets.button = widgets.button(self.surface, btnrect, gray, "Recent Projects")
         self.recentbuttons.append(title)
