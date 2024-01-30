@@ -1,5 +1,6 @@
 import subprocess
 import traceback
+import os
 
 from menus import *
 from tkinter.messagebox import askyesno
@@ -9,7 +10,8 @@ from lingotojson import *
 from files import ui_settings, path, application_path
 import level_handler as lv
 import datetime
-
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (320,180)
+pg.init()
 widgets.keybol = True
 run = True
 keys = [pg.K_LCTRL, pg.K_LALT, pg.K_LSHIFT]
