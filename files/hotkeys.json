@@ -51,7 +51,6 @@
   	"MN": {
   		"unlock_keys": ["K_LEFT", "K_RIGHT", "K_UP", "K_DOWN"],
 
-  	  	"K_q": "quit",
   	  	"K_r+": "render",
 
   	  	"K_g": "/GE",
