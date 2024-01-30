@@ -20,6 +20,7 @@ import sys
 import ujson as json
 import widgets
 import menus as mns
+import random
 
 modifier_keys = [pg.K_LCTRL, pg.K_LALT, pg.K_LSHIFT]
 
@@ -72,6 +73,7 @@ def load_level(filepath) -> dict():
             file["level"] = ""
             file["path"] = ""
             file["dir"] = ""
+            file["EX2"]["tileSeed"] = random.randint(1, 400)
             file["persistent"] = lj.persistentdata
         elif filepath == "":
             return None
