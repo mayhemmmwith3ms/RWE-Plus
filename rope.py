@@ -23,7 +23,8 @@ def MoveToPoint(pointA, pointB, theMovement):
     return dirVec * theMovement
 
 def lerp(a, b, t):
-    return (1 - t) * a + t * b
+    t = max(min(t, 1), 0)
+    return a * (1 - t) + b * t
 
 def restrict(a, minimum, maximum):
     return max(min(a, maximum), minimum)
