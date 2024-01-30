@@ -383,7 +383,7 @@ class LevelInstance:
         if not pg.key.get_pressed()[pg.K_LCTRL]:
             for i in self.menu.uc:
                 if pg.key.get_pressed()[i]:
-                    keypress(self.window)
+                    keypress(self.menu)
         if files.ui_settings[self.menu.mname].get("menucolor") is not None:
             self.window.fill(pg.color.Color(files.ui_settings[self.menu.mname]["menucolor"]))
         else:
