@@ -226,7 +226,7 @@ class RopeModel:
             return 0
         if Rect(0, 0, self.levelwidth, self.levelheight).collidepoint(pos - Vector2(1, 1)):
             return self.data["GE"][int(pos.x - 1)][int(pos.y - 1)][layer][0]
-        return 1
+        return 0
 
     @property
     def levelwidth(self):
