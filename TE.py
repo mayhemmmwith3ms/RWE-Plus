@@ -245,6 +245,9 @@ class TE(MenuWithField):
                     for y in range(int(rect.h)):
                         xpos, ypos = x + rect.x, y + rect.y
 
+                        if not self.canplaceit(xpos, ypos, xpos, ypos):
+                            continue
+
                         for z in range(3):
                             block = self.data["TE"]["tlMatrix"][xpos][ypos][z]
                             if block["tp"] == "material" or block["tp"] == "tileHead":
@@ -254,6 +257,9 @@ class TE(MenuWithField):
                 for x in range(int(rect.w)):
                     for y in range(int(rect.h)):
                         xpos, ypos = x + rect.x, y + rect.y
+
+                        if not self.canplaceit(xpos, ypos, xpos, ypos):
+                            continue
 
                         block = self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]
                         if block["tp"] == "material" or block["tp"] == "tileHead":
@@ -1214,6 +1220,8 @@ class TE(MenuWithField):
                 pos[0] -= 1
                 pos[1] -= 1
                 tile = self.data["TE"]["tlMatrix"][pos[0]][pos[1]][tile["data"][1] - 1]
+                if tile["tp"] != "tileHead":
+                    return
                 name = tile["data"][1]
             case "tileHead":
                 name = tile["data"][1]
