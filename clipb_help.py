@@ -16,6 +16,8 @@ class FieldGridCopyData:
         indata = None
         try:
             indata = eval(str)
+            if not isinstance(indata, list):
+                return None
         except Exception:
             return None
 
