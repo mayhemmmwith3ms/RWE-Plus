@@ -40,9 +40,12 @@ class TE(MenuWithField):
 
         self.items = renderer.tiles
         p = json.load(open(path + "patterns.json", "r"))
-        self.items["special"] = p["patterns"]
+        pd = dict()
+        pd["special"] = p["patterns"]
+        pd.update(self.items)
         for indx, pattern in enumerate(p["patterns"]):
-            self.items["special"][indx]["cat"] = [len(self.items), indx + 1]
+            pd["special"][indx]["cat"] = [len(pd), indx + 1]
+        self.items = pd.copy()
         self.blocks = p["blocks"]
         self.pathtiles = p["path_tiles"]
         self.buttonslist = []
@@ -67,6 +70,7 @@ class TE(MenuWithField):
         self.currentPathDrag = []
 
         super().__init__(surface, "TE", renderer, False)
+        self.items = pd
         self.catlist = [[]]
         for category in self.items.keys():
             self.catlist[-1].append(category)
