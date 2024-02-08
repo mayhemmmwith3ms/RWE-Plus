@@ -735,7 +735,7 @@ class PE(MenuWithField):
             if distanceAlongAxis > long:
                 long = distanceAlongAxis
         
-        self.stretch(0, -long * 2)
+        self.stretch(0, -long * 2, False)
 
     def flipy(self):
         #for indx, quad in enumerate(self.quads):
@@ -753,7 +753,7 @@ class PE(MenuWithField):
             if distanceAlongAxis > long:
                 long = distanceAlongAxis
         
-        self.stretch(1, -long * 2)
+        self.stretch(1, -long * 2, False)
 
 
     def applytags(self):
