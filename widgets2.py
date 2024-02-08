@@ -76,7 +76,7 @@ class UIElement:
         self.active = True
 
         self.mouse_down = False
-        self.last_mouse_down = False
+        self.last_mouse_down = True
 
     def resize(self):
         x = self.lastrect.x / 100 * self.surface.get_width()
