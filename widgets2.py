@@ -335,6 +335,7 @@ class LevelInstanceSelectButton(UIElement):
                         surf.blit(p, [xi, yi])
 
         self.children[2].image = surf
+        self.children[3].set_text(self.level_instance.level_name)
 
     def open(self, _):
         self.level_instance.parent.focus_level(self.level_instance.filepath)

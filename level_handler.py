@@ -344,6 +344,7 @@ class LevelInstance:
                 self.menu.reload()
             case "save":
                 self.menu.savef()
+                self.filepath = self.data["path"]
                 self.old_data = files.jsoncopy(self.data)
             case "new":
                 r = False

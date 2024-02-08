@@ -36,8 +36,9 @@ class load(Menu):
         #print(self.recentbuttons.__len__())
 
     def resize(self):
-        super().resize()
+        self.setup_instance_list()
         self.setup_recent_list()
+        super().resize()
         for i in self.recentbuttons:
             i.resize()
         for i in self.instancebuttons:
