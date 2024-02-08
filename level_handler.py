@@ -356,7 +356,7 @@ class LevelInstance:
                 if r is not None:
                     if r:
                         self.menu.savef()
-                return False
+                    return False
             case "open":
                 file = self.menu.open_file_dialog()
                 if file is not None and os.path.exists(file):
