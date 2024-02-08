@@ -62,6 +62,10 @@ class load(Menu):
         title:widgets.button = widgets.button(self.surface, btnrect, gray, "Recent Projects")
         self.recentbuttons.append(title)
         
+        if not os.path.exists(path + "recent.txt"):
+            f = open(path + "recent.txt", "x")
+            f.close()
+
         with open(path + "recent.txt") as recent_level:
             for index, i in enumerate(recent_level.readlines()):
                 i = i.replace("\n", "")
