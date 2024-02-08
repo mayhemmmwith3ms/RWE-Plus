@@ -193,6 +193,7 @@ def inittolist():
     solved = dict(i for i in solved.items() if len(i[1]) > 1) #remove categories with no tiles (prevents crash when loading TE)
     #log_to_load_log(solved)
     #del solved['']
+    print(solved)
     solved_copy = solved.copy()
     for catnum, catitem in enumerate(solved.items()):
         cat, items = catitem
@@ -275,7 +276,8 @@ def inittolist():
             log_to_load_log("]")
     matcat = "materials 0"
     matcatcount = 0
-    solved_copy[matcat] = []
+    mat_dict = dict()
+    mat_dict[matcat] = []
     counter = 1
     for k, v in graphics["matposes"].items():
         col = pg.Color(v)
@@ -289,7 +291,7 @@ def inittolist():
             preview = pg.Surface([preview_cell_size, preview_cell_size])
             preview.set_alpha(0)
         preview.set_colorkey(pg.Color(255, 255, 255))
-        solved_copy[matcat].append(
+        mat_dict[matcat].append(
             {
                 "name": k,
                 "tp": None,
@@ -304,11 +306,13 @@ def inittolist():
                 "tags": ["material"],
                 "preview": preview
             })
-        if len(solved_copy[matcat]) > 30:
+        if len(mat_dict[matcat]) > 30:
             matcatcount += 1
             matcat = f"materials {matcatcount}"
-            solved_copy[matcat] = []
+            mat_dict[matcat] = []
         counter += 1
+    mat_dict.update(solved_copy)
+    solved_copy = mat_dict
     return solved_copy
 
 

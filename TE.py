@@ -40,9 +40,12 @@ class TE(MenuWithField):
 
         self.items = renderer.tiles
         p = json.load(open(path + "patterns.json", "r"))
-        self.items["special"] = p["patterns"]
+        pd = dict()
+        pd["special"] = p["patterns"]
+        pd.update(self.items)
         for indx, pattern in enumerate(p["patterns"]):
-            self.items["special"][indx]["cat"] = [len(self.items), indx + 1]
+            pd["special"][indx]["cat"] = [len(pd), indx + 1]
+        self.items = pd.copy()
         self.blocks = p["blocks"]
         self.pathtiles = p["path_tiles"]
         self.buttonslist = []
@@ -67,6 +70,7 @@ class TE(MenuWithField):
         self.currentPathDrag = []
 
         super().__init__(surface, "TE", renderer, False)
+        self.items = pd
         self.catlist = [[]]
         for category in self.items.keys():
             self.catlist[-1].append(category)
@@ -1063,11 +1067,11 @@ class TE(MenuWithField):
                                [x * self.size, y * self.size])
         for x2 in range(w):
             for y2 in range(h):
-                p = makearr([self.tileimage["cat"][0] + 4, self.tileimage["cat"][1]], "point")  # very bandaid fix, RWE loads tiles and materials in a different order than Drizzle,                                                                         
-                csp = sp[x2 * h + y2]                                                           # so whenever the tilehead category index is actually required for something to function
-                xpos = int(x + x2)                                                              # it Won't, because all of the tile category indices will be wrong
-                ypos = int(y + y2)                                                              # luckily, i don't know of much else that requires the head's category index other than chain holders,
-                if xpos >= self.levelwidth or ypos >= self.levelheight or xpos < 0 or ypos < 0 or (self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]["tp"] == "tileHead"): # which aren't the end of the world if they don't work. this fix should work unless material categories are added or removed
+                p = makearr([self.tileimage["cat"][0], self.tileimage["cat"][1]], "point")                                                                     
+                csp = sp[x2 * h + y2]                                                       
+                xpos = int(x + x2)                                           
+                ypos = int(y + y2)                                        
+                if xpos >= self.levelwidth or ypos >= self.levelheight or xpos < 0 or ypos < 0 or (self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]["tp"] == "tileHead"):
                     continue
                 if self.data["TE"]["tlMatrix"][xpos][ypos][self.layer]["tp"] not in ("default", "tileBody"):
                     self.area[xpos][ypos] = False
