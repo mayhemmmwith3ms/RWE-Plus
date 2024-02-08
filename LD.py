@@ -104,8 +104,8 @@ class load(Menu):
         if ex is not None:
             if ex:
                 x.level_instance.menu.savef()
-
-            lv.LevelManager.instance.levels.remove(x.level_instance)
+            if x.level_instance in lv.LevelManager.instance.levels:
+                lv.LevelManager.instance.levels.remove(x.level_instance)
             x.level_instance = None
             self.instancebuttons.remove(x)
             self.setup_instance_list()
