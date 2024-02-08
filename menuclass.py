@@ -38,7 +38,7 @@ class Menu:
         self.recaption()
         print("Entered " + self.menu)
 
-        self.last_lmb = False
+        self.last_lmb = True
         self.last_mmb = True
         self.last_rmb = True
 
