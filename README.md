@@ -10,7 +10,7 @@ A fork of timofey260's RWE-Plus, made to address many of its significant issues
 4. Full UI customization
 5. Keybind customization
 6. Tile/prop/effect previews 
-7. In-built [Drizzle](https://github.com/PJB3005/Drizzle) rendering
+7. In-built [Drizzle](https://github.com/SlimeCubed/Drizzle) rendering
 8. Undo/redo function
 9. Copy/Paste level data
 
