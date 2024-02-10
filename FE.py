@@ -444,7 +444,7 @@ class FE(MenuWithField):
         self.fieldadd.set_alpha(180)
         self.rf3()
         self.recaption()
-        #self.makeparams()
+        self.makeparams()
 
     def rf3(self):
         if len(self.data["FE"]["effects"]) > 0:
@@ -574,7 +574,7 @@ class FE(MenuWithField):
             self.currentindex = len(self.buttonslist) - 2
 
     def scrl_up_menu(self):
-        self.paramindex = 0
+        #self.paramindex = 0
         self.innew = False
         self.selectedeffect -= 1
         if self.selectedeffect < 0:
@@ -588,7 +588,7 @@ class FE(MenuWithField):
             self.currentindex = 0
 
     def scrl_down_menu(self):
-        self.paramindex = 0
+        #self.paramindex = 0
         self.innew = False
         self.selectedeffect += 1
         if self.selectedeffect > len(self.data["FE"]["effects"]) - 1:
