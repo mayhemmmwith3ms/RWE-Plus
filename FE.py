@@ -446,7 +446,7 @@ class FE(MenuWithField):
         self.fieldadd.set_alpha(180)
         self.rf3()
         self.recaption()
-        #self.makeparams()
+        self.makeparams()
 
     def rf3(self):
         if len(self.data["FE"]["effects"]) > 0:
