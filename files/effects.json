@@ -54,9 +54,9 @@
 			], "preview":"destructivemelt"},
 			{"nm": "Erode", "tp": "standardErosion", "repeats": 80, "affectOpenAreas": 0.5, "options": [["Layers", ["All", "1", "2", "3", "1:st and 2:nd", "2:nd and 3:rd"], "All"]], "preview":"erode"},
 			{"nm": "Super Erode", "tp": "standardErosion", "repeats": 60, "affectOpenAreas": 0.5, "options": [["Layers", ["All", "1", "2", "3", "1:st and 2:nd", "2:nd and 3:rd"], "All"]], "preview":"supererode"},
-			{"nm": "DaddyCoruption", "options": [
-				["Color", ["Color1", "Color2", "Dead"], "Color2"],
-				["Layers", ["All", "1", "2", "3", "1:st and 2:nd", "2:nd and 3:rd"], "All"]
+			{"nm": "DaddyCorruption", "options": [
+				["Layers", ["All", "1", "2", "3", "1:st and 2:nd", "2:nd and 3:rd"], "All"],
+				["Color", ["Color1", "Color2", "Dead"], "Color2"]
 			], "preview":"daddycoruption"}
 		]},
 		{"nm": "Erosion 2", "color": [115, 60, 18], "efs": [
