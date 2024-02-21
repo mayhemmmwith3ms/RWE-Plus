@@ -631,7 +631,7 @@ class MenuWithField(Menu):
 
         self.f = pg.Surface([self.levelwidth * preview_cell_size, self.levelheight * preview_cell_size])
 
-        self.suppresslmb = False
+        self.suppresslmb = True
 
         self.field = widgets.window(self.surface, self.menu_ui_settings["d1"])
         self.btiles = self.data["EX2"]["extraTiles"]
