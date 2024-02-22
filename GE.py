@@ -54,6 +54,7 @@ class GE(MenuWithField):
         self.replacestate()
         self.blit()
         self.resize()
+        self.rfa()
 
     def resize(self):
         super().resize()
