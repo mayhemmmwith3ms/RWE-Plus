@@ -211,6 +211,9 @@ class LevelManager:
                         try:
                             self.run_level()
                         except Exception:
+                            if files.settings["all_errors_fatal"]:
+                                raise
+
                             self.levels.remove(self.active_level)
                             self.switch_level = ""
 
