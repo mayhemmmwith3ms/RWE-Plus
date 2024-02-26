@@ -224,6 +224,7 @@ class LevelManager:
 
                         if self.switch_level:
                             self.focus_level(self.switch_level)
+                            self.switch_level = ""
 
                         if not self.active_level:
                             s = False
