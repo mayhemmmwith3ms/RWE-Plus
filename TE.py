@@ -276,49 +276,50 @@ class TE(MenuWithField):
             savedtool = saved["name"]
             savedcat = saved["category"]
             save = self.currentcategory
-            for y in range(int(rect.h)):
-                for x in range(int(rect.w)):
-                    if x == 0 and y == 0:
-                        self.set(self.blocks["cat"], self.blocks["NW"])
-                    elif x == rect.w - 1 and y == 0:
-                        self.set(self.blocks["cat"], self.blocks["NE"])
-                    elif x == 0 and y == rect.h - 1:
-                        self.set(self.blocks["cat"], self.blocks["SW"])
-                    elif x == rect.w - 1 and y == rect.h - 1:
-                        self.set(self.blocks["cat"], self.blocks["SE"])
+            if self.blocks["cat"] in self.items and saved["patcat"] in self.items:
+                for y in range(int(rect.h)):
+                    for x in range(int(rect.w)):
+                        if x == 0 and y == 0:
+                            self.set(self.blocks["cat"], self.blocks["NW"])
+                        elif x == rect.w - 1 and y == 0:
+                            self.set(self.blocks["cat"], self.blocks["NE"])
+                        elif x == 0 and y == rect.h - 1:
+                            self.set(self.blocks["cat"], self.blocks["SW"])
+                        elif x == rect.w - 1 and y == rect.h - 1:
+                            self.set(self.blocks["cat"], self.blocks["SE"])
 
-                    elif x == 0:
-                        self.set(self.blocks["cat"], self.blocks["W"])
-                    elif y == 0:
-                        self.set(self.blocks["cat"], self.blocks["N"])
-                    elif x == rect.w - 1:
-                        self.set(self.blocks["cat"], self.blocks["E"])
-                    elif y == rect.h - 1:
-                        self.set(self.blocks["cat"], self.blocks["S"])
-                    else:
+                        elif x == 0:
+                            self.set(self.blocks["cat"], self.blocks["W"])
+                        elif y == 0:
+                            self.set(self.blocks["cat"], self.blocks["N"])
+                        elif x == rect.w - 1:
+                            self.set(self.blocks["cat"], self.blocks["E"])
+                        elif y == rect.h - 1:
+                            self.set(self.blocks["cat"], self.blocks["S"])
+                        else:
+                            continue
+                        self.place(x + rect.x, y + rect.y)
+                skip = False
+                lastch = random.choice(blocks)
+                for y in range(1, int(rect.h) - 1):
+                    if skip:
+                        skip = False
                         continue
-                    self.place(x + rect.x, y + rect.y)
-            skip = False
-            lastch = random.choice(blocks)
-            for y in range(1, int(rect.h) - 1):
-                if skip:
-                    skip = False
-                    continue
-                ch = random.choice(blocks)
-                while ch["upper"] != lastch["lower"] or ch["tiles"] == lastch["tiles"]:
                     ch = random.choice(blocks)
-                if y == self.rectdata[1].y - 2 and ch["tall"] == 2:
-                    while ch["upper"] != lastch["lower"] or ch["tall"] == 2 or ch["tiles"] == lastch["tiles"]:
+                    while ch["upper"] != lastch["lower"] or ch["tiles"] == lastch["tiles"]:
                         ch = random.choice(blocks)
-                lastch = ch.copy()
-                if ch["tall"] == 2:
-                    skip = True
-                for x in range(1, int(rect.w) - 1):
-                    n = 0
-                    if len(ch["tiles"]) > 1:
-                        n = x % len(ch["tiles"]) - 1
-                    self.set(saved["patcat"], saved["prefix"] + ch["tiles"][n])
-                    self.place(x + rect.x, y + rect.y)
+                    if y == self.rectdata[1].y - 2 and ch["tall"] == 2:
+                        while ch["upper"] != lastch["lower"] or ch["tall"] == 2 or ch["tiles"] == lastch["tiles"]:
+                            ch = random.choice(blocks)
+                    lastch = ch.copy()
+                    if ch["tall"] == 2:
+                        skip = True
+                    for x in range(1, int(rect.w) - 1):
+                        n = 0
+                        if len(ch["tiles"]) > 1:
+                            n = x % len(ch["tiles"]) - 1
+                        self.set(saved["patcat"], saved["prefix"] + ch["tiles"][n])
+                        self.place(x + rect.x, y + rect.y)
             self.set(savedcat, savedtool)
             self.currentcategory = save
             self.rebuttons()

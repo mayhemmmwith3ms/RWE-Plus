@@ -42,6 +42,7 @@ class Menu:
         self.last_mmb = True
         self.last_rmb = True
 
+        self.block_mouse_input = True
         self.justChangedZoom = False
         self.size = preview_cell_size
         self.message = ""
@@ -477,6 +478,10 @@ class Menu:
             #    keys[i] = keys[i] and pg.key.get_mods() & pg.KMOD_SHIFT
             #else:
             #    keys[i] = keys[i] and not (pg.key.get_mods() & pg.KMOD_SHIFT)
+        if (True not in keys):
+            self.block_mouse_input = False
+        if (self.block_mouse_input):
+            return [False, False, False]
         return keys
 
     def resize(self):
