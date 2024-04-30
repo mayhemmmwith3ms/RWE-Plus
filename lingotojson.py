@@ -108,6 +108,12 @@ def turntoproject(string: str):
     proj["GE"] = eval(lines[0])  # geometry
     proj["TE"] = tojson(lines[1])  # tile editor and his settings
     proj["FE"] = tojson(lines[2])  # effect editor params
+    
+    for effect in proj["FE"]["effects"]:
+        for xp, x in enumerate(effect['mtrx']):
+            for yp, y in enumerate(x):
+                effect["mtrx"][xp][yp] = float(y)
+
     proj["LE"] = tojson(lines[3], defaultlevel[3])  # light editor and presets
     proj["EX"] = tojson(lines[4], defaultlevel[4])  # map settings
     proj["EX2"] = tojson(lines[5], defaultlevel[5])  # light and level settings

@@ -57,6 +57,8 @@
 			{"nm": "DaddyCorruption", "options": [
 				["Layers", ["All", "1", "2", "3", "1:st and 2:nd", "2:nd and 3:rd"], "All"],
 				["Color", ["Color1", "Color2", "Dead"], "Color2"]
+				["Color", ["Color1", "Color2", "Dead"], "Color2"],
+				["Layers", ["All", "1", "2", "3", "1:st and 2:nd", "2:nd and 3:rd"], "All"]
 			], "preview":"daddycoruption"}
 		]},
 		{"nm": "Erosion 2", "color": [115, 60, 18], "efs": [
