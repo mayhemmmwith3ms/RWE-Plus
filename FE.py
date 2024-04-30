@@ -531,9 +531,9 @@ class FE(MenuWithField):
                 #print(dist)
                 if dist > 0 and dist < self.brushsize + 1:
 
-                    val = min(max(val + strength * dist * st, 0), 100)
+                    val = float(min(max(val + strength * dist * st, 0), 100))
                     
-                    self.data["FE"]["effects"][self.selectedeffect]['mtrx'][xp][yp] = round(val)
+                    self.data["FE"]["effects"][self.selectedeffect]['mtrx'][xp][yp] = val
                     updatedCells.append([xp, yp])
 
         #self.rf3()
