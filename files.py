@@ -247,11 +247,11 @@ def remove_wep_from_recent(filename):
     ...
 
 def report():
-    webbrowser.open("https://github.com/methylredd/RWE-Plus/issues/new/choose")
+    webbrowser.open("https://github.com/mayhemmmwith3ms/RWE-Plus/issues/new/choose")
 
 
 def github():
-    webbrowser.open("https://github.com/methylredd/RWE-Plus")
+    webbrowser.open("https://github.com/mayhemmmwith3ms/RWE-Plus")
 
 
 effects = solveeffects(e)

@@ -8,7 +8,7 @@ If you do not already have python3.11 installed on your system, it can be instal
 
 `$ sudo apt install python3.11`
 
-Next thing you need to do is download the source code from the newest RWE+ [release](https://github.com/methylredd/RWE-Plus/releases/download/latest/), unzip and open it in the terminal
+Next thing you need to do is download the source code from the newest RWE+ [release](https://github.com/mayhemmmwith3ms/RWE-Plus/releases/download/latest/), unzip and open it in the terminal
 
 The virtual environment can then be installed and created with:
 
