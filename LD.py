@@ -1,4 +1,5 @@
 from menuclass import *
+import requests
 
 class load(Menu):
     def __init__(self, surface: pg.surface.Surface, renderer):
@@ -6,6 +7,19 @@ class load(Menu):
         super().__init__(surface, renderer, "LD")
         self.setup_recent_list()
         self.resize()
+
+        try:
+            request = requests.get("https://api.github.com/repos/mayhemmmwith3ms/RWE-Plus/releases", timeout=2)
+            if request.status_code == 200:
+                gittag = request.json()[0]["tag_name"].split("-")[0]
+                if tag != gittag:
+                    print("A new version of RWE+ is available!")
+                    print(f"Current Version: {tag}, latest: {gittag}")
+                    print("https://github.com/mayhemmmwith3ms/RWE-Plus/releases/latest")
+
+                    self.labels[0].set_text(f"A new version is available ({gittag}, you are currently using {tag})")
+        except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
+            print("Cannot find new RWE+ versions")
 
     def send(self, message):
         self.message = message
