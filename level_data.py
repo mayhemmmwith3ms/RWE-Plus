@@ -1,3 +1,4 @@
+# hi this class is a relic from a planned rework that i cant be bothered to remove
 import numpy as math
 import lingotojson as lj
 
