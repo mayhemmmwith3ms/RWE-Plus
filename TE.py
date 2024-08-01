@@ -1019,7 +1019,7 @@ class TE(MenuWithField):
         if specsL2 != 0 and specsL2 != "void":
             for x2 in range(w):
                 for y2 in range(h):        
-                    self.printcell(screen_pos + pg.Vector2([shift]*2) + pg.Vector2(x2, y2) * scale, scale, specsL1[x2 * h + y2], layer2)
+                    self.printcell(screen_pos + pg.Vector2([shift]*2) + pg.Vector2(x2, y2) * scale, scale, specsL2[x2 * h + y2], layer2)
             shift *= 2
 
         for x2 in range(w):
