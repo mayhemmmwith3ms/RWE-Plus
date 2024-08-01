@@ -93,7 +93,7 @@ class Menu:
         self.message = "%"
 
     def recaption(self):
-        pg.display.set_caption(f"OGSCULEDITOR+: {self.mname} | {tag} | {self.custom_info}")
+        pg.display.set_caption(f"OGSCULEDITOR+: {self.mname} | {tag}")
 
     def savef(self, saveas=False):
         if self.data["path"] and not saveas:
@@ -783,7 +783,7 @@ class MenuWithField(Menu):
         super().blit()
 
     def recaption(self):
-        pg.display.set_caption(f"OGSCULEDITOR+ | {self.mname} | {tag} | {get_project_display_path(self.data['path'])} | {self.custom_info}")
+        pg.display.set_caption(f"OGSCULEDITOR+ | {self.mname} | {tag} | {get_project_display_path(self.data['path'])}")
 
     def swichcameras(self):
         self.drawcameras = (self.drawcameras + 1) % 3
