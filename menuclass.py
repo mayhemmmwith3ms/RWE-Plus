@@ -782,7 +782,7 @@ class MenuWithField(Menu):
         super().blit()
 
     def recaption(self):
-        pg.display.set_caption(f"OGSCULEDITOR+: {self.mname} | {tag} | {os.path.relpath(self.data['path'], application_path) if os.path.exists(self.data['path']) else 'Unsaved level'} | {self.custom_info}")
+        pg.display.set_caption(f"OGSCULEDITOR+: {self.mname} | {tag} | {get_project_display_path(self.data['path'])} | {self.custom_info}")
 
     def swichcameras(self):
         self.drawcameras = (self.drawcameras + 1) % 3

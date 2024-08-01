@@ -35,6 +35,16 @@ def loadimage(filepath):
     return pg.image.load(resolved)
 
 
+def get_project_display_path(filepath):
+    if not os.path.exists(filepath):
+        return 'Unsaved Level'
+    else:
+        try:
+            return os.path.relpath(filepath, application_path)
+        except ValueError:
+            return os.path.split(filepath)[1]
+    
+
 allleters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,- =+_*()[]{}#@"
 
 path = resolvepath(application_path + "\\files\\")
