@@ -102,7 +102,6 @@ class CE(MenuWithField):
                     self.rfa()
 
             self.movemiddle(bp)
-            #print(self.offset)
 
     def togglemode(self):
         if self.mode == "move":
@@ -178,8 +177,6 @@ class CE(MenuWithField):
         self.heldindex = closeindex
         self.held = True
         self.camoffset = pg.Vector2(toarr(self.data["CM"]["cameras"][self.heldindex], "point")) // preview_to_render_fac - mpos
-        print(self.camoffset)
-        print(self.offset)
 
     def placecamera(self):
         self.held = False

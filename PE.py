@@ -396,7 +396,6 @@ class PE(MenuWithField):
                             vecNormal = pg.Vector2(0, 0)
                         vecPerpendicularNormal = vecNormal.rotate(90)
                         q = []
-                        #print(self.selectedimage.get_size())
                         pWidth = (self.selectedimage.get_height() / 2) / self.fieldScale
                         q.append(posonfield + vecPerpendicularNormal * pWidth)
                         q.append(self.rectdata[0] + vecPerpendicularNormal * pWidth)
@@ -650,7 +649,6 @@ class PE(MenuWithField):
         if self.selectedprop["tp"] == "rope":
             self.changesettings("release")
             self.lastpos += pg.Vector2(1, 0) # hacky solution to trick the editor into resetting the rope model
-        #print(self.selectedprop["release"])
 
     def cat_next_propupdate(self):
         self.cat_next()

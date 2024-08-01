@@ -48,7 +48,6 @@ class load(Menu):
 
         self.ll = len(lv.LevelManager.instance.levels)
         #pg.draw.circle(self.surface, red, [0,0], 64, 1)
-        #print(self.recentbuttons.__len__())
 
     def resize(self):
         self.setup_instance_list()

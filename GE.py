@@ -251,7 +251,7 @@ class GE(MenuWithField):
         cellsize2 = [self.size, self.size]
         super().blit()
         mpos = pg.Vector2(pg.mouse.get_pos())
-        #print(mpos)
+
         if self.selectedtool != self.lastselectedtool:
             self.lastselectedtool = self.selectedtool
             self.s0()
@@ -289,16 +289,15 @@ class GE(MenuWithField):
                                            pg.Vector2(self.toolrender.get_size()) / preview_cell_size * self.size).convert_alpha(self.surface)
             self.toolsized.fill(red, special_flags=pg.BLEND_RGBA_MULT)
             self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / preview_cell_size) * 100}%")
-            #print(self.placetile)
+
             if not try_clipboard:
                 if self.selectedtool in graphics["codes"].keys():
                     if isinstance(self.placetile, int):
                         if graphics["codes"][self.selectedtool] == 1:
                             curtool = self.get_tool_preview_slice(self.placetile + self.state)
-                            #print(self.placetile + self.state)
+
                         else:
                             curtool = self.get_tool_preview_slice(self.placetile - self.state)
-                        # print([abs(self.field.rect.x - pos2[0]), abs(self.field.rect.y - pos2[1])])
                         if self.selectedtool == "SL" and not validSlope:
                             curtool = self.get_tool_preview_slice("UNDEFINEDSLOPE")
                         self.surface.blit(self.toolsized, pos2, [curtool, cellsize2])
@@ -487,9 +486,7 @@ class GE(MenuWithField):
         self.emptyarea()
         self.place(pos, False)
         lastarea = [[True for _ in range(self.levelheight)] for _ in range(self.levelwidth)]
-        #print(filterblock)
         while lastarea != self.area:
-            #print(lastarea == self.area)
             lastarea = copy.deepcopy(self.area)
             for xp, xd in enumerate(self.area):
                 for yp, cell in enumerate(xd):

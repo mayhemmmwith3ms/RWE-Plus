@@ -530,7 +530,7 @@ class FE(MenuWithField):
                     continue
                 val = yd
                 dist = 1.0 - (pg.Vector2(xp, yp).distance_to(pg.Vector2(x, y)) / self.brushsize)
-                #print(dist)
+
                 if dist > 0 and dist < self.brushsize + 1:
 
                     val = float(min(max(val + strength * dist * st, 0), 100))

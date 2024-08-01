@@ -511,7 +511,6 @@ class TE(MenuWithField):
                     if clipboard.data["TE"] is None:
                         return
                     self.draw_clipboard_preview()
-            print(self.suppresslmb)
             if not self.suppresslmb:
                 if not settings["TE_legacy_RWE_placement_controls"]:
                     if self.tool == 0:
@@ -821,7 +820,6 @@ class TE(MenuWithField):
         self.matshow = False
         btn2 = None
         for count, item in enumerate(self.items[list(self.items.keys())[self.currentcategory]]):
-            #print(item["category"])
             # rect = pg.rect.Rect([0, count * self.settings["itemsize"], self.field2.field.get_width(), self.settings["itemsize"]])
             # rect = pg.rect.Rect(0, 0, 100, 10)
             cat = pg.rect.Rect(self.menu_ui_settings["catpos"])

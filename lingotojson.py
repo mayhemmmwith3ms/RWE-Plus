@@ -85,7 +85,6 @@ def tojson(string:str, replacement:str = None):
                     break
         t = "".join(m)
         t = t.replace("#", "\"").replace(":", "\":").replace("1\":st", "1':st").replace("2\":nd", "2':nd").replace("3\":rd", "3':rd")
-        # print(t)
         if t.replace(" ", "") != "":
             if replacement is not None:
                 return {**tojson(replacement), **json.loads(t)}
@@ -129,7 +128,6 @@ def tolingo(string: dict):
     t = s.replace("\"point(", "point(").replace("\"rect(", "rect(").replace("\"color(", "color(")\
         .replace(")\"", ")").replace("{", "[").replace("}", "]").replace("'", "")
     t = re.sub(r"\"([a-zA-Z]+[0-9]*)\":", r"#\1:", t)
-    #print(t)
     return t
 
 
@@ -199,7 +197,6 @@ def inittolist():
     solved = dict(i for i in solved.items() if len(i[1]) > 1) #remove categories with no tiles (prevents crash when loading TE)
     #log_to_load_log(solved)
     #del solved['']
-    print(solved)
     solved_copy = solved.copy()
     for catnum, catitem in enumerate(solved.items()):
         cat, items = catitem
@@ -403,7 +400,6 @@ def getprops(tiles: dict):
                             curcol = gr
 
                             for iindex in range(len(item["repeatL"])):
-                                # print(img, item["nm"], varindx * w, hs - h, w, h)
                                 if item["repeatL"][len(item["repeatL"]) - 1 - iindex] == 0:
                                     continue
 

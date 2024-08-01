@@ -261,7 +261,6 @@ class Menu:
         if inputfile == "":
             return None
         try:
-            print(os.path.splitext(inputfile))
             if len(defaultextension) == 1 and os.path.splitext(inputfile)[1] != defaultextension[0]:
                 return f"{filepath}{inputfile}{defaultextension[0]}"
             else:

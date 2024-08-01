@@ -126,7 +126,7 @@ def solveeffects(effects):
                     break
             efcat["efs"].append(d)
         ef.append(efcat)
-    # print(ef)
+
     return ef
 
 

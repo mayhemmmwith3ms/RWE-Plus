@@ -312,7 +312,6 @@ class LevelInstance:
             raise
 
     def update(self) -> bool:
-        #print(len(self.parent.levels))
         width = files.ui_settings["global"]["width"]
         height = files.ui_settings["global"]["height"]
         pressedkey = ""
