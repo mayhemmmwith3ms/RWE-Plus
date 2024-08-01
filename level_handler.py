@@ -230,6 +230,7 @@ class LevelManager:
                             s = False
                     
                     self.menu.resize()
+                    self.menu.recaption()
 
                 self.window.fill(pg.color.Color(files.ui_settings["global"]["color"]))
                 self.menu.blit()
@@ -255,6 +256,7 @@ class LevelManager:
             del(self.active_level)
         self.active_level = self.get_level(filepath)
         self.active_level.menu.resize()
+        self.active_level.menu.recaption()
 
     def run_level(self):
         run = True

@@ -77,6 +77,7 @@ class Menu:
 
         self.unlock_keys()
         self.resize()
+        self.recaption()
 
     def setasname(self, name):
         global inputfile
@@ -591,7 +592,7 @@ class Menu:
         return level
 
     def on_switch_editor(self):
-        pass
+        self.recaption()
 
     @property
     def custom_info(self):
@@ -782,7 +783,7 @@ class MenuWithField(Menu):
         super().blit()
 
     def recaption(self):
-        pg.display.set_caption(f"OGSCULEDITOR+: {self.mname} | {tag} | {get_project_display_path(self.data['path'])} | {self.custom_info}")
+        pg.display.set_caption(f"OGSCULEDITOR+ | {self.mname} | {tag} | {get_project_display_path(self.data['path'])} | {self.custom_info}")
 
     def swichcameras(self):
         self.drawcameras = (self.drawcameras + 1) % 3
