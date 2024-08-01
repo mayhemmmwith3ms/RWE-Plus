@@ -403,18 +403,18 @@ class TE(MenuWithField):
 
                 if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
                     tl = self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]
-                    #try:
-                    if (tlh := self.get_tilehead_of_body(tl)) not in [None, "stray"]:
-                        tlLabel = tlh["data"][1]
-                    elif tlh is None and tl["tp"] == "material":
-                        tlLabel = tl["data"]
-                    elif tlh is None and tl["tp"] == "default":
-                        tlLabel = "default"
-                    elif tlh == "stray":
-                        tlLabel = "STRAY TILE FRAGMENT"
-                    #except:
-                    #    tlLabel = "ERROR"
-                    #    print(f"Error occurred determining tile display type at mpos {int(posoffset.x)}, {int(posoffset.y)}")
+                    try:
+                        if (tlh := self.get_tilehead_of_body(tl)) not in [None, "stray"]:
+                            tlLabel = tlh["data"][1]
+                        elif tlh is None and tl["tp"] == "material":
+                            tlLabel = tl["data"]
+                        elif tlh is None and tl["tp"] == "default":
+                            tlLabel = "default"
+                        elif tlh == "stray":
+                            tlLabel = "STRAY TILE FRAGMENT"
+                    except Exception:
+                        tlLabel = "ERROR"
+                        print(f"Error occurred determining tile display type at mpos {int(posoffset.x)}, {int(posoffset.y)}")
                     self.labels[0].set_text("Tile: " + tlLabel + " | Tile Data: " + str(tl))   
 
             if not self.is_macro(self.tileimage):
