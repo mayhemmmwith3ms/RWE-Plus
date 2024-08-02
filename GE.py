@@ -174,7 +174,7 @@ class GE(MenuWithField):
         rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
 
         tx = f"{abs(int(rect.w / self.size))}, {abs(int(rect.h / self.size))}"
-        widgets.fastmts(self.surface, tx, *(mpos + pg.Vector2(15, 4)), white)
+        self.add_mouse_text(tx, 0)
         if self.fillshape2 in ["rect", "rect-hollow"] or self.selectedtool in ["CP", "CT", "SL"]:
             pg.draw.rect(self.surface, select, rect, 1)
         elif self.fillshape2 in ["circle", "circle-hollow"]:
@@ -313,11 +313,14 @@ class GE(MenuWithField):
                     f"Tile: {tilename} {self.data['GE'][int(posoffset.x)][int(posoffset.y)][self.layer]}")
 
             wltx = "Work Layer: " + str(self.layer + 1)
-            widgets.fastmts(self.surface, wltx, *(mpos + [12, -10]), white, 15)
+            self.add_mouse_text(wltx, 0.2)
+            self.add_mouse_text(f"LMB: {self.selectedtool}", 0.5)
+            self.add_mouse_text(f"RMB: {self.fillshape2}", 0.6)
+            #widgets.fastmts(self.surface, wltx, *(mpos + [12, -10]), white, 15)
             if self.bucketTool:
-                widgets.fastmts(self.surface, "FILL MODE ACTIVE", *(mpos + [12, 10]), white, 15)
+                self.add_mouse_text("FILL MODE ACTIVE", 0.1)
             if self.selectedtool in ["CP", "CT"]:
-                widgets.fastmts(self.surface, f"{'COPY' if self.selectedtool == 'CP' else 'CUT'} MODE ACTIVE ({'LAYERS: ALL' if self.copyalllayers else 'LAYERS: CURRENT'})", *(mpos + [12, -28]), white, 15)
+                self.add_mouse_text(f"{'COPY' if self.selectedtool == 'CP' else 'CUT'} MODE ACTIVE ({'LAYERS: ALL' if self.copyalllayers else 'LAYERS: CURRENT'})", 1)
 
             bp = self.getmouse
 

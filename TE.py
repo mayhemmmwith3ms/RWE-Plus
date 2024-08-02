@@ -193,8 +193,9 @@ class TE(MenuWithField):
             rectColor = select
 
         rect = self.vec2rect(pg.Vector2(tl), pg.Vector2(br))
-        tx = f"{int(rect.w / self.size)}, {int(rect.h / self.size)}"
-        widgets.fastmts(self.surface, tx, *(mpos + pg.Vector2(15, 4)), white)
+        tx = f"({int(rect.w / self.size)}, {int(rect.h / self.size)})"
+        #widgets.fastmts(self.surface, tx, *(mpos + pg.Vector2(15, 4)), white)
+        self.add_mouse_text(tx, 0)
         pg.draw.rect(self.surface, rectColor, rect, 1)
 
     def end_rect_drag(self, place):
@@ -389,10 +390,15 @@ class TE(MenuWithField):
             self.movemiddle(bp)
 
             if self.tool == 2:
-                widgets.fastmts(self.surface, "COPY MODE ACTIVE", *(pg.Vector2(pg.mouse.get_pos()) + [12, -28]), white, 15)
-                widgets.fastmts(self.surface, f"LAYERS: {'ALL' if self.copyalllayers else 'CURRENT'}", *(pg.Vector2(pg.mouse.get_pos()) + [12, -10]), white, 15)
-                widgets.fastmts(self.surface, f"COPY GEOMETRY: {'TRUE' if self.copygeo else 'FALSE'}", *(pg.Vector2(pg.mouse.get_pos()) + [12, 8]), white, 15)              
+                #widgets.fastmts(self.surface, "COPY MODE ACTIVE", *(pg.Vector2(pg.mouse.get_pos()) + [12, -28]), white, 15)
+                #widgets.fastmts(self.surface, f"LAYERS: {'ALL' if self.copyalllayers else 'CURRENT'}", *(pg.Vector2(pg.mouse.get_pos()) + [12, -10]), white, 15)
+                #widgets.fastmts(self.surface, f"COPY GEOMETRY: {'TRUE' if self.copygeo else 'FALSE'}", *(pg.Vector2(pg.mouse.get_pos()) + [12, 8]), white, 15)
+                self.add_mouse_text("COPY MODE ACTIVE", 1)
+                self.add_mouse_text(f"LAYERS: {'ALL' if self.copyalllayers else 'CURRENT'}", 1)
+                self.add_mouse_text(f"COPY GEOMETRY: {'TRUE' if self.copygeo else 'FALSE'}", 1)
 
+            tl_label = self.get_tile_name(posoffset.x, posoffset.y)
+                
             if posoffset != self.mpos or self.lastfg != fg or self.lastfp != fp or self.justChangedZoom:
                 if not self.is_macro(self.tileimage):
                     self.cols = self.test_cols(cposxo, cposyo)
@@ -402,20 +408,9 @@ class TE(MenuWithField):
                 self.labels[1].set_text(f"X: {int(posoffset.x)}, Y: {int(posoffset.y)} | Work Layer: {self.layer + 1} | Zoom: {(self.size / preview_cell_size) * 100}%")
 
                 if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
-                    tl = self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]
-                    try:
-                        if (tlh := self.get_tilehead_of_body(tl)) not in [None, "stray"]:
-                            tlLabel = tlh["data"][1]
-                        elif tlh is None and tl["tp"] == "material":
-                            tlLabel = tl["data"]
-                        elif tlh is None and tl["tp"] == "default":
-                            tlLabel = "default"
-                        elif tlh == "stray":
-                            tlLabel = "STRAY TILE FRAGMENT"
-                    except Exception:
-                        tlLabel = "ERROR"
-                        print(f"Error occurred determining tile display type at mpos {int(posoffset.x)}, {int(posoffset.y)}")
-                    self.labels[0].set_text("Tile: " + tlLabel + " | Tile Data: " + str(tl))   
+                    self.labels[0].set_text("Tile: " + tl_label + " | Tile Data: " + str(self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]))  
+
+            self.add_mouse_text(tl_label, -0.1)
 
             if not self.is_macro(self.tileimage):
                 if self.tileimage["size"][0] != 1 or self.tileimage["size"][1] != 1:
@@ -620,6 +615,22 @@ class TE(MenuWithField):
         for button in self.buttonslist:
             button.blittooltip()
     
+    def get_tile_name(self, x, y):
+        tl = self.data["TE"]["tlMatrix"][int(x)][int(y)][self.layer]
+        try:
+            if (tlh := self.get_tilehead_of_body(tl)) not in [None, "stray"]:
+                tlLabel = tlh["data"][1]
+            elif tlh is None and tl["tp"] == "material":
+                tlLabel = tl["data"]
+            elif tlh is None and tl["tp"] == "default":
+                tlLabel = "default"
+            elif tlh == "stray":
+                tlLabel = "STRAY TILE FRAGMENT"
+        except Exception:
+            tlLabel = "ERROR"
+            print(f"Error occurred determining tile display type at mpos {int(x)}, {int(y)}")
+        return tlLabel
+
     def draw_tile_list(self, data, pos, alpha, previewcol = None):
         tiles = dict()
         for i in data:

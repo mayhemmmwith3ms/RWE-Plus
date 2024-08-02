@@ -35,6 +35,8 @@ class Menu:
         self.historybuffer = []
         self.uc = []
 
+        self.mouse_text = []
+
         self.recaption()
         print("Entered " + self.mname)
 
@@ -399,8 +401,18 @@ class Menu:
         for i in self.buttons:
             if i.blittooltip():
                 continue
+        self.blit_mouse_text()
         if not pg.mouse.get_pressed(3)[0] and not widgets.enablebuttons:
             widgets.enablebuttons = True
+
+    def blit_mouse_text(self):
+        self.mouse_text = sorted(self.mouse_text, key=lambda tup: tup[1])
+        for i, text in enumerate(self.mouse_text):
+            widgets.fastmts(self.surface, text[0], pg.mouse.get_pos()[0] + 20, pg.mouse.get_pos()[1] + i * 20, white, 15)
+        self.mouse_text.clear()
+
+    def add_mouse_text(self, text, priority=0):
+        self.mouse_text.append((text, priority))
 
     def setcursor(self, cursor=pg.SYSTEM_CURSOR_ARROW):
         c = pg.Cursor(cursor)
