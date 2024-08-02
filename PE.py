@@ -34,8 +34,7 @@ class PE(MenuWithField):
     def __init__(self, surface: pg.surface.Surface, renderer):
         self.mname = "PE"
 
-        self.props = renderer.props
-        self.propcolors = renderer.propcolors
+        self.propcolors = assets.get_instance().prop_colors
 
         self.reset_settings()
 
@@ -52,7 +51,7 @@ class PE(MenuWithField):
 
         self.cursor:PECursorData = PECursorData()
 
-        self.selectedprop = self.props[list(self.props.keys())[self.currentcategory]][0]
+        self.selectedprop = assets.get_instance().props[list(assets.get_instance().props.keys())[self.currentcategory]][0]
         self.selectedimage: pg.Surface = self.selectedprop["images"][0]
         self.ropeobject = None
         self.snap = False
@@ -83,13 +82,13 @@ class PE(MenuWithField):
         super().__init__(surface, "PE", renderer)
         self.drawtiles = True
         self.catlist = [[]]
-        for category in self.props.keys():
+        for category in assets.get_instance().props.keys():
             self.catlist[-1].append(category)
             if len(self.catlist[-1]) >= self.menu_ui_settings["category_count"]:
                 self.catlist.append([])
         self.drawprops = True
-        cat = list(self.props.keys())[self.currentcategory]
-        self.setprop(self.props[cat][0]["nm"], cat)
+        cat = list(assets.get_instance().props.keys())[self.currentcategory]
+        self.setprop(assets.get_instance().props[cat][0]["nm"], cat)
         self.resize()
         self.rebuttons()
 
@@ -131,8 +130,8 @@ class PE(MenuWithField):
         self.buttonslist = []
         self.matshow = False
         btn2 = None
-        itemcat = list(self.props.keys())[self.currentcategory]
-        for count, item in enumerate(self.props[itemcat]):
+        itemcat = list(assets.get_instance().props.keys())[self.currentcategory]
+        for count, item in enumerate(assets.get_instance().props[itemcat]):
             cat = pg.rect.Rect(self.menu_ui_settings["catpos"])
             btn2 = widgets.button(self.surface, cat, item["color"], itemcat, onpress=self.changematshow,
                 tooltip=self.returnkeytext("Select category(<[-changematshow]>)"))
@@ -148,7 +147,7 @@ class PE(MenuWithField):
             self.buttonslist.append(btn)
         if btn2 is not None:
             self.buttonslist.append(btn2)
-        if self.toolindex > len(self.props[itemcat]):
+        if self.toolindex > len(assets.get_instance().props[itemcat]):
             self.toolindex = 0
         for i in self.menu_ui_settings["hide"]:
             self.buttons[i].visible = True
@@ -177,7 +176,7 @@ class PE(MenuWithField):
                     col = pg.Color(int(col.r * mul),int(col.g * mul),int(col.b * mul))
             except IndexError:
                 col = gray
-            btn = widgets.button(self.surface, rect, col, item, indicatorcol=self.props[item][0]["color"], onpress=self.selectcat)
+            btn = widgets.button(self.surface, rect, col, item, indicatorcol=assets.get_instance().props[item][0]["color"], onpress=self.selectcat)
             self.buttonslist.append(btn)
         if btn2 is not None:
             self.buttonslist.append(btn2)
@@ -186,7 +185,7 @@ class PE(MenuWithField):
         self.resize()
 
     def selectcat(self, name):
-        self.currentcategory = list(self.props.keys()).index(name)
+        self.currentcategory = list(assets.get_instance().props.keys()).index(name)
         self.toolindex = 0
         self.rebuttons()
 
@@ -535,8 +534,8 @@ class PE(MenuWithField):
             if not self.matshow:
                 for index, button in enumerate(self.buttonslist[:-1]):
                     if button.onmouseover():
-                        cat = list(self.props.keys())[self.currentcategory]
-                        item = self.props[cat][index]
+                        cat = list(assets.get_instance().props.keys())[self.currentcategory]
+                        item = assets.get_instance().props[cat][index]
                         if len(item["images"]) > 0:
                             w, h = item["images"][0].get_size()
                             preview_pos = button.rect.topright if not ui_settings["global"]["previewleftside"] else button.rect.topleft + pg.Vector2(-w, 0)
@@ -638,8 +637,8 @@ class PE(MenuWithField):
         if self.matshow:
             self.currentcategory = self.toolindex + self.currentcategory * self.menu_ui_settings["category_count"]
             self.toolindex = 0
-            cat = list(self.props.keys())[self.currentcategory]
-            self.setprop(self.props[cat][0]["nm"], cat)
+            cat = list(assets.get_instance().props.keys())[self.currentcategory]
+            self.setprop(assets.get_instance().props[cat][0]["nm"], cat)
             self.rebuttons()
         else:
             self.toolindex = self.currentcategory
@@ -667,7 +666,7 @@ class PE(MenuWithField):
             self.toolindex = self.toolindex if len(self.buttonslist) - 1 > self.toolindex else 0
         else:
             self.toolindex = 0
-            self.currentcategory = (self.currentcategory + 1) % len(self.props)
+            self.currentcategory = (self.currentcategory + 1) % len(assets.get_instance().props)
             self.rebuttons()
 
     def cat_prev(self):
@@ -682,7 +681,7 @@ class PE(MenuWithField):
             self.toolindex = 0
             self.currentcategory -= 1
             if self.currentcategory < 0:
-                self.currentcategory = len(self.props) - 1
+                self.currentcategory = len(assets.get_instance().props) - 1
             self.rebuttons()
 
     def setprop(self, name, cat=None):
@@ -855,7 +854,7 @@ class PE(MenuWithField):
 
     def findpropmenu(self):
         nd = {}
-        for cat, item in self.props.items():
+        for cat, item in assets.get_instance().props.items():
             for i in item:
                 nd[i["nm"]] = cat
         name = self.find(nd, "Select a prop")

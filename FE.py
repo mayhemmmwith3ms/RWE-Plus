@@ -165,7 +165,7 @@ class FE(MenuWithField):
             i.blittooltip()
 
     def geteffect(self, text):
-        for cat in effects:
+        for cat in assets.get_instance().effects:
             for c, i in enumerate(cat["efs"]):
                 if i["nm"] == text:
                     return i
@@ -175,9 +175,9 @@ class FE(MenuWithField):
         self.buttonslist = []
         self.matshow = False
         btn2 = None
-        for count, item in enumerate(effects[self.currentcategory]["efs"]):
+        for count, item in enumerate(assets.get_instance().effects[self.currentcategory]["efs"]):
             cat = pg.rect.Rect(self.menu_ui_settings["catpos"])
-            btn2 = widgets.button(self.surface, cat, ui_settings["global"]["color"], effects[self.currentcategory]["nm"], onpress=self.cats,
+            btn2 = widgets.button(self.surface, cat, ui_settings["global"]["color"], assets.get_instance().effects[self.currentcategory]["nm"], onpress=self.cats,
                 tooltip=self.returnkeytext("Select category(<[-changematshow]>)"))
 
             rect = pg.rect.Rect(self.menu_ui_settings["itempos"])
@@ -250,7 +250,7 @@ class FE(MenuWithField):
         self.settignslist = []
         self.matshow = True
         btn2 = None
-        for count, item in enumerate(effects):
+        for count, item in enumerate(assets.get_instance().effects):
             cat = pg.rect.Rect(self.menu_ui_settings["catpos"])
             btn2 = widgets.button(self.surface, cat, ui_settings["global"]["color"], "Categories",
                 onpress=self.changematshow)
@@ -281,7 +281,7 @@ class FE(MenuWithField):
             self.cats()
 
     def selectcat(self, name):
-        for indx, effect in enumerate(effects):
+        for indx, effect in enumerate(assets.get_instance().effects):
             if effect["nm"] == name:
                 self.currentcategory = indx
                 self.currentindex = 0
@@ -374,7 +374,7 @@ class FE(MenuWithField):
 
     def findeffect(self):
         nd = {}
-        for cat in effects:
+        for cat in assets.get_instance().effects:
             for item in cat["efs"]:
                 nd[item["nm"]] = cat["nm"]
         name = self.find(nd, "Select a prop")
@@ -403,7 +403,7 @@ class FE(MenuWithField):
     def nextcat(self):
         #self.innew = True
         self.currentindex = 0
-        if self.currentcategory + 1 >= len(effects):
+        if self.currentcategory + 1 >= len(assets.get_instance().effects):
             self.currentcategory = 0
             self.rebuttons()
             return
@@ -414,7 +414,7 @@ class FE(MenuWithField):
         #self.innew = True
         self.currentindex = 0
         if self.currentcategory - 1 < 0:
-            self.currentcategory = len(effects) - 1
+            self.currentcategory = len(assets.get_instance().effects) - 1
             self.rebuttons()
             return
         self.currentcategory -= 1
@@ -483,7 +483,7 @@ class FE(MenuWithField):
 
     def addeffect(self, text):
         self.innew = True
-        for cat in effects:
+        for cat in assets.get_instance().effects:
             for effect in cat["efs"]:
                 if effect["nm"] == text:
                     image = effect.get("preview")

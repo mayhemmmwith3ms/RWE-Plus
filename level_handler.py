@@ -21,6 +21,7 @@ import ujson as json
 import widgets
 import menus as mns
 import random
+import asset_manager as assets
 
 modifier_keys = [pg.K_LCTRL, pg.K_LALT, pg.K_LSHIFT]
 
@@ -128,11 +129,7 @@ class LevelManager:
         load_tic = time.perf_counter()
 
         try:
-            init_list = lj.inittolist()
-            prop_colors = lj.getcolors()
-            props = lj.getprops(init_list)
-
-            self.renderer = Renderer(None, init_list, props, prop_colors, False)
+            assets.get_instance().initialize()
         except Exception:
             lj.log_to_crash_log(f"Uncaught exception during init load\n{traceback.format_exc()}")
 
@@ -154,7 +151,7 @@ class LevelManager:
             self.window = pg.display.set_mode([width, height], flags=pg.RESIZABLE | (pg.FULLSCREEN * 0))
             pg.display.set_icon(files.loadimage(files.path + "icon.png"))
 
-            self.menu = LD.load(self.window, self.renderer)
+            self.menu = LD.load(self.window, Renderer(None, False))
 
             while run:
                 pressedkey = ""
@@ -296,7 +293,7 @@ class LevelInstance:
 
             self.old_data = files.jsoncopy(self.data)
 
-            self.renderer = Renderer(self.data, self.renderer.tiles, self.renderer.props, self.renderer.propcolors, True)
+            self.renderer = Renderer(self.data, True)
 
             self.menu = MN.MN(self.window, self.renderer)
 

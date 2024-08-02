@@ -262,6 +262,3 @@ def report():
 
 def github():
     webbrowser.open("https://github.com/methylredd/RWE-Plus")
-
-
-effects = solveeffects(e)

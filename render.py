@@ -4,6 +4,7 @@ import numpy as np
 from lingotojson import *
 import pygame as pg
 import time
+import asset_manager as assets
 
 LAYER_COLOR_EXTRA = [1, 2, 3, 11]
 
@@ -171,10 +172,7 @@ def quadtransform(quads, image: pg.Surface):
 
 
 class Renderer:
-    def __init__(self, data, tiles, props, propcolors, render=True):
-        self.tiles = tiles
-        self.props = props
-        self.propcolors = propcolors
+    def __init__(self, data, render=True):
         self.data = data
         self.effect_index = 0
 
@@ -315,8 +313,8 @@ class Renderer:
 
     def findtileimage(self, name):
         it = None
-        for i in self.tiles.keys():
-            for i2 in self.tiles[i]:
+        for i in assets.get_instance().tiles.keys():
+            for i2 in assets.get_instance().tiles[i]:
                 if i2["name"] == name:
                     img = i2.copy()
                     img["image"] = pg.transform.scale(img["image"], [img["image"].get_width() / 16 * preview_cell_size,
@@ -515,13 +513,13 @@ class Renderer:
 
     def findprop(self, name, cat=None):
         if cat is not None:
-            for itemi, item in enumerate(self.props[cat]):
+            for itemi, item in enumerate(assets.get_instance().props[cat]):
                 if item["nm"] == name:
-                    return item, [list(self.props.keys()).index(cat), itemi]
-        for cati, cats in self.props.items():
+                    return item, [list(assets.get_instance().props.keys()).index(cat), itemi]
+        for cati, cats in assets.get_instance().props.items():
             for itemi, item in enumerate(cats):
                 if item["nm"] == name:
-                    return item, [list(self.props.keys()).index(cati), itemi]
+                    return item, [list(assets.get_instance().props.keys()).index(cati), itemi]
         item = {
             "nm": "notfound",
             "tp": "standard",

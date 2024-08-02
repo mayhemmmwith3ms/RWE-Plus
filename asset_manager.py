@@ -1,4 +1,8 @@
 import lingotojson as lj
+import files
+
+def get_instance():
+    return ExternalAssetManager.instance()
 
 class ExternalAssetManager:
     __instance = None
@@ -7,17 +11,14 @@ class ExternalAssetManager:
         self.tiles = None
         self.props = None
         self.prop_colors = None
+        self.effects = None
 
     def initialize(self):
-        init_list = lj.inittolist()
-        prop_colors = lj.getcolors()
-        props = lj.getprops(init_list)
+        self.tiles = lj.inittolist()
+        self.props = lj.getprops(self.tiles)
+        self.prop_colors = lj.getcolors()
+        self.effects = lj.solveeffects(files.e)
 
-        self.tiles = init_list
-        self.props = props
-        self.prop_colors = prop_colors
-
-    @property
     def instance():
         if ExternalAssetManager.__instance is None:
             ExternalAssetManager.__instance = ExternalAssetManager()

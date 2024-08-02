@@ -617,9 +617,6 @@ class MenuWithField(Menu):
         super(MenuWithField, self).__init__(surface, renderer, name)
 
         self.renderer = renderer
-        self.items = renderer.tiles
-        self.props = renderer.props
-        self.propcolors = renderer.propcolors
 
         self.mname = name
 
@@ -899,7 +896,7 @@ class MenuWithField(Menu):
 
     def render_tiles_area(self):
         self.renderer.tiles_render_area(self.area, self.layer)
-        self.f.blit(self.renderer.tiles, [0, 0])
+        self.f.blit(assets.get_instance().tiles, [0, 0])
         #self.renderfield()
 
     def render_tiles_full(self):
@@ -1058,13 +1055,13 @@ class MenuWithField(Menu):
 
     def findprop(self, name, cat=None):
         if cat is not None:
-            for itemi, item in enumerate(self.props[cat]):
+            for itemi, item in enumerate(assets.get_instance().props[cat]):
                 if item["nm"] == name:
-                    return item, [list(self.props.keys()).index(cat), itemi]
-        for cati, cats in self.props.items():
+                    return item, [list(assets.get_instance().props.keys()).index(cat), itemi]
+        for cati, cats in assets.get_instance().props.items():
             for itemi, item in enumerate(cats):
                 if item["nm"] == name:
-                    return item, [list(self.props.keys()).index(cati), itemi]
+                    return item, [list(assets.get_instance().props.keys()).index(cati), itemi]
         item = {
             "nm": "notfound",
             "tp": "standard",

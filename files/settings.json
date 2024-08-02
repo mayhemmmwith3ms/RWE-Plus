@@ -7,7 +7,7 @@
     "cursor_layer_num_display": true,
     "hold_key_rect_drag": true,
     "multithreading": true,
-    "all_errors_fatal": false,
+    "all_errors_fatal": true,
 
     "TE_legacy_RWE_placement_controls": false,
 

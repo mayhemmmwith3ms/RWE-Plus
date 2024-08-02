@@ -38,7 +38,7 @@ class TE(MenuWithField):
 
         self.matshow = False
 
-        self.items = renderer.tiles
+        self.items = assets.get_instance().tiles
         p = json.load(open(path + "patterns.json", "r"))
         pd = dict()
         pd["special"] = p["patterns"]
