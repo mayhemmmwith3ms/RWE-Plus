@@ -96,7 +96,7 @@ def preload():
 
     lv_manager = lv.LevelManager()
 
-    lv_manager.init_renderer()
+    lv_manager.init_assets()
 
     del loadi
 

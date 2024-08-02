@@ -117,7 +117,6 @@ class LevelManager:
     instance = None
 
     def __init__(self):
-        self.renderer:Renderer = None
         self.levels:list = []
         self.active_level:LevelInstance = None
         self.menu:Menu | MenuWithField = None # only used for LD basically
@@ -125,7 +124,7 @@ class LevelManager:
         self.switch_level = ""
         LevelManager.instance = self
 
-    def init_renderer(self):
+    def init_assets(self):
         load_tic = time.perf_counter()
 
         try:
@@ -278,7 +277,7 @@ class LevelManager:
 class LevelInstance:
     def __init__(self, parent:LevelManager, filepath:str):
         self.parent:LevelManager = parent
-        self.renderer:Renderer = self.parent.renderer
+        self.renderer:Renderer = None
         self.data:dict = {}
         self.old_data:dict = {}
         self.filepath = filepath
