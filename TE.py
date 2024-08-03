@@ -397,7 +397,9 @@ class TE(MenuWithField):
                 self.add_mouse_text(f"LAYERS: {'ALL' if self.copyalllayers else 'CURRENT'}", 1)
                 self.add_mouse_text(f"COPY GEOMETRY: {'TRUE' if self.copygeo else 'FALSE'}", 1)
 
-            tl_label = self.get_tile_name(posoffset.x, posoffset.y)
+            if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
+                tl_label = self.get_tile_name(posoffset.x, posoffset.y)
+                self.add_mouse_text(tl_label, -0.1)
                 
             if posoffset != self.mpos or self.lastfg != fg or self.lastfp != fp or self.justChangedZoom:
                 if not self.is_macro(self.tileimage):
@@ -409,8 +411,6 @@ class TE(MenuWithField):
 
                 if self.canplaceit(posoffset.x, posoffset.y, posoffset.x, posoffset.y):
                     self.labels[0].set_text("Tile: " + tl_label + " | Tile Data: " + str(self.data["TE"]["tlMatrix"][int(posoffset.x)][int(posoffset.y)][self.layer]))  
-
-            self.add_mouse_text(tl_label, -0.1)
 
             if not self.is_macro(self.tileimage):
                 if self.tileimage["size"][0] != 1 or self.tileimage["size"][1] != 1:
