@@ -233,10 +233,12 @@ def rect2ellipse(rect: pg.Rect, hollow, callback):
 def map(x, in_min, in_max, out_min, out_max):
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
+MAX_RECENT_LEVELS = 16
+
 def add_to_recent(filename):
     if filename not in [None, "", "\n", -1]:
         with open(path + "recent.txt", "r+") as recent:
-            content = [x.replace("\n", "") for i, x in enumerate(recent.readlines()[:8])]
+            content = [x.replace("\n", "") for i, x in enumerate(recent.readlines()[:MAX_RECENT_LEVELS])]
             if filename in content:
                 content.remove(filename)
 
@@ -247,7 +249,7 @@ def add_to_recent(filename):
 def remove_wep_from_recent(filename):
     if filename not in [None, "", "\n", -1]:
         with open(path + "recent.txt", "r+") as recent:
-            content = [x.replace("\n", "") for i, x in enumerate(recent.readlines()[:8])]
+            content = [x.replace("\n", "") for i, x in enumerate(recent.readlines()[:MAX_RECENT_LEVELS])]
             wep_filename = os.path.splitext(filename)[0] + ".wep"
             if wep_filename in content:
                 content.remove(wep_filename)
