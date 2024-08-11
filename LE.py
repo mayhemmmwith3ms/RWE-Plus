@@ -86,8 +86,14 @@ class LE(MenuWithField):
         self.blit()
         self.resize()
         self.renderfield()
+        self.save()
 
     def blit(self): # NOQA
+        # kick user out of LE if the level isnt saved
+        if self.data["path"] == "":
+            self.message = "MN"
+            return
+
         self.fieldadd.fill(white)
         self.field.field.fill(self.field.color)
         super().blit(not pg.key.get_pressed()[pg.K_LCTRL])
