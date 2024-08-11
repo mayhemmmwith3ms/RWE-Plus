@@ -42,7 +42,6 @@ class load(Menu):
             btn.update()
         
         if not self.ll == len(lv.LevelManager.instance.levels):
-            self.instancebuttons = []
             self.setup_instance_list()
             self.resize()
 
@@ -88,6 +87,7 @@ class load(Menu):
                 self.recentbuttons.append(btn)
 
     def setup_instance_list(self):
+        self.instancebuttons = []
         man = lv.LevelManager.instance
 
         btnrect = pg.rect.Rect(self.menu_ui_settings["instancespos"])
