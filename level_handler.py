@@ -230,6 +230,7 @@ class LevelManager:
 
                 self.window.fill(pg.color.Color(files.ui_settings["global"]["color"]))
                 self.menu.blit()
+                self.menu.blit_mouse_text()
                 self.menu.justChangedZoom = False
                 pg.display.flip()
                 pg.display.update()
@@ -400,6 +401,7 @@ class LevelInstance:
         else:
             self.window.fill(pg.color.Color(files.ui_settings["global"]["color"]))
         self.menu.blit()
+        self.menu.blit_mouse_text()
         pg.display.flip()
         pg.display.update()
         return True

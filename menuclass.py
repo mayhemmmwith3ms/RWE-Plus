@@ -401,7 +401,6 @@ class Menu:
         for i in self.buttons:
             if i.blittooltip():
                 continue
-        self.blit_mouse_text()
         if not pg.mouse.get_pressed(3)[0] and not widgets.enablebuttons:
             widgets.enablebuttons = True
 
