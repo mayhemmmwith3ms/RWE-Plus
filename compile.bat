@@ -1,10 +1,10 @@
-
+rmdir /S /Q "%~dp0\dist"
 del /Q "%~dp0\__pycache__"
-rmdir "%~dp0\__pycache__"
-xcopy "%~dp0\files" "%~dp0\dist\files" /y
-del "%~dp0\dist\files\recent.txt"
-xcopy "%~dp0\drizzle" "%~dp0\dist\drizzle" /y
+rmdir /S /Q "%~dp0\__pycache__"
 pyinstaller --onefile main.py
+xcopy "%~dp0\files" "%~dp0\dist\files" /y /i /s
+del "%~dp0\dist\files\recent.txt"
+xcopy "%~dp0\drizzle" "%~dp0\dist\drizzle" /y /i /s
 del "%~dp0\dist\OGSCULEDITOR-PLUS.zip"
 mkdir "%~dp0\dist\LevelEditorProjects"
 del /S /Q "%~dp0\dist\LevelEditorProjects"
