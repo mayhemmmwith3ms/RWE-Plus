@@ -22,6 +22,15 @@ def rotatepoint(point, angle):
     qy = math.sin(angle) * px + math.cos(angle) * py
     return pg.Vector2([qx, qy])
 
+class MouseTextLine:
+    def __init__(self, text:str, priority:float = 0, size:int = 15) -> None:
+        self.text = text
+        self.priority = priority
+        self.size = size
+    
+    def __str__(self) -> str:
+        return self.text
+
 class Menu:
     def __init__(self, surface: pg.surface.Surface, renderer, name):
         self.surface = surface
@@ -405,13 +414,15 @@ class Menu:
             widgets.enablebuttons = True
 
     def blit_mouse_text(self):
-        self.mouse_text = sorted(self.mouse_text, key=lambda tup: tup[1])
+        self.mouse_text = sorted(self.mouse_text, key=lambda tup: tup.priority)
+        pixels_down = 0
         for i, text in enumerate(self.mouse_text):
-            widgets.fastmts(self.surface, text[0], pg.mouse.get_pos()[0] + 20, pg.mouse.get_pos()[1] + i * 20, white, 15)
+            widgets.fastmts(self.surface, text.text, pg.mouse.get_pos()[0] + 20, pg.mouse.get_pos()[1] + pixels_down, white, text.size)
+            pixels_down += text.size + 5
         self.mouse_text.clear()
 
-    def add_mouse_text(self, text, priority=0):
-        self.mouse_text.append((text, priority))
+    def add_mouse_text(self, text, priority=0, size=15):
+        self.mouse_text.append(MouseTextLine(text, priority, size))
 
     def setcursor(self, cursor=pg.SYSTEM_CURSOR_ARROW):
         c = pg.Cursor(cursor)

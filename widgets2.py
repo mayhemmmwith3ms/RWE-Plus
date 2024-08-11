@@ -2,6 +2,7 @@ import pygame as pg
 import copy
 from files import ui_settings, fs, path, map, allleters, loadimage
 from render import gray, darkgray, color_mul, lerp  # noqa: F401
+import level_handler as lv
 
 pg.font.init()
 
@@ -184,7 +185,8 @@ class GenericButton(UIElement):
         pg.draw.rect(self.surface, bgcolor, self.rect)
 
         if self.mouse_hover:
-            fastmts(self.surface, self.hovertext, *pg.mouse.get_pos(), white)
+            # fastmts(self.surface, self.hovertext, *pg.mouse.get_pos(), white)
+            lv.add_mouse_text(self.hovertext, size=20)
 
     def on_click(self):
         if self.mdown_callback:
@@ -218,7 +220,8 @@ class TextAndImageButton(UIElement):
         pg.draw.rect(self.surface, bgcolor, self.rect)
 
         if self.mouse_hover:
-            fastmts(self.surface, self.hovertext, *pg.mouse.get_pos(), white)
+            # fastmts(self.surface, self.hovertext, *pg.mouse.get_pos(), white)
+            lv.add_mouse_text(self.hovertext, size=20)
 
     def on_click(self):
         if self.mdown_callback:
@@ -274,7 +277,8 @@ class HorizontalSlider(UIElement):
         pg.draw.rect(self.surface, handlecol, handlerect)
 
         if self.mouse_hover or self.mousehold:  
-            fastmts(self.surface, f"{float(out_val):0.4}", *pg.mouse.get_pos(), white)
+            #fastmts(self.surface, f"{float(out_val):0.4}", *pg.mouse.get_pos(), white)
+            lv.add_mouse_text(f"{float(out_val):0.4}", size=20)
 
         self.set_cb(self, out_val)
 

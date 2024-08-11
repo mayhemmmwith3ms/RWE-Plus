@@ -28,6 +28,9 @@ modifier_keys = [pg.K_LCTRL, pg.K_LALT, pg.K_LSHIFT]
 EXIT_COMMAND_SHELVE = 0
 EXIT_COMMAND_SWITCH = 1
 
+def add_mouse_text(text, priority=0, size=15):
+    LevelManager.instance.current_menu.add_mouse_text(text, priority, size)
+
 def error_popup(desc):
     root = tk.Tk()
     root.wm_attributes("-topmost", 1)
@@ -274,6 +277,13 @@ class LevelManager:
 
     def queue_switch_level(self, filepath):
         self.switch_level = filepath
+
+    @property
+    def current_menu(self) -> Menu:
+        if self.active_level is not None:
+            return self.active_level.menu
+        else:
+            return self.menu
 
 class LevelInstance:
     def __init__(self, parent:LevelManager, filepath:str):
