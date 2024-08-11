@@ -45,6 +45,15 @@ class GE(MenuWithField):
         if "bucketTool" in self.persistent_data:
             self.bucketTool = self.persistent_data["bucketTool"]
 
+        if "placetile" in self.persistent_data:
+            self.placetile = self.persistent_data["placetile"]
+
+        if "mx" in self.persistent_data:
+            self.mx = self.persistent_data["mx"]
+
+        if "state" in self.persistent_data:
+            self.state = self.persistent_data["state"]
+
         if not renderer.color_geo:
             renderer.color_geo = True
         self.rerenderActiveEditors(renderer.lastlayer)
@@ -850,6 +859,9 @@ class GE(MenuWithField):
 
     def on_switch_editor(self):
         self.data["persistent"]["GE"]["selectedTool"] = self.selectedtool
+        self.data["persistent"]["GE"]["placetile"] = self.placetile
+        self.data["persistent"]["GE"]["mx"] = self.mx
+        self.data["persistent"]["GE"]["state"] = self.state
         self.data["persistent"]["GE"]["bucketTool"] = self.bucketTool
 
     @property
