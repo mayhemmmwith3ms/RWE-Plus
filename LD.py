@@ -18,8 +18,8 @@ class load(Menu):
         try:
             request = requests.get("https://api.github.com/repos/mayhemmmwith3ms/RWE-Plus/releases", timeout=2)
             if request.status_code == 200:
-                gittag = request.json()[0]["tag_name"].split("-")[0].strip("v")
-                if tag != gittag:
+                gittag = request.json()[0]["tag_name"]
+                if tag not in gittag:
                     print("A new version of RWE+ is available!")
                     print(f"Current Version: {tag}, latest: {gittag}")
                     print("https://github.com/mayhemmmwith3ms/RWE-Plus/releases/latest")
