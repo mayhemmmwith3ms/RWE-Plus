@@ -87,8 +87,8 @@ def preload():
     with open(application_path + "\\crashLog.txt", "w") as crash_log:
         crash_log.write(f"[START LOG | {datetime.datetime.now().strftime('%H:%M:%S')} | v{tag}]\n")
 
-    pg.display.set_icon(loadimage(path + "icon.png"))
-    loadi = loadimage(f"{path}load.png")
+    pg.display.set_icon(APP_ICON)
+    loadi = LOAD_SPLASH_SCREEN
     window = pg.display.set_mode(loadi.get_size(), flags=pg.NOFRAME)
     window.blit(loadi, [0, 0])
     pg.display.flip()

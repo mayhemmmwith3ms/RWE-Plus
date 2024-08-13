@@ -151,7 +151,7 @@ class LevelManager:
             height = files.ui_settings["global"]["height"]
 
             self.window = pg.display.set_mode([width, height], flags=pg.RESIZABLE | (pg.FULLSCREEN * 0))
-            pg.display.set_icon(files.loadimage(files.path + "icon.png"))
+            pg.display.set_icon(files.APP_ICON)
 
             self.menu = LD.load(self.window, Renderer(None, False))
 

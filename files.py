@@ -69,7 +69,8 @@ e = json.load(open(path + "effects.json", "r"))
 
 tooltiles = loadimage(path + graphics["tooltiles"])
 toolmenu = loadimage(path + graphics["toolmenu"])
-
+APP_ICON = loadimage(path + "icon.png")
+LOAD_SPLASH_SCREEN = loadimage(path + "load.png")
 
 tag = "2.14.1"
 
