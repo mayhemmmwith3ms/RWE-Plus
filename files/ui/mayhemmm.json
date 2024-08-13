@@ -90,8 +90,9 @@
 
 			
 			["Render", [80, 80, 19, 19], [90, 90, 90], "render", "non", "Render project using Drizzle(<[render]>)"],
-			["Save", [13, 2, 6, 5], [90, 90, 90], "save", "non", "Save level(<[save]>)"],
-			["Save As...", [2, 2, 10, 5], [90, 90, 90], "saveas", "non", "Save as .txt"],
+            ["Menu", [2, 2, 6, 5], [90, 90, 90], "new", "non", "Exit to menu(<[new]>)"],
+			["Save", [20, 2, 6, 5], [90, 90, 90], "save", "non", "Save level(<[save]>)"],
+			["Save As...", [9, 2, 10, 5], [90, 90, 90], "saveas", "non", "Save as .txt"],
 			["Quit", [89, 2, 10, 5], [90, 90, 90], "quit", "non", "Close RWE+(<[quit]>)"],
 
 			["?", [2, 7, 2, 2], [90, 90, 90], "watch_keys", "non", "Hotkeys"]

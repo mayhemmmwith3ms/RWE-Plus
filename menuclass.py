@@ -615,6 +615,9 @@ class Menu:
     def on_switch_editor(self):
         self.recaption()
 
+    def new(self):
+        self.message = "new"
+
     @property
     def custom_info(self):
         return ""

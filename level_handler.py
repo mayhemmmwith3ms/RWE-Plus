@@ -203,7 +203,7 @@ class LevelManager:
                         else:
                             print("Most recent file either does not exist or was moved/deleted. Open a level normally to create one.")
                 self.menu.message = ""
-
+                
                 if self.active_level:
                     s = True
                     while s:
@@ -269,6 +269,7 @@ class LevelManager:
             else:
                 m = 0
             run = self.active_level.update()
+        self.active_level.menu.message = ""
 
     def shelve_level(self):
         if not self.active_level.is_saved and self.active_level in self.levels:
@@ -359,15 +360,8 @@ class LevelInstance:
                 self.filepath = self.data["path"]
                 self.old_data = files.jsoncopy(self.data)
             case "new":
-                r = False
-                if not self.is_saved:
-                    root = tk.Tk()
-                    root.wm_attributes("-topmost", 1)
-                    root.withdraw()
-                    r = askyesnocancel("Unsaved Level", "Exiting this level instance without saving will cause any progress to be lost.\n\nWould you like to save the level before exiting?", parent=root)
-                if r is not None:
-                    if r:
-                        self.menu.savef()
+                r = self.check_unsaved()
+                if not r and r is not None:
                     return False
             case "open":
                 file = self.menu.open_file_dialog()
@@ -394,6 +388,10 @@ class LevelInstance:
                 case "saveas":
                     self.menu.saveasf()
                     self.old_data = files.jsoncopy(self.data)
+                case "new":
+                    r = self.check_unsaved()
+                    if not r and r is not None:
+                        return False
                 case _:
                     if self.menu.message in mns.menulist:
                         self.menu.on_switch_editor()
@@ -416,6 +414,18 @@ class LevelInstance:
         pg.display.update()
         return True
     
+    def check_unsaved(self):
+        r = False
+        if not self.is_saved:
+            root = tk.Tk()
+            root.wm_attributes("-topmost", 1)
+            root.withdraw()
+            r = askyesnocancel("Unsaved Level", "Exiting this level instance without saving will cause any progress to be lost.\n\nWould you like to save the level before exiting?", parent=root)
+        if r is not None:
+            if r:
+                self.menu.savef()
+        return r
+
     @property
     def level_name(self):
         return os.path.split(self.filepath)[1] if isinstance(self.filepath, str) else "UNSAVED_LEVEL"
