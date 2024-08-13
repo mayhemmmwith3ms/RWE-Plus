@@ -1,6 +1,40 @@
 from menuclass import *
 from tkinter.messagebox import askyesno
 
+light_images = {True: [], False: []}
+preview_light_images = {True: [], False: []}
+
+for i in graphics["shadowimages"]:
+    img = loadimage(path2cast + i)
+    img.set_colorkey(white)
+    light_images[True].append(img)
+
+    img = loadimage(path2cast + i)
+    arr = pg.pixelarray.PixelArray(img)
+    arr.replace(black, pg.Color(180, 180, 255))
+    img = arr.make_surface()
+    img.set_colorkey(white)
+    img.set_alpha(150)
+    preview_light_images[False].append(img)
+
+    img = loadimage(path2cast + i)
+    arr = pg.pixelarray.PixelArray(img)
+    arr.replace(black, pg.Color(0, 0, 120))
+    img = arr.make_surface()
+    img.set_colorkey(white)
+    img.set_alpha(150)
+    preview_light_images[True].append(img)
+
+    img = loadimage(path2cast + i)
+    arr = pg.pixelarray.PixelArray(img)
+    arr.replace(black, red)
+    arr.replace(white, black)
+    arr.replace(red, white)
+    img = arr.make_surface()
+    img.set_colorkey(black)
+
+    light_images[False].append(img)
+
 class LE(MenuWithField):
 
     def __init__(self, surface: pg.surface.Surface, renderer):
@@ -40,43 +74,9 @@ class LE(MenuWithField):
 
         self.pressed = [False] * 4
 
-        self.images = {True: [], False: []}
-        self.previewimages = {True: [], False: []}
-
         if renderer.color_geo:
             renderer.color_geo = False
         self.rerenderActiveEditors(renderer.lastlayer)
-
-        for i in graphics["shadowimages"]:
-            img = loadimage(path2cast + i)
-            img.set_colorkey(white)
-            self.images[True].append(img)
-
-            img = loadimage(path2cast + i)
-            arr = pg.pixelarray.PixelArray(img)
-            arr.replace(black, pg.Color(180, 180, 255))
-            img = arr.make_surface()
-            img.set_colorkey(white)
-            img.set_alpha(150)
-            self.previewimages[False].append(img)
-
-            img = loadimage(path2cast + i)
-            arr = pg.pixelarray.PixelArray(img)
-            arr.replace(black, pg.Color(0, 0, 120))
-            img = arr.make_surface()
-            img.set_colorkey(white)
-            img.set_alpha(150)
-            self.previewimages[True].append(img)
-
-            img = loadimage(path2cast + i)
-            arr = pg.pixelarray.PixelArray(img)
-            arr.replace(black, red)
-            arr.replace(white, black)
-            arr.replace(red, white)
-            img = arr.make_surface()
-            img.set_colorkey(black)
-
-            self.images[False].append(img)
 
         if "selectedImage" in self.persistent_data:
             self.selectedimage = self.persistent_data["selectedImage"]
@@ -266,20 +266,20 @@ class LE(MenuWithField):
             pg.image.save(self.field2.field, lev)
 
     def retile(self):
-        self.tileimage2 = self.images[self.mode][self.selectedimage].copy()
-        self.preview2 = self.previewimages[self.mode][self.selectedimage].copy()
+        self.tileimage2 = light_images[self.mode][self.selectedimage].copy()
+        self.preview2 = preview_light_images[self.mode][self.selectedimage].copy()
         self.setwh()
         self.updateTile()
 
     def changeup(self):
-        self.selectedimage = (self.selectedimage + 1) % len(self.images[self.mode])
+        self.selectedimage = (self.selectedimage + 1) % len(light_images[self.mode])
         self.retile()
         self.updateTile()
 
     def changedown(self):
         self.selectedimage = (self.selectedimage - 1)
         if self.selectedimage == -1:
-            self.selectedimage = len(self.images[self.mode]) - 1
+            self.selectedimage = len(light_images[self.mode]) - 1
         self.retile()
         self.updateTile()
 
