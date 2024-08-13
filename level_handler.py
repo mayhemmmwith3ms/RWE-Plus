@@ -381,7 +381,7 @@ class LevelInstance:
                 case "redo":
                     pass
                 case "%":
-                    self.menu = HK(self.window, self.renderer, self.menu.mname)
+                    self.menu = HK.HK(self.window, self.renderer, self.menu.mname)
                 case "quit":
                     asktoexit(self.data, self.old_data)
                 case "fc":
