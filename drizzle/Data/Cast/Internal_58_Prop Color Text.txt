@@ -1,1 +1,1 @@
-PROP COLOR: NONE
+PROP COLOR: Rainbow
