@@ -24,6 +24,8 @@ values = {
     },
 }
 
+LONG_PROP_TYPES = ["long", "customLong"]
+ROPE_PROP_TYPES = ["rope"]
 
 class PECursorData():
     def __init__(self):
@@ -288,7 +290,7 @@ class PE(MenuWithField):
             self.delmode = self.findparampressed("delete_mode")
             self.copymode = self.findparampressed("copy_mode")
             self.renderprop = not self.delmode and not self.copymode
-            if self.lastpos != mpos and self.selectedprop["tp"] == "rope":
+            if self.lastpos != mpos and self.selectedprop["tp"] in ROPE_PROP_TYPES:
                 self.lastpos = mpos.copy()
                 ropepos = (mpos - pg.Vector2(self.field.rect.topleft)) / self.size * preview_cell_size - pg.Vector2(self.xoffset, self.yoffset) * preview_cell_size
                 pA = pg.Vector2((self.quads[0][0] + self.quads[3][0]) / 2,
@@ -377,14 +379,14 @@ class PE(MenuWithField):
                                 self.cursor.rotation = -(pg.Vector2(self.quads[2]) - pg.Vector2(self.quads[3])).angle_to(pg.Vector2(1, 0))
                                 self.prop_settings = name[4]["settings"]
                                 self.updateproptransform()
-                        elif self.selectedprop["tp"] == "long":
+                        elif self.selectedprop["tp"] in LONG_PROP_TYPES:
                             self.rectdata[0] = posonfield.copy()
                             self.rectdata[1] = mpos.copy()
                             self.transform_reset()
                         else:
                             self.place()
                 elif bp[0] == 1 and not self.last_lmb and (self.last_rmb and self.last_mmb):
-                    if self.selectedprop["tp"] == "long" and self.renderprop and not self.block_next_placement:
+                    if self.selectedprop["tp"] in LONG_PROP_TYPES and self.renderprop and not self.block_next_placement:
                         self.transform_reset()
                         p1 = self.rectdata[0]
                         p2 = posonfield
@@ -439,7 +441,7 @@ class PE(MenuWithField):
 
                 elif bp[0] == 0 and not self.last_lmb and (self.last_rmb and self.last_mmb):
                     self.last_lmb = True
-                    if self.selectedprop["tp"] == "long" and self.renderprop and not self.modpress and not self.block_next_placement:
+                    if self.selectedprop["tp"] in LONG_PROP_TYPES and self.renderprop and not self.modpress and not self.block_next_placement:
                         self.place((self.rectdata[0] + posonfield) / 2)
                         self.transform_reset()
                     self.modpress = False
@@ -470,7 +472,7 @@ class PE(MenuWithField):
             if self.renderprop:
                 self.surface.blit(self.selectedimage, drawPreviewPos)
 
-                if self.selectedprop["tp"] == "rope":
+                if self.selectedprop["tp"] in ROPE_PROP_TYPES:
                     if not self.findparampressed("pauseropephysics"):
                         self.ropeobject.modelRopeUpdate()
                     color = toarr(self.ropeobject.prop["previewColor"], "color")
@@ -645,7 +647,7 @@ class PE(MenuWithField):
             self.cats()
 
     def changerelease(self):
-        if self.selectedprop["tp"] == "rope":
+        if self.selectedprop["tp"] in ROPE_PROP_TYPES:
             self.changesettings("release")
             self.lastpos += pg.Vector2(1, 0) # hacky solution to trick the editor into resetting the rope model
 
@@ -784,7 +786,7 @@ class PE(MenuWithField):
                     notes.append("Will put down a random variation.\nA specific variation can be selected from settings.\n")
                 else:
                     notes.append("This prop comes with many variations.\nWhich variation can be selected from settings.\n")
-        elif self.selectedprop['tp'] == "rope":
+        elif self.selectedprop['tp'] in ROPE_PROP_TYPES:
                 self.prop_settings["release"] = 0
         elif self.selectedprop["tp"] in ["variedDecal", "variedSoft"]:
             self.prop_settings["variation"] = 0 if random else 1
@@ -891,7 +893,7 @@ class PE(MenuWithField):
             if self.prop_settings["variation"] == 0:  # random
                 newpropsettings["variation"] = rnd.randint(1, len(self.selectedprop["images"]))
         prop = [-self.depth, self.selectedprop["nm"], makearr([self.currentcategory + 1, self.toolindex + 1], "point"), quads2, {"settings": newpropsettings}]
-        if self.selectedprop["tp"] == "rope":
+        if self.selectedprop["tp"] in ROPE_PROP_TYPES:
             points = []
             for segment in self.ropeobject.segments:
                 point = [segment["pos"].x * preview_to_render_fac, segment["pos"].y * preview_to_render_fac] #i love bandaid fix
