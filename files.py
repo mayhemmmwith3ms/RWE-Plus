@@ -72,7 +72,7 @@ toolmenu = loadimage(path + graphics["toolmenu"])
 APP_ICON = loadimage(path + "icon.png")
 LOAD_SPLASH_SCREEN = loadimage(path + "load.png")
 
-tag = "2.14.1"
+tag = "2.15.0"
 
 ofstop = 15
 ofsleft = 15
