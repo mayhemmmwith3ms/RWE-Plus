@@ -453,7 +453,7 @@ def getprops(tiles: dict):
         itemlist = []
         if "material" in items[0]["tags"]:
             continue
-        title = f"{items[0]['category']} + as prop"
+        title = f"{items[0]['category']} as prop"
         for indx, tile in enumerate(items[0:]):
             if tile["tp"] == "voxelStruct" and "notProp" not in tile["tags"]:
                 # returnimage = pg.Surface(pg.Vector2(tile["image"].get_width(), tile["image"].get_height()) + pg.Vector2(spritesize, spritesize) * tile["bfTiles"] * 2)
