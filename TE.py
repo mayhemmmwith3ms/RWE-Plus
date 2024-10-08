@@ -227,7 +227,7 @@ class TE(MenuWithField):
             for x in range(int(rect.w)):
                 for y in range(int(rect.h)):
                     if place:
-                        self.place(x + rect.x, y + rect.y)
+                        self.place(x + rect.x, y + rect.y, single_placement=False)
                     else:
                         self.destroy(x + rect.x, y + rect.y)
         elif self.tool == 2:  # copy
@@ -299,7 +299,7 @@ class TE(MenuWithField):
                             self.set(self.blocks["cat"], self.blocks["S"])
                         else:
                             continue
-                        self.place(x + rect.x, y + rect.y)
+                        self.place(x + rect.x, y + rect.y, single_placement=False)
                 skip = False
                 lastch = random.choice(blocks)
                 for y in range(1, int(rect.h) - 1):
@@ -320,7 +320,7 @@ class TE(MenuWithField):
                         if len(ch["tiles"]) > 1:
                             n = x % len(ch["tiles"]) - 1
                         self.set(saved["patcat"], saved["prefix"] + ch["tiles"][n])
-                        self.place(x + rect.x, y + rect.y)
+                        self.place(x + rect.x, y + rect.y, single_placement=False)
             self.set(savedcat, savedtool)
             self.currentcategory = save
             self.rebuttons()
@@ -699,7 +699,7 @@ class TE(MenuWithField):
                     vecx = int(pos.x) + xp - self.brushsize // 2
                     vecy = int(pos.y) + yp - self.brushsize // 2
                     if place:
-                        self.place(vecx, vecy, True)
+                        self.place(vecx, vecy, True, single_placement=False)
                     else:
                         self.destroy(vecx, vecy)
             if not place:
@@ -711,7 +711,7 @@ class TE(MenuWithField):
                     dist = pos.distance_to(vec)
                     if dist <= self.brushsize and self.area[xp][yp]:
                         if place:
-                            self.place(int(vec.x), int(vec.y), True)
+                            self.place(int(vec.x), int(vec.y), True, single_placement=False)
                         else:
                             self.destroy(int(vec.x), int(vec.y))
 
@@ -802,7 +802,7 @@ class TE(MenuWithField):
 
                 if geodata.modes[1]:
                     self.layer = li
-                self.place(blockx - self.xoffset + cposxo, blocky - self.yoffset + cposyo)
+                self.place(blockx - self.xoffset + cposxo, blocky - self.yoffset + cposyo, single_placement=False)
         else:
             self.selectcat(cat)
             self.layer = lcache
@@ -1059,7 +1059,7 @@ class TE(MenuWithField):
     def togglebrush(self):
         self.brushsize = 3 if not self.brush_active else 1
 
-    def place(self, x, y, render=False):
+    def place(self, x, y, render=False, single_placement=True):
         if self.blockNextPlacement:
             return
         fg = self.findparampressed("force_geometry")
@@ -1115,7 +1115,7 @@ class TE(MenuWithField):
                             self.data["GE"][xpos][ypos][self.layer + 1][0] = csp
         self.mpos = 1
 
-        if "Chain Holder" in self.tileimage["tags"]:
+        if "Chain Holder" in self.tileimage["tags"] and single_placement:
             self.justPlacedChainHolders.append([x, y, self.layer])
             self.blockNextPlacement = True
         #if fg:
@@ -1299,7 +1299,7 @@ class TE(MenuWithField):
                     nCat, nName = self.get_next_path_tile(macroInit, self.currentPathDrag, indx)
 
                     self.set(nCat, nName)
-                    self.place(tile.x, tile.y)
+                    self.place(tile.x, tile.y, single_placement=False)
 
         self.set("special", macroInit["name"])
         self.currentPathDrag.clear()
